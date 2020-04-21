@@ -1,0 +1,671 @@
+#include "pch_script.h"
+#include "xrEngine/FDemoRecord.h"
+#include "xrEngine/Environment.h"
+#include "xrEngine/IGame_Persistent.h"
+#include "ParticlesObject.h"
+#include "Level.h"
+#include "HUDManager.h"
+#include "xrServer.h"
+#include "NET_Queue.h"
+#include "game_cl_base.h"
+#include "entity_alive.h"
+#include "ai_space.h"
+#include "ai_debug.h"
+#include "ShootingObject.h"
+#include "GameTaskManager.h"
+#include "Level_Bullet_Manager.h"
+#include "xrScriptEngine/script_process.hpp"
+#include "xrScriptEngine/script_engine.hpp"
+#include "team_base_zone.h"
+#include "infoportion.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path_storage.h"
+#include "date_time.h"
+#include "space_restriction_manager.h"
+#include "seniority_hierarchy_holder.h"
+#include "space_restrictor.h"
+#include "client_spawn_manager.h"
+#include "autosave_manager.h"
+#include "ClimableObject.h"
+#include "xrAICore/Navigation/level_graph.h"
+#include "mt_config.h"
+#include "phcommander.h"
+#include "map_manager.h"
+#include "xrEngine/CameraManager.h"
+#include "level_sounds.h"
+#include "car.h"
+#include "trade_parameters.h"
+#include "MainMenu.h"
+#include "xrEngine/XR_IOConsole.h"
+#include "actor.h"
+#include "player_hud.h"
+#include "UI/UIGameTutorial.h"
+#include "CustomDetector.h"
+#include "xrPhysics/IPHWorld.h"
+#include "xrPhysics/console_vars.h"
+#include "xrEngine/GameFont.h"
+
+#ifdef DEBUG
+#include "level_debug.h"
+#include "ai/stalker/ai_stalker.h"
+#include "debug_renderer.h"
+#include "PhysicObject.h"
+#include "PHDebug.h"
+#include "debug_text_tree.h"
+#include "LevelGraphDebugRender.hpp"
+#endif
+
+extern CUISequencer* g_tutorial;
+extern CUISequencer* g_tutorial2;
+
+float g_cl_lvInterp = 0.1f;
+u32 lvInterpSteps = 0;
+
+CLevel::CLevel()
+    : IPureClient(Device.GetTimerGlobal())
+{
+    g_bDebugEvents = strstr(Core.Params, "-debug_ge") != nullptr;
+    game_events = new NET_Queue_Event();
+    eChangeRP = Engine.Event.Handler_Attach("LEVEL:ChangeRP", this);
+    eChangeTrack = Engine.Event.Handler_Attach("LEVEL:PlayMusic", this);
+    eEnvironment = Engine.Event.Handler_Attach("LEVEL:Environment", this);
+    eEntitySpawn = Engine.Event.Handler_Attach("LEVEL:spawn", this);
+    m_pBulletManager = new CBulletManager();
+    if (!GEnv.isDedicatedServer)
+    {
+        m_map_manager = new CMapManager();
+        m_game_task_manager = new CGameTaskManager();
+    }
+    m_dwDeltaUpdate = u32(fixed_step * 1000);
+    m_seniority_hierarchy_holder = new CSeniorityHierarchyHolder();
+    if (!GEnv.isDedicatedServer)
+    {
+        m_level_sound_manager = new CLevelSoundManager();
+        m_space_restriction_manager = new CSpaceRestrictionManager();
+        m_client_spawn_manager = new CClientSpawnManager();
+        m_autosave_manager = new CAutosaveManager();
+
+    }
+    m_ph_commander = new CPHCommander();
+    m_ph_commander_scripts = new CPHCommander();
+    pObjects4CrPr.clear();
+    pActors4CrPr.clear();
+    g_player_hud = new player_hud();
+    g_player_hud->load_default();
+    Msg("%s", Core.Params);
+}
+
+extern CAI_Space* g_ai_space;
+
+CLevel::~CLevel()
+{
+    xr_delete(g_player_hud);
+    delete_data(hud_zones_list);
+    hud_zones_list = nullptr;
+    Msg("- Destroying level");
+    Engine.Event.Handler_Detach(eEntitySpawn, this);
+    Engine.Event.Handler_Detach(eEnvironment, this);
+    Engine.Event.Handler_Detach(eChangeTrack, this);
+    Engine.Event.Handler_Detach(eChangeRP, this);
+    if (physics_world())
+    {
+        destroy_physics_world();
+        xr_delete(m_ph_commander_physics_worldstep);
+    }
+    // destroy PSs
+    for (auto p_it = m_StaticParticles.begin(); m_StaticParticles.end() != p_it; ++p_it)
+        CParticlesObject::Destroy(*p_it);
+    m_StaticParticles.clear();
+    // Unload sounds
+    // unload prefetched sounds
+    sound_registry.clear();
+    // unload static sounds
+    for (u32 i = 0; i < static_Sounds.size(); ++i)
+    {
+        static_Sounds[i]->destroy();
+        xr_delete(static_Sounds[i]);
+    }
+    static_Sounds.clear();
+    xr_delete(m_level_sound_manager);
+    xr_delete(m_space_restriction_manager);
+    xr_delete(m_seniority_hierarchy_holder);
+    xr_delete(m_client_spawn_manager);
+    xr_delete(m_autosave_manager);
+
+    if (!GEnv.isDedicatedServer)
+        GEnv.ScriptEngine->remove_script_process(ScriptProcessor::Level);
+    xr_delete(game);
+    xr_delete(game_events);
+    xr_delete(m_pBulletManager);
+    xr_delete(pStatGraphR);
+    xr_delete(pStatGraphS);
+    xr_delete(m_ph_commander);
+    xr_delete(m_ph_commander_scripts);
+    pObjects4CrPr.clear();
+    pActors4CrPr.clear();
+    ai().unload();
+
+    xr_delete(m_map_manager);
+    delete_data(m_game_task_manager);
+    // here we clean default trade params
+    // because they should be new for each saved/loaded game
+    // and I didn't find better place to put this code in
+    // XXX nitrocaster: find better place for this clean()
+    CTradeParameters::clean();
+    if (g_tutorial && g_tutorial->m_pStoredInputReceiver == this)
+        g_tutorial->m_pStoredInputReceiver = nullptr;
+    if (g_tutorial2 && g_tutorial2->m_pStoredInputReceiver == this)
+        g_tutorial2->m_pStoredInputReceiver = nullptr;
+}
+
+shared_str CLevel::name() const { return map_data.m_name; }
+void CLevel::GetLevelInfo(CServerInfo* si)
+{
+    if (Server && game)
+    {
+        Server->GetServerInfo(si);
+    }
+}
+
+void CLevel::PrefetchSound(LPCSTR name)
+{
+    // preprocess sound name
+    string_path tmp;
+    xr_strcpy(tmp, name);
+    xr_strlwr(tmp);
+    if (strext(tmp))
+        *strext(tmp) = 0;
+    shared_str snd_name = tmp;
+    // find in registry
+    auto it = sound_registry.find(snd_name);
+    // if find failed - preload sound
+    if (it == sound_registry.end())
+        sound_registry[snd_name].create(snd_name.c_str(), st_Effect, sg_SourceType);
+}
+
+bool g_bDebugEvents = false;
+
+void CLevel::cl_Process_Event(u16 dest, u16 type, NET_Packet& P)
+{
+    IGameObject* O = Objects.net_Find(dest);
+    if (0 == O)
+    {
+        return;
+    }
+    CGameObject* GO = smart_cast<CGameObject*>(O);
+    if (!GO)
+    {
+        return;
+    }
+    if (type != GE_DESTROY_REJECT)
+    {
+        if (type == GE_DESTROY)
+        {
+            Game().OnDestroy(GO);
+        }
+        GO->OnEvent(P, type);
+    }
+    else
+    {
+        // handle GE_DESTROY_REJECT here
+        u32 pos = P.r_tell();
+        u16 id = P.r_u16();
+        P.r_seek(pos);
+        bool ok = true;
+        IGameObject* D = Objects.net_Find(id);
+        if (0 == D)
+        {
+            ok = false;
+        }
+        CGameObject* GD = smart_cast<CGameObject*>(D);
+        if (!GD)
+        {
+            ok = false;
+        }
+        GO->OnEvent(P, GE_OWNERSHIP_REJECT);
+        if (ok)
+        {
+            Game().OnDestroy(GD);
+            GD->OnEvent(P, GE_DESTROY);
+        }
+    }
+}
+
+void CLevel::ProcessGameEvents()
+{
+    // Game events
+    {
+        NET_Packet P;
+        u32 svT = timeServer() - NET_Latency;
+        while (game_events->available(svT))
+        {
+            u16 ID, dest, type;
+            game_events->get(ID, dest, type, P);
+            switch (ID)
+            {
+            case M_SPAWN:
+            {
+                u16 dummy16;
+                P.r_begin(dummy16);
+                cl_Process_Spawn(P);
+                break;
+            }
+            case M_EVENT:
+            {
+                cl_Process_Event(dest, type, P);
+                break;
+            }
+            default:
+            {
+                VERIFY(0);
+                break;
+            }
+            }
+        }
+    }
+    
+}
+
+void CLevel::MakeReconnect()
+{
+    if (!Engine.Event.Peek("KERNEL:disconnect"))
+    {
+        Engine.Event.Defer("KERNEL:disconnect");
+        char const* server_options = nullptr;
+        char const* client_options = nullptr;
+        if (m_caServerOptions.c_str())
+        {
+            server_options = xr_strdup(*m_caServerOptions);
+        }
+        else
+        {
+            server_options = xr_strdup("");
+        }
+        if (m_caClientOptions.c_str())
+        {
+            client_options = xr_strdup(*m_caClientOptions);
+        }
+        else
+        {
+            client_options = xr_strdup("");
+        }
+        Engine.Event.Defer("KERNEL:start", size_t(server_options), size_t(client_options));
+    }
+}
+
+void CLevel::OnFrame()
+{
+#ifdef DEBUG
+    DBG_RenderUpdate();
+#endif
+    Fvector temp_vector;
+    m_feel_deny.feel_touch_update(temp_vector, 0.f);
+    psDeviceFlags.set(rsDisableObjectsAsCrows, false);
+    // commit events from bullet manager from prev-frame
+    stats.BulletManagerCommit.Begin();
+    BulletManager().CommitEvents();
+    stats.BulletManagerCommit.End();
+    // Client receive
+    stats.ClientRecv.Begin();
+    ClientReceive();
+    stats.ClientRecv.End();
+
+    ProcessGameEvents();
+    if (m_bNeed_CrPr)
+        make_NetCorrectionPrediction();
+    if (!GEnv.isDedicatedServer)
+    {
+        if (g_mt_config.test(mtMap))
+            Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(m_map_manager, &CMapManager::Update));
+        else
+            MapManager().Update();
+        if (IsGameTypeSingle() && Device.dwPrecacheFrame == 0)
+        {
+            // XXX nitrocaster: was enabled in x-ray 1.5; to be restored or removed
+            // if (g_mt_config.test(mtMap))
+            //{
+            //    Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(
+            //    m_game_task_manager,&CGameTaskManager::UpdateTasks));
+            //}
+            // else
+            GameTaskManager().UpdateTasks();
+        }
+    }
+    // Inherited update
+    inherited::OnFrame();
+    // Draw client/server stats
+    if (!GEnv.isDedicatedServer && psDeviceFlags.test(rsStatistic))
+    {
+    }
+    else
+    {
+    }
+    g_pGamePersistent->Environment().SetGameTime(GetEnvironmentGameDayTimeSec(), game->GetEnvironmentGameTimeFactor());
+
+    GEnv.ScriptEngine->script_process(ScriptProcessor::Level)->update();
+    m_ph_commander->update();
+    m_ph_commander_scripts->update();
+
+    stats.BulletManagerCommit.Begin();
+    BulletManager().CommitRenderSet();
+    stats.BulletManagerCommit.End();
+
+    // update static sounds
+    if (!GEnv.isDedicatedServer)
+    {
+        if (g_mt_config.test(mtLevelSounds))
+        {
+            Device.seqParallel.push_back(
+                fastdelegate::FastDelegate0<>(m_level_sound_manager, &CLevelSoundManager::Update));
+        }
+        else
+            m_level_sound_manager->Update();
+    }
+    // defer LUA-GC-STEP
+    if (!GEnv.isDedicatedServer)
+    {
+        if (g_mt_config.test(mtLUA_GC))
+            Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this, &CLevel::script_gc));
+        else
+            script_gc();
+    }
+    if (pStatGraphR)
+    {
+        static float fRPC_Mult = 10.0f;
+        static float fRPS_Mult = 1.0f;
+        pStatGraphR->AppendItem(float(m_dwRPC) * fRPC_Mult, 0xffff0000, 1);
+        pStatGraphR->AppendItem(float(m_dwRPS) * fRPS_Mult, 0xff00ff00, 0);
+    }
+}
+
+int psLUA_GCSTEP = 10;
+void CLevel::script_gc() { lua_gc(GEnv.ScriptEngine->lua(), LUA_GCSTEP, psLUA_GCSTEP); }
+
+extern void draw_wnds_rects();
+
+void CLevel::OnRender()
+{
+	GEnv.Render->BeforeWorldRender();
+
+    inherited::OnRender();
+    if (!game)
+        return;
+
+    Game().OnRender();
+    BulletManager().Render();
+
+	GEnv.Render->AfterWorldRender();
+
+    HUD().RenderUI();
+}
+
+void CLevel::OnEvent(EVENT E, u64 P1, u64)
+{
+    if (E == eEntitySpawn)
+    {
+        char Name[128];
+        Name[0] = 0;
+        sscanf(LPCSTR(P1), "%s", Name);
+        Level().g_cl_Spawn(Name, 0xff, M_SPAWN_OBJECT_LOCAL, Fvector().set(0, 0, 0));
+    }
+    else if (E == eChangeRP && P1)		{}
+    else if (E == eChangeTrack && P1)	{}
+    else if (E == eEnvironment) 		{}
+}
+
+void CLevel::DumpStatistics(IGameFont& font, IPerformanceAlert* alert)
+{
+    inherited::DumpStatistics(font, alert);
+    stats.FrameEnd();
+    font.OutNext("Client:");
+    font.OutNext("- receive:    %2.2fms, %d", stats.ClientRecv.result, stats.ClientRecv.count);
+    font.OutNext("- send:       %2.2fms, %d", stats.ClientSend.result, stats.ClientSend.count);
+    font.OutNext("- compress:   %2.2fms", stats.ClientCompressor.result);
+    font.OutNext("- int send:   %2.2fms, %d", stats.ClientSendInternal.result, stats.ClientSendInternal.count);
+    font.OutNext("- bmcommit:   %2.2fms, %d", stats.BulletManagerCommit.result, stats.BulletManagerCommit.count);
+    stats.FrameStart();
+    AIStats.FrameEnd();
+    font.OutNext("AI think:     %2.2fms, %d", AIStats.Think.result, AIStats.Think.count);
+    font.OutNext("- range:      %2.2fms, %d", AIStats.Range.result, AIStats.Range.count);
+    font.OutNext("- path:       %2.2fms, %d", AIStats.Path.result, AIStats.Path.count);
+    font.OutNext("- node:       %2.2fms, %d", AIStats.Node.result, AIStats.Node.count);
+    font.OutNext("AI vision:    %2.2fms, %d", AIStats.Vis.result, AIStats.Vis.count);
+    font.OutNext("- query:      %2.2fms", AIStats.VisQuery.result);
+    font.OutNext("- rayCast:    %2.2fms", AIStats.VisRayTests.result);
+    AIStats.FrameStart();
+}
+
+void CLevel::AddObject_To_Objects4CrPr(CGameObject* pObj)
+{
+    if (!pObj)
+        return;
+    for (CGameObject* obj : pObjects4CrPr)
+    {
+        if (obj == pObj)
+            return;
+    }
+    pObjects4CrPr.push_back(pObj);
+}
+void CLevel::AddActor_To_Actors4CrPr(CGameObject* pActor)
+{
+    if (!pActor)
+        return;
+    if (!smart_cast<CActor*>(pActor))
+        return;
+    for (CGameObject* act : pActors4CrPr)
+    {
+        if (act == pActor)
+            return;
+    }
+    pActors4CrPr.push_back(pActor);
+}
+
+void CLevel::RemoveObject_From_4CrPr(CGameObject* pObj)
+{
+    if (!pObj)
+        return;
+    auto objIt = std::find(pObjects4CrPr.begin(), pObjects4CrPr.end(), pObj);
+    if (objIt != pObjects4CrPr.end())
+    {
+        pObjects4CrPr.erase(objIt);
+    }
+    auto aIt = std::find(pActors4CrPr.begin(), pActors4CrPr.end(), pObj);
+    if (aIt != pActors4CrPr.end())
+    {
+        pActors4CrPr.erase(aIt);
+    }
+}
+
+void CLevel::make_NetCorrectionPrediction()
+{
+    m_bNeed_CrPr = false;
+    m_bIn_CrPr = true;
+    u64 NumPhSteps = physics_world()->StepsNum();
+    physics_world()->StepsNum() -= m_dwNumSteps;
+    if (ph_console::g_bDebugDumpPhysicsStep && m_dwNumSteps > 10)
+    {
+        Msg("!!!TOO MANY PHYSICS STEPS FOR CORRECTION PREDICTION = %d !!!", m_dwNumSteps);
+        m_dwNumSteps = 10;
+    }
+    physics_world()->Freeze();
+    // setting UpdateData and determining number of PH steps from last received update
+    for (CGameObject* obj : pObjects4CrPr)
+    {
+        if (!obj)
+            continue;
+        obj->PH_B_CrPr();
+    }
+    // first prediction from "delivered" to "real current" position
+    // making enought PH steps to calculate current objects position based on their updated state
+    for (u32 i = 0; i < m_dwNumSteps; i++)
+    {
+        physics_world()->Step();
+
+        for (CGameObject* act : pActors4CrPr)
+        {
+            if (!act || act->CrPr_IsActivated())
+                continue;
+            act->PH_B_CrPr();
+        }
+    }
+    for (CGameObject* obj : pObjects4CrPr)
+    {
+        if (!obj)
+            continue;
+        obj->PH_I_CrPr();
+    }
+    if (!InterpolationDisabled())
+    {
+        for (u32 i = 0; i < lvInterpSteps; i++) // second prediction "real current" to "future" position
+        {
+            physics_world()->Step();
+        }
+        for (CGameObject* obj : pObjects4CrPr)
+        {
+            if (!obj)
+                continue;
+            obj->PH_A_CrPr();
+        }
+    }
+    physics_world()->UnFreeze();
+    physics_world()->StepsNum() = NumPhSteps;
+    m_dwNumSteps = 0;
+    m_bIn_CrPr = false;
+    pObjects4CrPr.clear();
+    pActors4CrPr.clear();
+}
+
+u32 CLevel::GetInterpolationSteps() { return lvInterpSteps; }
+void CLevel::UpdateDeltaUpd(u32 LastTime)
+{
+    u32 CurrentDelta = LastTime - m_dwLastNetUpdateTime;
+    if (CurrentDelta < m_dwDeltaUpdate)
+        CurrentDelta = iFloor(float(m_dwDeltaUpdate * 10 + CurrentDelta) / 11);
+    m_dwLastNetUpdateTime = LastTime;
+    m_dwDeltaUpdate = CurrentDelta;
+    if (0 == g_cl_lvInterp)
+        ReculcInterpolationSteps();
+    else if (g_cl_lvInterp > 0)
+    {
+        lvInterpSteps = iCeil(g_cl_lvInterp / fixed_step);
+    }
+}
+
+void CLevel::ReculcInterpolationSteps()
+{
+    lvInterpSteps = iFloor(float(m_dwDeltaUpdate) / (fixed_step * 1000));
+    if (lvInterpSteps > 60)
+        lvInterpSteps = 60;
+    if (lvInterpSteps < 3)
+        lvInterpSteps = 3;
+}
+
+bool CLevel::InterpolationDisabled() { return g_cl_lvInterp < 0; }
+void CLevel::PhisStepsCallback(u32 Time0, u32 Time1)
+{
+    if (!Level().game)
+        return;
+    if (GameID() == eGameIDSingle)
+        return;
+}
+
+void CLevel::SetNumCrSteps(u32 NumSteps)
+{
+    m_bNeed_CrPr = true;
+    if (m_dwNumSteps > NumSteps)
+        return;
+    m_dwNumSteps = NumSteps;
+    if (m_dwNumSteps > 1000000)
+    {
+        VERIFY(0);
+    }
+}
+
+ALife::_TIME_ID CLevel::GetStartGameTime() { return (game->GetStartGameTime()); }
+ALife::_TIME_ID CLevel::GetGameTime() { return (game->GetGameTime()); }
+ALife::_TIME_ID CLevel::GetEnvironmentGameTime() { return (game->GetEnvironmentGameTime()); }
+u8 CLevel::GetDayTime()
+{
+    u32 dummy32, hours;
+    GetGameDateTime(dummy32, dummy32, dummy32, hours, dummy32, dummy32, dummy32);
+    VERIFY(hours < 256);
+    return u8(hours);
+}
+
+float CLevel::GetGameDayTimeSec() { return (float(s64(GetGameTime() % (24 * 60 * 60 * 1000))) / 1000.f); }
+u32 CLevel::GetGameDayTimeMS() { return (u32(s64(GetGameTime() % (24 * 60 * 60 * 1000)))); }
+float CLevel::GetEnvironmentGameDayTimeSec()
+{
+    return (float(s64(GetEnvironmentGameTime() % (24 * 60 * 60 * 1000))) / 1000.f);
+}
+
+void CLevel::GetGameDateTime(u32& year, u32& month, u32& day, u32& hours, u32& mins, u32& secs, u32& milisecs)
+{
+    split_time(GetGameTime(), year, month, day, hours, mins, secs, milisecs);
+}
+
+float CLevel::GetGameTimeFactor() { return (game->GetGameTimeFactor()); }
+void CLevel::SetGameTimeFactor(const float fTimeFactor) { game->SetGameTimeFactor(fTimeFactor); }
+void CLevel::SetGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor)
+{
+    game->SetGameTimeFactor(GameTime, fTimeFactor);
+}
+
+void CLevel::SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTimeFactor)
+{
+    if (!game)
+        return;
+    game->SetEnvironmentGameTimeFactor(GameTime, fTimeFactor);
+}
+
+bool CLevel::IsServer()
+{
+    if (!Server)
+        return false;
+    return true;
+}
+
+bool CLevel::IsClient()
+{
+    if (Server)
+        return false;
+    return true;
+}
+
+void CLevel::OnAlifeSimulatorUnLoaded()
+{
+    MapManager().ResetStorage();
+    GameTaskManager().ResetStorage();
+}
+
+void CLevel::OnAlifeSimulatorLoaded()
+{
+    MapManager().ResetStorage();
+    GameTaskManager().ResetStorage();
+}
+
+u32 GameID() { return Game().Type(); }
+CZoneList* CLevel::create_hud_zones_list()
+{
+    hud_zones_list = new CZoneList();
+    hud_zones_list->clear();
+    return hud_zones_list;
+}
+
+bool CZoneList::feel_touch_contact(IGameObject* O)
+{
+    TypesMapIt it = m_TypesMap.find(O->cNameSect());
+    bool res = (it != m_TypesMap.end());
+    CCustomZone* pZone = smart_cast<CCustomZone*>(O);
+    if (pZone && !pZone->IsEnabled())
+    {
+        res = false;
+    }
+    return res;
+}
+
+CZoneList::CZoneList() {}
+CZoneList::~CZoneList()
+{
+    clear();
+    destroy();
+}

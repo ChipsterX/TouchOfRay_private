@@ -1,0 +1,1 @@
+﻿C:\Users\Сибирь\Documents\GitHub\Stalker_OXR_BTTR\Externals\DiscordRPC\DiscordRichPresense.vcxproj(46,5): error MSB4019: импортированный проект "C:\Users\Сибирь\Documents\GitHub\Stalker_OXR_BTTR\F-Ray.props" не обнаружен. Проверьте путь в объявлении <Import> и наличие файла на диске.

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)ConfigurationDefs.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" Condition="'$(Platform)'=='x64'">
+    <xrPlatform>Win64</xrPlatform>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition="'$(xrPlatform)'==''">
+    <xrPlatform>$(Platform)</xrPlatform>
+  </PropertyGroup>
+
+  <!-- CxA – Configuration x Architecture -->
+ 
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)|$(xrPlatform)'=='Release|Win64'">
+    <xrBuildCxA>Rx64</xrBuildCxA>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <!-- I don't want to touch every vcxproj file and $(SolutionDir) is not working here. This is a workaround. -->
+    <Natvis Include="TypeHelper.natvis" Condition="exists('TypeHelper.natvis')"/>
+    <Natvis Include="..\TypeHelper.natvis" Condition="exists('..\TypeHelper.natvis')"/>
+    <Natvis Include="..\..\TypeHelper.natvis" Condition="exists('..\..\TypeHelper.natvis')"/>
+  </ItemGroup>
+  
+  <PropertyGroup Label="UserMacros">
+    <!-- Default is v142 -->
+    <xrPlatformToolset>v142</xrPlatformToolset>
+    
+    <!-- v141 is allowed -->
+    <xrPlatformToolset Condition="'$(DefaultPlatformToolset)'=='v141'">v141</xrPlatformToolset>
+  </PropertyGroup>
+
+  <PropertyGroup Label="UserMacros">
+    <xrBinRootDir>$(SolutionDir)..\_build\bin\</xrBinRootDir>
+    <xrLibRootDir>$(SolutionDir)..\_build\lib\</xrLibRootDir>
+    <xrBinDir>$(SolutionDir)..\_build\bin\$(xrPlatform)\$(Configuration)\</xrBinDir>
+    <xrPlugBinDir>$(SolutionDir)..\_build\bin\$(xrPlatform)\$(Configuration)\plugins\</xrPlugBinDir>
+    <xrLibDir>$(SolutionDir)..\_build\lib\$(xrPlatform)\$(Configuration)\</xrLibDir>
+    <xrIntDir>$(SolutionDir)..\_build\intermediate\$(xrPlatform)\$(Configuration)\</xrIntDir>
+    <xrSdkDir>$(SolutionDir)..\sdk\</xrSdkDir>
+    <xrExternals>$(SolutionDir)..\Externals\</xrExternals>
+  </PropertyGroup>
+
+  <PropertyGroup Label="OutputDirectories">
+    <OutDir Condition="'$(ConfigurationType)'=='Application'"   >$(xrBinDir)</OutDir>
+    <OutDir Condition="'$(ConfigurationType)'=='DynamicLibrary'">$(xrBinDir)</OutDir>
+    <OutDir Condition="'$(ConfigurationType)'=='StaticLibrary'" >$(xrLibDir)</OutDir>
+    <OutDir Condition="'$(ConfigurationType)'=='Makefile'"      >$(xrLibDir)</OutDir>
+
+    <IntDir>$(xrIntDir)$(ProjectName)\</IntDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))"> <UseDebugLibraries>false</UseDebugLibraries> </PropertyGroup>
+  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))"> <LinkIncremental>false</LinkIncremental> </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;$(SolutionDir);$(xrExternals);$(ProjectDir);$(xrSdkDir)include;$(xrSdkDir)DXSDK/Include;$(xrExternals)luajit\src;$(xrExternals)luabind;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <!-- MultiProcessorCompilation don't compatible with LinkIncremental and UseDebugLibraries -->
+      <MultiProcessorCompilation Condition="$(Configuration.StartsWith('Release'))">true</MultiProcessorCompilation>
+      <!--
+        4251 : class 'x' needs to have dll-interface to be used by clients of class 'y'
+        4275 : non dll-interface class 'x' used as base for dll-interface class 'y' 
+        4458 : declaration of 'x' hides class member
+      -->
+      <DisableSpecificWarnings>4251;4275;4458</DisableSpecificWarnings>
+      <!--
+        LUABIND_DYNAMIC_LINK : self-explanatory
+        MSVC;dSINGLE;WIN32 : for ODE
+        _SECURE_SCL=0;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE : temporary workaround for deprecated API
+      -->
+      <PreprocessorDefinitions>LUABIND_DYNAMIC_LINK;MSVC;dSINGLE;WIN32;_SECURE_SCL=0;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USE_TBB_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level1</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(xrSdkDir)libraries;$(xrSdkDir)libraries/$(PlatformShortName);$(xrLibDir);$(xrSdkDir)DXSDK/Lib/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>$(xrLibDir)$(TargetName).lib</ImportLibrary>
+      <LargeAddressAware>true</LargeAddressAware>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(xrSdkDir)libraries;$(xrSdkDir)libraries/$(PlatformShortName);$(xrLibDir);$(xrSdkDir)DXSDK/Lib/$(PlatformShortName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(xrLibDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+</Project>

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|x64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|ARM64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|ARM'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|x64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|ARM64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|ARM'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_AVX|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='win32|x64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='win32|ARM64'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='win32|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='win32|ARM'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='win32|Win32'">
+    <LocalDebuggerWorkingDirectory>C:\STALKER\Call of Chernobyl [OpenXRay] Back to the roots</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+</Project>

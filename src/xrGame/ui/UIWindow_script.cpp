@@ -1,0 +1,64 @@
+#include "pch_script.h"
+#include "UIDialogWnd.h"
+#include "UIDialogHolder.h"
+#include "GamePersistent.h"
+#include "UIMessageBoxEx.h"
+#include "UIMMShniaga.h"
+#include "UISleepStatic.h"
+#include "ScriptXMLInit.h"
+#include "xrScriptEngine/ScriptExporter.hpp"
+
+using namespace luabind;
+using namespace luabind::policy;
+
+// clang-format off
+SCRIPT_EXPORT(CDialogHolder, (), {
+    module(luaState)
+    [
+        class_<CDialogHolder>("CDialogHolder")
+            .def(constructor<>())
+            .def("TopInputReceiver", &CDialogHolder::TopInputReceiver)
+            .def("SetMainInputReceiver", &CDialogHolder::SetMainInputReceiver)
+            .def("AddDialogToRender", &CDialogHolder::AddDialogToRender)
+            .def("RemoveDialogToRender", &CDialogHolder::RemoveDialogToRender)
+    ];
+});
+
+SCRIPT_EXPORT(CUIDialogWnd, (CUIWindow), {
+    module(luaState)[class_<CUIDialogWnd, CUIWindow>("CUIDialogWnd")
+                         .def("ShowDialog", &CUIDialogWnd::ShowDialog)
+                         .def("HideDialog", &CUIDialogWnd::HideDialog)
+                         .def("GetHolder", &CUIDialogWnd::GetHolder)];
+});
+
+SCRIPT_EXPORT(CUIMessageBoxEx, (CUIDialogWnd), {
+    module(luaState)
+    [
+        class_<CUIMessageBoxEx, CUIDialogWnd>("CUIMessageBoxEx")
+            .def(constructor<>())
+            .def("InitMessageBox", &CUIMessageBoxEx::InitMessageBox)
+            .def("SetText", &CUIMessageBoxEx::SetText)
+            .def("GetHost", &CUIMessageBoxEx::GetHost)
+            .def("GetPassword", &CUIMessageBoxEx::GetPassword)
+    ];
+});
+
+SCRIPT_EXPORT(CUIMMShniaga, (CUIWindow),
+{
+    module(luaState)
+    [
+        class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
+            .enum_("enum_page_id")
+            [
+                value("epi_main", CUIMMShniaga::epi_main),
+                value("epi_new_game", CUIMMShniaga::epi_new_game)
+            ]
+            .def("SetVisibleMagnifier", &CUIMMShniaga::SetVisibleMagnifier)
+            .def("SetPage", &CUIMMShniaga::SetPage)
+            .def("ShowPage", &CUIMMShniaga::ShowPage)
+    ];
+});
+
+SCRIPT_EXPORT(CUISleepStatic, (CUIStatic),
+    { module(luaState)[class_<CUISleepStatic, CUIStatic>("CUISleepStatic").def(constructor<>())]; });
+// clang-format on

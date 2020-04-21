@@ -1,0 +1,1 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.Cpp.Redirect.props(21,3): error MSB4019: импортированный проект "C:\Microsoft.Cpp.Redirect.15.props" не обнаружен. Проверьте путь в объявлении <Import> и наличие файла на диске.
