@@ -1,0 +1,106 @@
+<w>
+    <!--
+	<static_slot_back x="900" y="605" width="128" height="34" stretch="1">
+		<texture x="342" y="462" width="341" height="77">ui\ui_actor_menu</texture>
+		<slot_1 x="3" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_1>
+		<slot_2 x="28" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22" stretch="1">IC</texture>
+		</slot_2>
+		<slot_3 x="53" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_3>
+		<slot_4 x="78" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_4>
+		<slot_5 x="103" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_5>
+		<slot_6 x="128" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_6>
+		<slot_7 x="153" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_7>
+		<slot_8 x="178" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_8>
+		<slot_9 x="203" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_9>
+		<slot_10 x="228" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_10>
+		<slot_11 x="253" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_11>
+		<slot_12 x="278" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_12>
+		<slot_13 x="303" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_13>
+		<slot_14 x="328" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_14>
+		<slot_15 x="353" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_15>
+		<slot_16 x="378" y="7" width="22" height="22" stretch="1">
+			<texture x="0" y="0" width="22" height="22">IC</texture>
+		</slot_16>		
+    </static_slot_back>
+-->
+    <static_slot_back x="5" y="690" width="155" height="42" stretch="1">
+        <!--		<texture x="342" y="462" width="341" height="77">ui\ui_actor_menu</texture> -->
+        <slot_1 x="135" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_1>
+        <slot_2 x="163" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25" stretch="1">ui_hud_icon_artefact</texture>
+        </slot_2>
+        <slot_3 x="191" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="22" height="22">ui_hud_icon_artefact</texture>
+        </slot_3>
+        <slot_4 x="219" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_4>
+        <slot_5 x="247" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_5>
+        <slot_6 x="275" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_6>
+        <slot_7 x="303" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_7>
+        <slot_8 x="331" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="22" height="22">ui_hud_icon_artefact</texture>
+        </slot_8>
+        <slot_9 x="359" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_9>
+        <slot_10 x="387" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_10>
+        <slot_11 x="415" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_11>
+        <slot_12 x="443" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_12>
+        <slot_13 x="471" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="22" height="22">ui_hud_icon_artefact</texture>
+        </slot_13>
+        <slot_14 x="499" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_14>
+        <slot_15 x="527" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_15>
+        <slot_16 x="555" y="35" width="26" height="30" stretch="1">
+            <texture x="0" y="0" width="25" height="25">ui_hud_icon_artefact</texture>
+        </slot_16>		
+    </static_slot_back>
+</w>

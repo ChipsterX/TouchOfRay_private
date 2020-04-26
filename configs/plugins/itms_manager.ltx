@@ -1,0 +1,86 @@
+; This plugin configures item mods loaded by the itms_manager script file.
+
+[backpack_stash]
+allow_in_base = true
+enable = true
+enable_news_tip = true
+enable_ui = true
+map_spot = treasure_player
+
+[sleeping_bag]
+dangerous_sleep = false ; Enable hostile squads to hunt actor if he sleeps in unsafe area. Disabled as there are no safe spots.
+enable = true
+have_at_start = false ; Self-explanatory, whether the player starts with a sleeping bag in inventory
+unsafe_radius = 10000 ; The distance in which hostile squads will be drawn to actor if he sleeps in unsafe area.
+use_placeable = true ; Whether the items is placed at the player's location instead of using the item directly.
+
+[sleeping_bag_sections]
+itm_sleepbag
+sleep_bag
+
+[sleeping_bag_ph_sections]
+ph_sleepbag = itm_sleepbag
+
+[actor_backpack_keep_items]
+af_baloon
+af_blood
+af_compass
+af_cristall
+af_cristall_flower
+af_dummy_battery
+af_dummy_dummy
+af_dummy_glassbeads
+af_electra_flash
+af_electra_moonlight
+af_electra_sparkler
+af_eye
+af_fire
+af_fireball
+af_fuzz_kolobok
+af_glass
+af_gold_fish
+af_gravi
+af_ice
+af_medusa
+af_mincer_meat
+af_night_star
+af_oasis_heart
+af_soul
+af_quest_b14_twisted
+af_vyvert
+bandage
+bolt
+device_flashlight
+device_pda
+device_torch
+device_torch_dummy
+drug_anabiotic
+drug_antidot
+drug_coagulant
+drug_psy_blockade
+drug_radioprotector
+jup_b1_half_artifact
+medkit
+medkit_army
+medkit_scientic
+
+[repair_mod]
+enable = true
+use_ui = false ; Determines whether the clunky interface is used instead of new drag-and-drop callbacks.
+
+[repair_mod_tools]
+itm_gunsmith_toolkit
+itm_outfit_toolkit
+
+[flashlight_mod]
+enable = false
+
+[flashlight_sections]
+device_flashlight
+
+[mutant_loot_mod]
+decay_time = 2700 ; Number of seconds (game time) after which a mutant corpse becomes too decayed to field dress.
+enable = true
+
+#include "mutants_loots.ltx"
+

@@ -1,0 +1,201 @@
+<w>
+	<background width="1024" height="768">
+		<auto_static x="0" y="0" width="1024" height="768" stretch="1">
+			<texture x="0" y="0" width="1024" height="768">ui\debug_opt</texture>
+		</auto_static>
+	</background>
+	<file_item>
+	    <main width="490" height="18"/>
+	    <fn width="325" height="18"/>
+	    <fd width="110" height="18"/>
+	</file_item>
+	<form x="50" y="252" width="560" height="460" stretch="1">
+	    <texture>ui_inGame2_main_window_small</texture>
+	    <caption x="0" y="20" width="560" height="30">
+		    <text font="graffiti32" align="c">Встроенный спавнер ver. 1.4</text>
+	    </caption>
+	    <file_caption x="60" y="395" width="440" height="20">
+		    <text font="letterica18"/>
+	    </file_caption>
+	    <file_data x="170" y="-350" width="240" height="50" complex_mode="1">
+		    <text font="letterica18"/>
+	    </file_data>
+	    <list_frame x="30" y="215" width="500" height="175">
+		    <texture>ui_inGame2_servers_list_frame</texture>
+	    </list_frame>
+	    <list x="33" y="215" width="497" height="173" item_height="18" can_select="1">
+		    <font font="letterica16"/>
+	    </list>
+	    <btn_load x="230" y="427" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Создать!</text>
+	    </btn_load>
+	    <btn_cancel x="377" y="427" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Выйти</text>
+	    </btn_cancel>
+
+          <!-- ДЕНЬГИ -->
+          <cap_rubel x="30" y="154" width="200" height="23">   
+               <text font="letterica16" r="115" g="114" b="112" vert_align="c">Деньги:</text>
+          </cap_rubel>
+
+          <cap_rubel_currently x="-33" y="158" width="200" height="23">    <!-- Оранжевый -->
+               <text align="r" font="letterica16" color="ui_7"/>
+          </cap_rubel_currently>
+
+          <cap_rubel_coeff x="136" y="138" width="90" height="23">
+               <text vert_align="c" font="letterica16" r="115" g="114" b="112"/>
+          </cap_rubel_coeff>
+
+          <spin_rubel x="91" y="138" width="45" height="23">
+               <options_item entry="spin_rubel"/>
+          </spin_rubel>
+
+
+         <btn_moneyplus x="61" y="138" width="30" height="20">
+               <text align="c" font="letterica16" r="227" g="199" b="178">+</text>
+	         <texture>ui_inGame2_Mp_bigbuttone</texture>
+         </btn_moneyplus>
+
+         <btn_moneyminus x="31" y="138" width="30" height="20">
+                <text align="c" font="letterica16" r="227" g="199" b="178">-</text>
+	          <texture>ui_inGame2_Mp_bigbuttone</texture>
+         </btn_moneyminus>
+
+        
+	    <btn_surge x="30" y="50" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Вызвать выброс</text>
+	    </btn_surge>
+		
+		<btn_psy_storm x="30" y="78" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Вкл. пси-шторм</text>
+	    </btn_psy_storm>
+		
+		<btn_horror x="30" y="106" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Вкл. Час ужаса</text>
+	    </btn_horror>
+		
+		<btn_dyn_spawn x="168" y="50" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Динам. спавн</text>
+	    </btn_dyn_spawn>
+		
+		<btn_gon_mutants x="168" y="78" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Гон мутантов</text>
+	    </btn_gon_mutants>
+		
+		<btn_fallout x="168" y="106" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Рад\хим. осадки</text>
+	    </btn_fallout>
+
+        <!-- СПИСОК ОПЦИЙ -->
+		<list_renderer x="80" y="447" width="261" height="21" list_length="5">
+		       <text_color>
+				<e r="216" g="186" b="140"/>
+                        <d color="ui_gray"/>
+                   </text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_renderer>
+
+       <spin_spawn x="205" y="172" width="45" height="23">
+               <options_item entry="spin_spawn"/>
+       </spin_spawn>
+
+       <cap_spawn x="30" y="172" width="200" height="23">   
+             <text font="letterica16" r="115" g="114" b="112" vert_align="c">Дистанция спавна на карте:</text>
+       </cap_spawn>
+
+       <cap_loc x="-20" y="-25" width="100" height="23">    <!-- Оранжевый -->
+              <text align="l" font="graffiti22" color="ui_7"/>
+       </cap_loc>
+
+	</form>
+
+
+ <!-- Форма телепортации -->
+<dialog x="50" y="50" width="610" height="270">
+			<texture>ui_frame_error</texture>
+
+		<capt x="90" y="7" width="200" height="29">
+			<text font="graffiti19" color="ui_6">Меню телепортации</text>
+		</capt>
+
+		<msg3 x="400" y="130" width="200" height="30">
+			<text font="letterica18" color="ui_6">Имя коорд.</text>
+		</msg3>
+
+		<msg2 x="215" y="50" width="200" height="30">
+			<text font="letterica18" color="ui_6">Введите координаты: X, Y, Z</text>
+		</msg2>
+		
+		<msg x="180" y="55" width="200" height="30">
+			<text font="letterica18" color="ui_6"></text>
+		</msg>
+
+		<edit_box x="200" y="85" width="70" height="23">
+			<texture>ui_linetext_e</texture>
+			<text font="letterica18" r="240" g="217" b="182"/>
+		</edit_box>
+
+		<edit_box2 x="290" y="85" width="70" height="23">
+			<texture>ui_linetext_e</texture>
+			<text font="letterica18" r="240" g="217" b="182"/>
+		</edit_box2>
+
+		<edit_box3 x="380" y="85" width="70" height="23">
+			<texture>ui_linetext_e</texture>
+			<text font="letterica18" r="240" g="217" b="182"/>
+		</edit_box3>
+
+
+		<edit_box4 x="200" y="130" width="190" height="23">
+			<texture>ui_linetext_e</texture>
+			<text font="letterica18" r="240" g="217" b="182"/>
+		</edit_box4>
+
+		<btn_1 x="25" y="70" width="117" height="29">
+			<texture_e>ui_button_ordinary_e</texture_e>
+			<texture_t>ui_button_ordinary_t</texture_t>
+			<texture_h>ui_button_ordinary_h</texture_h>
+			<text font="letterica18">Взять из таблицы</text>
+		</btn_1>
+
+		<btn_2 x="25" y="125" width="117" height="29">
+			<texture_e>ui_button_ordinary_e</texture_e>
+			<texture_t>ui_button_ordinary_t</texture_t>
+			<texture_h>ui_button_ordinary_h</texture_h>
+			<text font="letterica18">Сохранить</text>
+		</btn_2>
+
+		<btn_3 x="25" y="98" width="117" height="29">
+			<texture_e>ui_button_ordinary_e</texture_e>
+			<texture_t>ui_button_ordinary_t</texture_t>
+			<texture_h>ui_button_ordinary_h</texture_h>
+			<text font="letterica18">Позиция ГГ</text>
+		</btn_3>
+
+            <btn_4 x="180" y="165" width="157" height="48">
+		  <texture>ui_button_main02</texture>
+		  <text font="graffiti22">Переместиться</text>
+		  <text_color>
+			  <e r="227" g="199" b="178"/> <t r="180" g="153" b="155"/> <d r="106" g="95" b="91"/> <h r="0" g="0" b="0"/>
+		  </text_color>
+	      </btn_4>
+
+		<btn_5 x="360" y="160" width="137" height="29">
+			<texture_e>ui_button_ordinary_e</texture_e>
+			<texture_t>ui_button_ordinary_t</texture_t>
+			<texture_h>ui_button_ordinary_h</texture_h>
+			<text font="letterica18">Телеп. на 5м. вперёд</text>
+		</btn_5>
+
+</dialog>
+
+</w>

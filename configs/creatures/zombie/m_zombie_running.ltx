@@ -1,0 +1,389 @@
+[m_zombie_running_attack_params]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;right hand strike
+stand_attack_0 =	  	0.30,		1.1,		    100,        0.0, 1.0, 0.0,		 -0.6, 0.6, -0.6, 0.6,							  2.0
+;left hand strike
+stand_attack_1 =	  	0.35,		1.1,		    100,        0.0, 1.0, 0.0,		 -0.6, 0.6, -0.6, 0.6,							  2.0
+;left hand strike2
+stand_attack_2 =	  	0.30,		2.1,		    120,        0.0, 1.0, 0.0,		 -0.6, 0.6, -0.6, 0.6,							  2.0
+;left hand strike3
+stand_attack_3 =	  	0.30,		3.1,		    180,        0.0, 1.0, 0.0,		 -0.6, 0.6, -0.6, 0.6,	
+
+[zombie_running_attack_params_normal]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;right hand strike
+stand_attack_0 =	  	0.30,		0.35,		    100,        0.0, 1.0, 0.0,		 -0.3, 1.0, -0.6, 0.6,							  2.0
+;left hand strike
+stand_attack_1 =	  	0.35,		0.35,		    100,        0.0, 1.0, 0.0,		 -1.8, 0.6, -0.6, 0.6,							  2.0
+;left hand strike2
+stand_attack_2 =	  	0.30,		0.35,		    120,        0.0, 1.0, 0.0,		 -0.6, 0.6, -1.0, 1.0,							  2.0
+;left hand strike3
+stand_attack_3 =	  	0.30,		0.35,		    180,        0.0, 1.0, 0.0,		 -1.0, 0.3, -0.6, 0.6,							  2.0
+
+[m_zombie_running_damage]
+default			= 1.0, -1, 0.01
+bip01_pelvis 	= 0.1, -1, 0.01
+bip01_spine 	= 0.1, -1, 0.01
+bip01_spine1 	= 0.1, -1, 0.01
+bip01_neck 		= 1.0, -1, 0.01
+bip01_head 		= 1.0, -1, 0.001
+
+[zombie_running_immunities]
+burn_immunity			= 0.9
+strike_immunity			= 1.0
+shock_immunity			= 1.0
+wound_immunity			= 0.5
+radiation_immunity		= 0.0
+telepatic_immunity		= 1.0
+chemical_burn_immunity	= 1.0
+explosion_immunity		= 0.1
+fire_wound_immunity		= 0.45
+
+[zombie_running_immunities_normal]
+burn_immunity			= 0.7
+strike_immunity			= 0.6
+shock_immunity			= 0.8
+wound_immunity			= 0.4
+radiation_immunity		= 0.0
+telepatic_immunity		= 1.0
+chemical_burn_immunity	= 0.9
+explosion_immunity		= 0.05
+fire_wound_immunity		= 0.45
+
+[m_zombie_running_step_params]
+stand_walk_fwd_0 	=	    3,	   0.01,     1,     0.25,    0.7,  
+stand_walk_fwd_1 	=	    3,	   0.01,     1,     0.25,    0.7,    
+stand_walk_dmg_0 	=	    1,	   0.01,     1,     0.25,    0.7,     
+stand_run_fwd_0	 	=	    3,	   0.01,     1,	    0.25,    0.6,  
+
+stand_run_0	 	=	    3,	   0.01,     1,	    0.25,    0.6,  
+stand_run_1	 	=	    3,	   0.01,     1,	    0.25,    0.6,  
+stand_run_2	 	=	    2,	   0.01,     1,	    0.25,    0.6,  
+stand_run_3	 	=	    1,	   0.01,     1,	    0.25,    0.6,  
+stand_run_4	 	=	    1,	   0.01,     1,	    0.25,    0.6,       
+  
+stand_run_dmg_0	 	=	    1,	   0.01,     1,	    0.25,    0.6,    
+
+
+[_zombie_running]:monster_base
+GroupControlSection	= spawn_group
+SpaceRestrictionSection = space_restrictor,zone_mosquito_bald,zone_witches_galantine,zone_burning_fuzz1,zone_mincer,zone_gravi_zone
+
+$npc			     = on						; option for Level Editor
+$prefetch 			 = 16
+Scheduled		     = on						; option for ALife Simulator
+Human		     	 = off						; option for ALife Simulator
+Health			     = 100						; option for ALife Simulator
+MinSpeed		     = 1.0						; option for ALife Simulator
+MaxSpeed		     = 5.0						; option for ALife Simulator
+going_speed          = 2;4.5                    ; option for ALife Simulator
+search_speed         = 1.5                      ; option for ALife Simulator
+visual			 = monsters_narodnaya_solyanka\Zombie\run_zombie_1
+icon = ui_npc_monster_zombie	
+
+vision_free_section			= r_vision_free
+vision_danger_section		= r_vision_danger
+
+MaxHealthValue		 = 100			; range [0..200]
+DynamicObjectsCount	 = 32
+smart_terrain_choose_interval	= 00:15:00
+
+ef_creature_type	 = 3				; option for evaluation functions
+ef_weapon_type		 = 1
+ef_detector_type	 = 1
+panic_threshold		= 0.1
+
+
+Spawn_Inventory_Item_Section = mutant_part_spider_leg
+Spawn_Inventory_Item_Probability = 0 
+Spawn_Drop_Item_Probability = 0.0
+Spawn_Max_Item = 0
+
+cform                = skeleton					; collision class
+class                = SM_ZOMBI				; AI class
+
+script_binding  	= bind_monster.bind
+
+bone_torso			 = bip01_spine1 			; bone name
+bone_head			 = bip01_head				; bone name
+bone_fire			 = bip01_head				; bone name
+weapon_usage		 = 0						; boolean
+
+ph_box0_center 		 = 0.0,  0.9,  0.0
+ph_box0_size 		 = 0.35, 0.9,  0.35
+ph_box1_center 		 = 0.0,  0.6,  0.0
+ph_box1_size 		 = 0.40, 0.6,  0.40
+ph_crash_speed_min			= 10
+ph_crash_speed_max			= 30
+ph_collision_damage_factor	= 0.1
+ph_mass 		     = 80
+destroyed_vis_name	 = _other\trupik_crash
+
+
+;---------------------------------------------------------------------
+ph_skeleton_airr_lin_factor   = -0.4
+ph_skeleton_airr_ang_factor   = -0.2
+ph_skeleton_hinger_factor1    = 5.0 ;1.0 (изменно из-за того, что убрано домножение на коэффициент 5.0 из кода)
+ph_skeleton_ddelay	      = 5.0
+ph_skel_fatal_impulse_factor  = 1.0
+ph_after_death_velocity_factor= 0.75
+ph_skel_shot_up_factor        = 0.25
+;---------------------------------------------------------------------
+
+SoundThreshold		= 0.06             ; range [0..1]
+max_hear_dist		= 50
+
+eye_fov			= 110
+eye_range		= 40
+
+
+; speed factors			linear | angular_real | angular_path | min |  max
+Velocity_Stand			= 0,		1.4,			1.4,		1,		1
+Velocity_WalkFwdNormal	= 0.9,		0.6,			0.6,		0.02,	2.0	
+Velocity_RunFwdNormal	= 3.8,		3.0,			3.0,		0.4,	1	
+Velocity_WalkFwdDamaged	= 6.7,		6.0,			3.8,		5.2,	5.0	
+Velocity_RunFwdDamaged	= 6.5,  	6.0,			6.0,		3.2,	3
+Velocity_Drag			= 1.0,		3.0,			3.0,		1,		1
+Velocity_Steal			= 1.5,		3.0,			3.0,		1,		1
+
+; acceleration
+Accel_Generic			= 5.5
+Accel_Calm			= 7.5
+Accel_Aggressive		= 19.5
+
+;attack parameters
+MinAttackDist		= 1.7	;0.5
+MaxAttackDist		= 2.3	;3.8
+
+Melee_Rotation_Factor	= 1.6
+
+as_min_dist				= 1.4
+as_step					= 0.1
+
+DayTime_Begin		= 0
+DayTime_End			= 23
+Min_Satiety			= 0.4
+Max_Satiety			= 1.0
+
+distance_to_corpse	= 1.2
+
+min_view_distance   		= 0.7				; коэффициент, который множится на eye_range, в зависимости от угла
+max_view_distance	 		= 1.0				; коэффициент, который множится на eye_range, в зависимости от угла
+visibility_threshold	 	= 100.0				; значение, при достижении суммой которого объект считается видимым
+always_visible_distance 	= 0.3
+time_quant					= 0.001
+decrease_value				= 0.01				; значение, на которое уменьшается вес, если объект попал в фрустум, но отсёкся по каким-то причинам
+velocity_factor		     	= 0.5
+luminocity_factor			= 0.5 				; фактор освещения (только для Актёра)
+transparency_threshold		= 0.23
+
+terrain				 = r_terrain
+
+hit_type = wound
+
+;entity condition
+satiety_v 				= 0.00001	;0.01			;скорость уменьшения сытости со временем
+radiation_v 			= 0.00001	;0.004			;скорость уменьшения радиации
+satiety_power_v 		= 0.01		;0.01			;увеличение силы при уменьшении сытости 
+satiety_health_v 		= 0.005		;0.03			;увеличение здоровья при уменьшении сытости 
+satiety_critical 		= -1.0			;0.25			;критическое значения сытости (в процентах от 0..1) когда здоровье начианает уменьшаться
+radiation_health_v 		= 0.01		;0.006			;уменьшение здоровья при воздействии радиации
+morale_v				= 0.01						;скорость восстановления морали
+health_hit_part 		= 1.0		;0.8			;процент хита, уходящий на отнимание здоровья
+power_hit_part 			= 1.0		;0.9			;процент хита, уходящий на отнимание силы
+psy_health_v			= 0.1						;скорость восстановления psy-здоровья
+
+immunities_sect			= zombie_running_immunities
+
+;открытые раны
+bleeding_v			= 0.01						;потеря крови при номинальной ране в секунду
+wound_incarnation_v		= 0.01				;крутизна кривой заживления (какой процент раны останется после заживления в игровую секунду)
+min_wound_size			= 0.01
+
+sleep_health			= 1.0		;1.5				;ъю¤ЇЇшЎшхэЄv ёъюЁюёЄхщ шчьхэхэш  ярЁрьхЄЁют тю тЁхь  ёэр
+sleep_power				= 1.0		;1.5
+sleep_satiety			= 1.0		;0.8
+sleep_radiation			= 1.0		;1.1
+sleep_psy_health		= 1.0
+
+eat_freq						= 5.0		; частота укусов в сек
+eat_slice						= 0.01	; увеличение сытости при 1 укусе
+eat_slice_weight				= 10.0	; уменьшение еды у трупа
+
+satiety_threshold	= 0.5							; below this value monster fill hunger
+
+; Morale
+Morale_Hit_Quant				= 0.001
+Morale_Attack_Success_Quant		= 0.1
+Morale_Take_Heart_Speed			= 0.1
+Morale_Despondent_Speed			= 0.1
+Morale_Stable_Speed				= 0.01
+Morale_Despondent_Threashold	= 0.1
+
+sound_idle			= monsters\1_zombie\zombie_idle_
+sound_eat			= monsters\1_zombie\zombie_eat_
+sound_aggressive		= monsters\1_zombie\zombie_attack_
+sound_attack_hit		= monsters\1_zombie\zombie_attack_hit_
+sound_take_damage		= monsters\1_zombie\zombie_take_damage_
+sound_die			= monsters\1_zombie\zombie_die_
+sound_threaten			= monsters\1_zombie\zombie_threaten	
+sound_landing			= monsters\1_zombie\zombie_landing
+sound_steal			= monsters\1_zombie\zombie_def
+sound_panic			= monsters\1_zombie\zombie_panic
+sound_growling			= monsters\1_zombie\zombie_growling
+sound_die_in_anomaly	        = monsters\1_zombie\zombie_die_
+
+killer_clsids			= Z_MINCER,Z_GALANT,ZS_BFUZZ,ZS_MBALD,ZS_GALAN,ZS_MINCE
+
+idle_sound_delay		= 20000
+eat_sound_delay			= 3000
+attack_sound_delay		= 24000
+
+sound_distant_idle			= monsters\zombie2\zombie_idle_
+distant_idle_sound_delay	= 80000
+distant_idle_sound_range	= 100.0	
+
+DamagedThreshold		= 0.5
+critical_wound_threshold		= -1
+critical_wound_decrease_quant	= 0.
+
+FakeDeathCount					= 4		; max count of fake death
+StartFakeDeathHealthThreshold	= 0.6
+
+material				= creatures\medium
+
+squad_attack_algorithm	= 1
+LegsCount				= 2
+
+attack_effector			= m_zombie_running_attack_effector
+step_params				= m_zombie_running_step_params
+attack_params			= m_zombie_running_attack_params
+damage					= m_zombie_running_damage
+
+;species of monster
+species					= zombie
+
+[r_terrain]
+  255,000,255,255
+						  2.0
+
+[r_vision_free]
+min_view_distance   		= 0.5				; коэффициент, который множится на eye_range, в зависимости от угла
+max_view_distance	 		= 1.0				; коэффициент, который множится на eye_range, в зависимости от угла
+visibility_threshold	 	= 100.0				; значение, при достижении суммой которого объект считается видимым
+always_visible_distance 	= 0.3
+time_quant					= 0.001
+decrease_value				= 0.01				; значение, на которое уменьшается вес, если объект попал в фрустум, но отсёкся по каким-то причинам
+velocity_factor		     	= 0.5
+luminocity_factor			= 0.5 				; фактор освещения (только для Актёра)
+transparency_threshold		= 0.25
+
+[r_vision_danger]
+min_view_distance   		= 0.5				; коэффициент, который множится на eye_range, в зависимости от угла
+max_view_distance	 		= 1.0				; коэффициент, который множится на eye_range, в зависимости от угла
+visibility_threshold	 	= 100.0				; значение, при достижении суммой которого объект считается видимым
+always_visible_distance 	= 0.3
+time_quant					= 0.001
+decrease_value				= 0.01				; значение, на которое уменьшается вес, если объект попал в фрустум, но отсёкся по каким-то причинам
+velocity_factor		     	= 0.5
+luminocity_factor			= 0.5 				; фактор освещения (только для Актёра)
+transparency_threshold		= 0.25
+
+;R.P.A.mod	
+
+[m_zombie_running_attack_effector]
+
+duality_h		= 0.01
+duality_v		= 0.01
+blur			= 0.01
+gray			= 0.5
+noise_intensity = 0.0
+noise_grain		= 1
+noise_fps		= 30
+color_base		= 0.255,0.0,0.0
+color_gray		= 0.333,0.333,0.333
+color_add		= 0,0,0
+time			= 0.4
+time_attack		= 0.10		; fade in
+time_release	= 0.35		; fade out
+
+; camera effects
+ce_time				= 0.5 ;time 
+ce_amplitude		= -15.0 
+ce_period_number	= 1.5 ;2.0 
+ce_power			= 1.5 ;0.7 ; power 
+
+
+[zombie_running_1]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_1
+panic_threshold		= 0.5
+rank = 0
+spec_rank			= weak
+community			= zombie
+
+icon = ui_npc_monster_zombie_weak	
+
+MaxHealthValue		 = 80
+FakeDeathCount					= 10		; max count of fake death
+StartFakeDeathHealthThreshold	= 0.5
+
+immunities_sect		= zombie_running_immunities_normal
+attack_params		= zombie_running_attack_params_normal
+
+
+[zombie_running_2]:_zombie_running
+
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_2
+panic_threshold		= 0.2
+rank = 255
+spec_rank			= normal
+community			= zombie
+icon = ui_npc_monster_zombie_normal
+
+MaxHealthValue		 = 100
+FakeDeathCount					= 4		; max count of fake death
+StartFakeDeathHealthThreshold	= 0.6
+
+immunities_sect		= zombie_running_immunities_normal
+attack_params		= zombie_running_attack_params_normal
+
+
+[zombie_running_3]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_3
+
+[zombie_running_3_blowout]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_3
+
+[zombie_running_4]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_4
+
+[zombie_running_4_blowout]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_4
+
+[zombie_running_5]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_5
+
+[zombie_running_6]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_6
+
+[zombie_running_6_plague]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_6_plague
+
+[zombie_running_7_plague]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_7_plague
+
+[zombie_running_7_hunger]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_7_hunger
+
+[zombie_running_8_hunger]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_8_hunger
+
+[zombie_running_9]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_9
+
+[zombie_running_10]:_zombie_running
+visual				= monsters_narodnaya_solyanka\Zombie\run_zombie_10

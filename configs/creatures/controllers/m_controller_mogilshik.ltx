@@ -1,0 +1,34 @@
+[m_controller_mogilshik]:m_controller_e
+visual				= monsters_narodnaya_solyanka\controllers\controller_mogilshik
+spec_rank			= srong
+rank				= 18
+community			= controller
+terrain				= controller_mogilshik_terrain
+
+class               = SM_KONMG					; AI class
+
+PsyAura_HeadSound			= monsters\controller_solyanka\controller_control1
+PsyAura_SoundLeftPath		= monsters\controller_solyanka\controller_presence_l
+PsyAura_SoundRightPath		= monsters\controller_solyanka\controller_presence_r
+PsyAura_Radius				= 20
+PsyAura_Damage				= 0.2
+
+sound_idle				= monsters\controller_solyanka\controller_idle_
+sound_eat				= monsters\controller_solyanka\controller_eat_
+sound_aggressive		= monsters\controller_solyanka\controller_attack_
+sound_attack_hit		= monsters\controller_solyanka\controller_attack_hit_
+sound_take_damage		= monsters\controller_solyanka\controller_hit_
+sound_die				= monsters\controller_solyanka\controller_die_
+sound_threaten			= monsters\boar\boar_threaten_
+sound_landing			= monsters\boar\landing_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\controller_solyanka\controller_panic_
+sound_growling			= monsters\biting\def_
+sound_bkgnd				= monsters\biting\def_
+sound_die_in_anomaly	= monsters\controller_solyanka\controller_die_
+
+[controller_mogilshik_terrain]
+	255,000,255,255
+	010,001,255,255	;Разрешено ходить по опасным местам на янтаре
+	014,001,255,255	;Разрешено ходить по опасным местам на радаре
+	016,001,255,255	;Разрешено ходить по опасным местам на припяти

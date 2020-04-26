@@ -1,0 +1,45 @@
+[flesh_pseudo]:m_flesh_e
+visual       	  		= monsters_narodnaya_solyanka\flesh\flesh_pseudo
+panic_threshold   		= 0.025
+rank        	  		= 801
+immunities_sect   		= flesh_pseudo_immunities_stront
+attack_params     		= flesh_pseudo_attack_params_stront
+spec_rank     	  		= strong
+community     	  		= flesh
+
+class					= SM_PFLES
+
+sound_idle				= monsters\flesh_pseudo\flesh_idle_
+sound_eat				= monsters\flesh_pseudo\flesh_eat_
+sound_aggressive		= monsters\flesh_pseudo\flesh_aggressive_
+sound_attack_hit		= monsters\flesh_pseudo\flesh_attack_			
+sound_take_damage		= monsters\flesh_pseudo\flesh_pain_
+sound_die				= monsters\flesh_pseudo\flesh_death_
+sound_threaten			= monsters\flesh_pseudo\flesh_attack_
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\flesh_pseudo\flesh_panic_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\flesh_pseudo\flesh_anomaly_death_
+
+[flesh_pseudo_immunities_stront]
+burn_immunity     		= 1.0
+strike_immunity     	= 0.7
+shock_immunity      	= 1.0
+wound_immunity      	= 0.09
+radiation_immunity   	= 0.0
+telepatic_immunity   	= 1.0
+chemical_burn_immunity 	= 1.0
+explosion_immunity    	= 0.1
+fire_wound_immunity   	= 0.11
+
+[flesh_pseudo_attack_params_stront]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+; anim      | time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  | Field of hit_test  (left,right, top, bottom) |  Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;Left leg strike
+stand_attack_0 =      0.35,   0.8,       150,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                 2.0
+;Both leg strike
+stand_attack_1 =      0.35,   1.0,       450,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5
+stand_attack_2 =      0.35,   1.0,       450,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5
+stand_attack_3 =      0.50,   1.0,       450,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5

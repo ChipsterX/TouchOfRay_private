@@ -1,0 +1,244 @@
+; Пулемет MG 42
+;-(TrickSR, Ga2z)-----------------------------------------
+; калибр 				7.92x57 мм
+; длина ствола 				565 мм
+; магазин				100
+; вес					11.57 кг
+; максимальная дальность стрельбы	-- м
+; эффективная дальность стрельбы	-- м
+; прицельная дальность			1000 м
+; дульная скорость пули			740 м/с
+; темп стрельбы				1200-1550 в/м
+;---------------------------------------------------
+[wpn_mg42]:weapon_probability,default_weapon_params,wpn_mg42_sounds
+GroupControlSection			= spawn_group
+$spawn					= "weapons\mg42"
+$npc					= on
+$prefetch				= 8
+scheduled				= off
+cform					= skeleton
+class					= WP_AK74
+
+description				= st_wpn_mg42_descr
+
+scopes 					= none
+parent_section  			= wpn_mg42
+
+ef_main_weapon_type			= 2
+ef_weapon_type				= 10
+
+sprint_allowed				= true
+
+inv_name				= st_wpn_mg42
+inv_name_short				= st_wpn_mg42
+
+inv_grid_width				= 6
+inv_grid_height				= 2
+inv_grid_x				= 0
+inv_grid_y				= 34
+
+upgr_icon_x				= 0
+upgr_icon_y				= 1700
+upgr_icon_width				= 300
+upgr_icon_height 			= 100
+
+kill_msg_x				= 80
+kill_msg_y				= 59
+kill_msg_width				= 87
+kill_msg_height				= 24
+
+cost					= 50000
+weapon_class				= heavy_weapon
+inv_weight				= 11.57
+hud					= wpn_mg42_hud
+visual					= dynamics\weapons\wpn_mg42\wpn_mg42.ogf
+
+upgrades               		 	= up_gr_firstab_pkm, up_gr_seconab_pkm, up_gr_thirdab_pkm, up_gr_fourtab_pkm, up_gr_fifthab_pkm
+installed_upgrades      		=
+upgrade_scheme          		= upgrade_scheme_pkm
+
+ph_mass					= 8
+
+ammo_class		 		= ammo_7.92x57_fmj, ammo_7.92x57_ap
+
+startup_ammo				= 100
+ammo_current				= 600
+ammo_elapsed				= 100
+ammo_limit				= 700
+ammo_mag_size				= 100
+
+fire_modes				= 1,-1
+
+grenade_class				= ammo_m209
+
+launch_speed				= 0
+hand_dependence				= 1
+single_handed				= 0
+
+hit_power				= 0.42
+hit_impulse				= 50
+hit_type				= fire_wound
+fire_distance				= 1000
+bullet_speed				= 740
+rpm					= 900
+rpm_empty_click				= 200
+
+use_aim_bullet				= false
+time_to_aim				= 5
+
+misfire_probability			= 0.005
+misfire_start_condition			= 0.6
+misfire_end_condition			= 0.1
+misfire_start_prob	 		= 0.003
+misfire_end_prob	 		= 0.047
+condition_shot_dec 			= 0.000125	
+condition_queue_shot_dec		= 0.0002
+
+zoom_dof				= 0.5,1,180
+reload_dof				= 0,0.5,5,1.7
+
+fire_dispersion_base			= 0.42
+fire_dispersion_condition_factor	= 2
+control_inertion_factor			= 1.3f
+crosshair_inertion			= 6.25
+
+cam_return				= 0
+cam_relax_speed				= 15
+cam_relax_speed_ai			= 360
+cam_dispersion				= 0.33
+cam_dispersion_inc			= 0.23
+cam_dispersion_frac			= 1
+cam_max_angle				= 10
+cam_max_angle_horz			= 50
+cam_step_angle_horz			= 0.25
+
+zoom_cam_relax_speed			= 15
+zoom_cam_relax_speed_ai			= 360
+zoom_cam_dispersion			= 0.23
+zoom_cam_dispersion_inc			= 0.18
+zoom_cam_dispersion_frac		= 0.7
+zoom_cam_max_angle			= 10
+zoom_cam_max_angle_horz			= 50
+zoom_cam_step_angle_horz		= 0.3
+
+PDM_disp_base				= 1
+PDM_disp_vel_factor			= 3
+PDM_disp_accel_factor			= 3
+PDM_disp_crouch				= 1
+PDM_disp_crouch_no_acc			= 1
+
+min_radius				= 30
+max_radius				= 90
+
+holder_range_modifier			= 1
+holder_fov_modifier			= 1
+
+hit_probability_gd_novice		= 0.45
+hit_probability_gd_stalker		= 0.55
+hit_probability_gd_veteran		= 0.65
+hit_probability_gd_master		= 0.75
+
+slot					= 2
+animation_slot				= 2
+
+position				= -0.027,-0.130,0
+orientation				= 0,-2,0
+
+fire_point				= 0,0.158,0.845
+fire_point2				= 0,0.097,0.722
+
+flame_particles				= weapons\generic_weapon05
+smoke_particles				= weapons\generic_shoot_00
+grenade_flame_particles			= weapons\generic_weapon01
+silencer_smoke_particles 		= amik\weapons\smoke_particles\silencer_smoke_particles_02
+
+shell_point				= -0.02,0.167,0.082
+shell_dir				= 0,0,0.4
+shell_particles	 			= weapons\762x54
+
+strap_position				= -0.26,-0.11,0.25
+strap_orientation			= -15,-9,110
+strap_bone0				= bip01_spine2
+strap_bone1				= bip01_spine1
+
+light_disabled				= false
+light_color				= 0.6,0.5,0.3
+light_range				= 5
+light_var_color				= 0.05
+light_var_range				= 0.5
+light_time				= 0.2
+
+scope_status				= 0
+silencer_status				= 0
+grenade_launcher_status			= 0
+
+zoom_enabled				= true
+zoom_rotate_time			= 0.3
+scope_zoom_factor			= 100
+
+scope_name				= acog
+scope_x					= 83
+scope_y					= 2
+
+silencer_name				= sil_nato
+silencer_x				= 221
+silencer_y				= 22
+
+silencer_hit_power			= 0
+silencer_hit_impulse			= 1
+silencer_fire_distance			= 1
+silencer_bullet_speed			= 1
+
+silencer_light_color			= 0.6,0.5,0.3
+silencer_light_range			= 0.01
+silencer_light_var_color		= 0.05
+silencer_light_var_range		= 0.5
+silencer_light_time			= 0.2
+
+[wpn_mg42_hud]
+zoom_hide_crosshair        		= true
+attach_place_idx        		= 0
+item_visual             		= dynamics\weapons\wpn_mg42\wpn_mg42_hud.ogf
+
+hands_position				= 0.005,0.008625,0.2
+hands_orientation			= 2,3.428783,0
+
+hands_position_16x9			= 0.005,0.008625,0.2
+hands_orientation_16x9			= 2,3.428783,0
+
+item_position				= 0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos 			= -0.068500,0.032500,-0.215628
+aim_hud_offset_rot 			= 0.019750,0.031900,-0.0485
+
+aim_hud_offset_pos_16x9			= -0.068500,0.032500,-0.215628
+aim_hud_offset_rot_16x9			= 0.019750,0.031900,-0.0485
+
+shell_point				= 0.028,0.078,0.113
+shell_dir           			= 0,1,0
+shell_bone          			= wpn_body
+
+fire_point				= 0,0.096359,0.587885
+fire_bone           			= wpn_body
+fire_point2				= 0,-0.009,0.601
+fire_bone2          			= wpn_body
+
+anm_show             			= mg42_draw
+anm_hide             			= mg42_holster
+anm_idle             			= mg42_idle, idle
+anm_idle_sprint         		= mg42_idle_sprint
+anm_idle_moving 			= mg42_idle_moving
+anm_shots               		= mg42_shoot, shoot1
+anm_reload              		= mg42_reload, reload
+anm_idle_aim           			= mg42_idle_aim, idle
+anm_bore				= mg42_idle_aim, idle
+
+gl_hud_offset_pos       		= 0,0,0
+gl_hud_offset_rot       		= 0,0,0
+
+gl_hud_offset_pos_16x9  		= 0,0,0
+gl_hud_offset_rot_16x9  		= 0,0,0
+
+lean_hud_offset_pos     		= 0,0,0
+lean_hud_offset_rot     		= 0,0,0

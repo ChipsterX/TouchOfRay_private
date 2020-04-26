@@ -1,0 +1,78 @@
+[zanoza_normal]:m_flesh_e
+visual					= monsters_narodnaya_solyanka\flesh\zanoza_strong
+panic_threshold			= 0.05
+rank					= 801
+
+class					= SM_ZANOZ
+
+;открытые раны
+bleeding_v				= 0.02				;потер¤ крови при номинальной ране в секунду
+wound_incarnation_v		= 0.1				;крутизна кривой заживлени¤ (какой процент раны останетс¤ после заживлени¤ в игровую секунду)
+min_wound_size			= 0.001
+
+; Sounds and sound parameters
+SoundThreshold	 		= 0.09	; range [0..1]
+max_hear_dist		    = 100
+
+sound_idle				= monsters\zanoza\zanoza_idle_
+sound_eat				= monsters\zanoza\zanoza_eat_
+sound_aggressive		= monsters\zanoza\zanoza_aggressive_
+sound_attack_hit		= monsters\zanoza\zanoza_attack_hit_
+sound_take_damage		= monsters\zanoza\zanoza_take_damage_
+sound_die				= monsters\zanoza\zanoza_die_
+sound_threaten			= monsters\biting\def_
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\biting\def_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\biting\def_
+
+idle_sound_delay		= 85000
+eat_sound_delay			= 3000
+attack_sound_delay		= 6000
+
+sound_distant_idle			= monsters\zanoza\zanoza_idle_
+distant_idle_sound_delay	= 80000
+distant_idle_sound_range	= 100.0
+
+immunities_sect			= zanoza_immunities
+attack_params			= zanoza_attack_params
+
+;--/ Vision
+eye_fov					= 110 ;--/90
+eye_range				= 30  ;--/90
+max_hear_dist	        = 160  ;--/30
+ 
+[zanoza_immunities]
+burn_immunity			= 0.4
+strike_immunity			= 0.2
+shock_immunity			= 0.2
+wound_immunity			= 0.2
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity  = 0.2
+explosion_immunity		= 0.2
+fire_wound_immunity		= 0.02
+
+[zanoza_attack_params]
+;	anim		| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, top, bottom) |	Test Dist
+;Left leg strike
+stand_attack_0 			=	  	0.35,		0.95,		    70,        0.0, 0.5, 1.0,		  -1.0, 1.0, -1.0, 1.0,								  2.0
+;Both leg strike
+stand_attack_1 			=	  	0.35,		0.95,		    150,        0.0, 0.5, 1.0,		 -1.0, 1.0, -1.0, 1.0,								  2.5
+stand_attack_2 			=	  	0.35,		0.95,		    150,        0.0, 0.5, 1.0,		 -1.0, 1.0, -1.0, 1.0,								  2.5
+stand_attack_3 			=	  	0.40,		0.95,		    150,        0.0, 0.5, 1.0,		 -1.0, 1.0, -1.0, 1.0,								  2.5
+
+[zanoza_strong]:zanoza_normal
+immunities_sect			= zanoza_strong_immunities
+
+[zanoza_strong_immunities]
+burn_immunity			= 0.2
+strike_immunity			= 0.1
+shock_immunity			= 0.1
+wound_immunity			= 0.1
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity  = 0.1
+explosion_immunity		= 0.1
+fire_wound_immunity		= 0.0125

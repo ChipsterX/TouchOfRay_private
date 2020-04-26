@@ -1,0 +1,353 @@
+;boosters
+[drug_booster]:booster
+$spawn                                   = "food and drugs\drug_booster"
+visual                                   = dynamics\equipments\medical\drug_booster.ogf
+inv_name                                 = st_drug_booster
+inv_name_short                           = st_drug_booster
+description                              = st_drug_booster_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 5
+inv_grid_y                               = 4
+cost                                     = 1200
+
+boost_time                               = 300.0
+boost_max_weight                         = 20.0
+
+eat_sleep 								 = 0
+eat_thirst								 = 0.30
+eat_satiety								 = 0.09
+use_sound                                = interface\no_sound
+inv_weight                               = 0.1
+
+[drug_coagulant]:booster
+$spawn                                   = "food and drugs\drug_coagulant"
+visual                                   = dynamics\equipments\medical\drug_coagulant.ogf
+inv_name                                 = st_drug_coagulant
+inv_name_short                           = st_drug_coagulant
+description                              = st_drug_coagulant_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 6
+inv_grid_y                               = 4
+cost                                     = 1200
+
+boost_time                               = 240.0
+boost_bleeding_restore                   = 0.0005
+
+use_sound                                = interface\no_sound
+
+eat_sleep 								 = 0
+eat_thirst								 = -0.10
+eat_satiety								 = -0.05
+
+use_condition                            = true
+max_uses                                 = 2
+remove_after_use                         = true
+empty_weight                             = 0.01
+
+[drug_psy_blockade]:booster
+$spawn                                   = "food and drugs\drug_psy_blockade"
+visual                                   = dynamics\equipments\medical\drug_psy_blockade.ogf
+inv_name                                 = st_drug_psy_blockade
+inv_name_short                           = st_drug_psy_blockade
+description                              = st_drug_psy_blockade_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 7
+inv_grid_y                               = 4
+cost                                     = 3500
+
+boost_time                               = 30.0
+boost_telepat_protection                 = 0.05
+
+eat_sleep 								 = -0.06
+eat_thirst								 = -0.15
+eat_satiety								 = 0
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 5
+remove_after_use                         = true
+empty_weight                             = 0.01
+
+[drug_antidot]:booster
+$spawn                                   = "food and drugs\drug_antidot"
+visual                                   = dynamics\equipments\medical\drug_antidot.ogf
+inv_name                                 = st_drug_antidot
+inv_name_short                           = st_drug_antidot
+description                              = st_drug_antidot_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 8
+inv_grid_y                               = 4
+cost                                     = 1200
+
+boost_time                               = 60.0
+boost_chemburn_protection                = 0.1
+
+eat_sleep 								 = 0
+eat_thirst								 = -0.1
+eat_satiety								 = -0.25
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 3
+remove_after_use                         = true
+empty_weight                             = 0.01
+
+[drug_radioprotector]:booster
+$spawn                                   = "food and drugs\drug_radioprotector"
+visual                                   = dynamics\equipments\medical\drug_radioprotector.ogf
+inv_name                                 = st_drug_radioprotector
+inv_name_short                           = st_drug_radioprotector
+description                              = st_drug_radioprotector_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 9
+inv_grid_y                               = 4
+cost                                     = 1200
+
+boost_time                               = 90.0
+boost_radiation_protection               = 0.015
+
+eat_sleep 								 = 0
+eat_thirst								 = -0.25
+eat_satiety								 = 0
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 2
+remove_after_use                         = true
+empty_weight                             = 0.01
+
+
+[drug_anabiotic]:booster
+$spawn                                   = "food and drugs\drug_anabiotic"
+visual                                   = dynamics\equipments\medical\drug_anabiotic.ogf
+inv_name                                 = st_drug_anabiotic
+inv_name_short                           = st_drug_anabiotic
+description                              = st_drug_anabiotic_descr
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 10
+inv_grid_y                               = 4
+cost                                     = 5500
+
+eat_health                               = -0.1
+
+eat_sleep 								 = 0
+eat_thirst								 = -0.7
+eat_satiety								 = -0.11
+
+use_sound                                = interface\no_sound
+
+
+[marlboro]:booster_script
+visual				= dynamics\item_marlboro.ogf
+description			= st_marlboro_descr
+
+inv_name			= st_marlboro
+inv_name_short			= st_marlboro
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 45
+inv_grid_y         = 27
+cost				= 140
+
+boost_time				= 15
+eat_kurr				= 0.07
+eat_health				= -0.014
+boost_telepat_protection = 0.007
+
+use_condition                            = true
+max_uses                                 = 10
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+
+[lucky]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_lucky.ogf
+description			= st_lucky_descr
+
+inv_name			= st_lucky
+inv_name_short			= st_lucky
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 46
+inv_grid_y         = 27
+cost				= 290
+
+boost_time				= 15
+eat_kurr				= 0.06
+eat_health				= -0.012
+boost_telepat_protection = 0.008
+
+use_condition                            = true
+max_uses                                 = 10
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+
+[cuban]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_cigar.ogf
+description			= st_cuban_descr
+
+inv_name			= st_cuban
+inv_name_short			= st_cuban
+inv_weight			= 0.012
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 51
+inv_grid_y         = 27
+
+cost				= 3500
+
+use_condition                            = true
+max_uses                                 = 2
+remove_after_use                         = true
+empty_weight                             = 0.006
+allow_repair                             = false
+
+boost_time				= 40
+eat_kurr 				= 1.0
+boost_telepat_protection = 0.001
+
+use_sound			= interface\inv_smoke
+
+[cigarettes_russian]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_cigarettes_russian.ogf
+description			= st_cigarettes_russian_descr
+
+inv_name			= st_cigarettes_russian
+inv_name_short			= st_cigarettes_russian
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 50
+inv_grid_y         = 27
+
+cost				= 205
+
+boost_time				= 10
+eat_kurr				= 0.055
+eat_health				= -0.09
+boost_telepat_protection = 0.002
+
+use_condition                            = true
+max_uses                                 = 8
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+
+[cigarettes_1]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_cigar1.ogf
+
+description			= st_cigarettes_descr
+inv_name			= st_cigarettes_1
+inv_name_short			= st_cigarettes_1
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 47
+inv_grid_y         = 27
+
+cost				= 190
+
+boost_time				= 10
+eat_kurr				= 0.065
+eat_health				= -0.010
+boost_telepat_protection = 0.005
+
+use_condition                            = true
+max_uses                                 = 8
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+
+[cigarettes_2]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_cigar2.ogf
+
+description			= st_cigarettes_descr
+inv_name			= st_cigarettes_2
+inv_name_short			= st_cigar2
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 48
+inv_grid_y         = 27
+
+cost				= 36
+
+boost_time				= 10
+eat_kurr				= 0.070
+eat_health				= -0.011
+boost_telepat_protection = 0.004
+
+use_condition                            = true
+max_uses                                 = 8
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+
+[cigarettes_3]:booster_script
+$spawn 				= "devices\pda"
+visual				= dynamics\item_cigar3.ogf
+
+description			= st_cigarettes_descr
+inv_name			= st_cigarettes_3
+inv_name_short			= st_cigar2
+inv_weight			= 0.021
+
+inv_grid_width     = 1
+inv_grid_height    = 1
+inv_grid_x         = 49
+inv_grid_y         = 27
+
+cost				= 150
+
+boost_time				= 10
+eat_kurr				= 0.070
+eat_health				= -0.013
+boost_telepat_protection = 0.0054
+
+use_condition                            = true
+max_uses                                 = 8
+remove_after_use                         = true
+empty_weight                             = 0.0035
+allow_repair                             = false
+
+use_sound			= interface\inv_smoke
+

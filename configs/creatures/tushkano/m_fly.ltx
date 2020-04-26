@@ -1,0 +1,48 @@
+[fly_normal]:winger_normal 
+visual				 = monsters_narodnaya_solyanka\tushkano\fly_normal
+
+class				= SM_FLY
+
+panic_threshold		 = 0.3
+attack_params		 = fly_attack_params
+immunities_sect		 = fly_immunities
+
+;---------------------------------------------------------
+; Sounds and sound parameters
+;---------------------------------------------------------
+sound_idle           = anomaly\flies 
+sound_eat            = monsters\stinger\idle_
+sound_aggressive     = anomaly\flies 
+sound_attack_hit     = monsters\stinger\attack_
+sound_take_damage    = monsters\stinger\pain_
+sound_die            = monsters\stinger\death_
+sound_threaten       = monsters\stinger\idle_
+sound_panic          = monsters\stinger\idle_
+sound_die_in_anomaly = monsters\stinger\death_
+sound_distant_idle   = monsters\stinger\idle_
+
+hit_type 			= chemical_burn
+
+MinAttackDist	= 1.225	
+MaxAttackDist	= 1.325	
+
+distance_to_corpse	= 1.4
+
+[fly_attack_params]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+stand_attack_0 =	  	0.15,		1.15,		    5,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,			1.0
+stand_attack_1 =	  	0.35,		1.20,		    5,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,			1.0
+stand_attack_2 =	  	0.55,		1.35,		    5,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,	                1.0 
+
+[fly_immunities]
+burn_immunity			= 0.5
+strike_immunity			= 0.55
+shock_immunity			= 0.65
+wound_immunity 		    = 0.45
+radiation_immunity 		= 0.0
+telepatic_immunity 		= 0.0
+chemical_burn_immunity  = 0.9
+explosion_immunity 	    = 0.65
+fire_wound_immunity  	= 0.55

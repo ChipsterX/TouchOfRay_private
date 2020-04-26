@@ -1,0 +1,249 @@
+; Пистолет-пулемет Uzi
+;-(TrickSR, Ga2z)-----------------------------------------
+; калибр 				9х19 мм
+; длина ствола 				260 мм
+; магазин				32
+; вес с пустым магазином и прикладом	3.5 кг
+; максимальная дальность стрельбы	-- м
+; эффективная дальность стрельбы	-- м
+; прицельная дальность			200 м
+; дульная скорость пули			400 м/с
+; темп стрельбы				600 в/м
+;---------------------------------------------------
+[wpn_uzi]:identity_immunities,weapon_probability,default_weapon_params,wpn_uzi_sounds
+GroupControlSection 			= spawn_group
+$spawn					= "weapons\uzi"
+$npc					= on
+$prefetch				= 8
+scheduled				= off
+cform					= skeleton
+class					= WP_LR300
+description 				= st_wpn_uzi_descr
+
+ef_main_weapon_type			= 2
+ef_weapon_type				= 6
+
+inv_name				= st_wpn_uzi
+inv_name_short				= st_wpn_uzi
+
+inv_grid_width				= 3
+inv_grid_height				= 2
+inv_grid_x				= 10
+inv_grid_y				= 33
+
+upgr_icon_x				= 1450
+upgr_icon_y				= 1950
+upgr_icon_width				= 200
+upgr_icon_height 			= 100
+
+kill_msg_x				= 72
+kill_msg_y				= 82
+kill_msg_width				= 56
+kill_msg_height				= 23
+
+cost					= 23000
+weapon_class				= assault_rifle
+inv_weight				= 1.66
+hud					= wpn_uzi_hud
+visual					= dynamics\weapons\wpn_uzi\wpn_uzi.ogf
+
+upgrades                		= up_gr_firstab_mp5, up_gr_seconab_mp5, up_gr_thirdab_mp5, up_gr_fourtab_mp5, up_gr_fifthab_mp5, up_gr_fifthcd_mp5
+installed_upgrades      		=
+upgrade_scheme          		= upgrade_scheme_mp5
+
+ph_mass					= 2
+
+ammo_class				= ammo_9x19_fmj, ammo_9x19_pbp
+
+startup_ammo				= 90
+ammo_current		 		= 180
+ammo_elapsed		 		= 32
+ammo_limit		 		= 210
+ammo_mag_size		 		= 32
+
+fire_modes				= 1, -1
+
+grenade_class				= ammo_vog-25
+
+launch_speed				= 0
+hand_dependence				= 1
+single_handed				= 0
+
+hit_power				= 0.22
+;hit_impulse				= 10
+hit_type				= fire_wound
+fire_distance				= 1000
+bullet_speed				= 400
+rpm					= 600
+rpm_empty_click				= 200
+
+use_aim_bullet				= false
+time_to_aim				= 3.0
+misfire_probability			= 0.005
+misfire_start_condition			= 0.6
+misfire_end_condition			= 0.1
+misfire_start_prob	 		= 0.004
+misfire_end_prob	 		= 0.057
+condition_shot_dec 			= 0.000125
+condition_queue_shot_dec		= 0.0002
+
+zoom_dof				= 0.5,1,180
+reload_dof				= 0,0.5,5,2
+
+fire_dispersion_base			= 0.32
+fire_dispersion_condition_factor	= 2.5
+control_inertion_factor			= 1.05f
+crosshair_inertion 			= 4.0
+
+cam_return				= 0
+cam_relax_speed				= 5
+cam_relax_speed_ai			= 120.75
+cam_dispersion				= 0.5
+cam_dispersion_inc			= 0.25
+cam_dispersion_frac			= 1
+cam_max_angle				= 50
+cam_max_angle_horz			= 50
+cam_step_angle_horz			= 1.5
+
+zoom_cam_relax_speed			= 10
+zoom_cam_relax_speed_ai			= 120.75
+zoom_cam_dispersion			= 0.5
+zoom_cam_dispersion_inc			= 0.25
+zoom_cam_dispersion_frac		= 1
+zoom_cam_max_angle			= 50
+zoom_cam_max_angle_horz			= 50
+zoom_cam_step_angle_horz		= 1.5
+
+PDM_disp_base 				= 0.5
+PDM_disp_vel_factor 			= 1.5
+PDM_disp_accel_factor 			= 1.5
+PDM_disp_crouch	 			= 1
+PDM_disp_crouch_no_acc 			= 1
+
+min_radius				= 30
+max_radius				= 40
+
+holder_range_modifier			= 1
+holder_fov_modifier			= 1
+
+slot					= 2
+animation_slot				= 1
+
+position				= -0.026,-0.125,-0.03
+orientation				= 0,-10,0
+
+fire_point				= 0,0.188,0.392
+fire_point2				= 0,0.188,0.392
+
+flame_particles				= weapons\generic_weapon05
+smoke_particles        			= ghost_particles\weapons\flame_eft_pistol
+silencer_smoke_particles   		= ghost_particles\weapons\generic_smoke_eft_sil
+
+shell_point		 		= 0,0.133,0.047
+shell_dir		 		= 0,0,0.4
+shell_particles	 			= weapons\9x19
+
+strap_position 				= -0.16,-0.36,0.15
+strap_orientation 			= -10,-5,10
+strap_bone0				= bip01_spine2
+strap_bone1				= bip01_spine1
+
+light_disabled				= false
+light_color				= 0.6,0.5,0.3
+light_range				= 5
+light_var_color				= 0.05
+light_var_range				= 0.5
+light_time				= 0.2
+
+scope_status				= 0
+silencer_status				= 2
+grenade_launcher_status			= 0
+
+zoom_enabled				= true
+zoom_rotate_time			= 0.15
+scope_zoom_factor			= 100
+
+scope_name 				= acog
+scope_x					= 56
+scope_y					= -2
+
+silencer_name				= wpn_addon_silencer
+silencer_x                  		= 120
+silencer_y                  		= 6
+
+grenade_launcher_name			= 
+grenade_launcher_x			= 
+grenade_launcher_y			= 
+
+silencer_hit_power 			= 0.2
+;silencer_hit_impulse			= 10
+silencer_fire_distance 			= 500
+silencer_bullet_speed	 		= 290
+
+silencer_light_color			= 0.6,0.5,0.3
+silencer_light_range			= 0.01
+silencer_light_var_color		= 0.05
+silencer_light_var_range		= 0.5
+silencer_light_time			= 0.2
+
+[wpn_uzi_hud]
+zoom_hide_crosshair 			= true
+attach_place_idx	    		= 0
+item_visual             		= dynamics\weapons\wpn_uzi\wpn_uzi_hud.ogf
+
+hands_position				= 0.095,-0.085,0.09
+hands_orientation			= 2,2,0
+
+hands_position_16x9			= 0.095,-0.085,0.09
+hands_orientation_16x9			= 2,2,0
+
+item_position				= 0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos 			= -0.083700,0.040500,-0.23
+aim_hud_offset_rot 			= 0.033000,0.034812,0
+
+aim_hud_offset_pos_16x9 		= -0.083700,0.040500,-0.23
+aim_hud_offset_rot_16x9 		= 0.033000,0.034812,0
+
+shell_point             		= 0
+shell_dir               		= 0,1,0
+shell_bone             			= slide
+
+fire_point				= 0,0,0
+fire_bone              	 		= barrel
+fire_point2				= -0.03,0.0745,-0.037
+fire_bone2               	 	= wpn_body
+
+anm_show				= uzi_draw
+anm_hide                		= uzi_holster
+anm_idle                		= uzi_idle, idle
+anm_idle_sprint         		= uzi_idle_sprint
+anm_idle_moving         		= uzi_idle_move
+anm_shots               		= uzi_shoot, shoot
+anm_reload              		= uzi_reload, reload
+anm_idle_aim            		= uzi_idle_aim
+anm_bore                		= uzi_idle
+
+gl_hud_offset_pos       		= 0,0,0
+gl_hud_offset_rot       		= 0,0,0
+
+gl_hud_offset_pos_16x9  		= 0,0,0
+gl_hud_offset_rot_16x9  		= 0,0,0
+
+lean_hud_offset_pos     		= 0,0,0
+lean_hud_offset_rot     		= 0,0,0
+
+[wpn_uzi_sk1]:wpn_uzi
+$spawn					= "weapons\uzi_sk1"
+hud					= wpn_uzi_sk1_hud
+visual					= dynamics\weapons\wpn_uzi\wpn_uzi_sk1.ogf
+
+inv_grid_x				= 13
+inv_grid_y				= 33
+
+upgr_icon_x				= 1650
+upgr_icon_y				= 1950
+
+[wpn_uzi_sk1_hud]:wpn_uzi_hud
+item_visual             		= dynamics\weapons\wpn_uzi\wpn_uzi_sk1_hud.ogf

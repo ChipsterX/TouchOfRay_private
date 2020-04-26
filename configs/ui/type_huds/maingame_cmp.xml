@@ -1,0 +1,188 @@
+<w>
+  <main x="0" y="0" width="1024" height="768">
+  </main>
+  <speech_menu x="260" y="550" width="300" height="265" always_show_scroll="0">
+		<text font="letterica16" r="238" g="224" b="198"/>
+	</speech_menu>
+
+	<quick_info x="1" y="670" width="1022" height="50" complex_mode="1" light_anim="ui_btn_hint"  la_cyclic="0" la_texture="0" la_text="1" la_alpha="1">
+		<text align="c" font="graffiti22" r="225" g="225" b="250" a="255" />
+	</quick_info>
+
+	<icons_scroll_view  x="900" y="350" width="55" height="270" right_ident="2" always_show_scroll="0" vert_interval="16" inverse_dir="1" flip_vert="0"/>
+
+	<weapon_jammed_static x="0" y="0" width="53" height="64" stretch="1">
+		<texture>ui_hud_icon_weapon</texture>
+	</weapon_jammed_static>
+
+    <indicator_starvation x="3.5" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_helmet_broken x="71.0" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_outfit_broken x="88.5" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_weapon_broken x="54" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_overweight x="37.5" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_radiation x="105.5" y="671.5" width="14" height="20" stretch="1"/>
+    <indicator_bleeding x="20.5" y="671.5" width="14" height="20" stretch="1"/>
+
+    <indicator_booster_psy x="240" y="692" width="17" height="30" stretch="1"> пси защита
+		<texture>ui_inGame2_shield_Psy_cmp</texture>
+	</indicator_booster_psy>
+    <indicator_booster_radia x="180" y="692" width="17" height="30" stretch="1"> рад защита
+		<texture>ui_inGame2_shield_Radiation_cmp</texture>
+	</indicator_booster_radia>
+    <indicator_booster_chem x="220" y="692" width="17" height="30" stretch="1"> токсин зашита
+		<texture>ui_inGame2_shield_biological_cmp</texture>
+	</indicator_booster_chem>
+    <indicator_booster_wound x="160" y="692" width="17" height="30" stretch="1"> бинт
+		<texture>ui_inGame2_shield_blood_cmp</texture>
+	</indicator_booster_wound>
+    <indicator_booster_weight x="120" y="692" width="17" height="30" stretch="1"> сила
+		<texture>ui_inGame2_shield_force_cmp</texture>
+	</indicator_booster_weight>
+    <indicator_booster_health x="140" y="692" width="17" height="30" stretch="1"> аптечка
+		<texture>ui_inGame2_shield_health_cmp</texture>
+	</indicator_booster_health>
+    <indicator_booster_power x="200" y="692" width="17" height="30" stretch="1"> энергия
+		<texture>ui_inGame2_shield_stamina_cmp</texture>
+	</indicator_booster_power>
+    <indicator_booster_rad x="180" y="692" width="17" height="30" stretch="1"> антирад
+		<texture>ui_inGame2_shield_radiation_cleanup_cmp</texture>
+	</indicator_booster_rad>
+
+	<invincible_static x="0" y="0" width="53" height="64" stretch="1">
+		<texture>ui_hud_icon_goodmode</texture>
+	</invincible_static>
+
+	<artefact_static x="0" y="0" width="53" height="64" stretch="1">
+		<texture>ui_hud_icon_artefact</texture>
+	</artefact_static>
+
+	<disk_io x="760" y="750" width="14" height="16" stretch="1">
+	</disk_io>
+
+	<flashing_icons>
+		<flashing_icon x="13" y="210" width="48" height="29" type="pda" light_anim="ui_slow_blinking_alpha">
+			<texture>ui_hud_icon_PDA</texture>
+		</flashing_icon>
+	</flashing_icons>
+
+	<pick_up_item x="452" y="400" width="120" height="100"/>
+
+	<new_contact_snd>detectors\contact_1</new_contact_snd>
+
+    <quick_slot0 x="130" y="725" width="23" height="31" stretch="1">
+	    <counter x="10.5" y="35" width="0" height="0" stretch="1">
+			<window_name>counter</window_name>
+	        <texture a="200">ui_item_count_back</texture>
+	        <text font="letterica16" align="c" vert_align="c"/>
+	    </counter>
+        <auto_frameline x="0" y="28" width="22" height="21">
+			<texture>ui_inGame2_Patroni_HUD_active_items_icon</texture>
+        </auto_frameline>
+    </quick_slot0>
+    <quick_slot1 x="160" y="725" width="23" height="31" stretch="1">
+	    <counter x="10.5" y="35" width="0" height="0" stretch="1">
+			<window_name>counter</window_name>
+	        <texture a="200">ui_item_count_back</texture>
+	        <text font="letterica16" align="c" vert_align="c"/>
+	    </counter>
+        <auto_frameline x="0" y="28" width="22" height="21">
+			<texture>ui_inGame2_Patroni_HUD_active_items_icon</texture>
+        </auto_frameline>
+    </quick_slot1>
+    <quick_slot2 x="190" y="725" width="23" height="31" stretch="1">
+	    <counter x="10.5" y="35" width="0" height="0" stretch="1">
+			<window_name>counter</window_name>
+	        <texture a="200">ui_item_count_back</texture>
+	        <text font="letterica16" align="c" vert_align="c"/>
+	    </counter>
+        <auto_frameline x="0" y="28" width="22" height="21">
+			<texture>ui_inGame2_Patroni_HUD_active_items_icon</texture>
+        </auto_frameline>
+    </quick_slot2>
+    <quick_slot3 x="220" y="725" width="23" height="31" stretch="1">
+	    <counter x="10.5" y="35" width="0" height="0" stretch="1">
+			<window_name>counter</window_name>
+	        <texture a="200">ui_item_count_back</texture>
+	        <text font="letterica16" align="c" vert_align="c"/>
+	    </counter>
+        <auto_frameline x="0" y="28" width="22" height="21">
+			<texture>ui_inGame2_Patroni_HUD_active_items_icon</texture>
+        </auto_frameline>
+    </quick_slot3>
+    <quick_slot0_text x="-999" y="-999" width="0" height="0">
+        <text align="c" vert_align="c" font="letterica16">quick_use_str_1</text>
+    </quick_slot0_text>
+    <quick_slot1_text x="-999" y="-999" width="0" height="0">
+        <text align="c" vert_align="c" font="letterica16">quick_use_str_2</text>
+    </quick_slot1_text>
+    <quick_slot2_text x="-999" y="-999" width="0" height="0">
+        <text align="c" vert_align="c" font="letterica16">quick_use_str_3</text>
+    </quick_slot2_text>
+    <quick_slot3_text x="-999" y="-999" width="0" height="0">
+        <text align="c" vert_align="c" font="letterica16">quick_use_str_4</text>
+    </quick_slot3_text>
+
+	<hud_states x="0" y="0" width="1024" height="768" stretch="1">
+
+		<indik_rad x="97" y="645" width="20" height="23" stretch="1"/>
+		<indik_fire x="97" y="645" width="20" height="23" stretch="1"/>
+		<indik_psi x="97" y="645" width="20" height="23" stretch="1"/>
+		<indik_acid x="97" y="645" width="20" height="23" stretch="1"/>
+
+		<back x="0.100" y="668" width="130" height="100" stretch="1">
+			<texture>ui_inGame2_Patroni_HUD_main_window_cmp</texture>
+		</back>
+
+                <progress_bar_health x="4.5" y="695.5" width="105" height="10" horz="1" min="0" max="100" pos="0">
+			<progress>
+				<texture>ui_inGame2_Patroni_HUD_red_bar_cmp</texture>
+			</progress>
+		</progress_bar_health>
+
+	    <progress_bar_stamina x="4.5" y="710.0" width="105" height="10" horz="1" min="0" max="100" pos="0" >
+	        <progress>
+		        <texture>ui_inGame2_Patroni_HUD_blue_bar_cmp</texture>
+	        </progress>
+	    </progress_bar_stamina>
+
+		<static_cur_ammo x="54" y="750" width="0" height="0">
+			<text complex_mode="0" font="graffiti19" color="ui_7" align="c" vert_align="c">ammo</text>
+		</static_cur_ammo>
+
+	    <static_fmj_ammo x="30" y="747" width="0" height="0">
+	        <text align="c" complex_mode="0" font="graffiti19" color="ui_7">fmj</text>
+	    </static_fmj_ammo>
+
+	    <static_ap_ammo x="30" y="725" width="0" height="0">
+	        <text align="c" complex_mode="0" font="graffiti19" r="238" g="155" b="23" a="150">ap</text>
+	    </static_ap_ammo>
+		
+		<static_third_ammo x="982" y="707" width="26" height="15">
+	        <text align="r" complex_mode="0" font="letterica16" r="238" g="155" b="23"  a="150">third</text>
+	    </static_third_ammo>
+
+	    <static_grenade x="10" y="732.5" width="0" height="0">
+	        <text align="c" complex_mode="0" font="graffiti19" color="ui_7" vert_align="c">gr</text>
+	    </static_grenade>
+
+
+		<static_psy_grenn x="992" y="273" width="32" height="34" la_cyclic="1" la_texture="1" la_text="0" la_alpha="1">
+		<texture a="255"></texture>
+		</static_psy_grenn>
+
+		<static_psy_yellow x="992" y="273" width="32" height="34" la_cyclic="1" la_texture="1" la_text="0" la_alpha="1">
+		<texture a="255"></texture>
+		</static_psy_yellow>
+
+		<static_psy_red x="992" y="273" width="32" height="34" la_cyclic="1" la_texture="1" la_text="0" la_alpha="1">
+		<texture a="255"></texture>
+		</static_psy_red>
+
+		<static_wpn_icon x="95.5" y="743" width="8" height="10" align="c" alignment="c"/>
+
+	    <static_fire_mode x="8" y="755" width="0" height="0">
+	        <text font="graffiti19" color="ui_7" align="c" vert_align="c"/>
+	    </static_fire_mode>
+	</hud_states>
+
+</w>

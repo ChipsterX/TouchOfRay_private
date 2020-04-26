@@ -1,0 +1,24 @@
+; работа Хабарыча
+[tushkano_big_strong_black]:tushkano_big_normal
+visual				= monsters_narodnaya_solyanka\tushkano\tushkano_big_strong_black
+immunities_sect		= tushkano_big_strong_black_immunities
+attack_params		= tushkano_big_strong_black_attack_params
+class				= SM_TUBIB
+[tushkano_big_strong_black_immunities]
+burn_immunity			= 0.06			;коэффициенты иммунитета 
+strike_immunity			= 0.2
+shock_immunity			= 0.2
+wound_immunity			= 0.03
+radiation_immunity		= 0.0
+telepatic_immunity		= 1.0
+chemical_burn_immunity	= 0.2
+explosion_immunity		= 0.2
+fire_wound_immunity		= 0.05
+
+[tushkano_big_strong_black_attack_params]
+;----------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;--------------------------------------------------------------------------------------------------------------
+stand_attack_0 =	  	0.65,		0.4,		    25,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0
+stand_attack_1 =	  	0.65,		0.45,	    35,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0
+stand_attack_2 =	  	0.65,		0.5,		    40,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0

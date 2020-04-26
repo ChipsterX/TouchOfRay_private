@@ -1,0 +1,2379 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+
+	<string id="st_opt_hdao">
+		<text>HDAO</text>
+	</string>
+
+	<string id="st_opt_hbao">
+		<text>HBAO</text>
+	</string>
+
+	<string id="st_opt_ssdo">
+		<text>SSDO</text>
+	</string>
+	
+	<string id="st_opt_off_ao">
+		<text>отключено</text>
+	</string>
+	
+	<string id="ui_mm_mode_ao">
+		<text>Затенение картинки</text>
+	</string>
+
+	<string id="st_energ_none">
+		<text>Общий уровень аномальной энергии от артефактов на поясе: %c[0,51,255,102]Отсутствует</text>
+	</string>
+	<string id="st_energ_esy">
+		<text>Общий уровень аномальной энергии от артефактов на поясе: %c[0,51,255,102]Ниже допустимой нормы</text>
+	</string>
+	<string id="st_energ_normal">
+		<text>Общий уровень аномальной энергии от артефактов на поясе: %c[102,255,255,0]Нормальный</text>
+	</string>
+	<string id="st_energ_hard">
+		<text>Общий уровень аномальной энергии от артефактов на поясе: %c[0,204,0,51]Выше нормы</text>
+	</string>
+	<string id="st_energ_extra">
+		<text>Общий уровень аномальной энергии от артефактов на поясе: %c[0,255,0,0]Ближе к критическому значению</text>
+	</string>
+
+	<string id="item_device_artreac_name">
+		<text>СА-Портативный</text>
+	</string>
+	<string id="item_device_artreac_desc">
+		<text>Сканер аномальной энергии, портативный. Довольно старенький девайс, который используется учеными для замеров фоновой аномальной энергии. Сталкером может быть использован для замеров уровня заряда аномальной энергии, который увеличивается от общего количества артефактов. Для работы использует элементы некоторых чувствительных артефактов, из-за чего имеет свойство периодически выходить из строя. Благо, стоит довольно дешево. На рынке появился после разработок НИИЧАЗ новых, более стабильных моделей для своих полевых работников.</text>
+	</string>
+
+	<string id="ui_inv_artefact_reaction">
+		<text>Накопление энергии</text>
+	</string>
+
+	<string id="st_kr_a">
+		<text>КР*а в %</text>
+	</string>
+
+	<string id="torch_break_text">
+		<text>В фонарик попала пуля</text>
+	</string>
+
+	<string id="item_battery_desc">
+		<text>Обычная батарейка, используется как источник питания для фонариков.</text>
+	</string>
+	<string id="item_battery">
+		<text>Батарейка</text>
+	</string>
+
+	<string id="st_device_torch_descr_unik">
+		<text>Фонарь собранный умельцами ЧЗО, для работы в условиях нехватки батареек. Из-за пониженного энергопотребления фонарь работает не на полную мощность, что помогает сохранить заряд батареи.</text>
+	</string>
+	<string id="st_device_torch_name_unik">
+		<text>Фонарь с низким энергопотреблением</text>
+	</string>
+
+	<string id="st_device_torch_descr_plus">
+		<text>Фонарь с увеличенным временем работы от батареи. Работает чуть дольше.</text>
+	</string>
+	<string id="st_device_torch_name_plus">
+		<text>Улучшенный фонарик</text>
+	</string>
+
+	<string id="st_device_torch_descr">
+		<text>Обычный не дорогой фонарик</text>
+	</string>
+	<string id="st_device_torch_name">
+		<text>Фонарик</text>
+	</string>
+
+	<string id="torch_battery_low">
+		<text>Батарейки в фонарике разряжены</text>
+	</string>
+
+	<string id="_inv_battery">
+		<text>Заряд фонарика</text>
+	</string>
+
+	<string id="ui_mm_gnus">
+		<text>(А) Гнусы</text>
+	</string>
+
+	<string id="ui_mm_winger">
+		<text>(А) Крылан</text>
+	</string>
+
+	<string id="ui_mm_boar_taran">
+		<text>(А) Кабан-Припять</text>
+	</string>
+
+	<string id="ui_mm_bears">
+		<text>(А) Медведи</text>
+	</string>
+
+	<string id="ui_mm_giants">
+		<text>(А) Разновид. гигантов</text>
+	</string>
+
+	<string id="ui_mm_tarakans">
+		<text>(А) Тараканы</text>
+	</string>
+
+	<string id="ui_mm_deathclaws">
+		<text>(А) Когти смерти</text>
+	</string>
+
+	<string id="ui_mm_r2_ssr">
+		<text>Лужи на дорогах и отраж.</text>
+	</string>
+
+	<string id="ui_mm_type_hud_mis">
+		<text>Мизери</text>
+	</string>
+
+	<string id="ui_mm_oboroten">
+		<text>(A) Оборотень</text>
+	</string>
+
+	<string id="ui_mm_chimera_rad">
+		<text>(А) Рад. химера</text>
+	</string>
+	
+	<string id="ui_mm_chimera_red">
+		<text>(А) Красная химера</text>
+	</string>
+
+	<string id="ui_mm_chimera_electro">
+		<text>(А) Электро-химера</text>
+	</string>
+	
+	<string id="ui_mm_chimera_electro_amk">
+		<text>(А) Электро-химера АМК</text>
+	</string>
+
+	<string id="ui_mm_chimera_fire">
+		<text>(А) Огненная химера</text>
+	</string>
+	
+	<string id="ui_mm_chimera_black">
+		<text>(А) Черная химера</text>
+	</string>
+
+	<string id="ui_mm_chimera_xray">
+		<text>(А) Призрачная химера</text>
+	</string>
+	
+	<string id="ui_mm_chimera_xray_fire">
+		<text>(А) Огненнная приз. химера</text>
+	</string>
+
+	<string id="ui_mm_burer_electro">
+		<text>(А) Электро-бюрер</text>
+	</string>
+	
+	<string id="ui_mm_burer_fire">
+		<text>(А) Огненный бюрер</text>
+	</string>
+
+	<string id="ui_mm_burer_green_build">
+		<text>(А) Болотный бюрер</text>
+	</string>
+	
+	<string id="ui_mm_dog_green">
+		<text>(А) Пес О-Сознания</text>
+	</string>
+
+	<string id="ui_mm_zanoza">
+		<text>(А) Заноза</text>
+	</string>
+	
+	<string id="ui_mm_frog">
+		<text>(А) Лягушки</text>
+	</string>
+
+	<string id="ui_mm_flesh_swamp">
+		<text>(А) Болотная плоть</text>
+	</string>
+	
+	<string id="ui_mm_rotan">
+		<text>(А) Ротан</text>
+	</string>
+
+	<string id="ui_mm_tushkan_black">
+		<text>(А) Черный тушкан</text>
+	</string>
+	
+	<string id="ui_mm_tushkans_big">
+		<text>(А) Вожаки тушканы</text>
+	</string>
+
+	<string id="ui_mm_polters_dd">
+		<text>(А) Позающие полтеры</text>
+	</string>
+	
+	<string id="ui_mm_gigant_jumper_strong">
+		<text>(А) Прыгающий гигант</text>
+	</string>
+
+	<string id="ui_mm_vypolzen_marsh">
+		<text>(А) Болотный выползень</text>
+	</string>
+	
+	<string id="ui_mm_vypolzen_red">
+		<text>(А) Пещерный выползень</text>
+	</string>
+
+	<string id="ui_mm_snork_stronger">
+		<text>(А) Болотный снорк</text>
+	</string>
+	
+	<string id="ui_mm_snork_flying">
+		<text>(А) Кукарач</text>
+	</string>
+
+	<string id="ui_mm_snork_zombie">
+		<text>(А) Псевдоснорк</text>
+	</string>
+	
+	<string id="ui_mm_snork_mozg">
+		<text>(А) Мозгач</text>
+	</string>
+
+	<string id="ui_mm_snork_nosach">
+		<text>(А) Носач</text>
+	</string>
+	
+	<string id="ui_mm_morlok">
+		<text>(А) Морлок</text>
+	</string>
+
+	<string id="ui_mm_fracture_lab">
+		<text>(А) Лабораторный излом</text>
+	</string>
+	
+	<string id="ui_mm_fracture_karlik">
+		<text>(А) Карликовый излом</text>
+	</string>
+
+	<string id="ui_mm_controllers">
+		<text>(А) Новые контролеры</text>
+	</string>
+	
+	<string id="ui_mm_controllers_run">
+		<text>(А) Бегающие контролеры</text>
+	</string>
+
+	<string id="ui_mm_biblio">
+		<text>(А) Библиотекари</text>
+	</string>
+	
+	<string id="ui_mm_karliks">
+		<text>(А) Карлики</text>
+	</string>
+	
+	<string id="ui_mm_bloodsukers">
+		<text>(А) Новые кровососы</text>
+	</string>
+
+	<string id="ui_mm_venom">
+		<text>(А) Веном</text>
+	</string>
+	
+	<string id="ui_mm_laborant">
+		<text>(А) Лаборант</text>
+	</string>
+
+	<string id="af_caterpillar">
+		<text>Плазменная гусеница</text>
+	</string>
+
+	<string id="af_caterpillar_d">
+		<text>Редкий артефакт. Вы не найдёте его ни в одной аномалии, так как он является живой биосубстанцией. Образуется из безоаров желудка старых контролёров при воздействии на них аномалии "Жарка". Мало, кто в Зоне знает этот рецепт и само существование данного артефакта. Люди Сахарова предполагают, что эта живая субстанция образуется из не переваренных костей костей электрохимеры под длительным воздействием извращённого желудочного сока контролёра, постоянно окружающей его гипнотической ауры и последующего воздействия крайне высоких температур. Остаётся только догадываться, как эта биомасса при этом не гибнет.</text>
+	</string>
+
+	<string id="bezoar">
+		<text>Безоар</text>
+	</string>
+	
+	<string id="enc_equipment_bezoar">
+		<text>Типичный безоар, сформировавшийся в желудке контролёра. Это кусок частично переваренной, сгнившей и вонючей слизи ядовит, понижает многие жизненные функции и вызывает резкое отвращение у всех, кто его видел... Однако существует рецепт о том, как превратить этот кусок дерьма в полезный артефакт.</text>
+	</string>
+
+	<string id="ammo-12x70-kart">
+		<text>Патроны 12/70 картечь</text>
+	</string>
+	
+	<string id="ammo-12x70-kart_descr">
+		<text>Обычный патрон 12-го калибра, снаряжённый "связанной" картечью. На близких дистанциях обладает огромным убойным действием. Повышенная кучность попадания при стрельбе. Наиболее эффективна на дальностях до 50 метров.</text>
+	</string>
+
+	<string id="ui_mm_ns_stats">
+		<text>Убрщик трупов (НС, статистика)</text>
+	</string>
+
+	<string id="ui_mm_r2_volumetric_fog">
+		<text>Объемный туман DX9</text>
+	</string>
+
+	<string id="ui_mm_gamma_render">
+		<text>Шейдерная яркость HLSL</text>
+	</string>
+
+	<string id="st_wpn_l85a2">
+		<text>L85A2</text>
+	</string>
+	
+	<string id="st_wpn_l85a2_descr">
+		<text>\n%c[255,1,255,255]•%c[default] Прицелы ACOG, Barska ES AC10632, C-more Railway Tactical, EOTech\n \n\n%c[255,1,255,255]•%c[default] Глушитель НАТО\n \nSA80 (SA-80 - Small Arms for 1980 - стрелковое оружие 1980-х годов) - британский комплекс стрелкового оружия, разработанный в середине 1980-х годов и состоящий из автомата L85, лёгкого (ручного) пулемёта L86, короткого автомата L22 и учебной винтовки L98. Комплекс состоит на вооружении британской армии.</text>
+	</string>
+
+	<string id="st_wpn_saiga_m1">
+		<text>Сайга 12М1</text>
+	</string>
+	
+	<string id="st_wpn_saiga_m1_descr">
+		<text>\n%c[255,1,255,255]•%c[default] Прицелы ACOG, Barska ES AC10632, C-more Railway Tactical, EOTech\n \n «Сайга-12М1», укороченное самозарядное ружье - «гладкоствольный карабин». Приклад и пистолетная рукоятка (а в некоторых исполнениях и цевье) позаимствованы у автомата Калашникова. В конструкцию введён механизм блокировки, который не позволяет снять оружие с предохранителя до тех пор, пока не будет откинут приклад.</text>
+	</string>
+
+	<string id="disable_AA">
+		<text>отключено</text>
+	</string>
+
+	<string id="ui_mm_aa_mode">
+		<text>Доп. выбор сглаживания</text>
+	</string>
+
+	<string id="ui_mm_hz_upd_monitor">
+		<text>Частота монитора</text>
+	</string>
+
+	<string id="ui_mm_ao_quality">
+		<text>Качество AO</text>
+	</string>
+
+	<string id="ui_mm_use_ssdo">
+		<text>AO SSDO</text>
+	</string>
+
+	<string id="ui_mm_gg_slleps">
+		<text>Сны ГГ</text>
+	</string>
+	
+	<string id="ui_st_btn_ok">
+		<text>Понятно</text>
+	</string>
+
+	<string id="ui_mm_adv_options_disclaimer">
+		<text>Опции в этом разделе рекомендовано изменять только продвинутым пользователям, так как завышение некоторых параметров или злоупотребление качеством может привести к падению производительности и ошибкам из-за несоответствия системных показателей / неспособности игрового движка работать в выбранном режиме. Разработчики не оказывают поддержку тем, кто бездумно завышает параметры в разделе расширенных настроек. Если вы не знаете, как поступить, - используйте предустановки в разделе базовых настроек.</text>
+	</string>
+
+	<string id="ui_mm_dof_weather">
+		<text>Глубина резкости погоды</text>
+	</string>
+
+	<string id="ui_mm_ui_artefact_panel">
+		<text>Показать артефакты пояса</text>
+	</string>
+
+	<string id="ui_mm_gasmask">
+		<text>Разбитая маска DX9</text>
+	</string>
+
+	<string id="ui_inv_komponent_art_mod">
+		<text>Компонент варки артефактов</text>
+	</string>
+
+	<string id="ui_mm_map_render">
+		<text>Отключить миникарту</text>
+	</string>
+
+	<string id="ui_mm_youtube">
+		<text>Режим "youtube"</text>
+	</string>
+
+	<string id="ui_mm_mt_load_texture">
+		<text>Многопоточная загруз. текстур</text>
+	</string>
+	
+	<string id="ui_mm_wpn_aim_toggle_opt">
+		<text>Всегда в прицеле</text>
+	</string>
+	
+	<string id="ui_mm_prefetch">
+		<text>Исп. ключ -noprefetch</text>
+	</string>
+	
+	<string id="ui_mm_mblur">
+		<text>Размытие в движении</text>
+	</string>
+	
+	<string id="ui_mm_mblur_level">
+		<text>Степень размытия</text>
+	</string>
+	
+	<string id="ui_mm_need_restart_level">
+		<text>Для вступления изменений в силу нужна перезагрузка уровня. Можно выполнить сохранение и загрузку текущего игрового прогресса.</text>
+	</string>
+	
+	<string id="ui_mm_inverse_kinematics">
+		<text>Инв. кинематика</text>
+	</string>
+	
+	<string id="ui_mm_dtexture_dist_f">
+		<text>Радиус детального Bump</text>
+	</string>
+	
+	<string id="ui_mm_r2_detail_bump1">
+		<text>Детальный Bump</text>
+	</string>
+	
+	<string id="ui_mm_r2_steep_parallax1">
+		<text>Объемные поверхности</text>
+	</string>
+	
+	<string id="ui_mm_dof">
+		<text>Глубина резкости</text>
+	</string>
+	
+	<string id="ui_mm_particles_distanceLA">
+		<text>Дальность прор. частиц</text>
+	</string>
+	
+	<string id="ui_mm_geom_quality_dist_f">
+		<text>Радиус дет. геометрии</text>
+	</string>
+	
+	<string id="ui_mm_geom_discard_dist_f">
+		<text>Радиус отсеч. геометрии</text>
+	</string>
+	
+	<string id="ui_mm_tessellation">
+		<text>Качест. тесселяции DX11</text>
+	</string>
+	
+	<string id="st_tess_low">
+		<text>Низкое</text>
+	</string>
+	
+	<string id="st_tess_med">
+		<text>Среднее</text>
+	</string>
+	
+	<string id="st_tess_optimum">
+		<text>Оптимальное</text>
+	</string>
+	
+	<string id="st_tess_overneeded">
+		<text>Избыточное</text>
+	</string>
+
+	<string id="ui_mm_ssao_mode1">
+		<text>Режим затемнения</text>
+	</string>
+	
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	
+	<string id="disabled">
+		<text>отключено</text>
+	</string>
+	
+	<string id="ui_mm_msaa_sample">
+		<text>MSAA</text>
+	</string>
+	
+	<string id="ui_mm_supersample_not_r3">
+		<text>Рендеринг в выс. разреш.</text>
+	</string>
+	
+	<string id="st_opt_csky">
+		<text>Чистое небо</text>
+	</string>
+
+	<string id="st_opt_2218">
+		<text>ТЧ Build 2218</text>
+	</string>
+
+	<string id="st_opt_default">
+		<text>По умолчанию</text>
+	</string>
+
+	<string id="ui_mm_bloom2218">
+		<text>Стиль блума</text>
+	</string>
+
+	<string id="ui_mm_gloss2218">
+		<text>Gloss в стиле Build 2218</text>
+	</string>
+
+	<string id="st_detector1">
+		<text>Детектор «Отклик»</text>
+	</string>
+	
+	<string id="st_detector1_descr">
+		<text>%c[255,0,255,0]Класс: Простой детектор \n%c[default]Устаревшая модель детектора аномальной активности. Реагирует звуковым сигналом на попадание аномальных частичек в специальную камеру при приближении к аномалиям. Кроме того, может регистрировать присутствие артефактов и измерять расстояние до ближайшего из них - расстояние до артефакта определяется периодичностью подаваемого звукового сигнала. Режим поиска артефактов включается поднятием крышки-антенны на лицевой панели прибора. Ввиду простоты конструкции способен находить только самые распространённые артефакты.</text>
+	</string>
+	
+	<string id="st_detector2">
+		<text>Детектор «Медведь»</text>
+	</string>
+	
+	<string id="st_detector2_descr">
+		<text>%c[255,0,255,0]Класс: Стандартный детектор \n%c[default]Детектор аномальной активности прошлого поколения. Снабжён локатором аномальных образований и светодиодным табло для отображения направления на артефакт, причём способен не только обнаруживать артефакты, но и определять расстояния до них. Режим поиска артефактов включается поднятием крышки-антенны на лицевой стороне прибора. К сожалению, уже несколько устаревший список обнаруживаемых артефактов вшит в прибор намертво - на аппаратном уровне.</text>
+	</string>
+	
+	<string id="st_detector3">
+		<text>Детектор «Велес»</text>
+	</string>
+	
+	<string id="st_detector3_descr">
+		<text>%c[255,0,255,0]Класс: Продвинутый детектор \n%c[default]Детектор-сканер нового поколения, используемый учёными. Благодаря трём усовершенствованным регистрационным камерам расположение артефакта относительно детектора отображается на специальном экране. Способен фиксировать излучение и присутствие аномалий. Режим поиска артефактов включается поднятием индикатора-табло на лицевой стороне прибора; в данном режиме способен обнаруживать все известные науке артефакты.</text>
+	</string>
+	
+	<string id="st_detector4">
+		<text>Прототип детектора «Сварог»</text>
+	</string>
+	
+	<string id="st_detector4_descr">
+		<text>%c[255,0,255,0]Класс: Усовершенствованный детектор \n%c[default]Прототип сканера аномальных зон расширенной функциональности. Добавлена программа распознавания статичных зон аномальной активности, которые имеются в базе данных; при этом сохранена возможность обнаружения артефактов. Расположение аномальных зон и артефактов относительно детектора отображаются на специальном экране. Программа поиска артефактов, включаемая при поднятии индикатора-табло на лицевой стороне прибора, усовершенствована; теоретически это позволяет обнаружить пока не известные науке аномальные образования.</text>
+	</string>
+	
+	<string id="st_detector5">
+		<text>Радар-детектор «Феникс»</text>
+	</string>
+	
+	<string id="st_detector5_descr">
+		<text>%c[255,0,255,0]Класс: Экспериментальный детектор \n%c[default]Экспериментальный радар-детектор расширенной функциональности. Добавлена программа фиксации жизненных форм в радиусе 45 метров относительно детектора; В целях безопасности, режим поиска живых существ включается автоматически, если прибор закрепить на поясе. Чтобы не загружать экран детектора избытком данных, прибор передает данные о живых существах на экран ПДА.</text>
+	</string>		 
+		 
+    <string id="st_detector_omega_up">
+		<text>Детектор «Настроенный Омега» </text>
+    </string>
+	
+    <string id="st_detector_omega_up_descr">
+		<text>%c[255,0,255,0]Класс: Экспериментальный детектор \n%c[default]Усовершенствованный детектор-сканер нового поколения. Позволяет обнаруживать артефакты на расстоянии до 100 метров, и сразу передавать их расположение на КПК. Добавлена программа распознавания статичных зон аномальной активности, которые имеются в базе данных; при этом сохранена возможность обнаружения артефактов. Расположение аномальных зон и артефактов относительно детектора отображаются на специальном экране. Программа поиска артефактов, включаемая при поднятии индикатора-табло на лицевой стороне прибора, усовершенствована; теоретически это позволяет обнаружить пока не известные науке аномальные образования.</text>
+    </string>
+
+    <string id="st_detector_omega">
+		<text>Детектор «Омега»</text>
+    </string>
+	
+    <string id="st_detector_omega_descr">
+		<text>%c[255,0,255,0]Класс: Детектор нового поколения \n%c[default]Усовершенствованый детектор-сканер нового поколения. Позволяет обнаруживать артефакты на расстоянии до 50 метров и передавать их расположение на КПК. Добавлена программа распознавания статичных зон аномальной активности, которые имеются в базе данных; при этом сохранена возможность обнаружения артефактов. Расположение аномальных зон и артефактов относительно детектора отображаются на специальном экране. Программа поиска артефактов усовершенствована; теоретически это позволяет обнаружить пока не известные науке аномальные образования.</text>
+    </string>	  
+
+	<string id="st_generic_af">
+		<text>Артефакт</text>
+	</string>
+
+	<string id="ui_mm_summ_chain">
+		<text>Кол-во буферов обработки</text>
+	</string>
+
+	<string id="ui_mm_lens_flare">
+		<text>Блики солнца</text>
+	</string>
+
+	<string id="ui_mm_viviette">
+		<text>Виньетка</text>
+	</string>
+
+	<string id="st_player">
+		<text>Плеер</text>
+	</string>
+	
+	<string id="st_player_descr">
+		<text>Музыкальный плеер</text>
+	</string>
+
+	<string id="ui_mm_teleport_demo_record_on">
+		<text>Телепорт в demo record 1</text>
+	</string>
+
+	<string id="st_misli">
+		<text>Мысли ГГ:</text>
+	</string>
+
+	<string id="st_kurr_descr">
+		<text>Думаю, нужно покурить</text>
+	</string>
+	
+	<string id="ui_mm_kurr">
+		<text>Потребность в курении</text>
+	</string>
+
+	<string id="ui_inv_kurr">
+		<text>Потребн. в курении</text>
+	</string>
+
+	<string id="st_marlboro">
+		<text>Сигареты Marlboro</text>
+	</string>
+	<string id="st_marlboro_descr">
+		<text>Сигареты Marlboro. Завезенные в зону из-за периметра.</text>
+	</string>
+	
+	<string id="st_lucky">
+		<text>Сигареты Лаки Страйк</text>
+	</string>
+	<string id="st_lucky_descr">
+		<text>>Сигареты импортировались с Запада.</text>
+	</string>
+	
+	<string id="st_cuban">
+		<text>Кубанские сигары</text>
+	</string>
+	<string id="st_cuban_descr">
+		<text>Кубинские сигары считаются лучшими в мире. Пожалуй, самые дорогие сигареты в зоне.</text>
+	</string>
+	
+	<string id="st_cigarettes_russian">
+		<text>Российская марка сигарет</text>
+	</string>
+	<string id="st_cigarettes_russian_descr">
+		<text>Самая дешевая пачка сигарет в зоне. Российский бюджетный бренд.</text>
+	</string>
+	
+	<string id="st_cigarettes_1">
+		<text>Советские сигареты</text>
+	</string>
+	<string id="st_cigarettes_2">
+		<text>Советские сигареты</text>
+	</string>
+	
+	<string id="st_cigarettes_3">
+		<text>Советские сигареты</text>
+	</string>
+	<string id="st_cigarettes_descr">
+		<text>Пачка бюджетных, крепких и качественных сигарет. Аромат СССР был бережно сохранен.</text>
+	</string>
+	
+	<string id="arc_art_box_basic">
+		<text>Контейнер для артефактов</text>
+	</string>
+	<string id="arc_art_box_basic_s">
+		<text>Контейнер для артефактов</text>
+	</string>
+	<string id="enc_arc_art_box_basic">
+		<text>Специальный научный контейнер для артефактов. Предназначен для ручной переноски особо опасных или радиоактивных артефактов. Несмотря на небольшие размеры, вполне обеспечивает необходимую защиту от аномального и радиоактивного излучения. Изготовлен из специального сверхпрочного пластика, покрытого сверху слоем новейшего сплава металлов, полученного в лаборатории на озере Янтарь. Процесс изготовления держится в секрете, однако известно, жёсткое излучение любой интенсивности практически полностью экранируется стенками контейнера. Пользуется большим спросом у профессиональных добытчиков артефактов.\n\n%c[255,1,255,255]Вместимость:%c[255,1,255,1] 3 артефакта</text>
+	</string>
+	
+	<string id="ballast">
+		<text>Вес артефактов</text>
+	</string>
+ 	<string id="ballast_you-should-not-see-this">
+		<text>%c[255,1,255,1]Общий вес артефактов в контейнере</text>
+	</string>
+	
+	<string id="its_perchatka1">
+		<text>Перчатки прорезиненные</text>
+	</string>
+	<string id="its_perchatka1_descr">
+		<text>Блокируют до 30 процентов вредного воздействия артефакта при подборе. За основу взяты бойцовские перчатки, которые пропитали специальным составом резины и сделали их полностью закрытыми.</text>
+	</string>
+
+	<string id="its_perchatka2">
+		<text>Перчатки усовершенствованные</text>
+	</string>
+	<string id="its_perchatka2_descr">
+		<text>Блокируют до 50 процентов вредного воздействия артефакта при подборе. Прорезиненные перчатки, побывавшие в аномалии "Паутина". Нити аномалии вживляются в перчатки, тем самым повышая их защиту.</text>
+	</string>
+
+	<string id="its_perchatka3">
+		<text>Перчатки модернизированные</text>
+	</string>
+	<string id="its_perchatka3_descr">
+		<text>Блокируют до 70 процентов вредного воздействия артефакта при подборе. По сути это те же самые усовершенствованные перчатки, но обработанные артефактом "Игла".</text>
+	</string>
+
+	<string id="its_perchatka4">
+		<text>Перчатки уникальные</text>
+	</string>
+	<string id="its_perchatka4_descr">
+		<text>%c[255,1,255,1]Полностью блокируют вредное воздействие артефакта при подборе. Путём многих и небезопасных экспериментов удалось найти сочетание двух артефактов: "Игла" и "Стержень", которые полностью блокировали вредные воздействия, не нанося вреда владельцу и обработать этим составом модернизированные перчатки, на выходе получив уникальные перчатки, полностью блокирующие воздействие артефакта на организм.\n"Стержень" - очень редкий артефакт, поэтому и цена у этих перчаток соответственная.</text>
+	</string>
+
+	<string id="ui_mm_detail_scale">
+		<text>Высота травы</text>
+	</string>
+	
+	<string id="ui_mm_detail_radius">
+	    <text>Прорисовка травы</text>
+    </string>
+	
+	<string id="ui_mm_detail_density">
+		<text>Плотность травы</text>
+	</string>
+
+	<string id="st_water">
+		<text>Минералка "Сталкерская"</text>
+	</string>
+	<string id="st_water_descr">
+		<text>Минеральная вода. Отлично утоляет жажду и восстанавливает силы.</text>
+	</string>
+
+	<string id="ui_mm_r3_dynamic_wet_surfaces_opt">
+		<text>Оптимиз. влажных поверх.</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces_near">
+		<text>Влажные поверх. на расст.</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces_far">
+		<text>Влажные поверх. в тумане</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces_sm_res">
+		<text>Качество влажных поверхн.</text>
+	</string>
+
+	<string id="SM_1">
+		<text>Низкое качество х1032</text>
+	</string>
+	
+	<string id="SM_2">
+		<text>Среднее качество х1536</text>
+	</string>
+	
+	<string id="SM_3">
+		<text>Среднее качество х2048</text>
+	</string>
+	
+	<string id="SM_4">
+		<text>Среднее качество х2560</text>
+	</string>
+	
+	<string id="SM_5">
+		<text>Высокое качество х3072</text>
+	</string>
+	
+	<string id="SM_6">
+		<text>Высокое качество х3584</text>
+	</string>
+	
+	<string id="SM_7">
+		<text>Максимальное качество х4096</text>
+	</string>
+
+	<string id="st_antz">
+		<text>Антизомбин</text>
+	</string>
+	
+	<string id="st_antz_descr">
+		<text>Новейшая разработка от Dharma Initiative. Она сделала прорыв в науке. Антидот полностью лечит от пси-излучения. Возможна также практика на ранних стадиях зомбирования, но для этого нужно произвести две инъекции. Должен иметь при себе каждый сталкер. Имеет 2 существенных недостатка - цена и сильные побочные эффекты.</text>
+	</string>	
+
+	<string id="ui_inv_psyblockade_engine">
+		<text>Восст. 65% пси-здоровья</text>
+	</string>
+
+	<string id="ui_inv_antizombin_engine">
+		<text>Восст. 100% пси-здоровья</text>
+	</string>
+
+	<string id="ui_inv_vodka_engine">
+		<text>Восст. 15% пси-здоровья</text>
+	</string>
+	
+	<string id="ui_inv_medkit_engine">
+		<text>Восст. 40% пси-здоровья</text>
+	</string>
+
+	<string id="ui_mm_corpse_rel">
+		<text>Улучш. уборщик трупов (НС)</text>
+	</string>
+
+	<string id="ui_mm_quick_save_manager">
+		<text>Фразы ГГ при сохр. игры</text>
+	</string>
+
+	<string id="ui_mm_dof_reload">
+		<text>Вкл. эффект dof'а оружия</text>
+	</string>
+
+	<string id="renderer_r1_mixed">
+		<text>Статическое освещение (Mixed)</text>
+	</string>
+	
+	<string id="renderer_r2a_mixed">
+		<text>Динам. освещение объектов (Mixed)</text>
+	</string>
+	
+	<string id="renderer_r2_mixed">
+		<text>Улучш. динам. освещение объектов (Mixed)</text>
+	</string>
+	
+	<string id="renderer_r2.5_mixed">
+		<text>Полное динам. освещение (DX9, Mixed)</text>
+	</string>
+	
+	<string id="renderer_r3_mixed">
+		<text>Полное динам. освещение (DX10, Mixed)</text>
+	</string>
+	
+	<string id="renderer_r4_mixed">
+		<text>Полное динам. освещение (DX11, Mixed)</text>
+	</string>
+
+	<string id="Renderer_DX9_0">
+		<text>Статическое освещение</text>
+	</string>
+	
+	<string id="Renderer_DX9_1">
+		<text>Динамическое освещение объектов</text>
+	</string>
+	
+	<string id="Renderer_DX9_2">
+		<text>Динамическое освещение объектов +</text>
+	</string>
+	
+	<string id="Renderer_DX9_3">
+		<text>Полное динамическое освещение (DX9)</text>
+	</string>
+	
+	<string id="Renderer_DX10">
+		<text>Полное динамическое освещение (DX10)</text>
+	</string>
+	
+	<string id="Renderer_DX11">
+		<text>Полное динамическое освещение (DX11)</text>
+	</string>
+	
+	<string id="Renderer_DX11.3">
+		<text>Улучшенное полное освещение (DX11.3)</text>
+	</string>
+	
+	<string id="st_sleeping_irradiated">
+		<text>Вы не хотите спать</text>
+	</string>
+
+	<string id="ui_mm_fast_travel">
+		<text>Быстрые перемещения</text>
+	</string>
+	
+	<string id="ui_mm_horror_zombie_mod">
+		<text>Режим zombie shoter mod</text>
+	</string>
+
+	<string id="horror_int_start">
+		<text>Общий канал:</text>
+	</string>
+
+	<string id="horror1">
+		<text>Санёк, а что это за сирена?</text>
+	</string>
+	
+	<string id="horror2">
+		<text>Кто не спрятался - я не виноват! Раз, два, три, четыре, пять - я иду включать...</text>
+	</string>
+	
+	<string id="horror3">
+		<text>Лаборант Сидоров, вы сегодня за доктора! Включайте установку!</text>
+	</string>
+	
+	<string id="horror4">
+		<text>Доктор, пора... Включайте...</text>
+	</string>
+	
+	<string id="horror5">
+		<text>Лейтенант, уводите людей... Сейчас её включат...</text>
+	</string>
+	
+	<string id="horror6">
+		<text>Так, всё, мы не успеваем... Напишите за меня жене!</text>
+	</string>
+	
+	<string id="horror7">
+		<text>Хех... Сегодня опять этих ворюг станет меньше... Доктор... Мы готовы</text>
+	</string>
+	
+	<string id="horror1f">
+		<text>В следующий раз узнаешь...</text>
+	</string>
+	
+	<string id="horror2f">
+		<text>Опять включалка барахлит...</text>
+	</string>
+	
+	<string id="horror3f">
+		<text>Лаборант Сидоров! Опять спирт не по назначению использовали ?!</text>
+	</string>
+	
+	<string id="horror4f">
+		<text>Доктор, в чём дело? Почему не включаете? Опять ваш коллайдер заело?!</text>
+	</string>
+	
+	<string id="horror5f">
+		<text>Лейтенант, у нас тут поломка - вам и вашим людям повезло.</text>
+	</string>
+	
+	<string id="horror6f">
+		<text>Пронесло... Жене сам напишу... Урррроды...</text>
+	</string>
+	
+	<string id="horror7f">
+		<text>Доктор! Да сколько можно?! Опять неурожай!</text>
+	</string>
+	
+	<string id="st_horror_save">
+		<text>Час ужаса</text>
+	</string>
+	
+	<string id="ui_mm_horror_enable">
+		<text>Час ужаса ночью</text>
+	</string>
+	
+	<string id="ui_mm_horror_start_chance">
+		<text>Шанс старта часа ужаса</text>
+	</string>
+	
+	<string id="ui_mm_spawner">
+		<text>Повелитель зоны</text>
+	</string>
+
+	<string id="ui_mm_map_location1">
+		<text>Отряды на карте: (откл.)</text>
+	</string>
+	
+	<string id="ui_mm_map_location2">
+		<text>Отряды на карте: (ЧН)</text>
+	</string>
+	
+	<string id="ui_mm_map_location3">
+		<text>Отряды на карте: (ВГ)</text>
+	</string>
+
+	<string id="ui_mm_r_fps">
+		<text>Лимит FPS</text>
+	</string>
+
+	<string id="ui_mm_autoreload_wpn">
+		<text>Автоперезарядка оружия</text>
+	</string>
+
+	<string id="ui_mm_type_ruck">
+		<text>Использование рюкзака</text>
+	</string>
+	
+	<string id="type_ruck_1">
+		<text>Оригинал</text>
+	</string>
+
+	<string id="type_ruck_2">
+		<text>Убрать руки при открытом рюкзаке</text>
+	</string>
+	
+	<string id="type_ruck_3">
+		<text>Реалист. исп. рюкзака (NLC 7)</text>
+	</string>
+
+	<string id="ui_mm_console">
+		<text>Доступ к консоли</text>
+	</string>
+	
+	<string id="ui_mm_rank_cond_loot">
+		<text>Сост. оружия по рангу</text>
+	</string>
+
+	<string id="ui_mm_corpse_ammo_loot">
+		<text>Патроны в трупах</text>
+	</string>
+
+	<string id="ui_mm_r2_smap_size">
+		<text>Карта теней</text>
+	</string>
+
+	<string id="kb_custom8">
+		<text>Протереть маску</text>
+	</string>
+
+	<string id="st_mm_faction_cap_faction">
+		<text>Группировка:</text>
+	</string>
+
+	<string id="st_mm_faction_cap_character_name">
+		<text>Имя цели:</text>
+	</string>	
+
+	<string id="ui_mm_debug">
+		<text>Опция разработчика</text>
+	</string>
+
+	<string id="ui_mm_rain_drops_render_helm">
+		<text>Экран. капли только в шлеме</text>
+	</string>
+
+	<string id="ui_mm_type_hud_cmp">
+		<text>Компакт худ 3</text>
+	</string>
+
+	<string id="_mm_game1">
+		<text>Внимание!</text>
+	</string>
+	
+	<string id="ui_mm_ammobelt">
+		<text>Патроны на пояс</text>
+	</string>
+	
+	<string id="ui_mm_gamemtl">
+		<text>Замедление водой\кустами</text>
+	</string>
+	
+	<string id="ui_mm_dead_collision">
+		<text>Отключить коллизию тел</text>
+	</string>
+	
+	<string id="ui_mm_discord">
+		<text>Статус игры в Дискорде</text>
+	</string>
+	
+	<string id="_mm_game2">
+		<text>Эти опции на прямую влияют на изменение в движке!</text>
+	</string>
+
+	<string id="_mm_game3">
+		<text>Не рекомендуется переключать опции уже в созданой игре.</text>
+	</string>
+
+	<string id="st_loading_shaders">
+		<text>Проверяю снарягу</text>
+	</string>
+	<string id="st_loading_geometry">
+		<text>Проверяю оружие</text>
+	</string>
+	<string id="st_loading_spatial_db">
+		<text>Собираю вещи</text>
+	</string>
+	<string id="st_loading_details">
+		<text>Присяду на дорожку</text>
+	</string>
+	<string id="st_loading_cform">
+		<text>Пора выходить</text>
+	</string>
+	<string id="st_creating_new_game">
+		<text>Выбираю свой путь</text>
+	</string>
+	<string id="st_loading_alife_simulator">
+		<text>Зона наполняется жизнью</text>
+	</string>
+	<string id="st_client_synchronising">
+		<text>Входим в зону отчуждения</text>
+	</string>
+	<string id="st_loading_ai_objects">
+		<text>Готовлюсь к походу</text>
+	</string>	
+	<string id="st_client_spawning">
+		<text>Я готов</text>
+	</string>
+	<string id="st_loading_textures">
+		<text>Закурю и в путь</text>
+	</string>
+	<string id="st_prefetching_objects">
+		<text>В начале всегда было начало</text>
+	</string>
+	<string id="st_server_starting">
+		<text>Собираюсь в дорогу</text>
+	</string>
+	
+	<string id="st_loading_lights">
+		<text>Все собрано</text>
+	</string>
+	
+	<string id="st_loading_saved_game">
+		<text>Беру с собой:</text>
+	</string>
+
+	<string id="kb_custom16">
+		<text>Протереть маску</text>
+	</string>
+
+	<string id="ui_mm_btn_options_mm">
+		<text>Другие настройки</text>
+	</string>
+	
+
+	<string id="st_proc">
+		<text>%</text>
+	</string>
+	<string id="ui_mm_m_c_w">
+		<text>Макс. переносимый вес</text>
+	</string>
+	<string id="ui_mm_game_relation">
+		<text>Динамические отношения</text>
+	</string>	
+	<string id="ui_inv_antirad">
+		<text>Противорадиационный препарат</text>
+	</string>
+	<string id="ui_mm_unik_mutants">
+		<text>Способности мутантов</text>
+	</string>
+	<string id="ui_mm_more_realistic">
+		<text>Больше реализма</text>
+	</string>
+	<string id="ui_mm_render_scopes">
+		<text>3д линза прицела</text>
+	</string>
+	<string id="ui_mm_dynamic_anomalies">
+		<text>Одиночные аномалии</text>
+	</string>
+	<string id="ui_mm_gameplay_alife">
+		<text>A-Life</text>
+	</string>	
+	<string id="st_dont_has_knife">
+		<text>Нужно взять нож в руки</text>
+	</string>	
+	<string id="g_use_aim_iner">
+		<text>Инерция оружия</text>
+	</string>	
+	<string id="ui_mm_rain4p">
+		<text>Дождь для слабых ПК</text>
+	</string>	
+	<string id="ui_mm_mask_hud">
+		<text>Худ шлема на экране</text> 
+	</string>	
+	<string id="ui_mm_dynamic_spawn">
+		<text>Динамич. спавн мутантов</text>
+	</string>
+	<string id="ui_mm_k_spawn">
+		<text>(SoC)Коэф. спавна мутантов</text>
+	</string>
+	<string id="ui_mm_k_spawn_time">
+		<text>(SoC)Период спавна</text>
+	</string>
+	<string id="ui_mm_k_spawn_x">
+		<text>(SoC)Спавн мутантов по Х</text>
+	</string>
+	<string id="ui_mm_k_spawn_y">
+		<text>(SoC)Спавн мутантов по Y</text>
+	</string>	
+	
+	<string id="ui_mm_type_hud_scoc174">
+		<text>Стасон174</text>
+	</string>	
+	
+	<string id="ui_mm_new_hit_effects">
+		<text>Новые звуки попаданий пуль</text>
+	</string>
+	
+	<string id="ui_mm_g_use_aim_iner">
+		<text>Инерция оружия</text>
+	</string>
+	
+	<string id="ui_mm_tonemap">
+		<text>Tonemap</text>
+	</string>
+	
+	<string id="ui_mm_dark_mode">
+		<text>Дневная радиация</text> 
+	</string>
+	
+	<string id="ui_mm_boom_weapon">
+		<text>Взрыв сломанного оружия</text>
+	</string>	
+	
+	<string id="ui_mm_loot_outfits">
+		<text>Снимать броню с трупов</text>
+	</string>	
+	
+	<string id="ui_mm_dynamics_new_amk">
+		<text>Динамические новости(AMK)</text> 
+	</string>
+	
+	<string id="ui_mm_fantoms_blowout">
+		<text>Фантомы при выбросе</text>
+	</string>
+	
+	<string id="ui_mm_art_hit">
+		<text>Урон при взятии арта</text>
+	</string>
+	
+	<string id="ui_mm_system_gon">
+		<text>Система гона</text>
+	</string>
+	
+	<string id="ui_inv_sleep">
+		<text>Бодрость</text>
+	</string>	
+	
+	<string id="st_agr_secret_0000_name">
+		<text>Тайник в тоннеле</text>
+	</string>	
+	
+	<string id="st_agr_secret_0000_descr">
+		<text>Пойду на свалку, надо будет забрать. Пока оставлю тут вещи.</text>
+	</string>	
+	
+	<string id="ui_inv_thirst">
+		<text>Утоление жажды</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_3">
+		<text>Радиация</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_6">
+		<text>Радиозащита</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_1">
+		<text>Восст. здоровья</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_8">
+		<text>Хим. защита</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_4">
+		<text>Заживление ран</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_5">
+		<text>Переносимый вес</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_7">
+		<text>Пси-защита</text>
+	</string>	
+	
+	<string id="st_ui_boosterlnfo_2">
+		<text>Восст. сил</text>
+	</string>
+	
+	<string id="_st_kg">
+		<text>кг</text>
+	</string>
+
+	<string id="_st_metr">
+		<text>м</text>
+	</string>
+	
+	<string id="_st_metr1">
+		<text>м/с</text>
+	</string>
+	
+	<string id="_inv_health">
+		<text>Здоровье</text>
+	</string>
+
+	<string id="_inv_armor">
+		<text>Пулестойкость бронежилета</text>
+	</string>
+
+	<string id="_inv_helmet">
+		<text>Пулестойкость головного убора</text>
+	</string>	
+	
+	<string id="_inv_thirst">
+		<text>Жажда</text>
+	</string>
+
+	<string id="kb_wpn_secondvp">
+		<text>Переключить режим прицела</text>
+	</string>
+
+	<string id="_inv_starvation">
+		<text>Сытость</text>
+	</string>
+
+	<string id="_inv_stamina">
+		<text>Выносливость</text>
+	</string>	
+
+	<string id="_inv_radiac">
+		<text>Радиация</text>
+	</string>
+
+	<string id="_inv_bleding">
+		<text>Кровотечение</text>
+	</string>
+
+	<string id="_inv_psybar_inv1">
+		<text>Пси-здоровье</text>
+	</string>	
+
+	<string id="_inv_sleping_1">
+		<text>Сонливость</text>
+	</string>
+
+	<string id="ui_inv_outfit_fire__wound_protection">
+		<text>Прочность брони</text>
+	</string>
+	
+	<string id="ui_mm_keypress_on_start">
+		<text>Старт по наж. клавиши(ЗП)</text>
+	</string>	
+	
+	<string id="ui_inv_af_wound_protection">
+		<text>Разрыв</text>
+	</string>		
+	
+	<string id="ui_inv_af_fire_wound_protection">
+		<text>Пулестойкость</text>
+	</string>	
+
+	<string id="ui_inv_af_explosion_protection">
+		<text>Взрывоустойчивость</text>
+	</string>		
+	
+	<string id="ui_inv_af_strike_protection">
+		<text>Защита от удара</text>
+	</string>	
+	
+	<string id="ui_mm_map_location_descr">
+		<text>Показать всех на карте:</text>
+	</string>	
+	
+	<string id="ui_mm_treasure_k">
+		<text>Коэф. выдачи тайника</text>
+	</string>	
+	
+	<string id="ui_mm_dmx">
+		<text>Разряд при обыске зомби(DMX)</text>
+	</string>	
+	
+	<string id="ui_mm_money_k">
+		<text>Коэф. денег с трупов</text>
+	</string>	
+	
+	<string id="map_location_type_1">
+		<text>Отключить</text>
+	</string>	
+	
+	<string id="map_location_type_2">
+		<text>Отряды на карте(стиль ЧН)</text>
+	</string>	
+	
+	<string id="map_location_type_3">
+		<text>Отряды на карте(стиль Warfare)</text>
+	</string>
+	
+	<string id="ui_mm_ui_mutant_loot">
+		<text>Интерфейс обыска мутантов</text>
+	</string>
+	
+	<string id="ui_mm_fps">
+		<text>Счетчик ФПС</text>
+	</string>
+	
+	<string id="ui_mm_g_god_opt">
+		<text>Режим Бога</text>
+	</string>
+	
+	<string id="ui_mm_hand_hide_inventory">
+		<text>Убрать руки при откр. инв.</text>
+	</string>
+	
+	<string id="ui_mm_g_unl_ammo">
+		<text>Бесконечные патроны</text>
+	</string>
+	
+	<string id="ui_mm_opt_collision_hudcr">
+		<text>Текущий прицел</text>
+	</string>
+	
+	<string id="collision_type_1">
+		<text>Коллизия</text>
+	</string>
+	
+	<string id="collision_type_2">
+		<text>Инерция</text>
+	</string>
+	
+	<string id="collision_type_3">
+		<text>Стандартный</text>
+	</string>
+	
+	<string id="ui_mm_koef_spawn">
+		<text>Время респавна(живности, нпс)</text>
+	</string>
+	
+	<string id="ui_mm_max_corpse">
+		<text>Кол-во трупов в игре</text>
+	</string>
+	
+	<string id="ui_mm_koef_npc_in_squad">
+		<text>Коэф. НПС в отрядах</text>
+	</string>
+
+	<string id="ui_mm_update_thirst">
+		<text>Потребность в жажде</text>
+	</string>
+	
+	<string id="ui_mm_update_sleep">
+		<text>Потребность во сне</text>
+	</string>
+	
+	<string id="ui_mm_shot_effects">
+		<text>Эффект стрельбы</text>
+	</string>
+	
+	<string id="ui_mm_g_sprint_reload_wpn">
+		<text>Запрет перезарядки в беге</text>
+	</string>
+	
+	<string id="ui_inv_af_radiation_protection">
+		<text>Радиозащита</text>
+	</string>	
+	
+	<string id="ui_inv_af_burn_protection">
+		<text>Ожог</text>
+	</string>	
+	
+	<string id="ui_inv_af_chemical_burn_protection">
+		<text>Химический ожог</text>
+	</string>	
+
+	<string id="ui_inv_af_telepatic_protection">
+		<text>Пси-защита</text>
+	</string>	
+
+	<string id="ui_inv_af_shock_protection">
+		<text>Электрошок</text>
+	</string>		
+	
+	<string id="ui_mm_options_hud">
+		<text>Текущий худ</text>
+	</string>
+	
+	<string id="ui_mm_type_hud_coc">
+		<text>Зов Чернобыля</text>
+	</string>	
+	
+	<string id="ui_mm_type_hud_vv">
+		<text>Ветер Времени</text>
+	</string>		
+	
+	<string id="ui_mm_type_hud_cop">
+		<text>Зов Припяти</text>
+	</string>	
+	
+	<string id="ui_mm_type_hud_soc">
+		<text>Тень Чернобыля</text>
+	</string>	
+	
+	<string id="ui_mm_type_hud_la">
+		<text>Лост Альфа</text>
+	</string>	
+	
+	<string id="ui_mm_type_hud_cs">
+		<text>Чистое небо</text>
+	</string>
+	
+	<string id="ui_mm_rain_drops">
+		<text>Экранные капли</text>
+	</string>	
+	
+	<string id="ui_mm_rain_drops_diff">
+		<text>Запотевание экрана</text>
+	</string>	
+	
+	<string id="ui_mm_gotovka_koster">
+		<text>Готовка на костре(AZM)</text>
+	</string>
+	
+	<string id="kb_custom6">
+		<text>Замедление времени</text>
+	</string>
+	
+	<string id="kb_torch_mode">
+		<text>Режим фонарика</text>
+	</string>
+	
+	<string id="ui_mm_newn_real">
+		<text>Реальные новости</text>
+	</string>
+	
+	<string id="ui_st_community_4_3">
+	    <text>Клан</text>
+	</string>
+	
+	<string id="ui_st_rank_4_3">
+		<text>Ранг</text>
+	</string>
+	
+	<string id="ui_st_reputation_4_3">
+		<text>Репут.</text>
+	</string>
+	
+    <string id="ui_st_community">
+	    <text>Клан</text>
+	</string>
+	
+	<string id="ui_st_rank">
+		<text>Ранг</text>
+    </string>
+	
+	<string id="ui_st_reputation">
+		<text>Репут.</text>
+	</string>
+	
+	<string id="actor">
+		<text>Сталкер</text>
+	</string>
+	
+	
+		<string id="af-ameba-mica">
+		<text>Слюда</text>
+	</string>
+	<string id="enc_zone_artifact_af-ameba-mica">
+		<text>Аномалия «Холодец» способна породить такой артефакт при редчайшем, экстремальном наборе физических условий. В результате получается полупрозрачный твердый объект. Артефакт дорогой и редкостный.</text>
+	</string>
+	
+	<string id="af-ameba-slime">
+		<text>Слизь</text>
+	</string>
+	<string id="enc_zone_artifact_af-ameba-slime">
+		<text>Точно известно, что артефакт порожден аномалией «Холодец». При ношении его на поясе раны меньше кровоточат, хотя тело хозяина становится уязвимым к различным ожогам.</text>
+	</string>
+	
+	<string id="af-ameba-slug">
+		<text>Слизняк</text>
+	</string>
+	<string id="enc_zone_artifact_af-ameba-slug">
+		<text>Формируется аномалией «Холодец». Негативные свойства этого артефакта компенсируется тем, что он повышает свертываемость крови. Такой артефакт нечасто можно встретить, и за него дают неплохую цену.</text>
+	</string>
+	
+	<string id="af-blood">
+		<text>Кровь камня</text>
+	</string>
+	<string id="enc_zone_artifact_af-blood">
+		<text>Найти этот артефакт можно возле аномалий «Карусель». Представляет собой довольно уродливое красноватое образование из спрессованных и причудливо изогнутых полимеризированных остатков растений, почвы и костей. Довольно распространен и слабоэффективен.</text>
+	</string>
+	
+	<string id="af-cristall">
+		<text>Кристалл</text>
+	</string>
+	<string id="enc_zone_artifact_af-cristall">
+		<text>Получается при попадании тяжелого металла в аномалию «Жарка». Этот артефакт замечательно выводит радиацию. Такой артефакт высоко ценится сталкерами, и мало где его можно добыть.</text>
+	</string>
+	
+	<string id="af-cristall-flower">
+		<text>Каменный цветок</text>
+	</string>
+	<string id="enc_zone_artifact_af-cristall-flower">
+		<text>Рождается в аномалии «трамплин». Такой артефакт можно найти в немногих участках зоны. Вкрапления металлических соединений дают красивую игру света. Рассматривание этого артефакта в свете костра ночью замечательно успокаивает.</text>
+	</string>
+	
+	<string id="af-drops">
+		<text>Капли</text>
+	</string>
+	<string id="enc_zone_artifact_af-drops">
+		<text>Формируется аномалией «Жарка» при высоких температурах. Внешне выглядит как почерневшее каплевидное образование с глянцевой поверхностью, покрытое трещинами.</text>
+	</string>
+	
+	<string id="af-dummy-battery">
+		<text>Батарейка</text>
+	</string>
+	<string id="enc_zone_artifact_af-dummy-battery">
+		<text>Происхождение этой вещи окутано завесой научной тайны. Понятно, что в его состав входят диэлектрические элементы, но при каких физических условиях он формируется - науке не известно.</text>
+	</string>
+	
+	<string id="af-dummy-dummy">
+		<text>Пустышка</text>
+	</string>
+	<string id="enc_zone_artifact_af-dummy-dummy">
+		<text>При ношении этого артефакта денатурализация белков проходит медленнее. Другими словами, плоть устойчивее к высоким температурам и меньше обгорает. Сама по себе это дорогая и редкостная вещь.</text>
+	</string>
+	
+	<string id="af-dummy-glassbeads">
+		<text>Мамины бусы</text>
+	</string>
+	<string id="enc_zone_artifact_af-dummy-glassbeads">
+		<text>Замечательный артефакт. Берегите его - он хорош тем, что имеет только положительное качество. Ученые ломают седые головы над тем, как подобное свойство можно получить в лабораторных условиях.</text>
+	</string>
+	
+	<string id="af-dummy-pellicle">
+		<text>Плёнка</text>
+	</string>
+	<string id="enc_zone_artifact_af-dummy-pellicle">
+		<text>Этот артефакт настолько редок, что многие исследователи даже не догадываются, что такая субстанция может существовать в естественных условиях. Отторгает едкие химические компоненты.</text>
+	</string>
+	
+	<string id="af-dummy-spring">
+		<text>Пружина</text>
+	</string>
+	<string id="enc_zone_artifact_af-dummy-spring">
+		<text>По мнению некоторых исследователей-теоретиков, этот артефакт представляет собой гибрид "Батарейки" и "Пустышки"</text>
+	</string>
+	
+	<string id="af-electra-flash">
+		<text>Вспышка</text>
+	</string>
+	<string id="enc_zone_artifact_af-electra-flash">
+		<text>«Электра» изредка порождает этот артефакт. Сталкеры используют его с большой охотой из-за его неплохих качеств. Неплохая цена и приятный внешний вид делают его интересным для коллекционеров.</text>
+	</string>
+	
+	<string id="af-electra-moonlight">
+		<text>Лунный свет</text>
+	</string>
+	<string id="enc_zone_artifact_af-electra-moonlight">
+		<text>Вырожденный случай активности аномалии «Электра». Видимо, такую замечательную округлую форму можно получить, если подвергнуть аномалию термовоздействию. Дорогой артефакт.</text>
+	</string>
+	
+	<string id="af-electra-sparkler">
+		<text>Бенгальский огонь</text>
+	</string>
+	<string id="enc_zone_artifact_af-electra-sparkler">
+		<text>Находится около аномалий типа «Электра». Довольно распространенный и недорогой артефакт. Тем не менее ценится среди исследователей Зоны за его свойства.</text>
+	</string>
+	
+	<string id="af-fireball">
+		<text>Огненный шар</text>
+	</string>
+	<string id="enc_zone_artifact_af-fireball">
+		<text>Кристаллизируется в аномалии «Жарка». Хорошо борется с радиоактивностью, хотя ускоренный энергообмен изнашивает мышцы двигательного аппарата. Долго бежать не получится. Артефакт излучает тепло.</text>
+	</string>
+	
+	<string id="af-fuzz-kolobok">
+		<text>Колобок</text>
+	</string>
+	<string id="enc_zone_artifact_af-fuzz-kolobok">
+		<text>Когда держишь эту загадку Зоны в руках, чувствуешь, как кожа грубеет и становится менее чувствительной. Пробить пулей ее все еще легко, а вот порезать - гораздо сложнее.</text>
+	</string>
+	
+	<string id="af-gold-fish">
+		<text>Золотая рыбка</text>
+	</string>
+	<string id="enc_zone_artifact_af-gold-fish">
+		<text>Порождается аномалией «Воронка». Активизируется теплом тела. Решай, что хуже - радиация или ножевые ранения, и выбирай из двух зол меньшее. Во всяком случае артефакт можно дорого продать.</text>
+	</string>
+	
+	<string id="af-gravi">
+		<text>Грави</text>
+	</string>
+	<string id="enc_zone_artifact_af-gravi">
+		<text>Можно обнаружить около аномалий типа «Воронка», или у другого сталкера. При ношении некоторая часть радиоактивных лучей накапливается в организме, в то время как основные пучки расходятся радиально от тела. Цена средняя.</text>
+	</string>
+	
+	<string id="af-medusa">
+		<text>Медуза</text>
+	</string>
+	<string id="enc_zone_artifact_af-medusa">
+		<text>Образуется в аномалии «Трамплин». Формирует слабое защитное поле, побочным эффектом которого является легкое излучение. Артефакт широко распространен и недорог.</text>
+	</string>
+	
+	<string id="af-electra">
+		<text>Особая Электра</text>
+	</string>
+	<string id="enc_zone_artifact_af-electra">
+		<text>Крайне редкий артефакт. Многие исследователи даже не предполагают, что такая вещь может существовать в условиях нашего мира. Но слухов достаточно, чтобы сделать поиски этого артефакта целью многих научных экспедиций, а сам артефакт - одной из самых желаемых для исследований вещью. Больше про него ничего не известно.</text>
+	</string>	
+	
+	<string id="af-mincer-meat">
+		<text>Ломоть мяса</text>
+	</string>
+	<string id="enc_zone_artifact_af-mincer-meat">
+		<text>Вырабатывается аномалией «Карусель». Стимулирует усиленный рост клеток. С другой стороны, молодые клетки организма более восприимчивы ко многим видам физического урона. Артефакт попадается нечасто, но его нельзя назвать уникальным.</text>
+	</string>
+	
+	<string id="af-night-star">
+		<text>Ночная звезда</text>
+	</string>
+	<string id="enc_zone_artifact_af-night-star">
+		<text>Этот замечательный артефакт формируется аномалией «Трамплин». Использование артефакта требует нейтрализации смертельного радиоактивного излучения. Дорогой и редкостный, он чрезвычайно интересен для научных экспедиций и прочих исследователей активности Зоны.</text>
+	</string>
+	
+	<string id="af-rusty-kristall">
+		<text>Кристальная колючка</text>
+	</string>
+	<string id="enc_zone_artifact_af-rusty-kristall">
+		<text>Кристаллизируется в аномалии «Жгучий пух». Выводит радиацию из организма естественным путем. То есть, через уши вместе с некоторым количеством крови. Возможна потеря крови и через другие отверстия. Попадается нечасто и довольно эффективен, чем заслужил себе стабильную цену на рынке артефактов.</text>
+	</string>
+	
+	<string id="af-rusty-sea-urchin">
+		<text>Морской ёж</text>
+	</string>
+	<string id="enc_zone_artifact_af-rusty-sea-urchin">
+		<text>Аномалия «Жгучий пух» очень редко порождает такой артефакт. Повышается кровяное давление, организм избавляется от большого количества красных кровяных телец. Но вместе с ними из организма выходит накопленное излучение. Сахаров в своей фундаментальной работе "Ионизация и поляризация компонентов редких артефактов" заметил, что состав этого формирования обладает критической стабильностью, и добиться создания такого артефакта в условиях лаборатории в ближайшие десятилетия нереально.</text>
+	</string>
+	
+	<string id="af-rusty-thorn">
+		<text>Колючка</text>
+	</string>
+	<string id="enc_zone_artifact_af-rusty-thorn">
+		<text>Результат взаимодействия аномалии «Жгучий пух» и тела невнимательного сталкера. Шипастый артефакт колет тело владельца, как бы его не крепить. Но он же помогает очищению организма от радионуклидов. Довольно распространенный и дешевый.</text>
+	</string>
+	
+	<string id="af-soul">
+		<text>Душа</text>
+	</string>
+	<string id="enc_zone_artifact_af-soul">
+		<text>Очень редко попадается рядом с аномалиями «Карусель». Найти такой артефакт удается лишь единицам, и мало кто его вообще видел. Он имеет приятную форму и не менее приятную цену.</text>
+	</string>
+	
+	<string id="af-vyvert">
+		<text>Выверт</text>
+	</string>
+	<string id="enc_zone_artifact_af-vyvert">
+		<text>Находится около аномалий типа «Воронка». При контакте с телом распространяет направленное излучение, защищающее от царапин или ран, нанесенных холодным оружием. Такой артефакт найти не сложно, потому и деньги за него дают небольшие.</text>
+	</string>
+
+		<string id="af-electra-priboi">
+        	<text>Особая Электра</text>
+    	</string>
+	<string id="enc_zone_artifact_af-electra-priboi">
+        	<text>Крайне редкий артефакт. Многие исследователи даже не предполагают, что такая вещь может существовать в условиях нашего мира. Но слухов достаточно, чтобы сделать поиски этого артефакта целью многих научных экспедиций, а сам артефакт - одной из самых желаемых для исследований вещью. Больше про него ничего не известно.</text>
+    	</string>
+		
+		
+		<string id="mutant_poltergeist_glas">
+		<text>Глаз полтергейста</text>
+	</string>
+	<string id="mutant_poltergeist_glas_description">
+		<text>Никому неизвестно, зачем учёным глаз полтергейста, но они за него хорошо платят.</text>
+	</string>		
+		
+		
+	<string id="_st_hide_bloodsucker_name">
+		<text>Кожа кровососа</text>
+	</string>
+	<string id="_st_hide_bloodsucker_descr">
+		<text>Кровососы - вид мутировавших людей, что сразу заметно при детальном рассмотрении кожи. Что самое характерное, их кожа мягкая и приятная на ощупь, как кожа ребенка. Под кожей же располагается развитая мускулатура, которая явно не сыграет вам на руку при ближнем бое с ним. Использование кожи кровососа в своей броне является символом опытного охотника. Наиболее уникальным её свойством, в то же время и недостатком, является интенсивная реакция на изменение температуры - хоть кожа и не горит при высоких температурах, но она сильно нагревается причиняя вред носителю и может испортить его оборудование.</text>
+	</string>
+	<string id="_mutant_krovosos_meat">
+		<text>Мясо кровососа</text>
+	</string>
+	<string id="_mutant_krovosos_meat_description">
+		<text>Мясо кровососа весьма вязкое и тягучее, поэтому непригодно для еды. Хоть кровососы и являются смертельными чудовищами, цена на их мясо не особо высока из-за ограниченного применения. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_krovosos_meat_cook">
+		<text>Приготовленное мясо кровососа</text>
+	</string>
+	<string id="_mutant_krovosos_meat_cook_description">
+		<text>Мясо кровососа весьма вязкое и тягучее, поэтому непригодно для еды. Хоть кровососы и являются смертельными чудовищами, цена на их мясо не особо высока из-за ограниченного применения. Может заинтересовать ученых.</text>
+	</string>		
+	
+	<string id="_mutant_boar_chop_description">
+		<text>Самое популярное мясо на территории Зоны Отчуждения. Весьма питательное и не сильно загрязненное. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал.</text>
+	</string>
+	<string id="_mutant_boar_chop">
+		<text>Мясо кабана</text>
+	</string>
+	<string id="_mutant_boar_chop_cook_description">
+		<text>Самое популярное мясо на территории Зоны Отчуждения. Весьма питательное и не сильно загрязненное. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал.</text>
+	</string>
+	<string id="_mutant_boar_chop_cook">
+		<text>Приготовленное мясо кабана</text>
+	</string>	
+    <string id="_st_hide_boar_name">
+		<text>Шкура кабана</text>
+	</string>
+	<string id="_st_hide_boar_descr">
+		<text>Шкура кабанов, находящихся в Зоне, практически полностью покрыта толстым слоем меха. Эти мутанты довольно устойчивы к повреждениям и могут принять на себя значительный урон по одной простой причине: большая мышечная масса и практически несокрушимые кости. В то же время кожа у них довольно тонкая (скорее всего для эффективности теплообмена). Мех же в свою очередь делает шкуру относительно неплохим теплоизолятором.</text>
+	</string>	
+
+    <string id="_st_hide_chimera_name">
+		<text>Шкура химеры</text>
+	</string>
+	<string id="_st_hide_chimera_descr">
+		<text>Химера является одним из самых опасных мутантов в Зоне, поэтому стоит рассматривать её не только как смертельную угрозу, но и как источник обогащения. Все части тела, которые можно срезать с поверженной химеры можно продать за внушительную сумму денег. Кожа представляет наибольшую ценность для науки, а так же является лучшим предметом для повышения эффективности брони в пределах Зоны Отчуждения. Она предлагает очень хорошие свойства защиты, является очень лёгкой и не сковывает движения. Самая уникальная особенность кожи химеры - её органические волокна представляют собой очень хорошие проводники. Этот факт подтвержают многие разведчики, которые наблюдали за поведением химер, утвержадя, что химеры иногда выглядят как электрические аномалии при контакте с любым враждебным организмом. Но конкретных доказательств этого факта нет, так как мало кто возвращался живым после таких вылазок.</text>
+	</string>
+    <string id="_mutant_chimera_meat_description">
+		<text>Тяжелый кусок мяса химеры. Химерой принято называть одно из самых опасных существ, поэтому её мясо высоко ценится сталкерами-ветеранами, которые готовы купить его за весьма внушительную цену. Повара используют это мясо, как один из ключевых ингредиентов так называемой «Пищи охотника». Но немногие признают, что мясо химеры чем-то отличается по вкусу от мяса кабана. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_chimera_meat">
+		<text>Кусок мяса химеры</text>
+	</string>	
+	<string id="_mutant_chimera_meat_cook_description">
+		<text>Тяжелый кусок мяса химеры. Химерой принято называть одно из самых опасных существ, поэтому её мясо высоко ценится сталкерами-ветеранами, которые готовы купить его за весьма внушительную цену. Повара используют это мясо, как один из ключевых ингредиентов так называемой «Пищи охотника». Но немногие признают, что мясо химеры чем-то отличается по вкусу от мяса кабана. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_chimera_meat_cook">
+		<text>Приготовленный кусок мяса химеры</text>
+	</string>
+	
+	
+
+    <string id="_mutant_dog_meat_description">
+		<text>Мясо мутировавшей слепой собаки многие сталкеры используют как дешевую альтернативу наиболее популярному мясу кабана. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал.</text>
+	</string>
+	<string id="_mutant_dog_meat_cook">
+		<text>Приготовленное мясо слепого пса</text>
+	</string>
+	<string id="_mutant_dog_meat_cook_description">
+		<text>Мясо мутировавшей слепой собаки многие сталкеры используют как дешевую альтернативу наиболее популярному мясу кабана. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал</text>
+	</string>
+	<string id="_mutant_dog_meat">
+		<text>Мясо слепого пса</text>
+	</string>	
+	
+	
+    <string id="_st_hide_flesh_name">
+		<text>Шкура плоти</text>
+	</string>
+	<string id="_st_hide_flesh_descr">
+		<text>Кожа, срезанная с мутировавшей свиньи, обычно называемой плотью. Имеет большой вес (главный её недостаток) из-за толстого слоя жира под относительно мягким кожным покровом. Имеет низкую защиту от повреждений, но значительно уменьшает вредное воздействие химических, радиоактивных, термических и электрических аномалий.</text>
+	</string>
+    <string id="_mutant_flesh_meat_description">
+		<text>Довольно популярный продукт в Зоне, мясо плоти имеет хороший вкус и большую пищевую ценность. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал.</text>
+	</string>
+	
+	<string id="_mutant_flesh_meat_cook">
+		<text>Приготовленное мясо плоти</text>
+	</string>
+	<string id="_mutant_flesh_meat_cook_description">
+		<text>Довольно популярный продукт в Зоне, мясо плоти имеет хороший вкус и большую пищевую ценность. Ученые уже достаточно много провели исследований над принесенными сталкерами образцами, поэтому спрос как таковой на такие куски мяса упал.</text>
+	</string>
+	<string id="_mutant_flesh_meat">
+		<text>Мясо плоти</text>
+	</string>	
+	
+	
+    <string id="_st_hide_pseudodog_name">
+		<text>Шкура псевдособаки</text>
+	</string>
+	<string id="_st_hide_pseudodog_descr">
+		<text>Густо покрытая коротким и жестким мехом, шкура псевдособаки является одним из самых полезных, широко и повсеместно используемых шкур, доступных в Зоне. Она легко прикрепляется к броне даже лёгкими и простыми инструментами. При использовании даёт хорошую защиту от физических воздействий и от тепла. Мех так же обеспечивает неплохую изоляцию от электричества, но, как и все шкуры, накапливает на ворсе радиоактивные и токсичные частицы. Рекомендуется снимать его в радиоактивных и токсичных зонах.</text>
+	</string>
+	<string id="_st_hide_psy_dog_name">
+		<text>Мех псевдособаки</text>
+	</string>
+	<string id="_st_hide_psy_dog_descr">
+		<text>Мех псевдособаки, несомненно, является одним из самых красивых и редких материалов для изготовления одежды во всем мире. Обычно чисто-белый или серый, пользуется большим спросом и может быть продан за огромные деньги. В индустрию моды мех просочился посредством контрабандистов, которые записались в ряды охотников на мутантов. Для сталкеров может послужить в качестве одеяла, особенно во время холодных ночей. Так же защищает от пси-воздействия, когда  мех используется в качестве маски или капюшона. Так же, как и все шкуры, накапливает в себе радиацию и токсины, поэтому рекомендуется снимать в зараженных зонах. охотники носят его с гордостью, если убили мутанта самостоятельно.</text>
+	</string>
+    <string id="_mutant_psevdodog_meat_description">
+		<text>Мясо псевдособаки - весьма диетический продукт в Зоне. Довольно вкусное, с большой пищевой ценностью, сталкеры часто выбирают его в прожаренном виде. Может заинтересовать ученых. Сталкерам рекомендуется воздержаться от употребления такого рода мяса животных и мутантов в Зоне в сыром виде, так как оно наверняка заражено трихинеллезом или бруцеллезом. Эти заболевания передаются при употреблении зараженного мяса. Симптомы включают в себя лихорадку, усталость и потерю аппетита, что в суровых условиях Зоны весьма опасно. Абсцессы, странные опухоли на мясе дают понять, что оно заражено и следует его выбросить</text>
+	</string>
+	<string id="_mutant_psevdodog_meat">
+		<text>Мясо псевдособаки</text>
+	</string>
+	<string id="_mutant_psevdodog_meat_cook_description">
+		<text>Мясо псевдособаки - весьма диетический продукт в Зоне. Довольно вкусное, с большой пищевой ценностью, сталкеры часто выбирают его в прожаренном виде. Может заинтересовать ученых. Сталкерам рекомендуется воздержаться от употребления такого рода мяса животных и мутантов в Зоне в сыром виде, так как оно наверняка заражено трихинеллезом или бруцеллезом. Эти заболевания передаются при употреблении зараженного мяса. Симптомы включают в себя лихорадку, усталость и потерю аппетита, что в суровых условиях Зоны весьма опасно. Абсцессы, странные опухоли на мясе дают понять, что оно заражено и следует его выбросить.</text>
+	</string>
+	<string id="_mutant_psevdodog_meat_cook">
+		<text>Приготовленное мясо псевдособаки</text>
+	</string>	
+	
+	
+    <string id="_mutant_snork_mask_description">
+		<text>Маски на мордах снорков видимо представляют собой старую версию противогаза ГП-5 советского производства, которые часто применялись солдатами и исследователями на территории Зоны Отчуждения до второй Чернобыльской катастрофы. Некоторые из числа этих людей работали в многочисленных подземных лабораториях, полностью изолированных от внешнего мира, которые подвергались воздействию огромного количества излучения, которое и вызвало мутагенную форму человека, известного нам, как снорк.</text>
+	</string>
+	<string id="_mutant_snork_mask">
+		<text>Маска снорка</text>
+	</string>	
+	
+	
+    <string id="_mutant_tushkano_meat_cook_description">
+		<text>Небольшой кусочек мяса с тела мутировавшего грызуна. Дешевая и часто встречаемая пища, которая, как поговаривают сталкеры, укрепляет сердечную мышцу будучи приготовленной на огне. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_tushkano_meat_cook">
+		<text>Приготовленное мясо тушкана</text>
+	</string>
+	<string id="_mutant_tushkano_meat_description">
+		<text>Небольшой кусочек мяса с тела мутировавшего грызуна. Дешевая и часто встречаемая пища, которая, как поговаривают сталкеры, укрепляет сердечную мышцу будучи приготовленной на огне. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_tushkano_meat">
+		<text>Мясо тушкана</text>
+	</string>
+	
+	
+    <string id="_mutant_pseudogigant_meat">
+		<text>Кусок мяса псевдогиганта</text>
+	</string>
+    <string id="_mutant_pseudogigant_meat_description">
+		<text>Тяжелый кусок мяса псевдогиганта. Псевдогиганта принято называть одним из самых опасных существ, поэтому его мясо высоко ценится сталкерами-ветеранами, которые готовы купить его за весьма внушительную цену. Повара используют это мясо, как один из ключевых ингредиентов так называемой «Пищи охотника». Но немногие признают, что мясо псевдогиганта чем-то отличается по вкусу от мяса кабана. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_pseudogigant_meat_cook">
+		<text>Приготовленный кусок мяса псевдогиганта</text>
+	</string>
+    <string id="_mutant_pseudogigant_meat_cook_description">
+		<text>Тяжелый кусок мяса псевдогиганта. Псевдогиганта принято называть одним из самых опасных существ, поэтому его мясо высоко ценится сталкерами-ветеранами, которые готовы купить его за весьма внушительную цену. Повара используют это мясо, как один из ключевых ингредиентов так называемой «Пищи охотника». Но немногие признают, что мясо псевдогиганта чем-то отличается по вкусу от мяса кабана. Может заинтересовать ученых.</text>
+	</string>	
+	
+
+    <string id="_st_hide_pseudogiant_name">
+		<text>Шкура псевдогиганта</text>
+	</string>
+	<string id="_st_hide_pseudogiant_descr">
+		<text>Шкура псевдогиганта напоминает кожу слона. Толстая и твёрдая на ощупь, текстура рыхлая и наполена складками, которые выполняют функцию «радиатора», охлаждая организм существа. В среднем толщина кожи псевдогиганта составляет 2 см, что делает её очень прочной и способной выдерживать значительные повреждения. Но, за счёт этого, она имеет значительный вес. Псевдогиганты, как известно, обитают в районах с высокой токсичностью и радиоактивностью, следовательно их шкуры адаптированы к этим условиям, что делает их ещё более полезными. Шкура псевдогиганта ценится не только за свои физические качества, так же может послужить отличным трофеем и редким экземпляром для ученых в Зоне.</text>
+	</string>	
+	
+	
+    <string id="_st_hide_burer_name">
+		<text>Кожа бюрера</text>
+	</string>
+	<string id="_st_hide_burer_descr">
+		<text>Шкура бюрера во многом похожа на кожу скрюченного карлика. Добавьте к этому невыносимый запах протухших яиц и вы получите полное представление, почему сталкеры считают снятие шкуры настоящим подвигом. Практика показывает, что кожа предоставляет относительно небольшую защиту от физических воздействий, но в то же время может поглощать и рассеивать значительное количество пси-волн при ношении на голове. Кроме того, учитывая что бюреры встречаются довольно редко в Зоне, коже представляет особую ценность для ученых. Кожа бюрера имеет низкое электрическое сопротивление, и понижает сопротивление тела носителя, делая его более восприимчивым к поражению электрическим током.</text>
+	</string>	
+	
+	
+    <string id="_st_hide_cat_name">
+		<text>Кошачий мех</text>
+	</string>
+	<string id="_st_hide_cat_descr">
+		<text>Кошачий мех, несомненно, является одним из самых красивых материалов для изготовления одежды. Обычно не пользуется большим спросом и может быть продан за не большие деньги. Для сталкеров может послужить в качестве одеяла, особенно во время холодных ночей. При использовании даёт хорошую защиту от тепла. Так же, как и все шкуры, накапливает в себе радиацию и токсины, поэтому рекомендуется снимать в зараженных зонах.</text>
+	</string>
+    <string id="_mutant_cat_meat_description">
+		<text>Кошачее мясо - весьма диетический продукт в Зоне. Довольно вкусное, с большой пищевой ценностью, сталкеры часто выбирают его в прожаренном виде. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_cat_meat_cook">
+		<text>Приготовленное кошачее мясо</text>
+	</string>
+	<string id="_mutant_cat_meat_cook_description">
+		<text>Кошачее мясо - весьма диетический продукт в Зоне. Довольно вкусное, с большой пищевой ценностью, сталкеры часто выбирают его в прожаренном виде. Может заинтересовать ученых.</text>
+	</string>
+	<string id="_mutant_cat_meat">
+		<text>Кошачее мясо</text>
+	</string>	
+	
+	
+    <string id="_st_hide_controller_name">
+		<text>Скальп контролера</text>
+	</string>
+	<string id="_st_hide_controller_descr">
+		<text>Как и в случаи с другими мутантами-гуманоидами - снять скальп с контролера довольне непростая задача в эмоциональном плане, т.к. лицо контролера сохраняет человеческие черты. Конфиденциальные источники в вооруженных силах сообщали, что отпечатки пальцев человека, который превратился в контролера, можно найти в базах данных. Недавно проведенный анализ показал, что не только руки контролера способны издавать пси-волны, но и всё его тело является источником излучения. Таким образом, правильно подготовленная кожа с его головы, обладает способностью поглощать пси-энергию, достаточно лишь накинуть скальп себе на голову. Кожа так же является хорошим электропроводником.</text>
+	</string>		
+	
+	
+	
+	
+	<string id="st_equ_backpack_name">
+		<text>Рюкзак</text>
+	</string>
+	<string id="st_equ_backpack_desc">
+		<text>Обычный водостойкий рюкзак. Он имеет высокую популярность среди сталкеров, которые путешествуют по Зоне.</text>
+	</string>
+	<string id="st_equ_smallpack_name">
+		<text>Небольшой рюкзак</text>
+	</string>
+	<string id="st_equ_smallpack_desc">
+		<text>Небольшой рюкзак обычно носят новички. Внутренность была доработана для того чтобы держать воду вне. Не очень красивое решение, но работает.</text>
+	</string>
+	<string id="st_equ_milpack_name">
+		<text>Компактный рюкзак</text>
+	</string>
+	<string id="st_equ_milpack_desc">
+		<text>Рюкзак используется военными при более длительных штурмах.</text>
+	</string>
+	<string id="st_equ_touristpack_name">
+		<text>Туристический рюкзак</text>
+	</string>
+	<string id="st_equ_touristpack_desc">
+		<text>Туристический рюкзак с большим количеством места для хранения. Не очень популярны из-за его размера.</text>
+	</string>
+	<string id="st_equ_dolpack_name">
+		<text>Рюкзак "Долга"</text>
+	</string>
+	<string id="st_equ_dolgpack_desc">
+		<text>Рюкзак фирмы "Долг".</text>
+	</string>
+	<string id="st_equ_freepack_name">
+		<text>Рюкзак фирмы "Свобода"</text>
+	</string>
+	<string id="st_equ_freepack_desc">
+		<text>Рюкзак фирмы "Свобода".</text>
+	</string>
+	<string id="st_equ_cskypack_name">
+		<text>Рюкзак "Чистое небо"</text>
+	</string>
+	<string id="st_equ_cskypack_desc">
+		<text>Рюкзак фирмы "Чистое небо".</text>
+	</string>
+	<string id="st_equ_mercpack_name">
+		<text>Рюкзак наемников</text>
+	</string>
+	<string id="st_equ_mercpack_desc">
+		<text>Специальный рюкзак наемников</text>
+	</string>
+	<string id="st_equ_vest_name">
+		<text>Дополнительный жилет</text>
+	</string>
+	<string id="st_equ_vest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>
+	<string id="st_equ_milvest_name">
+		<text>Армейский жилет</text>
+	</string>
+	<string id="st_equ_milvest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>
+	<string id="st_equ_dolgvest_name">
+		<text>Жилет "Долга"</text>
+	</string>
+	<string id="st_equ_dolgvest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>
+	<string id="st_equ_freevest_name">
+		<text>Жилет "Свободы"</text>
+	</string>
+	<string id="st_equ_freevest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>	
+	<string id="st_equ_mercvest_name">
+		<text>Жилет "Наемников"</text>
+	</string>		
+	<string id="st_equ_mercvest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>	
+	<string id="st_equ_cskyvest_name">
+		<text>Жилет "Чистое небо"</text>
+	</string>		
+	<string id="st_equ_cskyvest_desc">
+		<text>Жилет с дополнительными карманами.</text>
+	</string>	
+	
+	
+	<!-------------------АМК------------------>
+    <!----Артефакты и разные вещи------------->
+    <!---------------------------------------->	
+	<string id="af_buliz">
+		<text>Булыжник</text>
+	</string>
+  <string id="enc_zone_artifact_buliz">
+		<text>Артефакт, который в результате энергетического коллапса потерял все свои свойства, называется "Булыжником". Эти артефакты остаются ценными для науки, так как выделяют световую и антигравитационную энергию. Учёные за них неплохо платят.</text>
+	</string>
+
+  <string id="af_spirit_1">
+		<text>Капля души</text>
+	</string>
+  <string id="enc_zone_artifact_spirit_1">
+		<text>Модификат улучшает здоровье и ликвидирует кровотечения. Немного повышает утомляемость человека. Слегка радиоактивен.</text>
+	</string> 
+
+  <string id="af_spirit_2">
+		<text>Огненная душа</text>
+	</string>
+  <string id="enc_zone_artifact_spirit_2">
+		<text>Этот мезомодификат сохраняет (и даже немного улучшает) свойство "Капли души" - улучшения здоровья и ликвидации кровотечения. В то же время негативно действует на выносливость человека. Умеренно радиоактивен.</text>
+	</string>
+
+  <string id="af_spirit_3">
+		<text>Кристальная душа</text>
+	</string>
+  <string id="enc_zone_artifact_spirit_3">
+		<text>Данный гипермодификат сохраняет свойства улучшения здоровья и и ликвидации кровотечения. Немного повышает утомляемость человека. Недостаток - довольно сильно фонит.</text>
+	</string>
+
+  <string id="af_spirit_4">
+		<text>Кристальная душа Бенгала</text>
+	</string>
+  <string id="enc_zone_artifact_spirit_4">
+		<text>Данный абсолют значительно улучшает здоровье, быстро ликвидирует кровотечения, но повышения утомляемости организма уже не наблюдается. Как раз наоборот - выносливость немного повышается. Очень ценится на рынке как в самой Зоне, так и вне её. Довольно сильно радиоактивен.</text>
+	</string>
+
+  <string id="af_cry_1">
+		<text>Слёзы Электры</text>
+	</string>
+  <string id="enc_zone_artifact_cry_1">
+		<text>Модификат неплохо выводит из человеческого организма радиацию, а также немного снимает усталость.</text>
+	</string>
+
+  <string id="af_cry_2">
+		<text>Слёзы огня</text>
+	</string>
+  <string id="enc_zone_artifact_cry_2">
+		<text>"Слёзы огня" довольно хорошо выводит из организма человека, носящего этот мезомодификат на поясе, радиацию.</text>
+	</string>
+
+  <string id="af_cry_3">
+		<text>Слёзы химеры</text>
+	</string>
+  <string id="enc_zone_artifact_cry_3">
+		<text>Этот гипермодификат кроме того, что очень хорошо выводит из организма радиацию, также полезен тем, что блокирует часть пси-излучения. Отрицательные характеристики "Слёз химеры" - ухудшение самочувствия человека и плохое заживление ран.</text>
+	</string>
+
+  <string id="af_babka_1">
+		<text>Бабкины бусы</text>
+	</string>
+  <string id="enc_zone_artifact_babka_1">
+		<text>Полученный модификат генерирует темпоральное поле, довольно значимо замедляющее скорость попадающих в него пуль и осколков, тем самым защищая человека от критических ранений. Немного радиоактивен и уменьшает стойкость к электрошоку.</text>
+	</string>
+
+  <string id="af_babka_2">
+		<text>Бусы прабабки</text>
+	</string>
+  <string id="enc_zone_artifact_babka_2">
+		<text>"Бусы прабабки" имеют несколько лучший показатель стойкости к пулевым повреждениям относительно "Бабкиных бус" за счёт усиления темпорального поля. При этом не стоит забывать, что "Бусы прабабки" довольно радиоактивны.</text>
+	</string>
+
+  <string id="af_babka_3">
+		<text>Бусы бабки бюрера</text>
+	</string>
+  <string id="enc_zone_artifact_babka_3">
+		<text>Уникальный гипермодификат. Его темпоральное поле очень сильное и имеет большой радиус, поэтому человек, носящий "Бусы бабки бюрера" на поясе, имеет большой шанс остаться в живых даже при попадании из СВД. Артефакт имеет сильный радиационный фон.</text>
+	</string>
+
+  <string id="af_pudd_1">
+		<text>Огненная пустышка</text>
+	</string>
+  <string id="enc_zone_artifact_pudd_1">
+		<text>Данный модификат, кроме снижения негативного влияния ударных воздействий, добавляет носящему его на поясе человеку выносливости. Но при этом делает организм более подверженным к воздействию аномалии "Электра". Слабо радиоактивен.</text>
+	</string>
+
+  <string id="af_pudd_2">
+		<text>Яркая пустышка</text>
+	</string>
+  <string id="enc_zone_artifact_pudd_2">
+		<text>Предмет дальнейшей эволюции "Огненной пустышки", "Яркая пустышка", улучшает выносливость, но и усиливает подверженность организма электрошоку. Единственное, что остается у данного мезомодификата неизменным - снижение негативного влияния ударных воздействий. Умеренно радиоактивен.</text>
+	</string>
+
+  <string id="af_pudd_3">
+		<text>Лунная пустышка</text>
+	</string>
+  <string id="enc_zone_artifact_pudd_3">
+		<text>Гипермодификат неплохо нейтрализует влияние ударных аномалий, ощутимо повышает выносливость носящего его на поясе человека, но повышает чувствительность к электрошоку. Умеренно радиоактивен.</text>
+	</string>
+
+  <string id="af_pudd_4">
+		<text>Пуддинг</text>
+	</string>
+  <string id="enc_zone_artifact_pudd_4">
+		<text>Абсолют хорошо нейтрализует ударные воздействия и электрошок. К тому же он немного повышает выносливость. Сильно радиоактивен.</text>
+	</string>
+
+  <string id="af_dik_1">
+		<text>Дикобраз</text>
+	</string>
+  <string id="enc_zone_artifact_dik_1">
+		<text>Несмотря на то, что этот модификат очень прост, "Дикобраз" обладает приличным блокировки радиоактивного излучения! Это, собственно, единственное его положительное качество, так как модификат немного снижает выносливость, что является довольно скромной платой за возможность бродить по заражённым землям, не боясь получить смертельную дозу радиации.</text>
+	</string>
+
+  <string id="af_dik_2">
+		<text>Электрический дикобраз</text>
+	</string>
+  <string id="enc_zone_artifact_dik_2">
+		<text>Мезомодификат обладает редчайшим показателем блокирования радиации, снижает утомляемость человека, но, к сожалению, увеличивает чувствительность к электрошоку. Кроме того немного защищает от телепатического воздействия.</text>
+	</string>
+
+  <string id="af_dik_3">
+		<text>Сопливый дикобраз</text>
+	</string>
+  <string id="enc_zone_artifact_dik_3">
+		<text>Этот гипермодификат имеет редкий показатель по блокировке радиации - человек получает меньше половины от того количества рентген, которого он получил бы, не одев на пояс этот гипермодификат. Помимо этого он также добавляет выносливости. Неприятной стороной "Сопливого дикобраза" является то, что он повышает чувствительность человека к электрошоку, и его неудобно носить из-за всё время сочащейся непонятной слизи. Субстанция безвредная, но до жути неприятная. Несмотря на свою непрезентабельность, гипермодификат очень ценится в Зоне.</text>
+	</string>
+
+  <string id="af_dik_4">
+		<text>Каменный дикобраз</text>
+	</string>
+  <string id="enc_zone_artifact_dik_4">
+		<text>Данный абсолют снижает дозу радиации, полученную человеком, больше чем в 2 раза! Помимо этого редчайшего качества, "Каменный дикобраз" снижает чувствительность человека к электрошоку, эффективно добавляет выносливости. Очень ценится не только учёными, но и среди сталкеров.</text>
+	</string>
+
+  <string id="af_kol_1">
+		<text>Стальной колобок</text>
+	</string>
+  <string id="enc_zone_artifact_kol_1">
+		<text>Этот модификат уменьшает чувствительность кожи к разрыву. Качество замечательное и абсолютно не изученное учёными. К сожалению, радиоактивен.</text>
+	</string>
+
+  <string id="af_kol_2">
+		<text>Титановый колобок</text>
+	</string>
+  <string id="enc_zone_artifact_kol_2">
+		<text>"Титановый колобок" уменьшает чувствительность кожи к разрыву.</text>
+	</string>
+
+  <string id="af_kol_3">
+		<text>Алмазный колобок</text>
+	</string>
+  <string id="enc_zone_artifact_kol_3">
+		<text>Гипермодификат придаёт коже носящего его человека стойкость к разрыву. Минусом этого довольно полезного гипермодификата является то, что он испускает радиационное излучение.</text>
+	</string>
+
+  <string id="af_kol_4">
+		<text>Младший брат Гиганта</text>
+	</string>
+  <string id="enc_zone_artifact_kol_4">
+		<text>Этот занятный абсолют уменьшает чувствительность кожи носящего его человека к разрыву. Радиоактивен.</text>
+	</string>
+
+  <string id="af_armor_1">
+		<text>Шкура</text>
+	</string>
+  <string id="enc_zone_artifact_armor_1">
+		<text>Модификат уменьшает восприимчивость к воздействию любой химически агрессивной среды и защищает от ожогов. Радиоактивен.</text>
+	</string>
+
+  <string id="af_armor_2">
+		<text>Чешуя</text>
+	</string>
+  <string id="enc_zone_artifact_armor_2">
+		<text>Мезомодификат "Чешуя" уменьшает воздействие на человека химически агрессивных сред  и защищает от ожогов. При этом "Чешуя" радиоактивна.</text>
+	</string>
+
+  <string id="af_armor_3">
+		<text>Панцирь</text>
+	</string>
+  <string id="enc_zone_artifact_armor_3">
+		<text>"Панцирь" у носящего его человека нейтрализует большую часть химически агрессивных сред при их контакте с кожей человека и защищает от ожогов. Единственным отрицательным качеством является средний радиационный фон.</text>
+	</string>
+
+  <string id="af_armor_4">
+		<text>Скальп контролёра</text>
+	</string>
+  <string id="enc_zone_artifact_armor_4">
+		<text>Этот абсолют снижает повреждения от агрессивных химических сред и защищает от ожогов и очень хорошо экранирует пси-излучение! Довольно радиоактивен.</text>
+	</string>
+
+  <string id="af_simbion">
+		<text>Симбион</text>
+	</string>
+  <string id="enc_zone_artifact_simbion">
+		<text>Артефакт даёт носящему его на поясе человеку довольно чувствительную экранировку от пси-излучения. Но при этом "Симбион" усиливает кровотечение, снижает выносливость и стойкость к разрыву.</text>
+	</string>
+	
+	
+	
+	
+	
+	<string id="g_recept">
+	<text>Рецепт артефакта</text>
+	</string>
+	<string id="busi_1_d">
+		<text>На листке записан рецепт артефакта "Бабкины бусы"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="busi_2_d">
+		<text>На листке записан рецепт артефакта "Бусы прабабки"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="busi_3_d">
+		<text>На листке записан рецепт артефакта "Бусы бабки бюрера"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="simbion_1_d">
+		<text>На листке записан рецепт артефакта "Симбион"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="pudding_1_d">
+		<text>На листке записан рецепт артефакта "Огненная пустышка"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="pudding_2_d">
+		<text>На листке записан рецепт артефакта "Яркая пустышка"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="pudding_3_d">
+		<text>На листке записан рецепт артефакта "Лунная пустышка"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="pudding_4_d">
+		<text>На листке записан рецепт артефакта "Пуддинг"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="dik_1_d">
+		<text>На листке записан рецепт артефакта "Дикобраз"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="dik_2_d">
+		<text>На листке записан рецепт артефакта "Электрический дикобраз"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="dik_3_d">
+		<text>На листке записан рецепт артефакта "Сопливый дикобраз"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="dik_4_d">
+		<text>На листке записан рецепт артефакта "Каменный дикобраз"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="skura_1_d">
+		<text>На листке записан рецепт артефакта "Шкура"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="skura_2_d">
+		<text>На листке записан рецепт артефакта "Чешуя"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="skura_3_d">
+		<text>На листке записан рецепт артефакта "Панцирь"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="skura_4_d">
+		<text>На листке записан рецепт артефакта "Скальп контролёра"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="kolob_1_d">
+		<text>На листке записан рецепт артефакта "Стальной колобок"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="kolob_2_d">
+		<text>На листке записан рецепт артефакта "Титановый колобок"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="kolob_3_d">
+		<text>На листке записан рецепт артефакта "Алмазный колобок"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="kolob_4_d">
+		<text>На листке записан рецепт артефакта "Младший брат Гиганта"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="cry_1_d">
+		<text>На листке записан рецепт артефакта "Слёзы электры"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="cry_2_d">
+		<text>На листке записан рецепт артефакта "Слёзы огня"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="cry_3_d">
+		<text>На листке записан рецепт артефакта "Слёзы химеры"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="soul_1_d">
+		<text>На листке записан рецепт артефакта "Капли души"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+
+	<string id="soul_2_d">
+		<text>На листке записан рецепт артефакта "Огненная душа"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="soul_3_d">
+		<text>На листке записан рецепт артефакта "Кристальная душа"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="soul_4_d">
+		<text>На листке записан рецепт артефакта "Кристальная душа Бенгала"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>	
+	
+	<string id="caterpillar_d">
+		<text>На листке записан рецепт артефакта "Плазменная гусеница"\n%c[255,255,128,128]Чтобы получить рецепт, необходимо использовать предмет.</text>
+	</string>
+	
+	<string id="ka_1">
+		<text>Гравитационная капсула</text>
+	</string>
+	<string id="ka_1d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="ka_2">
+		<text>Огненная капсула</text>
+	</string>
+	<string id="ka_2d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="ka_3">
+		<text>Химическая капсула</text>
+	</string>
+	<string id="ka_3d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="ka_4">
+		<text>Снежная капсула</text>
+	</string>
+	<string id="ka_4d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="ka_5">
+		<text>Электрическая капсула</text>
+	</string>
+	<string id="ka_5d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="ka_6">
+		<text>Радиационная капсула</text>
+	</string>
+	<string id="ka_6d">
+		<text>Гладкая, напоминающая артефакт капсула, в которой специальным образом заготовлен набор реагентов подобранный индивидуально для каждой аномалии, создает условия для безопасной артмодификации в определенных типа аномалий. Выпускается НИИЧАЗ, а также какой-то подпольной организацией, которая доставляет их на рынок Зоны.</text>
+	</string>	
+	<string id="st_wpn_mine_name">
+    	<text>Мина-лепесток</text>
+  	</string>
+  	<string id="st_wpn_mine_descr">
+		<text>Противопехотная мина "ПФМ-1", печально известная благодаря причинению многочисленных жертв среди мирного населения. В обиходе носит название "мина-лепесток", из-за своей необычной формы.</text>
+  	</string>
+</string_table>

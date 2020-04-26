@@ -1,0 +1,164 @@
+<addonAzazelFactionChooser>
+	<background>
+		<auto_static x="0" y="0" width="1024" height="768" stretch="1">
+			<texture>ui\ui_addon_azazel_faction_chooser_backgroundColor</texture>
+		</auto_static>
+	</background>
+
+
+	<faction_stalker x="440" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_stalker</texture>
+			</auto_static>
+	</faction_stalker>
+		<faction_bandit x="488" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_bandit</texture>
+			</auto_static>
+		</faction_bandit>
+		<faction_csky x="536" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_csky</texture>
+			</auto_static>
+		</faction_csky>
+		
+		<faction_dolg x="440" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_dolg</texture>
+			</auto_static>
+		</faction_dolg>
+		<faction_freedom x="488" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_freedom</texture>
+			</auto_static>
+		</faction_freedom>
+		<faction_killer x="536" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_killer</texture>
+			</auto_static>
+		</faction_killer>
+
+		<faction_army x="440" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_army</texture>
+			</auto_static>
+		</faction_army>
+		<faction_ecolog x="488" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_ecolog</texture>
+			</auto_static>
+		</faction_ecolog>
+		<faction_monolith x="536" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_monolith</texture>
+			</auto_static>
+		</faction_monolith>
+
+			
+		<!-- patches inactive -->
+		<faction_stalker_inactive x="440" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_stalker_inactive</texture>
+			</auto_static>
+		</faction_stalker_inactive>
+		<faction_bandit_inactive x="488" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_bandit_inactive</texture>
+			</auto_static>
+		</faction_bandit_inactive>
+		<faction_csky_inactive x="536" y="495" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_csky_inactive</texture>
+			</auto_static>
+		</faction_csky_inactive>
+		
+		<faction_dolg_inactive x="440" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_dolg_inactive</texture>
+			</auto_static>
+		</faction_dolg_inactive>
+		<faction_freedom_inactive x="488" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_freedom_inactive</texture>
+			</auto_static>
+		</faction_freedom_inactive>
+		<faction_killer_inactive x="536" y="543" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_killer_inactive</texture>
+			</auto_static>
+		</faction_killer_inactive>
+
+		<faction_army_inactive x="440" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_army_inactive</texture>
+			</auto_static>
+		</faction_army_inactive>
+		<faction_ecolog_inactive x="488" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_ecolog_inactive</texture>
+			</auto_static>
+		</faction_ecolog_inactive>
+		<faction_monolith_inactive x="536" y="591" width="48" height="48">
+			<auto_static x="0" y="0" width="48" height="48" stretch="1">
+				<texture>ui_mm_faction_monolith_inactive</texture>
+			</auto_static>
+		</faction_monolith_inactive>
+
+	
+	
+	<btn_ok x="500" y="700" width="24" height="48" stretch="1">
+		
+			<text align="c" font="graffiti32">OK</text>
+			<text_color>
+				<e r="190" g="190" b="190"/>
+				<h r="190" g="0" b="0"/>
+			</text_color>
+			
+	</btn_ok>
+		
+	<label_dead x="512" y="190">
+		<text r="190" g="190" b="190" font="graffiti50" align="c" vert_align="c">st_addon_azazel_faction_chooser_label_chooseFaction</text>
+	</label_dead>
+
+	
+	<label_choseFaction x="512" y="475">
+		<text r="190" g="190" b="190" font="graffiti32" align="c" vert_align="c">st_addon_azazel_faction_chooser_label_dead</text>
+	</label_choseFaction>
+	
+	<label_doNotPlayAnimation x="646" y="550">
+		<text r="190" g="190" b="190" font="graffiti22" align="l" vert_align="c">st_addon_azazel_faction_chooser_label_doNotPlayAnimation</text>
+	</label_doNotPlayAnimation>
+	
+	<checkbox_doNotPlayAnimation_checked x="625" y="543" width="32" height="32">
+		<auto_static width="20" height="20" stretch="1">
+				<texture x="32" y="0" width="32" height="32">ui\ui_addon_azazel_faction_chooser_icons</texture>
+		</auto_static>
+		
+	</checkbox_doNotPlayAnimation_checked>
+	
+	<checkbox_doNotPlayAnimation_unchecked x="625" y="543" width="32" height="32" >
+		<auto_static width="20" height="20" stretch="1">
+				<texture x="0" y="0" width="32" height="32">ui\ui_addon_azazel_faction_chooser_icons</texture>
+				
+		</auto_static>
+	</checkbox_doNotPlayAnimation_unchecked>
+	----------------------------------------------------------------------
+	<label_findNearest x="646" y="590">
+		<text r="190" g="190" b="190" font="graffiti22" align="l" vert_align="c">st_addon_azazel_faction_chooser_label_findNearest</text>
+	</label_findNearest>
+	
+	<checkbox_findNearest_checked x="625" y="583" width="32" height="32">
+		<auto_static width="20" height="20" stretch="1">
+				<texture x="32" y="0" width="32" height="32">ui\ui_addon_azazel_faction_chooser_icons</texture>
+		</auto_static>
+		
+	</checkbox_findNearest_checked>
+	
+	<checkbox_findNearest_unchecked x="625" y="583" width="32" height="32" >
+		<auto_static width="20" height="20" stretch="1">
+				<texture x="0" y="0" width="32" height="32">ui\ui_addon_azazel_faction_chooser_icons</texture>
+				
+		</auto_static>
+	</checkbox_findNearest_unchecked>
+	
+</addonAzazelFactionChooser>

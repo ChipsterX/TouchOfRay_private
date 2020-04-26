@@ -1,0 +1,50 @@
+[af_electra_moonlight_soc]:af_base1
+GroupControlSection	= spawn_group
+$spawn				= "artifacts\electra moonlight"
+
+$prefetch 			= 64
+cform				= skeleton
+class				= SCRPTART
+
+visual				= physics\anomaly\artefact_electra1.ogf 
+description			= enc_zone_artifact_af-electra-moonlight
+inv_name			= af-electra-moonlight
+inv_name_short		= af-electra-moonlight
+inv_weight			= 0.5
+
+inv_grid_x			= 19
+inv_grid_y			= 24
+
+cost				= 4500
+
+jump_height			= .1
+
+particles			= anomaly2\artefact\artefact_electra
+
+lights_enabled = true	 
+trail_light_range = 1.0
+trail_light_color = 2.2,0.7,1.3
+
+
+artefact_activation_seq	= af_activation_electra
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = 0
+satiety_restore_speed   = 0
+power_restore_speed     = 0.00545 
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.1
+hit_absorbation_sect = af_electra_moonlight1_absorbation
+
+;коэффициенты иммунитета 
+[af_electra_moonlight1_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = -0.0312;625
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

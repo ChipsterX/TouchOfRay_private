@@ -1,0 +1,573 @@
+	<string id="ui_mm_mod_option">
+		<text>Опции «МОДА»</text>
+	</string>
+	<string id="ui_mm_show_actor_position">
+		<text>Координировать</text>
+	</string>
+	<string id="kb_zoom_inc">
+		<text>Прицел: приблизить</text>
+	</string>
+	<string id="kb_zoom_dec">
+		<text>Прицел: отдалить</text>
+	</string>
+	<string id="kb_cam_1">
+		<text>Вид камеры: 1-е лицо</text>
+	</string>
+	<string id="kb_cam_2">
+		<text>Вид камеры: 2-е лицо</text>
+	</string>
+	<string id="kb_cam_3">
+		<text>Вид камеры: 3-е лицо</text>
+	</string>
+        <string id="st_sigerous_top_register">
+		<text>Зарегистрироваться</text>
+	</string>
+        <string id="st_waypoint_editor_mark_point">
+		<text>Вставить точку</text>
+	</string>
+        <string id="st_waypoint_editor_print_waypoint">
+		<text>Завершить путь</text>
+	</string>
+        <string id="st_waypoint_editor_check_way_closed_hint">
+		<text>Если точек много, путь будет замкнут</text>
+	</string>
+        <string id="st_waypoint_editor_empty_flags_hint">
+		<text>Создавать точки без флагов - flags = 0x1</text>
+	</string>
+        <string id="st_waypoint_editor_autochange_hint">
+		<text>Автоматическая дописка walk и look</text>
+	</string>
+        <string id="st_remote_charge_place">
+		<text>Установить</text>
+	</string>
+        <string id="st_remote_charge_cancel">
+		<text>Отмена</text>
+	</string>
+        <string id="st_allspawn_editor_title">
+		<text>Редактор «all.spawn»</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_1">
+		<text>Основное</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_2">
+		<text>Аномалии</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_3">
+		<text>Артефакты</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_4">
+		<text>Броня</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_5">
+		<text>Оружие</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_6">
+		<text>Аммуниция</text>
+	</string>
+        <string id="st_allspawn_editor_switch_panel_7">
+		<text>Разное</text>
+	</string>
+        <string id="st_allspawn_editor_create">
+		<text>Создать код</text>
+	</string>
+        <string id="st_allspawn_editor_read_example">
+		<text>Показать код</text>
+	</string>
+        <string id="st_allspawn_editor_radius_minus_hint">
+		<text>Уменьшить радиус объекта</text>
+	</string>
+        <string id="st_allspawn_editor_radius_plus_hint">
+		<text>Увеличить радиус объекта</text>
+	</string>
+        <string id="st_allspawn_editor_counter_minus_hint">
+		<text>Уменьшить значение заголовка секции</text>
+	</string>
+        <string id="st_allspawn_editor_counter_plus_hint">
+		<text>Увеличить значение заголовка секции</text>
+	</string>
+        <string id="st_allspawn_editor_magazine_minus_hint">
+		<text>Уменьшить количество патронов в коробке</text>
+	</string>
+        <string id="st_allspawn_editor_magazine_plus_hint">
+		<text>Увеличить количество патронов в коробке</text>
+	</string>
+        <string id="st_allspawn_auto_print_signal">
+		<text>Создан объект:</text>
+	</string>
+        <string id="st_allspawn_auto_print_error">
+		<text>Ошибка: не выбран тип предмета</text>
+	</string>
+        <string id="st_allspawn_auto_print_activate">
+		<text>Включить авто-отладку</text>
+	</string>
+        <string id="st_allspawn_auto_print_deactivate">
+		<text>Выключить авто-отладку</text>
+	</string>
+        <string id="st_allspawn_auto_print_on">
+		<text>АО Вкл.</text>
+	</string>
+        <string id="st_allspawn_auto_print_off">
+		<text>АО Выкл.</text>
+	</string>
+        <string id="st_allspawn_editor_display_radius_hint">
+		<text>Радиус объекта</text>
+	</string>
+        <string id="st_allspawn_editor_display_counter_hint">
+		<text>Значение заголовка секции</text>
+	</string>
+        <string id="st_allspawn_editor_display_magazine_hint">
+		<text>Количество патронов в коробке</text>
+	</string>
+        <string id="st_allspawn_editor_prefix_field_hint">
+		<text>Элемент имени объекта №1</text>
+	</string>
+        <string id="st_allspawn_editor_suffix_field_hint">
+		<text>Элемент имени объекта №2</text>
+	</string>
+        <string id="st_allspawn_editor_logic_path_field_hint">
+		<text>Путь к файлу логики</text>
+	</string>
+        <string id="st_allspawn_editor_hiding_place_field_hint">
+		<text>Название тайника, к которому относится предмет</text>
+	</string>
+        <string id="st_allspawn_editor_check_button_spawner_hint">
+		<text>Использовать клавишу TAB для спауна</text>
+	</string>
+        <string id="st_allspawn_editor_check_with_logic_hint">
+		<text>Объект с логикой</text>
+	</string>
+        <string id="st_allspawn_editor_check_another_mode_hint">
+		<text>Активировать другой метод отладки. Шаблон: create("объект",x,y,z,lv,gv)</text>
+	</string>
+        <string id="st_allspawn_editor_check_another_mode_spawn_hint">
+		<text>При другом методе отладки - параллельно спаунить предмет.</text>
+	</string>
+        <string id="st_question_game_title">
+		<text>Игра: Что? Где? Когда?</text>
+	</string>
+        <string id="st_question_game_exit">
+		<text>Выход</text>
+	</string>
+        <string id="st_question_game_continue">
+		<text>Продолжить</text>
+	</string>
+        <string id="st_question_game_start">
+		<text>Новая игра</text>
+	</string>
+        <string id="st_question_game_answer_a">
+		<text>Вариант A</text>
+	</string>
+        <string id="st_question_game_answer_b">
+		<text>Вариант B</text>
+	</string>
+        <string id="st_question_game_answer_c">
+		<text>Вариант C</text>
+	</string>
+        <string id="st_question_game_answer_d">
+		<text>Вариант D</text>
+	</string>
+        <string id="st_question_game_exit_hint">
+		<text>Выход из мини-игры</text>
+	</string>
+        <string id="st_question_game_continue_hint">
+		<text>Переход к следующему вопросу</text>
+	</string>
+        <string id="st_question_game_start_hint">
+		<text>Запуск мини-игры</text>
+	</string>
+        <string id="st_question_game_manual_hint">
+		<text>Подсказка</text>
+	</string>
+        <string id="st_question_game_answer_a_hint">
+		<text>Выбор варианта A</text>
+	</string>
+        <string id="st_question_game_answer_b_hint">
+		<text>Выбор варианта B</text>
+	</string>
+        <string id="st_question_game_answer_c_hint">
+		<text>Выбор варианта C</text>
+	</string>
+        <string id="st_question_game_answer_d_hint">
+		<text>Выбор варианта D</text>
+	</string>
+        <string id="st_question_game_question_field_hint">
+		<text>Текущий вопрос</text>
+	</string>
+        <string id="st_question_game_correct_series_hint">
+		<text>Серия правильных ответов</text>
+	</string>
+        <string id="st_question_game_question_number_hint">
+		<text>Номер вопроса</text>
+	</string>
+        <string id="st_question_game_answer_a_field_hint">
+		<text>Вариант ответа: A</text>
+	</string>
+        <string id="st_question_game_answer_b_field_hint">
+		<text>Вариант ответа: B</text>
+	</string>
+        <string id="st_question_game_answer_c_field_hint">
+		<text>Вариант ответа: C</text>
+	</string>
+        <string id="st_question_game_answer_d_field_hint">
+		<text>Вариант ответа: D</text>
+	</string>
+        <string id="st_21_point_title">
+		<text>Игра: 21 очко</text>
+	</string>
+        <string id="st_21_point_continue_game">
+		<text>Продолжить</text>
+	</string>
+        <string id="st_21_point_take_rate">
+		<text>Принять ставки</text>
+	</string>
+        <string id="st_21_point_play_game">
+		<text>Начать игру</text>
+	</string>
+        <string id="st_21_point_exit_game">
+		<text>Выход</text>
+	</string>
+        <string id="st_21_point_take_else">
+		<text>Взять еще</text>
+	</string>
+        <string id="st_21_point_send_move">
+		<text>Передать ход</text>
+	</string>
+        <string id="st_21_point_save_rate_hint">
+		<text>Запоминать ставку</text>
+	</string>
+        <string id="st_21_point_increasing_hint">
+		<text>Шаг повышения ставки - 200</text>
+	</string>
+        <string id="st_position_printer_create">
+		<text>Печать</text>
+	</string>
+        <string id="st_personal_marker_setup">
+		<text>Установить</text>
+	</string>
+        <string id="st_personal_marker_radius_hide">
+		<text>Очистка А</text>
+	</string>
+        <string id="st_personal_marker_all_hide">
+		<text>Очистка Б</text>
+	</string>
+        <string id="st_personal_marker_radius_hide_hint">
+		<text>Очистить метки маяков в радиусе 100 метров.</text>
+	</string>
+        <string id="st_personal_marker_all_hide_hint">
+		<text>Очистить метки маяков в радиусе локации.</text>
+	</string>
+        <string id="st_personal_marker_cancel">
+		<text>Отмена</text>
+	</string>
+        <string id="st_personal_rukzak_leave">
+		<text>Установить</text>
+	</string>
+        <string id="st_personal_rukzak_radius_hide">
+		<text>Чистка меток А</text>
+	</string>
+        <string id="st_personal_rukzak_all_hide">
+		<text>Чистка меток Б</text>
+	</string>
+        <string id="st_personal_rukzak_radius_hide_hint">
+		<text>Очистить метки рюкзаков в радиусе 100 метров.</text>
+	</string>
+        <string id="st_personal_rukzak_all_hide_hint">
+		<text>Очистить метки рюкзаков в радиусе локации.</text>
+	</string>
+        <string id="st_personal_rukzak_cancel">
+		<text>Отмена</text>
+	</string>
+        <string id="st_personal_rukzak_with_spot">
+		<text>Положить в рюкзак радиометку</text>
+	</string>
+        <string id="st_personal_rukzak_with_take">
+		<text>С возможностью подбора</text>
+	</string>
+        <string id="st_game_time_hint">
+		<text>Игровое время</text>
+	</string>
+        <string id="st_off_pda_hint">
+		<text>Выключить КПК</text>
+	</string>
+        <string id="st_next_page_pda_hint">
+		<text>Далее</text>
+	</string>
+        <string id="st_back_page_pda_hint">
+		<text>Назад</text>
+	</string>
+        <string id="st_help_pda_hint">
+		<text>Справка</text>
+	</string>
+        <string id="st_guidebook_close_hint">
+		<text>Выйти из GPS-проводника</text>
+	</string>
+        <string id="st_minus_volume_hint">
+		<text>Уменьшить громкость</text>
+	</string>
+        <string id="st_plus_volume_hint">
+		<text>Увеличить громкость</text>
+	</string>
+        <string id="st_repeat_track_hint">
+		<text>Повторять один трек</text>
+	</string>
+        <string id="st_queue_track_hint">
+		<text>Воспроизводить каждый трек по очереди</text>
+	</string>
+        <string id="st_repair_items">
+		<text>Отремонтировать</text>
+	</string>
+        <string id="st_menu_close">
+		<text>Закрыть</text>
+	</string>
+        <string id="st_army_timer_start">
+		<text>Запустить</text>
+	</string>
+        <string id="st_army_timer_reset">
+		<text>Сброс</text>
+	</string>
+        <string id="st_mp3_player_merry">
+		<text>Веселая</text>
+	</string>
+        <string id="st_mp3_player_dance">
+		<text>Клубная</text>
+	</string>
+        <string id="st_mp3_player_set_play">
+		<text>Воспроизвести</text>
+	</string>
+        <string id="st_mp3_player_set_stop">
+		<text>Остановить</text>
+	</string>
+        <string id="st_mp3_player_themes">
+		<text>Саундтреки</text>
+	</string>
+        <string id="st_mp3_player_other">
+		<text>Другая</text>
+	</string>
+        <string id="st_mp3_player_bonuses">
+		<text>Бонусы</text>
+	</string>
+	<string id="st_conventer_grenade_title">
+		<text>«Конвертер для гранат»</text>
+	</string>
+        <string id="st_conventer_grenade_attach_rgd5">
+		<text>Соединить(РГД-5)</text>
+	</string>
+        <string id="st_conventer_grenade_attach_f1">
+		<text>Соединить(Ф-1)</text>
+	</string>
+        <string id="st_conventer_grenade_attach_gd05">
+		<text>Соединить(ГД-05)</text>
+	</string>
+        <string id="st_mod_menu_back">
+		<text>Вернуться</text>
+	</string>
+        <string id="st_mod_menu_apply">
+		<text>Применить</text>
+	</string>
+        <string id="st_mod_menu_default">
+		<text>По умолчанию</text>
+	</string>
+        <string id="st_mod_menu_cancel">
+		<text>Отмена</text>
+	</string>
+        <string id="st_mod_menu_optimization">
+		<text>Оптимизация</text>
+	</string>
+        <string id="st_mod_menu_options_hud">
+		<text>Установки HUDа</text>
+	</string>
+        <string id="st_mod_main_options_title">
+		<text>Дополнительные опции</text>
+	</string>
+        <string id="st_mod_hud_options_title">
+		<text>Параметры худа</text>
+	</string>
+	<string id="st_mod_menu_modes_immortal">
+		<text>Бессмертие</text>
+	</string>
+	<string id="st_mod_menu_modes_powerfull">
+		<text>Беск. энергия</text>
+	</string>
+	<string id="st_mod_menu_modes_bleeding">
+		<text>Без кровотечения</text>
+	</string>
+	<string id="st_mod_menu_modes_autorepair">
+		<text>Авторемонт</text>
+	</string>
+	<string id="st_mod_menu_modes_ammo">
+		<text>Беск. патроны</text>
+	</string>
+        <string id="st_opt_clean_anomaly">
+		<text>Убрать SGM аномалии</text>
+	</string>
+        <string id="st_opt_clean_mines">
+		<text>Убрать SGM мины</text>
+	</string>
+        <string id="st_opt_clean_monsters">
+		<text>Убрать тела монстров</text>
+	</string>
+        <string id="st_mod_option_automatic_use">
+		<text>Автоматическая система приёма</text>
+	</string>
+        <string id="st_mod_option_automatic_use_descr">
+		<text>Автоматический приём необходимых для выживания ГГ препаратов, если таковые имеются.</text>
+	</string>
+        <string id="st_mod_option_auto_energy">
+		<text>Автоматический энергетик</text>
+	</string>
+        <string id="st_mod_option_auto_energy_descr">
+		<text>Автоматический приём энергетических напитков, если такие имеются, при малом запасе выносливости ГГ.</text>
+	</string>
+        <string id="st_mod_option_no_hide_weapon">
+		<text>Не прятать оружие на базах</text>
+	</string>
+        <string id="st_mod_option_no_hide_weapon_descr">
+		<text>Данная опция позволит не прятать оружие там, где его нужно было прятать.</text>
+	</string>
+        <string id="st_mod_option_deactivate_vibros">
+		<text>Отключить выброс</text>
+	</string>
+        <string id="st_mod_option_deactivate_vibros_descr">
+		<text>Полное отключение выброса.</text>
+	</string>
+        <string id="st_mod_option_deactivate_blackday">
+		<text>Отключить затмение</text>
+	</string>
+        <string id="st_mod_option_deactivate_blackday_descr">
+		<text>Полное отключение дневных затмений.</text>
+	</string>
+        <string id="st_mod_option_deactivate_minetrap">
+		<text>Обесточить мины-ловушки</text>
+	</string>
+        <string id="st_mod_option_deactivate_minetrap_descr">
+		<text>После включения данной опции, все мины-растяжки будут обесточены, и как результат они не будут детонировать при обнаружении целей. Данная опция работает только на Затоне, Юпитере и Припяти.</text>
+	</string>
+        <string id="st_mod_option_create_more_monsters">
+		<text>Спаунить больше монстров</text>
+	</string>
+        <string id="st_mod_option_create_more_monsters_descr">
+		<text>В ночное время суток будут появляться дополнительные стаи мутантов, что в значительной степени усложняет игровой процесс. Также, будут активны засады мутантов - неожиданное появление их из-за кустов или еще от куда-то. Данная опция работает только на Затоне, Юпитере и Припяти.</text>
+	</string>
+        <string id="st_mod_option_gather_outfits">
+		<text>Снимать броню с трупов</text>
+	</string>
+        <string id="st_mod_option_gather_outfits_descr">
+		<text>Включение данной опции позволит снимать броню с некоторых трупов.</text>
+	</string>
+        <string id="st_mod_option_ai_granade">
+		<text>Запретить НПС кидать гранаты</text>
+	</string>
+        <string id="st_mod_option_ai_granade_descr">
+		<text>НПС больше не используют гранаты по назначению.</text>
+	</string>
+        <string id="st_mod_option_abandoned">
+		<text>Отключить заселение пустых мест</text>
+	</string>
+        <string id="st_mod_option_abandoned_descr">
+		<text>Опция отключает слишком большой спаун НПС. Пример эффекта: после разгрома наёмников у завода по переработке - завод будет пустовать, то бишь НПС больше не будут приходить на завод.</text>
+	</string>
+        <string id="st_mod_option_alfa_force">
+		<text>Разрешить отряд Альфа</text>
+	</string>
+        <string id="st_mod_option_alfa_force_descr">
+		<text>Преследование ГГ специальными отрядами "Альфа". Только на Затоне, Юпитере и Припяти.</text>
+	</string>
+        <string id="st_mod_option_hide_weapon_part1">
+		<text>Скрыть информ.</text>
+	</string>
+        <string id="st_mod_option_hide_weapon_part2">
+		<text>о хар-ках оружия</text>
+	</string>
+        <string id="st_mod_option_hide_weapon_info_descr">
+		<text>Убрать блок информации о текущем оружии, который находится в правом верхнем углу экрана.</text>
+	</string>
+        <string id="st_mod_option_shock_hits">
+		<text>Отключить "шатание" при попадании</text>
+	</string>
+        <string id="st_mod_option_shock_hits_descr">
+		<text>Отключение расплывающегося экрана, который наблюдался после того как ГГ получал серьёзное пулевое ранение или удар.</text>
+	</string>
+        <string id="st_mod_option_actor_vertigo">
+		<text>Отключить головокружение</text>
+	</string>
+        <string id="st_mod_option_actor_vertigo_descr">
+		<text>Отключение расплывающегося экрана, который наблюдался при критическом состоянии здоровья ГГ.</text>
+	</string>
+        <string id="st_mod_option_shock_motion">
+		<text>Активировать эффект "отклонения"</text>
+	</string>
+        <string id="st_mod_option_shock_motion_descr">
+		<text>При серьёзном попадании пули или ударе по ГГ - будет срабатывать эффект покачивания камеры.</text>
+	</string>
+        <string id="st_mod_option_rank_counter">
+		<text>Вывести на HUD инф. о ранге</text>
+	</string>
+        <string id="st_mod_option_rank_counter_descr">
+		<text>Вывод специального HUD элемента на экран. В нём будет отображено текущее количество очков ранга ГГ.</text>
+	</string>
+        <string id="st_mod_option_hit_marks">
+		<text>Отключить кляксы крови на экране</text>
+	</string>
+        <string id="st_mod_option_hit_marks_descr">
+		<text>После включения данной опции, на экране не будут отображаться кляксы крови, которые обычно появляются вследствие ранения ГГ.</text>
+	</string>
+        <string id="st_mod_option_carrying_hud">
+		<text>Динамический HUD текущей брони</text>
+	</string>
+        <string id="st_mod_option_carrying_hud_descr">
+		<text>При ношении шлемов и некоторых видов брони - будет отображаться динамический HUD.</text>
+	</string>
+        <string id="st_mod_option_carrying_breathing">
+		<text>Использовать респиратор</text>
+	</string>
+        <string id="st_mod_option_carrying_breathing_descr">
+		<text>Звук дыхания ГГ при одетом противогазе.</text>
+	</string>
+        <string id="st_mod_option_statistic_event">
+		<text>Отключить события статистики</text>
+	</string>
+        <string id="st_mod_option_statistic_event_descr">
+		<text>При повышении ранга, найденном SGM тайнике, найденном персональном тайнике - не будет вывода информации в левом верхнем углу экрана.</text>
+	</string>
+        <string id="st_guidebook_escape_point1">
+		<text>Мост</text>
+	</string>
+        <string id="st_guidebook_escape_point2">
+		<text>АТП</text>
+	</string>
+        <string id="st_guidebook_escape_point3">
+		<text>Деревня</text>
+	</string>
+        <string id="st_guidebook_escape_point4">
+		<text>Блокпост</text>
+	</string>
+        <string id="st_guidebook_escape_point5">
+		<text>База</text>
+	</string>
+        <string id="st_guidebook_escape_point6">
+		<text>Блокпост</text>
+	</string>
+        <string id="st_guidebook_marsh_point1">
+		<text>Посёлок</text>
+	</string>
+        <string id="st_guidebook_marsh_point2">
+		<text>Механизаторский двор</text>
+	</string>
+        <string id="st_guidebook_marsh_point3">
+		<text>Посёлок</text>
+	</string>
+        <string id="st_guidebook_marsh_point4">
+		<text>Насосная станция</text>
+	</string>
+        <string id="st_guidebook_marsh_point5">
+		<text>Рыбацкий хутор</text>
+	</string>
+        <string id="st_guidebook_marsh_point6">
+		<text>Старая церковь</text>
+	</string>
+        <string id="st_guidebook_marsh_point7">
+		<text>Посёлок</text>
+	</string>
+        <string id="st_guidebook_marsh_point8">
+		<text>Сгоревший хутор</text>
+	</string>

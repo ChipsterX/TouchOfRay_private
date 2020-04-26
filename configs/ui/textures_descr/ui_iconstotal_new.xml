@@ -1,0 +1,32 @@
+<w>
+    <file name="ui\ui_iconsTotal">
+    <texture id="ui_iconsTotal_med"     	x="498" y="0"   width="83" height="47" />
+    <texture id="ui_iconsTotal_tors"     	x="332" y="47"   width="83" height="47" />
+	<texture id="ui_iconsTotal_head"     	x="166" y="188"   width="83" height="47" />
+	<texture id="ui_iconsTotal_blo"     	x="332" y="47"   width="83" height="47" />
+	<texture id="ui_iconsTotal_stomach"     x="498" y="47"   width="83" height="47" />	
+	<texture id="ui_iconsTotal_plus"        x="332" y="470"   width="83" height="47" />		
+	
+	<texture id="ui_iconsTotal_The damage is not passed"        x="332" y="470"   width="83" height="47" />	
+	<texture id="ui_iconsTotal_head_nil"        x="166" y="517"   width="83" height="47" />	
+	<texture id="ui_iconsTotal_zombie_paraz"        x="166" y="47"   width="83" height="47" />	
+
+	<texture id="ui_iconsTotal_anomaly"        x="415" y="329"   width="83" height="47" />	
+	
+    <texture id="ui_iconsTotal_zwuk_naiden"        x="83" y="752"   width="83" height="47" />	
+	<texture id="ui_iconsTotal_warning_mutant"        x="83" y="564"   width="83" height="47" />
+	
+	<texture id="ui_iconsTotal_obrazec"        x="249" y="940"   width="83" height="47" />			
+		
+	<texture id="ui_iconsTotal_treasure"        x="415" y="141"   width="83" height="47" />		
+	
+	<texture id="ui_iconsTotal_amk_recept"        x="498" y="94"   width="83" height="47" />	
+
+	<texture id="ui_iconsTotal_amk_kapsula"        x="498" y="94"   width="83" height="47" />		
+	<texture id="ui_iconsTotal_pda"        x="83" y="188"   width="83" height="47" />		
+	<texture id="ui_iconsTotal_trup"        x="498" y="141"   width="83" height="47" />	
+
+	<texture id="ui_iconsTotal_horror"        x="499" y="236"   width="83" height="47" />
+	
+   </file>
+</w>

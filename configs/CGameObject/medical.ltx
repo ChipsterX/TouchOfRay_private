@@ -1,0 +1,142 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;	MEDICAL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[bandage]:booster
+$spawn                                   = "food and drugs\bandage"
+visual                                   = dynamics\devices\dev_bandage\dev_bandage.ogf
+description                              = st_bandage_descr
+
+inv_name                                 = st_bandage
+inv_name_short                           = st_bandage
+inv_weight                               = 0.05 ;0.2               
+cost                                     = 180
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 6
+inv_grid_y                               = 13
+
+boost_time                               = 10.0
+boost_bleeding_restore                   = 0.02
+
+use_sound                                = interface\no_sound
+
+
+;antirad new
+[antirad]:booster
+$spawn                                   = "food and drugs\antirad"
+visual                                   = dynamics\devices\dev_antirad\dev_antirad.ogf
+inv_name                                 = st_antirad
+inv_name_short                           = st_antirad
+description                              = st_antirad_descr
+inv_weight                               = 0.01
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 7
+inv_grid_y                               = 13
+cost                                     = 1500
+
+use_sound                                = interface\no_sound
+
+
+[medkit]:booster
+$spawn                                   = "food and drugs\medkit"
+visual                                   = dynamics\devices\dev_aptechka\dev_aptechka_low.ogf
+inv_name                                 = st_medkit
+inv_name_short                           = st_medkit
+description                              = st_medkit_descr
+inv_weight                               = 0.1
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 8
+inv_grid_y                               = 13
+cost                                     = 950
+
+boost_time                               = 20.0
+boost_health_restore                     = 0.005
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 3
+remove_after_use                         = true
+empty_weight                             = 0.02
+
+[medkit_army]:booster
+$spawn                                   = "food and drugs\medkit_army"
+visual                                   = dynamics\devices\dev_aptechka\dev_aptechka_high.ogf
+inv_name                                 = st_medkit_army
+inv_name_short                           = st_medkit_army
+description                              = st_medkit_army_descr
+inv_weight                               = 0.1
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 9
+inv_grid_y                               = 13
+cost                                     = 1650
+
+boost_time                               = 25.0
+boost_health_restore                     = 0.01
+
+boost_radiation_restore                  = 0.01
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 3
+remove_after_use                         = true
+empty_weight                             = 0.02
+
+
+[medkit_scientic]:booster
+$spawn                                   = "food and drugs\medkit_scientic"
+visual                                   = dynamics\devices\dev_aptechka\dev_aptechka_mid.ogf
+inv_name                                 = st_medkit_science
+inv_name_short                           = st_medkit_science
+description                              = st_medkit_science_descr
+inv_weight                               = 0.1
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 10
+inv_grid_y                               = 13
+cost                                     = 1850
+
+boost_time                               = 15.0
+boost_health_restore                     = 0.02
+boost_radiation_restore                  = 0.05
+
+use_sound                                = interface\no_sound
+
+use_condition                            = true
+max_uses                                 = 3
+remove_after_use                         = true
+empty_weight                             = 0.02
+
+
+[antizombin]:booster
+visual                                   = dynamics\item_antirak.ogf
+inv_name                                 = st_antz
+inv_name_short                           = st_antz
+description                              = st_antz_descr
+inv_weight                               = 0.12
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 39
+inv_grid_y                               = 38
+cost                                     = 14000
+
+eat_alcohol 							 = 0.3
+eat_thirst 								 = -1.0
+
+use_condition                            = true
+max_uses                                 = 2
+remove_after_use                         = true
+empty_weight                             = 0.06
+
+use_sound                                = interface\inv_nosound

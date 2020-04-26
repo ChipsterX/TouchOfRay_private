@@ -1,0 +1,43 @@
+[af_fuzz_kolobok_soc]:af_base1
+GroupControlSection	= spawn_group
+$spawn 			= "artifacts\fuzz kolobok"
+$npc			= on				; option for Level Editor
+;$prefetch 		= 3
+cform           = skeleton
+class   		= ARTEFACT
+
+visual				= physics\anomaly\artefact_rusty_hairs.ogf
+description			= enc_zone_artifact_af-fuzz-kolobok
+inv_name			= af-fuzz-kolobok
+inv_name_short		= af-fuzz-kolobok
+inv_weight			= 0.5
+
+inv_grid_x			= 15
+inv_grid_y			= 18
+cost				= 5000
+jump_height			= .5
+
+particles			= anomaly2\artefact\artefact_puxx
+lights_enabled = false
+
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = 0
+satiety_restore_speed   = 0
+power_restore_speed     = 0
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.145
+hit_absorbation_sect = af_fuzz_kolobok1_absorbation
+
+;коэффициенты иммунитета 
+[af_fuzz_kolobok1_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = 0
+wound_immunity         = 0.05 ; +5 гашение удара(разрыв)
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

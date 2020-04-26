@@ -1,0 +1,47 @@
+[af_drops]:af_base1
+
+GroupControlSection	= spawn_group
+$spawn 			= "artifacts\zharka drops"
+$npc			= on				; option for Level Editor
+;$prefetch 		= 3
+cform           = skeleton
+class   		= ARTEFACT
+
+visual				= physics\anomaly\artefact_kaply.ogf
+description			= enc_zone_artifact_af-drops
+inv_name			= af-drops
+inv_name_short		= af-drops
+inv_weight			= 0.5
+
+inv_grid_x			= 17
+inv_grid_y			= 23
+
+cost				= 500
+jump_height			= .1
+
+particles			= anomaly2\artefact\artefact_zharka
+lights_enabled = true	 
+trail_light_color = 6.6,6.7,0.3
+trail_light_range = 1.1
+
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0
+radiation_restore_speed = -0.0010
+satiety_restore_speed   = 0
+power_restore_speed     = -0.0009
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.03
+hit_absorbation_sect = af_drops_absorbation
+
+;коэффициенты иммунитета
+[af_drops_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = 0
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

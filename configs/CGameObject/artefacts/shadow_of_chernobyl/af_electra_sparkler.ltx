@@ -1,0 +1,48 @@
+[af_electra_sparkler_soc]:af_base1
+GroupControlSection	= spawn_group
+$spawn				= "artifacts\electra sparkler"
+
+$prefetch 			= 64
+cform				= skeleton
+class				= SCRPTART
+
+visual				= physics\anomaly\artefact_electra4.ogf
+description			= enc_zone_artifact_af-electra-sparkler 
+inv_name			= af-electra-sparkler
+inv_name_short		= af-electra-sparkler
+inv_weight			= 0.5
+
+inv_grid_x			= 17
+inv_grid_y			= 24
+
+cost				= 800
+
+jump_height			= .5
+
+particles			= anomaly2\artefact\artefact_electra
+
+lights_enabled = true	 
+trail_light_color = 0.5,2.5,1.9
+trail_light_range = 2.0
+
+artefact_activation_seq		= af_activation_electra
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = 0
+satiety_restore_speed   = 0
+power_restore_speed     = 0.0018 
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.08
+hit_absorbation_sect = af_electra_sparkler1_absorbation
+
+;коэффициенты иммунитета 
+[af_electra_sparkler1_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = -0.0312;625
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

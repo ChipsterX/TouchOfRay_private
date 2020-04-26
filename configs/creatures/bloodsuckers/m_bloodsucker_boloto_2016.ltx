@@ -1,0 +1,32 @@
+[bloodsucker_marsh]:bloodsucker_strong
+visual           	= monsters_narodnaya_solyanka\bloodsucker\bloodsucker_boloto_vid
+panic_threshold   	= 0.01
+community			= bloodsucker
+attack_params	    = bloodsucker_marsh_attack_params
+immunities_sect		= bloodsucker_marsh_immunities_strong
+
+class				= SM_KROMA
+
+[bloodsucker_marsh_attack_params]
+; anim      | time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  | Field of hit_test  (left,right, top, bottom) |  Test Dist
+;Left hand Strike
+stand_attack_0 =      0.30,   0.65,       200,        3.5, 2.0, 0.5,     -0.6, 0.6, -0.6, 0.6,          2.2
+;Both hands Strike
+stand_attack_1 =      0.30,   0.85,       200,        0.0, 2.0, 4.0,     -0.6, 0.6, -0.6, 0.6,          2.2
+;Right hand Strike
+stand_attack_2 =      0.30,   0.65,       200,        -4.0, 2.5, 0.50,   -0.6, 0.6, -0.6, 0.6,          2.2
+;Right hand Strike
+vampire_2   =         0.60,   0.90,      450,        0.0, 2.5, 4.50,     -1.2, 1.2, -1.2, 1.2,         4.5
+;Right hand Strike
+stand_attack_run_0 =  bloodsucker_strong_run_attack_sect
+
+[bloodsucker_marsh_immunities_strong]
+burn_immunity     		= 0.1
+strike_immunity     	= 0.1
+shock_immunity      	= 0.1
+wound_immunity      	= 0.1
+radiation_immunity    	= 0.0
+telepatic_immunity    	= 0.1
+chemical_burn_immunity  = 0.1
+explosion_immunity    	= 0.1
+fire_wound_immunity   	= 0.07

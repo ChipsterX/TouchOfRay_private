@@ -1,0 +1,57 @@
+[morlok_strong]:fracture_normal
+visual				= monsters_narodnaya_solyanka\izloms\morlok
+
+immunities_sect		= karlito_immunities
+attack_params		= m_karlito_attack_params
+damage				= m_karlito_damage
+MinAttackDist		= 1.5
+MaxAttackDist		= 2.2
+class				= SM_MORLO
+Spawn_Inventory_Item_Section = part_carlic_hand
+Spawn_Inventory_Item_Probability = 0.0
+
+; speed factors				linear | angular_real | angular_path | min |  max
+Velocity_RunFwdNormal		= 3.0,		3.5,			3.5,		0.4,	1	
+Velocity_WalkFwdDamaged		= 0.7,		3.0,			3.0,		0.2,	2
+Velocity_RunFwdDamaged		= 5.0,  	3.0,			3.0,		0.2,	1
+Velocity_Drag				= 1.0,		3.0,			3.0,		1,		1
+Velocity_Steal				= 1.5,		3.0,			3.0,		1,		1
+
+sound_idle				= monsters\karlik_new\idle_
+sound_eat				= monsters\karlik_new\eat_
+sound_aggressive		= monsters\karlik_new\attack_
+sound_attack_hit		= monsters\karlik_new\attack_hit_
+sound_take_damage		= monsters\karlik_new\take_damage_
+sound_die				= monsters\karlik_new\die_
+sound_panic				= monsters\karlik_new\attack_
+sound_die_in_anomaly	= monsters\karlik_new\die_
+sound_threaten			= monsters\biting\def_
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_growling			= monsters\biting\def_
+sound_idle				= monsters\karlik_new\idle_
+
+[karlito_immunities]
+burn_immunity 			= 0.45
+strike_immunity 		= 0.45
+shock_immunity 			= 0.45
+wound_immunity 			= 0.45
+radiation_immunity 		= 0.0
+telepatic_immunity 		= 0.0
+chemical_burn_immunity  = 0.45
+explosion_immunity 		= 0.35
+fire_wound_immunity  	= 0.055
+
+[m_karlito_attack_params]
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+stand_attack_0 =	  0.45,		0.85,		100,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,						 3.5
+stand_attack_1 =	  0.45,		0.70,		140,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,						 3.5
+stand_attack_2 =	  0.45,		0.85,		120,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,						 3.5
+
+[m_karlito_damage]
+default				= 0.15, -1, 0.1
+bip01_pelvis 		= 0.25, -1, 0.1
+bip01_spine 		= 0.3, -1, 0.1
+bip01_spine1 		= 0.3, -1, 0.1
+bip01_neck 		= 0.3, -1, 0.5
+bip01_head 		= 0.9, -1, 0.2

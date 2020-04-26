@@ -1,0 +1,610 @@
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Сосыч ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;Кожа кровососа
+
+[hide_bloodsucker]:hide_base
+visual				= dynamics\repair\hide_bloodsucker.ogf
+description				= _st_hide_bloodsucker_descr
+inv_name				= _st_hide_bloodsucker_name
+inv_name_short			= _st_hide_bloodsucker_name
+inv_weight			= 2.344
+inv_grid_x			= 16
+inv_grid_y			= 17
+cost				= 1020
+
+hit_absorbation_sect		= hide_bloodsucker_absorbation
+additional_inventory_weight	= -2.344
+additional_inventory_weight2	= -2.344
+artefact_activation_seq		= af_activation_bold
+
+[hide_bloodsucker_absorbation]
+burn_immunity 			= -0.006		
+strike_immunity 		= 0
+shock_immunity 			= 0
+wound_immunity 			= 0
+radiation_immunity 		= 0
+telepatic_immunity 		= 0
+chemical_burn_immunity 	= 0
+explosion_immunity 		= 0.0648 ; 9 sheets of kevlar
+fire_wound_immunity  	= 0.0648 ; 9 sheets of kevlar
+
+;Мясо кровососа
+
+[mutant_part_krovosos_meat]:booster
+visual				= dynamics\zpf\raw_tushkano.ogf
+inv_weight			= 0.351
+inv_name			= _mutant_krovosos_meat
+inv_name_short		= _mutant_krovosos_meat
+description			= _mutant_krovosos_meat_description
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x         = 17
+inv_grid_y         = 17
+cost				= 417
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+
+use_sound			= interface\no_sound
+
+;Мясо кровососа приготовленное
+
+[mutant_part_krovosos_meat_cook]:mutant_part_krovosos_meat
+inv_name			= _mutant_krovosos_meat_cook
+inv_name_short		= _mutant_krovosos_meat_cook
+description			= _mutant_krovosos_meat_cook_description
+inv_grid_x         = 16
+inv_grid_y         = 18
+cost				= 417
+eat_satiety         = 0.56
+eat_radiation       = 0.0
+use_sound			= interface\no_sound
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Кабан ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+;Мясо кабана
+[mutant_part_boar_chop]:booster
+visual				= dynamics\zpf\raw_boar.ogf
+inv_weight			= 0.389
+inv_name			= _mutant_boar_chop
+inv_name_short		= _mutant_boar_chop
+description			= _mutant_boar_chop_description
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x         = 17
+inv_grid_y         = 18
+cost				= 269
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+
+use_sound			= interface\no_sound
+
+[mutant_part_boar_chop_cook]:mutant_part_boar_chop
+inv_name			= _mutant_boar_chop_cook
+inv_name_short		= _mutant_boar_chop_cook
+description			= _mutant_boar_chop_cook_description
+
+inv_grid_x         = 14
+inv_grid_y         = 19
+cost				= 269
+eat_radiation       = 0.0
+eat_satiety         = 0.7
+
+;Шкура кабана
+[hide_boar]:hide_base
+visual				= dynamics\repair\hide_boar.ogf
+description				= _st_hide_boar_descr
+inv_name				= _st_hide_boar_name
+inv_name_short			= _st_hide_boar_name
+inv_weight			= 3.304
+inv_grid_x			= 14
+inv_grid_y			= 20
+cost				= 730 
+
+hit_absorbation_sect		= hide_boar_absorbation
+additional_inventory_weight	= -3.304
+additional_inventory_weight2	= -3.304
+artefact_activation_seq		= af_activation_bold
+
+[hide_boar_absorbation]
+burn_immunity 			= 0.01			
+strike_immunity 		= 0
+shock_immunity 			= 0
+wound_immunity 			= 0
+radiation_immunity 		= -0.0011
+telepatic_immunity 		= 0
+chemical_burn_immunity 	= -0.01
+explosion_immunity 		= 0.0432 ; 6 sheets of kevlar
+fire_wound_immunity  	= 0.0432 ; 6 sheets of kevlar
+
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Химера ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+;Мясо химеры
+[mutant_part_chimera_meat]:booster
+visual				= dynamics\zpf\meat_chimera.ogf
+inv_weight			= 0.519
+inv_name			= _mutant_chimera_meat
+inv_name_short		= _mutant_chimera_meat
+description			= _mutant_chimera_meat_description
+
+inv_grid_x         = 15
+inv_grid_y         = 20
+cost				= 608
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_part_chimera_meat_cook]:mutant_part_chimera_meat
+inv_name			= _mutant_chimera_meat_cook
+inv_name_short		= _mutant_chimera_meat_cook
+description			= _mutant_chimera_meat_cook_description
+inv_grid_x         = 16
+inv_grid_y         = 20
+cost				= 608
+eat_satiety         = 0.65
+eat_radiation       = 0
+
+;Шкура химеры
+[hide_chimera]:hide_base
+visual				= dynamics\repair\hide_chimera.ogf
+description				= _st_hide_chimera_descr
+inv_name				= _st_hide_chimera_name
+inv_name_short			= _st_hide_chimera_name
+inv_weight			= 2.771
+inv_grid_x			= 14
+inv_grid_y			= 21
+cost				= 4284
+
+power_restore_speed			= 0.0008
+hit_absorbation_sect		= hide_chimera_absorbation
+additional_inventory_weight	= -2.771
+additional_inventory_weight2	= -2.771
+artefact_activation_seq		= af_activation_bold
+
+[hide_chimera_absorbation]
+burn_immunity 			= 0		
+strike_immunity 		= 0
+shock_immunity 			= 0.02
+wound_immunity 			= 0.0218
+radiation_immunity 		= 0.0045
+telepatic_immunity 		= 0
+chemical_burn_immunity 		= 0
+explosion_immunity 			= 0.09 ; 15 sheets of kevlar
+fire_wound_immunity  		= 0.09 ; 15 sheets of kevlar
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Пес ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Мясо пса
+[mutant_part_dog_meat]:booster
+visual				= dynamics\zpf\raw_dog.ogf
+inv_weight			= 0.146
+inv_name			= _mutant_dog_meat
+inv_name_short		= _mutant_dog_meat
+description			= _mutant_dog_meat_description
+
+inv_grid_x         = 15
+inv_grid_y         = 21
+cost				= 109
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_part_dog_meat_cook]:mutant_part_dog_meat
+inv_name			= _mutant_dog_meat_cook
+inv_name_short		= _mutant_dog_meat_cook
+description			= _mutant_dog_meat_cook_description
+inv_grid_x         = 16
+inv_grid_y         = 21
+cost				= 109
+eat_satiety         = 0.3
+eat_radiation       = 0
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Плоть ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Мясо плоти
+[mutant_part_flesh_meat]:booster
+visual				= dynamics\zpf\raw_flesh.ogf
+inv_weight			= 0.336
+inv_name			= _mutant_flesh_meat
+inv_name_short		= _mutant_flesh_meat
+description			= _mutant_flesh_meat_description
+
+inv_grid_x         = 16
+inv_grid_y         = 22
+cost			   = 204
+
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_part_flesh_meat_cook]:mutant_part_flesh_meat
+inv_name			= _mutant_flesh_meat_cook
+inv_name_short		= _mutant_flesh_meat_cook
+description			= _mutant_flesh_meat_cook_description
+inv_grid_x         = 16
+inv_grid_y         = 23
+cost			   = 204
+eat_satiety         = 0.45
+eat_radiation       = 0
+use_sound			= interface\no_sound
+
+;Шкура плоти
+[hide_flesh]:hide_base
+visual				= dynamics\repair\hide_flesh.ogf
+description				= _st_hide_flesh_descr
+inv_name				= _st_hide_flesh_name
+inv_name_short			= _st_hide_flesh_name
+inv_weight			= 4.366
+
+inv_grid_x			= 16
+inv_grid_y			= 24
+cost				= 740
+
+hit_absorbation_sect		= hide_flesh_absorbation
+additional_inventory_weight	= -4.366
+additional_inventory_weight2	= -4.366
+artefact_activation_seq		= af_activation_bold
+
+[hide_flesh_absorbation]
+burn_immunity 			= 0.01				;коэффициенты иммунитета
+strike_immunity 		= 0
+shock_immunity 			= 0.05
+wound_immunity 			= 0.0032
+radiation_immunity 		= 0.0015
+telepatic_immunity 		= 0
+chemical_burn_immunity 		= 0.01
+explosion_immunity 			= 0.0025 ; 1 sheet of kevlar
+fire_wound_immunity  		= 0.0028 ; 1 sheet of kevlar
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Псевдопёс ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+;Мясо псевдопса
+[mutant_part_psevdodog_meat]:booster
+visual				= dynamics\zpf\raw_dog.ogf
+inv_weight			= 0.321
+inv_name			= _mutant_psevdodog_meat
+inv_name_short		= _mutant_psevdodog_meat
+description			= _mutant_psevdodog_meat_description
+
+inv_grid_x         = 16
+inv_grid_y         = 25
+cost				= 229
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_part_psevdodog_meat_cook]:mutant_part_psevdodog_meat
+inv_name			= _mutant_psevdodog_meat_cook
+inv_name_short		= _mutant_psevdodog_meat_cook
+description			= _mutant_psevdodog_meat_cook_description
+inv_grid_x         = 16
+inv_grid_y         = 26
+cost				= 229
+eat_satiety         = 0.5
+eat_radiation       = 0.0
+
+;Шкура псевдопса
+[hide_pseudodog]:hide_base
+visual				= dynamics\repair\hide_pseudodog.ogf
+description				= _st_hide_pseudodog_descr
+inv_name				= _st_hide_pseudodog_name
+inv_name_short			= _st_hide_pseudodog_name
+inv_weight			= 2.221
+inv_grid_x			= 16
+inv_grid_y			= 27
+cost				= 940 
+
+hit_absorbation_sect		= hide_pseudodog_absorbation
+additional_inventory_weight	= -2.221
+additional_inventory_weight2	= -2.221
+artefact_activation_seq		= af_activation_bold
+
+[hide_pseudodog_absorbation]
+burn_immunity 			= 0.02				;коэффициенты иммунитета
+strike_immunity 		= 0
+shock_immunity 			= 0.05
+wound_immunity 			= 0.0085
+radiation_immunity 		= -0.0015
+telepatic_immunity 		= 0
+chemical_burn_immunity 		= -0.01
+explosion_immunity 			= 0.0504 ; 7 sheets of kevlar
+fire_wound_immunity  		= 0.0504 ; 7 sheets of kevlar
+
+;Шкура пси собаки
+[hide_psy_dog]:hide_base
+visual				= dynamics\repair\hide_psy_dog.ogf
+description				= _st_hide_psy_dog_descr
+inv_name				= _st_hide_psy_dog_name
+inv_name_short			= _st_hide_psy_dog_name
+inv_weight			= 2.321
+inv_grid_x			= 16
+inv_grid_y			= 28
+cost				= 1570
+
+hit_absorbation_sect		= hide_psy_dog_absorbation
+additional_inventory_weight	= -2.321
+additional_inventory_weight2	= -2.321
+artefact_activation_seq		= af_activation_bold
+
+[hide_psy_dog_absorbation]
+burn_immunity 			= 0.02				;коэффициенты иммунитета
+strike_immunity 		= 0
+shock_immunity 			= 0.05
+wound_immunity 			= 0.012
+radiation_immunity 		= -0.0015
+telepatic_immunity 		= 0.015
+chemical_burn_immunity 		= -0.01
+explosion_immunity 			= 0.0432 ; 6 sheets of kevlar
+fire_wound_immunity  		= 0.0432 ; 6 sheets of kevlar
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Снорк ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+;Маска снорка
+[mutant_part_snork_mask]:mutant_part_general
+visual				= dynamics\repair\snork_mask.ogf
+inv_weight			= 0.798
+inv_name			= _mutant_snork_mask
+inv_name_short		= _mutant_snork_mask
+description			= _mutant_snork_mask_description
+inv_grid_width		= 2
+inv_grid_height		= 2
+inv_grid_x			= 16
+inv_grid_y			= 32
+cost				= 1060
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Тушкан ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Мясо тушкана
+[mutant_part_tushkano_meat]:booster
+visual				= dynamics\zpf\raw_tushkano.ogf
+inv_weight			= 0.086
+inv_name			= _mutant_tushkano_meat
+inv_name_short		= _mutant_tushkano_meat
+description			= _mutant_tushkano_meat_description
+inv_grid_x         = 18
+inv_grid_y         = 32
+cost				= 86
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+;Мясо тушкана
+[mutant_part_tushkano_meat_cook]:mutant_part_tushkano_meat
+inv_name			= _mutant_tushkano_meat_cook
+inv_name_short		= _mutant_tushkano_meat_cook
+description			= _mutant_tushkano_meat_cook_description
+inv_grid_x         = 18
+inv_grid_y         = 33
+cost				= 86
+eat_satiety         = 0.2
+eat_radiation       = 0.0
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Гиант ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+;Мясо гиганта
+[mutant_pseudogigant_meat]:booster
+visual				= dynamics\zpf\meat_chimera.ogf
+inv_weight			= 0.569
+inv_name			= _mutant_pseudogigant_meat
+inv_name_short		= _mutant_pseudogigant_meat
+description			= _mutant_pseudogigant_meat_description
+
+inv_grid_x         = 19
+inv_grid_y         = 32
+cost				= 752
+eat_radiation       = 1
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_pseudogigant_meat_cook]:mutant_pseudogigant_meat
+inv_name			= _mutant_pseudogigant_meat_cook
+inv_name_short		= _mutant_pseudogigant_meat_cook
+description			= _mutant_pseudogigant_meat_cook_description
+inv_grid_x         = 19
+inv_grid_y         = 33
+cost				= 752
+eat_satiety         = 0.85
+eat_radiation       = 0
+
+[hide_pseudogiant]:hide_base
+visual				= dynamics\repair\hide_pseudogiant.ogf
+description				= _st_hide_pseudogiant_descr
+inv_name				= _st_hide_pseudogiant_name
+inv_name_short			= _st_hide_pseudogiant_name
+inv_weight			= 6.384
+
+inv_grid_x			= 12
+inv_grid_y			= 31
+cost				= 5090
+
+hit_absorbation_sect		= hide_pseudogiant_absorbation
+additional_inventory_weight	= -6.384
+additional_inventory_weight2	= -6.384
+artefact_activation_seq		= af_activation_bold
+
+[hide_pseudogiant_absorbation]
+burn_immunity 			= 0.03				;коэффициенты иммунитета
+strike_immunity 		= 0
+shock_immunity 			= 0
+wound_immunity 			= 0.037
+radiation_immunity 		= 0.0045
+telepatic_immunity 		= 0
+chemical_burn_immunity 		= 0.03
+explosion_immunity 			= 0.1656 ; 23 sheets of kevlar
+fire_wound_immunity  		= 0.1656 ; 23 sheets of kevlar
+
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Бюрер ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Шкурка бюрера
+[hide_burer]:hide_base
+visual				= dynamics\repair\hide_burer.ogf
+description				= _st_hide_burer_descr
+inv_name				= _st_hide_burer_name
+inv_name_short			= _st_hide_burer_name
+inv_weight			= 2.762
+inv_grid_x			= 13
+inv_grid_y			= 31
+
+cost				= 1540
+
+hit_absorbation_sect		= hide_burer_absorbation
+additional_inventory_weight	= 2.53
+additional_inventory_weight2	= 2.53
+artefact_activation_seq		= af_activation_bold
+
+[hide_burer_absorbation]
+burn_immunity 			= 0   
+strike_immunity 		= 0
+shock_immunity 			= -0.02
+wound_immunity 			= 0.0065
+radiation_immunity 		= 0
+telepatic_immunity 		= 0.02
+chemical_burn_immunity 		= 0
+explosion_immunity 			= 0.0144 ; 2 sheets of kevlar
+fire_wound_immunity  		= 0.0144 ; 2 sheets of kevlar
+
+
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Котэ ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Кошачье мясо
+[mutant_part_cat_meat]:booster
+visual				= dynamics\zpf\raw_dog.ogf
+inv_weight			= 0.291
+inv_name			= _mutant_cat_meat
+inv_name_short		= _mutant_cat_meat
+description			= _mutant_cat_meat_description
+
+inv_grid_x         = 12
+inv_grid_y         = 32
+cost				= 199
+eat_radiation       = 0.5
+eat_thirst 			= -0.7
+use_sound			= interface\no_sound
+
+[mutant_part_cat_meat_cook]:mutant_part_cat_meat
+inv_name			= _mutant_cat_meat_cook
+inv_name_short		= _mutant_cat_meat_cook
+description			= _mutant_cat_meat_cook_description
+inv_grid_x         = 13
+inv_grid_y         = 32
+cost				= 199
+eat_satiety         = 0.3
+eat_radiation       = 0.0
+
+;Шкура кота
+[hide_cat]:hide_base
+visual				= dynamics\repair\hide_pseudodog.ogf
+description				= _st_hide_cat_descr
+inv_name				= _st_hide_cat_name
+inv_name_short			= _st_hide_cat_name
+inv_weight			= 2.181
+inv_grid_x			= 14
+inv_grid_y			= 32
+cost				= 840 
+
+power_restore_speed			= 0.0006
+hit_absorbation_sect		= hide_cat_absorbation
+additional_inventory_weight	= -2.181
+additional_inventory_weight2	= -2.181
+artefact_activation_seq		= af_activation_bold
+
+[hide_cat_absorbation]
+burn_immunity 			= 0.02				;коэффициенты иммунитета
+strike_immunity 		= 0
+shock_immunity 			= 0
+wound_immunity 			= 0.0085
+radiation_immunity 		= -0.0015
+telepatic_immunity 		= 0
+chemical_burn_immunity 		= -0.01
+explosion_immunity 			= 0.0216 ; 3 sheets of kevlar
+fire_wound_immunity  		= 0.0216 ; 3 sheets of kevlar
+
+
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;------ Контролер ;
+;---------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------;
+
+
+;Кожа контролёра О_о
+[hide_controller]:hide_base
+visual				= dynamics\repair\hide_controller.ogf
+description				= _st_hide_controller_descr
+inv_name				= _st_hide_controller_name
+inv_name_short			= _st_hide_controller_name
+inv_weight			= 2.523
+inv_grid_x			= 5
+inv_grid_y			= 23
+cost				= 2440
+
+hit_absorbation_sect		= hide_controller_absorbation
+additional_inventory_weight	= -2.523
+additional_inventory_weight2	= -2.523
+artefact_activation_seq		= af_activation_bold
+
+[hide_controller_absorbation]
+burn_immunity 			= 0
+strike_immunity 		= 0
+shock_immunity 			= -0.05
+wound_immunity 			= 0.0046
+radiation_immunity 		= 0
+telepatic_immunity 		= 0.03
+chemical_burn_immunity 		= 0
+explosion_immunity 			= 0.031 ; 5 sheets of kevlar
+fire_wound_immunity  		= 0.031 ; 5 sheets of kevlar
+
+#include "items_monsters.ltx"
+

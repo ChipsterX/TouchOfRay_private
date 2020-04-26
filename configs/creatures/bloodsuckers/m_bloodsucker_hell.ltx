@@ -1,0 +1,35 @@
+[bloodsucker_hell]:bloodsucker_strong
+visual            	= monsters_narodnaya_solyanka\bloodsucker\bloodsucker_hell
+panic_threshold   	= 0.01
+community			= bloodsucker
+immunities_sect		= bloodsucker_hell_immunities_strong
+attack_params	    = bloodsucker_hell_attack_params
+
+class				= SM_KROHE
+
+Predator_Visual     = monsters_narodnaya_solyanka\bloodsucker\bloodsucker_hell_xray
+
+[bloodsucker_hell_attack_params]
+stand_attack_0 		= 0.30, 0.80, 60, 3.5, 2.0, 0.5,   -1.0, 1.0, -1.0, 1.0,   2.5
+stand_attack_1 		= 0.30, 1.00, 70, 0.0, 2.0, 4.0,   -0.8, 0.8, -1.2, 1.2,   2.5
+stand_attack_2 		= 0.30, 0.80, 80, -4.0, 2.5, 0.50, -1.0, 1.0, -1.0, 1.0,   2.5
+vampire_2           = 0.60, 1.00, 100, 0.0, 2.5, 4.50, -1.2, 1.2, -1.2, 1.2,   4.5
+stand_attack_run_0  =  bloodsucker_hell_run_attack_sect
+
+[bloodsucker_hell_run_attack_sect]
+value1      		= 0.20,   0.60,        350,        0.0, 0.5, 4.50,     -1.2, 1.2, -1.2, 1.2,         2.2
+value2      		= 0.60,   0.95,        400,        0.0, 0.5, 4.50,     -1.2, 1.2, -1.2, 1.2,         2.2
+
+[bloodsucker_hell_immunities_strong]
+burn_immunity     		= 0.0
+strike_immunity     	= 0.05
+shock_immunity      	= 0.0
+wound_immunity      	= 0.014
+radiation_immunity    	= 0
+telepatic_immunity    	= 0
+chemical_burn_immunity  = 0
+explosion_immunity    	= 0.045
+fire_wound_immunity   	= 0.06
+
+
+

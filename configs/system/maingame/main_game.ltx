@@ -1,0 +1,76 @@
+[maingame_ui]
+pda_msgs_max_show_time                   = 20000
+info_msgs_max_show_time                  = 10000
+snd_new_contact                          = detectors\contact_1
+snd_new_contact1                         = detectors\contact_8
+
+[main_ingame_indicators_thresholds]
+radiation                                = 0.1,0.25,0.4,0.55,0.7
+wounds                                   = 0.01,0.2,0.4,0.6,0.8
+jammed                                   = 0.5,0.6,0.7,0.8,0.9
+starvation                               = 0.5,0.6,0.7,0.8,0.9
+fatigue                                  = 0.3,0.6,0.7,0.8,0.9
+
+[tutorial_conditions_thresholds]
+max_power                                = 0.75
+power                                    = 0.1
+bleeding                                 = 0.4
+satiety                                  = 0.5
+radiation                                = 0.1
+weapon_jammed                            = 0.9
+psy_health                               = 0.5
+
+[interface]
+font_game                                = font_game
+font_small                               = font_small
+
+;New in CoC: You can have as many slots as you want, simply create slot_active_* and slot_persistent_* for it in sequential order
+;Set slot_persistent_* = false to treat actor inventory as a 'slot'. Setting highlight_equipped = true in the item section will highlight equipped items in inventory
+[inventory]
+take_dist                                = 2	                                       ; not used at all
+max_weight                               = 50
+max_ruck                                 = 56
+max_belt                                 = 16	                                       ;16
+
+slot_persistent_1                        = false	                                       ;knife
+slot_active_1                            = true
+
+slot_persistent_2                        = false	                                       ;pistol
+slot_active_2                            = true
+
+slot_persistent_3                        = false	                                       ;automatic
+slot_active_3                            = true
+
+slot_persistent_4                        = false	                                       ;grenades
+slot_active_4                            = true
+
+slot_persistent_5                        = false	                                       ;binocular
+slot_active_5                            = true
+
+slot_persistent_6                        = true	                                       ;bolt
+slot_active_6                            = true
+
+slot_persistent_7                        = false	                                       ;outfit
+slot_active_7                            = false
+
+slot_persistent_8                        = true	                                       ;pda
+slot_active_8                            = false
+
+slot_persistent_9                        = true	                                       ;detector
+slot_active_9                            = false
+
+slot_persistent_10                       = false	                                       ;torch
+slot_active_10                           = false
+
+slot_persistent_11                       = false	                                       ;artefact
+slot_active_11                           = true
+
+slot_persistent_12                       = false	                                       ;helmet
+slot_active_12                           = false
+
+slot_persistent_13                       = false	                                       ;backpack
+slot_active_13                           = false
+
+slot_persistent_14                       = true	                                       ;script animation
+slot_active_14                           = true
+

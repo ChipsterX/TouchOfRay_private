@@ -1,0 +1,63 @@
+[venom_strong]:bloodsucker_strong
+visual            			= monsters_narodnaya_solyanka\bloodsucker\venom
+Predator_Visual   			= monsters_narodnaya_solyanka\bloodsucker\venom
+immunities_sect				= bloodsucker_venom_immunities_strong
+attack_params	    		= bloodsucker_venom_attack_params
+class						= SM_VENOM
+; Movement::Velocities & Acceleration
+; speed factors				linear | angular_real | angular_path | min	 |  max
+Velocity_Stand					= 0,		3.05,	3.05,		1,		1	
+Velocity_WalkFwdNormal			= 3.15,		3.5,		3.5,	0.2,	2
+Velocity_WalkFwdDamaged			= 1.4,		4.0,		4.0,	0.2,	2
+Velocity_RunFwdNormal			= 6.84,		4.0,		4.0,	0.5,	1	
+Velocity_RunFwdDamaged			= 1.3,		3.0,		3.0,	0.5,	1
+Velocity_Drag					= 1.5,		3.0,		3.0,	1,		1
+Velocity_Steal					= 0.7,		3.0,		3.0,	1,		1
+
+Spawn_Inventory_Item_Section = part_raptor_kogot
+Spawn_Inventory_Item_Probability = 0.0
+
+sound_idle				= monsters\bloodsucker_new\idle_
+sound_eat				= monsters\bloodsucker_new\eat_
+sound_aggressive		= monsters\bloodsucker_new\attack_
+sound_attack_hit		= monsters\bloodsucker_new\attack_hit_
+sound_take_damage		= monsters\bloodsucker_new\hit_
+sound_die				= monsters\bloodsucker_new\die_
+sound_panic				= monsters\bloodsucker_new\idle_
+sound_die_in_anomaly	= monsters\bloodsucker_new\die_
+sound_distant_idle		= monsters\bloodsucker_new\idle_
+
+Sound_Invisibility_Change_State	= monsters\bloodsucker_new\invisible_
+Sound_Vampire_Grasp				= monsters\bloodsucker_new\vampire_grasp
+Sound_Vampire_Sucking			= monsters\bloodsucker_new\vampire_sucking
+Sound_Vampire_Hit				= monsters\bloodsucker_new\vampire_hit
+Sound_Vampire_StartHunt			= monsters\bloodsucker_new\vampire_grasp
+Sound_Growl						= monsters\bloodsucker_new\sucker_growl_
+Sound_Alien						= monsters\bloodsucker_new\sucker_breath_
+
+immunities_sect		= bloodsucker_immunities_strong
+attack_params		= bloodsucker_attack_params_strong
+spec_rank			= strong
+community			= bloodsucker
+
+[bloodsucker_venom_attack_params]
+stand_attack_0 		=      0.30, 1.55, 60, 3.5, 2.0, 0.5,   -1.0, 1.0, -1.0, 1.0,   2.5
+stand_attack_1 	    =      0.30, 1.85, 70, 0.0, 2.0, 4.0,   -0.8, 0.8, -1.2, 1.2,   2.5
+stand_attack_2 		=      0.30, 0.80, 80, -4.0, 2.5, 0.50, -1.0, 1.0, -1.0, 1.0,   2.5
+vampire_2           =      0.60, 1.00, 100, 0.0, 2.5, 4.50, -1.2, 1.2, -1.2, 1.2,   4.5
+stand_attack_run_0  =  	   bloodsucker_venom_run_attack_sect
+
+[bloodsucker_venom_run_attack_sect]
+value1      = 0.20,   0.60,        350,        0.0, 0.5, 4.50,     -1.2, 1.2, -1.2, 1.2,         2.2
+value2      = 0.60,   0.95,        400,        0.0, 0.5, 4.50,     -1.2, 1.2, -1.2, 1.2,         2.2
+
+[bloodsucker_venom_immunities_strong]
+burn_immunity     			= 0.01
+strike_immunity     		= 0.03
+shock_immunity      		= 0.01
+wound_immunity      		= 0.02
+radiation_immunity    		= 0.01
+telepatic_immunity    		= 0.01
+chemical_burn_immunity 		= 0.01
+explosion_immunity    		= 0.05
+fire_wound_immunity   		= 0.01

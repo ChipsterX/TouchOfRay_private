@@ -1,0 +1,26 @@
+[torch_definition]
+
+omni_range		            = 0.2							; Угол теней                	 <В метрах>
+
+glow_radius     			= 0.2							; Радиус свечения на руках       <В метрах>
+
+color	        			= 1.0, 1.0, 1.0, 0.1			; Цвет 			<r,g,b,a> 		  0.f<X<3.f
+omni_color           		= 1.0, 1.0, 1.0, 0.1			; Цвет теней 	<r,g,b,a> 		  0.f<X<3.f
+
+range		    			= 23							; Угол освещения new  			 <В метрах>
+range_curve     			= 8 							; range curvature, the formula is: range = range_max * atan(range_curve * condition) / (pi/2)
+
+spot_texture            	= shaders\orange_light			; Текстура точки света     	    (using only in Second Render)
+
+glow_texture           	 	= shaders\glow_orange_new		; Текстура отбрасываемого света (required)
+
+color_animator         	 	= empty							; Название анимации для света   (empty - not using animator) //light_torch_01
+
+spot_angle              	= 55							; Угол точки света              (in gradus)
+
+guide_bone              	= lights_bone					; Крепление фонарика на ГГ      (required)
+
+volumetric		        	= true							; Включить или отключить объемный свет 
+volumetric_distance 		= 1 							; Дистанция объемного света
+volumetric_intensity   		= 0.1 							; Интенсивность объемного света
+volumetric_quality			= 0.15							; Качество объемного света

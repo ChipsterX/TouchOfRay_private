@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+
+	<!-- PDA -->
+	<string id="pda_btn_radio">
+		<text>Радио</text>
+	</string>
+	<string id="pda_btn_radio_title">
+		<text>Радио</text>
+	</string>
+	<string id="pda_btn_plyr_title">
+		<text>Музыкальный проигрыватель</text>
+	</string>
+	<string id="pda_btn_radio_hint">
+		<text>Покажите радио и музыкальный плеер</text>
+	</string>
+	<string id="ui_st_radio_playing">
+		<text>Воспроизведение</text>
+	</string>
+	<string id="ui_st_radio_playlist">
+		<text>плейлиста</text>
+	</string>
+	<string id="ui_st_radio_loop_off">
+		<text>Loop Off</text>
+	</string>
+	<string id="ui_st_radio_loop_all">
+		<text>Loop All</text>
+	</string>
+	<string id="ui_st_radio_loop_one">
+		<text>Loop One</text>
+	</string>
+	<string id="ui_st_radio_shuffle_on">
+		<text>Shuffle On</text>
+	</string>
+	<string id="ui_st_radio_shuffle_off">
+		<text>Shuffle Off</text>
+	</string>
+	
+	
+	<!-- Options -->
+	<string id="ui_mm_radio_access">
+		<text>Кнопка для доступа к меню параметров радио</text>
+	</string>
+	<string id="ui_mm_radio_access_call">
+		<text>Кнопка вызова меню Radio settings.txt</text>
+	</string>
+	<string id="ui_mm_radio_1_play">
+		<text>Воспроизвести / Остановить радио</text>
+	</string>
+	<string id="ui_mm_radio_2_play">
+		<text>Воспроизведение / остановка музыкального проигрывателя</text>
+	</string>
+	<string id="ui_mm_radio_vol_up">
+		<text>Кнопка увеличения громкости</text>
+	</string>
+	<string id="ui_mm_radio_vol_down">
+		<text>Кнопка уменьшения громкости</text>
+	</string>
+	<string id="ui_mm_radio_next">
+		<text>Следующий трек</text>
+	</string>
+	<string id="ui_mm_radio_previous">
+		<text>Предыдущий трек</text>
+	</string>
+	<string id="ui_mm_radio_playlist">
+		<text>Следующий канал / плейлист</text>
+	</string>
+	<string id="ui_mm_radio_lost_emission">
+		<text>Потерянный сигнал о выбросах</text>
+	</string>
+	<string id="ui_mm_radio_lost_lab">
+		<text>Потерянный сигнал в подземных зонах</text>
+	</string>
+	<string id="ui_mm_radio_display_names">
+		<text>Отображаемое имя треков музыкального проигрывателя на HUD</text>
+	</string>
+	
+	<string id="ui_mm_radio_spacing_1">
+		<text>-(Клавиатурный)-</text>
+	</string>
+	<string id="ui_mm_radio_spacing_2">
+		<text>-(Погружение)-</text>
+	</string>
+	<string id="ui_mm_radio_spacing_3">
+		<text>-(имя плейлиста)-</text>
+	</string>
+	<string id="ui_mm_radio_playlist_name">
+		<text>Имя плейлиста</text>
+	</string>
+	
+</string_table>

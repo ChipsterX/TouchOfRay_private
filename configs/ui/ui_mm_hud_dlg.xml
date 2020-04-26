@@ -1,0 +1,80 @@
+<w>
+	<background width="1024" height="768">
+		<auto_static x="0" y="0" width="1024" height="768" stretch="1">
+			<texture x="0" y="0" width="1024" height="768">ui\hud_opt_art</texture>
+		</auto_static>
+	</background>
+	<file_item>
+	    <main width="490" height="18"/>
+	    <fn width="325" height="18"/>
+	    <fd width="110" height="18"/>
+	</file_item>
+	<form x="50" y="252" width="560" height="460" stretch="1">
+	    <texture>ui_inGame2_main_window_small</texture>
+	    <caption x="0" y="20" width="560" height="30">
+		    <text font="graffiti32" align="c">Выбор текущего худа</text>
+	    </caption>
+	    <file_caption x="60" y="395" width="440" height="20">
+		    <text font="letterica18"/>
+	    </file_caption>
+	    <file_data x="170" y="-350" width="240" height="50" complex_mode="1">
+		    <text font="letterica18"/>
+	    </file_data>
+	    
+	    <btn_load x="221" y="427" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Применить</text>
+	    </btn_load>
+		
+	    <btn_cancel x="317" y="427" width="210" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">Вернуться в главное меню</text>
+	    </btn_cancel>
+
+	    <btn_type_hud_cop x="24" y="67" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_cop</text>
+	    </btn_type_hud_cop>
+
+		<btn_type_hud_coc x="24" y="103" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_coc</text>
+	    </btn_type_hud_coc>
+		
+		<btn_type_hud_vv x="24" y="139" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_vv</text>
+	    </btn_type_hud_vv>
+		
+		<btn_type_hud_soc x="24" y="175" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_soc</text>
+	    </btn_type_hud_soc>
+		
+		<btn_type_hud_la x="24" y="211" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_la</text>
+	    </btn_type_hud_la>
+		
+		<btn_type_hud_cs x="24" y="247" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_cs</text>
+	    </btn_type_hud_cs>
+	
+		<btn_type_hud_scoc174 x="24" y="283" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_scoc174</text>
+	    </btn_type_hud_scoc174>
+		
+		<btn_type_hud_cmp x="24" y="319" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_cmp</text>
+	    </btn_type_hud_cmp>
+		
+		<btn_type_hud_mis x="24" y="355" width="135" height="26">
+	        <texture>ui_inGame2_Mp_bigbuttone</texture>
+	        <text font="letterica18">ui_mm_type_hud_mis</text>
+	    </btn_type_hud_mis>
+
+	</form>
+</w>

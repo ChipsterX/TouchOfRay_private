@@ -1,0 +1,49 @@
+[af_electra_flash_soc]:af_base1
+GroupControlSection	= spawn_group
+$spawn				= "artifacts\electra flash"
+
+$prefetch 			= 64
+cform				= skeleton
+class				= SCRPTART
+
+visual				= physics\anomaly\artefact_electra3.ogf
+description			= enc_zone_artifact_af-electra-flash
+
+inv_name			= af-electra-flash
+inv_name_short		= af-electra-flash
+inv_weight			= 0.5
+
+inv_grid_x			= 18
+inv_grid_y			= 24
+
+cost				= 1900
+
+jump_height			= .1
+
+particles			= anomaly2\artefact\artefact_electra
+
+lights_enabled = true	 
+trail_light_color = 2.6,6.7,6.9
+trail_light_range = 1.1
+
+artefact_activation_seq		= af_activation_electra
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = 0
+satiety_restore_speed   = 0
+power_restore_speed     = 0.00365 
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.098
+hit_absorbation_sect = af_electra_flash1_absorbation
+
+;коэффициенты иммунитета 
+[af_electra_flash1_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = -0.0312;625
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

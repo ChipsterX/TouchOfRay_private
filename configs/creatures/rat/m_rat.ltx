@@ -1,0 +1,35 @@
+[rat_4]:m_tushkano_e
+visual				 = monsters_narodnaya_solyanka\rat\rat_2
+class                = SM_RATS	
+sound_idle				= monsters\rat\idle_1
+sound_eat				= monsters\rat\eat_1
+sound_aggressive		= monsters\rat\attack_1
+sound_attack_hit		= monsters\rat\attack_1
+sound_take_damage		= monsters\rat\hit_1
+sound_die				= monsters\rat\death_1
+sound_threaten			= monsters\tushkano\tushkano_threaten_
+sound_landing			= monsters\rat\hit_1
+sound_steal				= monsters\beeps_ ;monsters\tushkano\tush_idle_
+sound_panic				= monsters\rat\idle_1
+sound_growling			= monsters\rat\idle_1
+sound_die_in_anomaly	= monsters\rat\death_1
+panic_threshold		= 0.03
+
+species					= rat_small
+community				= rat_small
+
+attack_params			= rat_normal_attack_params
+[rat_normal_attack_params]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+stand_attack_0 =	  	0.25,		0.25,		 20,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0
+stand_attack_1 =	  	0.25,		0.25,		 30,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0
+stand_attack_2 =	  	0.25,		0.25,		 35,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,							  1.0
+
+[rat_1]:rat_4
+visual				 = monsters_narodnaya_solyanka\rat\rat_1
+[rat_2]:rat_4
+visual				 = monsters_narodnaya_solyanka\rat\rat_3
+[rat_3]:rat_4
+visual				 = monsters_narodnaya_solyanka\rat\rat_4

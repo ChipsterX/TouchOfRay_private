@@ -1,0 +1,39 @@
+;*********************************************************************************
+; Кабан вепрь
+;*********************************************************************************
+
+[boar_strong_vepr]:m_boar_e
+visual				= monsters_narodnaya_solyanka\mutant_boar\boar_vepr
+panic_threshold		= 0.05
+rank				= 401
+immunities_sect		= boar_vepr_immunities_strong
+attack_params		= boar_vepr_attack_params_strong
+spec_rank			= strong
+community			= boar
+
+class				= SM_BOARV
+
+[boar_vepr_immunities_strong]
+burn_immunity			= 0.12
+strike_immunity			= 0.12
+shock_immunity			= 0.12
+wound_immunity			= 0.41
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity	= 0.12
+explosion_immunity		= 0.28
+fire_wound_immunity		= 0.55
+
+[boar_vepr_attack_params_strong]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;Bite
+stand_attack_0 	=	  	0.20,		0.8,	      50,        0.0, 0.5, 0.5,	 -1.0, 1.0, -1.0, 1.0,					  2.3
+;Bite2
+stand_attack_1 =	  	0.20,		0.8,	      50,        0.0, 0.5, 0.5,	 -1.0, 1.0, -1.0, 1.0,					  2.3
+;Right Leg Attack
+stand_attack_2 =	  	0.20,		0.8,	      50,        0.0, 1.0, 2.0,	 -0.8, 0.8, -1.0, 1.0,					  2.5
+stand_attack_run_0 =    0.40,		0.8,	      1800,        0.0, 1.0, 2.0,	 -1.0, 1.0, -1.0, 1.0,				  3.2
+stand_attack_run_left_0  =   0.40,		0.8,	      1800,        0.0, 1.0, 2.0,	 -1.0, 1.0, -1.0, 1.0,	3.2
+stand_attack_run_right_0 =   0.40,		0.8,	      1800,        0.0, 1.0, 2.0,	 -1.0, 1.0, -1.0, 1.0,	3.2

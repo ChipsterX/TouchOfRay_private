@@ -1,0 +1,48 @@
+; ЗЕЛЁНАЯ ПРИЗРАЧНАЯ СОБАКА
+[dog_green]:dog_cute
+visual					= monsters_narodnaya_solyanka\dog\dog_oso
+rank					= 801
+immunities_sect			= dog_green_immunities
+spec_rank				= strong
+community				= dog
+class					= SM_DOG_O
+panic_threshold			= 0
+
+sound_idle				= monsters\poltergeist\idle_
+sound_eat				= monsters\biting\def_
+sound_aggressive		= monsters\poltergeist\hit_
+sound_attack_hit		= monsters\poltergeist\attack_
+sound_take_damage		= monsters\biting\def_
+sound_die				= monsters\poltergeist\die_
+sound_threaten			= monsters\biting\def_
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\poltergeist\attack_hit_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\poltergeist\hit_
+
+[dog_green_immunities]
+burn_immunity			= 0.6
+strike_immunity			= 0.02
+shock_immunity			= 0.02
+wound_immunity			= 0.2
+radiation_immunity		= 0.01
+telepatic_immunity		= 0.01
+chemical_burn_immunity  = 0.01
+explosion_immunity		= 0.25
+fire_wound_immunity		= 0.0099
+
+[dog_green_copy]:dog_green
+
+immunities_sect			= dog_green_copy_immunities
+
+[dog_green_copy_immunities]
+burn_immunity			= 1
+strike_immunity			= 1
+shock_immunity			= 1
+wound_immunity			= 1
+radiation_immunity		= 1
+telepatic_immunity		= 1
+chemical_burn_immunity  = 1
+explosion_immunity		= 1
+fire_wound_immunity		= 1

@@ -1,0 +1,32 @@
+<w>
+	<file name="ui\ui_trx_menu_options_background">
+		<texture id="ui_trx_menu_opt_background" x="0" y="0" width="1024" height="768" />
+	</file>
+	
+	<file name="ui\ui_trx_menu_options_interface">
+		<texture id="ui_trx_menu_opt_left_widepanel" x="0" y="0" width="128" height="768" />
+		<texture id="ui_trx_menu_opt_right_widepanel" x="128" y="0" width="128" height="768" />
+
+		<texture id="ui_trx_menu_opt_screen_4" x="390" y="3" width="624" height="411" />
+
+		<texture id="ui_trx_menu_opt_button_t" x="659" y="612" width="108" height="24" />
+		<texture id="ui_trx_menu_opt_button_e" x="769" y="612" width="108" height="24" />
+		<texture id="ui_trx_menu_opt_button_h" x="879" y="612" width="108" height="24" />
+		<texture id="ui_trx_menu_opt_button_d" x="659" y="612" width="108" height="24" />
+
+		<texture id="ui_trx_menu_opt_checkbox_e" x="832" y="460" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox_h" x="904" y="550" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox_t" x="832" y="488" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox_d" x="832" y="520" width="44" height="29" />
+
+		<texture id="ui_trx_menu_opt_checkbox2_e" x="904" y="513" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox2_h" x="904" y="483" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox2_t" x="904" y="453" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox2_d" x="904" y="513" width="44" height="29" />
+
+		<texture id="ui_trx_menu_opt_checkbox3_e" x="949" y="482" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox3_h" x="949" y="482" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox3_t" x="949" y="513" width="44" height="29" />
+		<texture id="ui_trx_menu_opt_checkbox3_d" x="949" y="482" width="44" height="29" />
+	</file>
+</w>

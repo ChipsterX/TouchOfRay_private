@@ -1,0 +1,26 @@
+[bibliotekar_black]:bibliotekar
+monster_type		= indoor
+rank				= 0
+visual			 	= monsters_narodnaya_solyanka\izloms\bibliotekar_black
+spec_rank			= strong
+attack_params		= bibliotekar_black_attack_params
+immunities_sect		= bibliotekar_black_immunities
+
+class				= SM_BIBLB
+
+[bibliotekar_black_attack_params]
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+stand_attack_0 =	  	0.35,		1.80,		    850,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5
+stand_attack_1 =	  	0.40,		1.50,		    700,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5
+stand_attack_2 =	  	0.90,		1.90,		    950,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5
+
+[bibliotekar_black_immunities]
+burn_immunity          		= 0.0375
+strike_immunity        		= 0.0375
+shock_immunity         	= 0.075
+wound_immunity         	= 0.00375    
+radiation_immunity     	= 0.00
+telepatic_immunity     	= 1.0
+chemical_burn_immunity = 0.0375
+explosion_immunity     	= 0.0375
+fire_wound_immunity    	= 0.01

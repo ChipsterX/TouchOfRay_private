@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_menu_rukzak_close">
+		<text>Закрыть</text>
+	</string>
+	<string id="ui_nootpead_text">
+		<text>Записка</text>
+	</string>
+	<string id="ui_gui_use_test">
+		<text>Тестовая записка</text>
+	</string>
+	<string id="st_test_gui_element_text">
+		<text>Это тест GUI элементов. Если ты читаешь это, то всё работет отлично и я могу тебя поздравить :)</text>
+	</string>
+	<string id="st_actor_cooking">
+		<text>Приготовить</text>
+	</string>
+	<string id="st_actor_repair">
+		<text>Ремонт</text>
+	</string>
+	<string id="st_af_select_izucheno">
+		<text>Изучено</text>
+	</string>
+	<string id="st_gui_selection_info">
+		<text>Инструктаж по селекции артефактов. Для того чтобы приступить к селекции артефактов нажмите на нужный вам артефакт, после чего выскочит окно селекции для данного артефакта. Внимание! Чтобы улучшить артефакт до необходимого уровня, необходимо изучить документацию по селекции нужного вам артефакта. Общее время селекции артефакта занимет в среднем 25 минут. Если при нажатии на нужный вам артефакт не будет доступна селекция данного уровня, то убедитесь, что в вашем инвентаре есть артефакт и уже заранее изученная документацию для данного артефакта до необходимого уровня. Документация преобретается у сталкера на Кордоне (База сталкеров). </text>
+	</string>
+	<string id="st_gui_selection_start_info">
+		<text>Выбирите необходимый артефакт для селекции</text>
+	</string>
+	<string id="st_gui_selection_revords_info">
+		<text>Назад</text>
+	</string>
+	<string id="st_gui_selection_actor_info">
+		<text>Селекция</text>
+	</string>
+	<string id="st_gui_selection_meduza_start_info">
+		<text>Селекция «Медуза»</text>
+	</string>
+	<string id="st_gui_selection_cristall_flower_start_info">
+		<text>Селекция «Каменный цветок»</text>
+	</string>
+	<string id="st_gui_selection_night_star_start_info">
+		<text>Селекция «Ночная звезда»</text>
+	</string>
+	<string id="st_gui_selection_vyvert_start_info">
+		<text>Селекция «Выверт»</text>
+	</string>
+	<string id="st_gui_selection_gravi_start_info">
+		<text>Селекция «Грави»</text>
+	</string>
+	<string id="st_gui_selection_gold_fish_start_info">
+		<text>Селекция «Золотая рыбка»</text>
+	</string>
+	<string id="st_gui_selection_compass_start_info">
+		<text>Селекция «Компас»</text>
+	</string>
+	<string id="st_gui_selection_cristall_start_info">
+		<text>Селекция «Кристалл»</text>
+	</string>
+	<string id="st_gui_selection_fireball_start_info">
+		<text>Селекция «Огненный шар»</text>
+	</string>
+	<string id="st_gui_selection_dummy_glassbeads_start_info">
+		<text>Селекция «Мамины бусы»</text>
+	</string>
+	<string id="st_gui_selection_eye_start_info">
+		<text>Селекция «Глаз»</text>
+	</string>
+	<string id="st_gui_selection_fire_start_info">
+		<text>Селекция «Пламя»</text>
+	</string>
+	
+	<string id="st_gui_selection_blood_start_info">
+		<text>Селекция «Кровь камня»</text>
+	</string>
+	<string id="st_gui_selection_mincer_meat_start_info">
+		<text>Селекция «Ломоть мяса»</text>
+	</string>
+	<string id="st_gui_selection_soul_start_info">
+		<text>Селекция «Душа»</text>
+	</string>
+	<string id="st_gui_selection_fuzz_kolobok_start_info">
+		<text>Селекция «Колобок»</text>
+	</string>
+	<string id="st_gui_selection_baloon_start_info">
+		<text>Селекция «Пузырь»</text>
+	</string>
+	<string id="st_gui_selection_glass_start_info">
+		<text>Селекция «Светляк»</text>
+	</string>
+	<string id="st_gui_selection_electra_green_start_info">
+		<text>Селекция «Монолит»</text>
+	</string>
+	
+	<string id="st_gui_selection_electra_sparkler_start_info">
+		<text>Селекция «Бенгальский огонь»</text>
+	</string>
+	<string id="st_gui_selection_electra_flash_start_info">
+		<text>Селекция «Вспышка»</text>
+	</string>
+	<string id="st_gui_selection_electra_moonlight_start_info">
+		<text>Селекция «Лунный свет»</text>
+	</string>
+	<string id="st_gui_selection_dummy_battery_start_info">
+		<text>Селекция «Батарейка»</text>
+	</string>
+	<string id="st_gui_selection_dummy_dummy_start_info">
+		<text>Селекция «Пустышка»</text>
+	</string>
+	<string id="st_gui_selection_ice_start_info">
+		<text>Селекция «Снежинка»</text>
+	</string>
+	<string id="st_gui_selection_electra_blue_start_info">
+		<text>Селекция «Гелий»</text>
+	</string>
+	
+	<string id="st_gui_selection_haracteristik_info">
+		<text>Характеристики</text>
+	</string>
+	<string id="azm_cookibg_tutorial_text">
+		<text>Пожарить мясо</text>
+	</string>
+	
+	<string id="st_quest_gui_fond_weatScan_activ">
+		<text>Включить прибор</text>
+	</string>
+	<string id="st_quest_gui_fond_weatScan_desactiv">
+		<text>Выключить прибор</text>
+	</string>
+	<string id="st_quest_gui_fond_weatScan_no_active">
+		<text>Прибор выключен</text>
+	</string>
+	<string id="st_quest_gui_fond_weatScan_active">
+		<text>Прибор включен</text>
+	</string>
+</string_table>

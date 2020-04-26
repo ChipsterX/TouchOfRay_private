@@ -1,0 +1,52 @@
+[gigant_big_lapa_1]:m_gigant_jumper_e
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_lapa_1
+class               		= SM_GIANL ; Отключаем прыжок
+
+immunities_sect				= giant_big_lapa_immunities
+
+attack_params				= m_gigant_big_lapa_attack_params
+
+jump_delay					= 0 
+jump_factor					= 0
+jump_ground_trace_range		= 0
+jump_hit_trace_range		= 0
+jump_build_line_distance	= 0
+jump_min_distance			= 0
+jump_max_distance			= 0 
+jump_max_angle				= 0
+jump_max_height				= 0
+
+
+[giant_big_lapa_immunities]
+burn_immunity 			= 0.1			;коэффициенты иммунитета 
+strike_immunity 		= 0.0
+shock_immunity 			= 0.01
+wound_immunity 			= 0.01		
+radiation_immunity 		= 0.0
+telepatic_immunity 		= 0.0
+chemical_burn_immunity	= 0.1
+explosion_immunity 		= 0.2
+fire_wound_immunity  	= 0.099
+
+;=========================================================================================
+; Attack Animation Params
+;=========================================================================================
+[m_gigant_big_lapa_attack_params]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)   |	Field of hit_test  (left,right, top, bottom) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;Bite
+stand_attack_0 =	  	0.25,		1.25,	    150,        0.5, 1.0, 0.5,		 -0.8, 0.8, -1.8, 1.8,					  2.6
+
+stand_attack_1 =	  	0.40,		1.25,	    200,        5.0, 2.5, 4.0,		 -0.6, 0.6, -1.8, 1.8,					  3.2
+
+stand_attack_2 =	  	0.25,		2.15,	    150,        0.5, 1.0, 5.0,		 -0.8, 0.8, -1.8, 1.8,					  2.6
+
+[gigant_big_lapa_2]:gigant_big_lapa_1
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_lapa_3
+
+[gigant_big_lapa_3]:gigant_big_lapa_1
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_lapa_4
+
+[gigant_big_lapa_4]:gigant_big_lapa_1
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_lapa_5

@@ -1,0 +1,99 @@
+<w>
+	<file name="ui\ui_symbols">
+		<texture id="condition_af" x="395" y="618" width="19" height="19" />
+
+		<texture id="health_af" x="415" y="618" width="19" height="19" />
+		
+		<texture id="rad_af" x="435" y="618" width="19" height="19" />
+		
+		<texture id="starvation_af" x="455" y="618" width="19" height="19" />
+		
+		<texture id="power_af" x="455" y="638" width="19" height="19" />
+		
+		<texture id="bleding_af" x="435" y="638" width="19" height="19" />
+		
+		<texture id="born_af" x="415" y="638" width="19" height="19" />
+		
+		<texture id="shok_af" x="395" y="638" width="19" height="19" />
+		
+		<texture id="rad1_af" x="455" y="598" width="19" height="19" />
+		
+		<texture id="tele_af" x="435" y="598" width="19" height="19" />
+		
+		<texture id="hime_af" x="415" y="598" width="19" height="19" />
+		
+		<texture id="kilo_af" x="395" y="598" width="19" height="19" />
+		
+		<texture id="strike_af" x="395" y="578" width="19" height="19" />
+		
+		<texture id="woun_af" x="415" y="578" width="19" height="19" />
+		
+		<texture id="expl_af" x="435" y="578" width="19" height="19" />
+		
+		<texture id="fire_af" x="455" y="578" width="19" height="19" />
+		
+		<texture id="voda_af" x="455" y="578" width="19" height="19" />
+		
+		<texture id="son_af" x="435" y="558" width="19" height="19" />
+		
+		<texture id="jump_af" x="415" y="558" width="19" height="19" />
+		
+		<texture id="spee_af" x="395" y="558" width="19" height="19" />
+		
+		<texture id="kg_af" x="395" y="538" width="19" height="19" />
+		
+		<texture id="kg_af1" x="415" y="539" width="18" height="18" />
+		
+
+
+
+
+
+
+		<texture id="h1_af" x="415" y="491" width="19" height="19" />
+		
+		<texture id="r_af" x="435" y="491" width="19" height="19" />
+		
+		<texture id="s_af" x="455" y="491" width="19" height="19" />
+		
+		<texture id="p_af" x="455" y="511" width="19" height="19" />
+		
+		<texture id="b_af" x="435" y="511" width="19" height="19" />
+		
+		<texture id="bn_af" x="415" y="511" width="19" height="19" />
+		
+		<texture id="sh_af" x="395" y="511" width="19" height="19" />
+		
+		<texture id="r1_af" x="455" y="471" width="19" height="19" />
+		
+		<texture id="t_af" x="435" y="471" width="19" height="19" />
+		
+		<texture id="h_af" x="415" y="471" width="19" height="19" />
+		
+		<texture id="ki_af" x="395" y="491" width="19" height="19" />
+		
+		<texture id="str_af" x="395" y="451" width="19" height="19" />
+		
+		<texture id="wou_af" x="415" y="451" width="19" height="19" />
+		
+		<texture id="exp_af" x="435" y="451" width="19" height="19" />
+		
+		<texture id="fir_af" x="455" y="451" width="19" height="19" />
+		
+		<texture id="vod_af" x="455" y="431" width="19" height="19" />
+		
+		<texture id="so_af" x="435" y="431" width="19" height="19" />
+		
+		<texture id="jum_af" x="415" y="431" width="19" height="19" />
+		
+		<texture id="spe_af" x="395" y="431" width="19" height="19" />
+		
+		
+		<texture id="artreac_plus" x="435" y="538" width="19" height="19" />
+		
+		<texture id="artreac_minus" x="455" y="538" width="19" height="19" />
+
+		
+		
+	</file>
+</w>

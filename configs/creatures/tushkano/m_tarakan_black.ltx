@@ -1,0 +1,27 @@
+; ТЁМНЫЙ ТАРАКАН
+[tarakan_strong]:tarakan_normal
+community			= tushkano
+monster_type		= indoor
+visual				= monsters_narodnaya_solyanka\tushkano\tarakan_strong
+spec_rank 			= strong
+immunities_sect		= tarakan_strong_immunities
+attack_params		= tarakan_strong_attack_params
+
+class				= SM_TARAB
+
+[tarakan_strong_immunities]
+burn_immunity			= 0.5
+strike_immunity			= 1.0
+shock_immunity			= 0.6
+wound_immunity		= 0.3
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity = 1.0
+explosion_immunity		= 0.6
+fire_wound_immunity	= 0.5
+
+[tarakan_strong_attack_params]
+;	anim	 | time[0..1] | hit_power | impulse | impulse_dir (x,y,z) | Field of hit_test (left,right, bottom, top ) | Test Dist
+stand_attack_0 =	  0.25,		0.20,		35,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,					1.0
+stand_attack_1 =	  0.35,		0.30,		40,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,					1.0
+stand_attack_2 =	  0.25,		0.35,		45,        0.0, 1.0, 0.0,		 -1.2, 1.2, -1.6, 1.6,					1.0

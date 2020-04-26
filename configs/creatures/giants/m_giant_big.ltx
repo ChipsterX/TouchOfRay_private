@@ -1,0 +1,46 @@
+[gigant_big_normal]:m_gigant_jumper_e
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_normal
+class               		= SM_GIANB ; Отключаем прыжок
+
+attack_params				= m_gigant_big_attack_params
+immunities_sect				= giant_big_immunities
+
+jump_delay					= 0 
+jump_factor					= 0
+jump_ground_trace_range		= 0
+jump_hit_trace_range		= 0
+jump_build_line_distance	= 0
+jump_min_distance			= 0
+jump_max_distance			= 0 
+jump_max_angle				= 0
+jump_max_height				= 0
+
+
+[giant_big_immunities]
+burn_immunity 			= 0.1			;коэффициенты иммунитета 
+strike_immunity 		= 0.0
+shock_immunity 			= 0.1
+wound_immunity 			= 0.1		
+radiation_immunity 		= 0.0
+telepatic_immunity 		= 0.0
+chemical_burn_immunity	= 0.1
+explosion_immunity 		= 0.1
+fire_wound_immunity  	= 0.01
+
+
+;=========================================================================================
+; Attack Animation Params
+;=========================================================================================
+[m_gigant_big_attack_params]
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)   |	Field of hit_test  (left,right, top, bottom) |	Test Dist
+;---------------------------------------------------------------------------------------------------------------------------------------------
+;Bite
+stand_attack_0 =	  	0.25,		0.95,	    150,        0.5, 1.0, 0.5,		 -0.8, 0.8, -1.8, 1.8,					  2.6
+
+stand_attack_1 =	  	0.40,		0.95,	    200,        5.0, 2.5, 4.0,		 -0.6, 0.6, -1.8, 1.8,					  3.2
+
+stand_attack_2 =	  	0.25,		2.15,	    150,        0.5, 1.0, 5.0,		 -0.8, 0.8, -1.8, 1.8,					  2.6
+
+[gigant_big_strong]:gigant_big_normal
+visual						= monsters_narodnaya_solyanka\pseudo\pseudogiant_big_strong

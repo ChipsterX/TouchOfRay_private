@@ -1,0 +1,41 @@
+[af_rusty_thorn]:af_base1
+GroupControlSection	= spawn_group
+$spawn 			= "artifacts\rusty thorn"
+$npc			= on				; option for Level Editor
+;$prefetch 		= 3
+cform           = skeleton
+class   		= ARTEFACT
+
+visual				= physics\anomaly\artefact_needles1.ogf
+description			= enc_zone_artifact_af-rusty-thorn
+inv_name			= af-rusty-thorn
+inv_name_short		= af-rusty-thorn
+inv_weight			= 0.5
+
+inv_grid_x			= 17
+inv_grid_y			= 28
+cost				= 900
+jump_height			= .3
+
+lights_enabled = false
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = -0.0010
+satiety_restore_speed   = 0
+power_restore_speed     = 0
+bleeding_restore_speed  = -0.001
+artefact_reaction		= 0.09
+hit_absorbation_sect = af_rusty_thorn_absorbation
+
+;коэффициенты иммунитета 
+[af_rusty_thorn_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = 0
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

@@ -1,0 +1,66 @@
+
+//--' Контролер-могильщик
+[simulation_solyanka_controller_mogilshik]:online_offline_group
+faction = monster_predatory_night
+npc_random = m_controller_mogilshik
+npc_in_squad = 1, 1
+
+//--' Полтергейст (черный), летающий дымок, который слепит
+[simulation_solyanka_controller_mogilshik]:online_offline_group
+faction = monster
+npc_random = m_poltergeist_normal_black
+npc_in_squad = 1, 1
+
+//--' Изломы матершинники (Лабораторный излом)
+[simulation_solyanka_fracture]:online_offline_group
+faction = monster_zombied_day
+npc_random = fracture_2, fracture_3
+npc_in_squad = 2, 3
+
+//--' Новые химеры: Микс
+[simulation_solyanka_chimers_mix]:online_offline_group
+faction = monster_predatory_night
+npc_random = chimera_cs_weak_radio, chimera_cs_normal_red, chimera_cs_strong_electro, chimera_cs_strong_electro_amk, chimera_cs_strong_fire, chimera_cs_strong_black, chimera_cs_strong_xray, chimera_cs_strong_xray_fire, chimera_cs_normal, chimera_cs_strong
+npc_in_squad = 1, 3
+
+//--' Новые химеры, сквад где только: радиоактивная, обычная, призрачная
+[simulation_solyanka_chimers_var0]:online_offline_group
+faction = monster_predatory_night
+npc_random = chimera_cs_weak_radio, chimera_cs_strong, chimera_cs_strong_xray
+npc_in_squad = 1, 3
+
+//--' Новые химеры, сквад где только: черная
+[simulation_solyanka_chimers_var1]:online_offline_group
+faction = monster_predatory_night
+npc_random = chimera_cs_strong_black
+npc_in_squad = 1, 1
+
+//--' Новые химеры, сквад где только: аномальные
+[simulation_solyanka_chimers_var2]:online_offline_group
+faction = monster_predatory_night
+npc_random = chimera_cs_strong_electro, chimera_cs_weak_radio, chimera_cs_strong_electro_amk, chimera_cs_strong_fire, chimera_cs_strong_xray_fire
+npc_in_squad = 1, 2
+
+//--' Новые химеры, сквад где только: призраки и аномальные призраки
+[simulation_solyanka_chimers_var3]:online_offline_group
+faction = monster_predatory_night
+npc_random = chimera_cs_strong_electro, chimera_cs_strong_xray, chimera_cs_strong_xray_fire
+npc_in_squad = 1, 2
+
+//--' Желтый(болотный) бюрер 
+[simulation_solyanka_burer_green]:online_offline_group
+faction = monster_zombied_night
+npc_random = burer_green_build
+npc_in_squad = 1, 3
+
+//--' Аномальные бюреры
+[simulation_solyanka_burer_anomal]:online_offline_group
+faction = monster_zombied_night
+npc_random = burer_cs_normal, burer_electro, burer_fire, burer_cs_normal, burer_cs_strong
+npc_in_squad = 1, 2
+
+//--' Позающие полтеры, микс
+[simulation_solyanka_polters_mix]:online_offline_group
+faction = monster_zombied_night
+npc_random = polter_dd, polter_electro, polter_xray, polter_old, poltergeist_build
+npc_in_squad = 1, 3

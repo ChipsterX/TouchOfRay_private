@@ -1,0 +1,52 @@
+[novice_outfit_test]:novice_outfit
+artefact_count                           = 16
+inv_name                                 = test_outfit
+inv_name_short                           = test_outfit
+description                              = test_outfit_d
+
+additional_inventory_weight              = 500
+
+burn_protection                          = 0
+shock_protection                         = 0
+radiation_protection                     = 0
+chemical_burn_protection                 = 0
+telepatic_protection                     = 0
+strike_protection                        = 0
+explosion_protection                     = 0
+wound_protection                         = 0
+fire_wound_protection 				     = 0
+
+inv_weight                               = 0
+
+immunities_sect                          = sect_novice1_outfit_immunities
+
+[sect_novice1_outfit_immunities]
+burn_immunity                            = 0
+strike_immunity                          = 0
+shock_immunity                           = 0
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0
+chemical_burn_immunity                   = 0
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0
+
+[set_mutants_relaction_on]:booster
+visual                                   = dynamics\artefacts\af_electra_moonlight.ogf
+inv_name                                 = set_mutants_relaction1
+inv_name_short                           = set_mutants_relaction1
+description                              = set_mutants_relaction11
+inv_weight                               = 0
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 19
+inv_grid_y                               = 0
+cost                                     = 0
+
+use_sound                                = interface\inv_nosound
+
+[set_mutants_relaction_off]:set_mutants_relaction_on
+inv_name                                 = set_mutants_relaction2
+inv_name_short                           = set_mutants_relaction2
+description                              = set_mutants_relaction22

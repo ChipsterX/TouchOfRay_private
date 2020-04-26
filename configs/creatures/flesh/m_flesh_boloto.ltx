@@ -1,0 +1,29 @@
+[flesh_swamp]:flesh_strong
+visual				= monsters_narodnaya_solyanka\flesh\flesh_marsh
+
+immunities_sect		= flesh_swamp_immunities_strong
+attack_params		= flesh_swamp_attack_params_strong
+spec_rank			= strong
+community			= flesh
+
+class				= SM_MFLES
+
+[flesh_swamp_immunities_strong]
+burn_immunity          	= 0.5
+strike_immunity        	= 0.6
+shock_immunity         	= 0.5
+wound_immunity         	= 0.04
+radiation_immunity     	= 0.0
+telepatic_immunity     	= 0
+chemical_burn_immunity  = 1.0
+explosion_immunity     	= 0.20
+fire_wound_immunity    	= 0.06
+
+[flesh_swamp_attack_params_strong]
+; anim      | time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  | Field of hit_test  (left,right, top, bottom) |  Test Dist
+;Left leg strike
+stand_attack_0 =      0.35,   0.75,       100,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                 2.0
+;Both leg strike
+stand_attack_1 =      0.50,   0.80,       160,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5
+stand_attack_2 =      0.50,   0.90,       180,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5
+stand_attack_3 =      0.50,   1.00,       190,        0.0, 0.5, 1.0,     -1.0, 1.0, -1.0, 1.0,                  2.5

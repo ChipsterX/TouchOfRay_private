@@ -1,0 +1,40 @@
+;*********************************************************************************
+; VYPOLZEN PROFILE Подземный
+;*********************************************************************************
+[vypolzen_red]:snork_jumper
+visual				= monsters_narodnaya_solyanka\snork\vypolzen_red
+panic_threshold		= 0.1
+rank				= 801
+immunities_sect		= vypolzen_marsh_immunities_strong
+attack_params		= vypolzen_marsh_attack_params
+spec_rank			= strong
+community			= snork
+class				= SM_VYPLM
+;---------------------------------------------------------
+; Sounds and sound parameters
+;---------------------------------------------------------
+sound_idle				= monsters\vypolzen\vypolzen_idle_	; idle_
+sound_eat				= monsters\biting\def_			; eat_
+sound_aggressive		= monsters\vypolzen\vypolzen_attack_	; attack_
+sound_attack_hit		= monsters\vypolzen\vypolzen_attack_hit_
+sound_take_damage		= monsters\vypolzen\vypolzen_damage_	; hit_
+sound_die				= monsters\vypolzen\vypolzen_die_			; die_
+sound_bkgnd				= monsters\biting\def_
+sound_threaten			= monsters\biting\def_			; threaten_
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\vypolzen\vypolzen_panic_	; hit_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\biting\def_
+
+;Frequency of sounds to be played
+idle_sound_delay		= 300000
+eat_sound_delay			= 3000
+attack_sound_delay		= 4000
+
+sound_distant_idle			= monsters\vypolzen\vypolzen_idle_
+distant_idle_sound_delay	= 80000
+distant_idle_sound_range	= 100.0	
+
+SoundThreshold						= 0.02             ; range [0..1]
+max_hear_dist						= 60

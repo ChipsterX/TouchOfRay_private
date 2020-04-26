@@ -1,0 +1,248 @@
+<af_params x="0" y="0" width="217" height="20">
+    <prop_line x="0" y="0" width="208" height="9" stretch="1">
+        <texture>ui_inGame2_hint_wnd_Properties</texture>
+    </prop_line>
+
+	<condition x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>condition_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="100">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</condition>
+	
+	<health_restore_speed x="0" y="0" width="214" height="19">
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>health_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>h1_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="660000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</health_restore_speed>
+
+	<radiation_restore_speed x="0" y="0" width="214" height="19">
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>rad_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>r_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="10000"sign_inverse="1" unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</radiation_restore_speed>
+
+	<satiety_restore_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>starvation_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>s_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="125000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</satiety_restore_speed>
+
+	<power_restore_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>power_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>p_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="20000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</power_restore_speed>
+
+	<bleeding_restore_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>bleding_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>b_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</bleeding_restore_speed>
+	
+
+	<burn_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>born_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>bn_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc"> <!--Магнитуда 713--->
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</burn_immunity>
+
+	<shock_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>shok_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>sh_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="480"unit_str="st_proc"> <!--Магнитуда 685--->
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</shock_immunity>
+	
+	<radiation_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>rad1_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>r1_af</texture_minus>
+		<value x="117" y="0" width="30" height="20"  magnitude="10000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</radiation_immunity>
+	
+	<telepatic_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>tele_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>t_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="35"> <!--Умножается на 713 = 35--->
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</telepatic_immunity>
+	
+	<chemical_burn_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>hime_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>h_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</chemical_burn_immunity>
+
+	<additional_weight x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>kilo_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>ki_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="1" unit_str="_st_kg">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</additional_weight>
+	
+	<strike_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>strike_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>str_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</strike_immunity>
+	
+	<wound_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>woun_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>wou_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</wound_immunity>
+	
+	<explosion_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>expl_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>exp_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</explosion_immunity>
+	
+	<fire_wound_immunity x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>fire_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>fir_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</fire_wound_immunity>
+	
+	<thirst_restore_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>voda_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>vod_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="62500"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</thirst_restore_speed>	
+	
+	<sleep_restore_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>son_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>son_af</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="1000"unit_str="st_proc">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</sleep_restore_speed>
+	
+	<artefact_reaction x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" stretch="1">
+			<texture>artreac_plus</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<texture_minus>artreac_minus</texture_minus>
+		<value x="117" y="0" width="30" height="20" magnitude="100"unit_str="st_kr_a">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</artefact_reaction>
+	
+	<jump_speed x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" complex_mode="0">
+			<texture>jump_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<texture_minus>jump_af</texture_minus>
+		<value x="140" y="0" width="30" height="20" magnitude="1000" unit_str="_st_metr">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</jump_speed>
+	
+	<walk_accel x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" complex_mode="0">
+			<texture>spee_af</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<texture_minus>spee_af</texture_minus>
+		<value x="140" y="0" width="30" height="20" magnitude="1000" unit_str="_st_metr1">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</walk_accel>
+
+	<overweight_walk_accel x="0" y="0" width="214" height="19" >
+		<caption x="0" y="0" width="15" height="19" complex_mode="0">
+			<texture>kg_af1</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="100">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</overweight_walk_accel>	
+	
+
+</af_params>

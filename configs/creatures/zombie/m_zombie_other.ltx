@@ -1,0 +1,449 @@
+[zombie_other_korpus]:zombie_weak
+visual				= monsters_narodnaya_solyanka\zombie\korpus
+attack_params		= m_korpus_attack_params
+immunities_sect		= m_korpus_immunities
+step_params			= m_korpus_step_params
+rank				= 401
+spec_rank			= normal
+community			= zombi 
+panic_threshold		= 0
+sound_idle			= monsters\xmonolith\idle_ 
+sound_eat			= monsters\xmonolith\eat_ 
+sound_aggressive	= monsters\xmonolith\attack_
+sound_attack_hit	= monsters\xmonolith\attack_hit_
+sound_take_damage	= monsters\xmonolith\take_damage_
+sound_die			= monsters\xmonolith\die_
+sound_panic			= monsters\xmonolith\attack_
+sound_die_in_anomaly= monsters\xmonolith\die_
+[m_korpus_attack_params]
+;--------------------------------------------------------------------------------------------------------------------
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+;-------------------------------------------------------------------------------------------------------------------
+stand_attack_0 = 0.35, 0.20, 20, 0.0, 1.0, 0.0, -1.2, 1.2, -1.6, 1.6, 1.0
+stand_attack_1 = 0.35, 0.20, 30, 0.0, 1.0, 0.0, -1.2, 1.2, -1.6, 1.6, 1.0
+stand_attack_2 = 0.35, 0.20, 35, 0.0, 1.0, 0.0,	-1.2, 1.2, -1.6, 1.6, 1.0
+[m_korpus_immunities]
+burn_immunity			= 1
+strike_immunity			= 1
+shock_immunity			= 1
+wound_immunity			= 0.5
+radiation_immunity		= 0
+telepatic_immunity		= 0
+chemical_burn_immunity	= 1
+explosion_immunity		= 1
+fire_wound_immunity		= 0.1
+[m_korpus_step_params]
+;---------------------------------------------------------------------------
+;	anim			| Cycles | time1 | power1 | time2 | power2 |
+;---------------------------------------------------------------------------
+stand_walk_fwd_0 	=	1,	   0.1,     0.5,     0.7,    1,   
+stand_run_0	 		=	1,	   0.35,     1,	    0.25,    1, 
+
+
+[zombie_other_babka_1]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_babka_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_babka\zombie_idle_ 
+sound_eat				= monsters\zombie_babka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_babka\zombie_attack_
+sound_attack_hit		= monsters\zombie_babka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_babka\zombie_take_damage_
+sound_die				= monsters\zombie_babka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_babka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_babka\zombie_die_
+
+[zombie_other_babka_2]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_babka_2
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_babka\zombie_idle_ 
+sound_eat				= monsters\zombie_babka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_babka\zombie_attack_
+sound_attack_hit		= monsters\zombie_babka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_babka\zombie_take_damage_
+sound_die				= monsters\zombie_babka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_babka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_babka\zombie_die_
+
+[zombie_other_babka_3]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_babka_3
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_babka\zombie_idle_ 
+sound_eat				= monsters\zombie_babka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_babka\zombie_attack_
+sound_attack_hit		= monsters\zombie_babka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_babka\zombie_take_damage_
+sound_die				= monsters\zombie_babka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_babka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_babka\zombie_die_
+
+[zombie_other_babka_4]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_babka_4
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_babka\zombie_idle_ 
+sound_eat				= monsters\zombie_babka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_babka\zombie_attack_
+sound_attack_hit		= monsters\zombie_babka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_babka\zombie_take_damage_
+sound_die				= monsters\zombie_babka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_babka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_babka\zombie_die_
+
+[zombie_other_1]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_build_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_way_of_man\zombie_idle_ 
+sound_eat				= monsters\zombie_way_of_man\zombie_eat_ 
+sound_aggressive		= monsters\zombie_way_of_man\zombie_attack_
+sound_attack_hit		= monsters\zombie_way_of_man\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_way_of_man\zombie_take_damage_
+sound_die				= monsters\zombie_way_of_man\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_way_of_man\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_way_of_man\zombie_die_
+
+[zombie_other_2]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_mask_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_
+
+[zombie_other_3]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_new_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_way_of_man\zombie_idle_ 
+sound_eat				= monsters\zombie_way_of_man\zombie_eat_ 
+sound_aggressive		= monsters\zombie_way_of_man\zombie_attack_
+sound_attack_hit		= monsters\zombie_way_of_man\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_way_of_man\zombie_take_damage_
+sound_die				= monsters\zombie_way_of_man\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_way_of_man\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_way_of_man\zombie_die_
+
+[zombie_other_4]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_new_3_ghoul
+panic_threshold		= 0.5
+sound_attack_hit    = monsters\zombie_goul\lp_attack_dist_
+sound_aggressive    = monsters\zombie_goul\lp_attack_
+sound_idle		    = monsters\biting\def_
+sound_eat			= monsters\zombie\zombie_eat_
+sound_take_damage	= monsters\zombie_goul\lp_hit_
+sound_die			= monsters\zombie_goul\lp_death_
+sound_panic			= monsters\zombie_goul\lp_attack
+
+[zombie_other_5]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_new_4
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_
+
+[zombie_other_6]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_new_6
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_way_of_man\zombie_idle_ 
+sound_eat				= monsters\zombie_way_of_man\zombie_eat_ 
+sound_aggressive		= monsters\zombie_way_of_man\zombie_attack_
+sound_attack_hit		= monsters\zombie_way_of_man\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_way_of_man\zombie_take_damage_
+sound_die				= monsters\zombie_way_of_man\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_way_of_man\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_way_of_man\zombie_die_
+
+[zombie_other_7]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_novice_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_
+
+[zombie_other_8]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_ns_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_9]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_ns_2
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_10]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_ns_4
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_11]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_ns_5
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_12]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_stalker_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_
+
+[zombie_other_vodyanoj]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_voda_1
+panic_threshold		= 0.5
+FakeDeathCount			= 1		; max count of fake death
+sound_idle		= monsters\zombie\water_zombie\zombie_idle 
+sound_eat		= monsters\zombie\water_zombie\zombie_eat 
+sound_aggressive	= monsters\zombie\water_zombie\zombie_attack
+sound_attack_hit	= monsters\zombie\water_zombie\zombie_attack_hit
+sound_take_damage	= monsters\zombie\water_zombie\zombie_take_damage
+sound_die		= monsters\zombie\water_zombie\zombie_die
+sound_threaten		= monsters\zombie\water_zombie\zombie_attack		
+sound_landing		= monsters\zombie\water_zombie\zombie_attack
+sound_steal		= monsters\zombie\water_zombie\zombie_attack
+sound_panic		= monsters\zombie\water_zombie\zombie_panic
+sound_growling		= monsters\zombie\water_zombie\zombie_attack
+sound_die_in_anomaly	= monsters\zombie\water_zombie\zombie_in_anomaly
+immunities_sect		= zombie_immunities_vodjanoj
+
+[zombie_immunities_vodjanoj]
+burn_immunity		= 0.2	;коэффициенты иммунитета 
+strike_immunity		= 0.02
+shock_immunity		= 0.01
+wound_immunity		= 0.01
+radiation_immunity	= 0.01
+telepatic_immunity	= 0.01
+chemical_burn_immunity	= 0.01
+explosion_immunity	= 0.2
+fire_wound_immunity	= 0.01
+
+[zombie_other_13]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_8a
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_way_of_man\zombie_idle_ 
+sound_eat				= monsters\zombie_way_of_man\zombie_eat_ 
+sound_aggressive		= monsters\zombie_way_of_man\zombie_attack_
+sound_attack_hit		= monsters\zombie_way_of_man\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_way_of_man\zombie_take_damage_
+sound_die				= monsters\zombie_way_of_man\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_way_of_man\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_way_of_man\zombie_die_
+
+[zombie_other_14]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_7a
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_way_of_man\zombie_idle_ 
+sound_eat				= monsters\zombie_way_of_man\zombie_eat_ 
+sound_aggressive		= monsters\zombie_way_of_man\zombie_attack_
+sound_attack_hit		= monsters\zombie_way_of_man\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_way_of_man\zombie_take_damage_
+sound_die				= monsters\zombie_way_of_man\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_way_of_man\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_way_of_man\zombie_die_
+
+[zombie_other_ns_1]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_1
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_ns_2]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_2
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_ns_3]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_3
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_ns_4]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombi_4
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_narodnaya_solyanka\zombie_idle_ 
+sound_eat				= monsters\zombie_narodnaya_solyanka\zombie_eat_ 
+sound_aggressive		= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_attack_hit		= monsters\zombie_narodnaya_solyanka\zombie_attack_hit_
+sound_take_damage		= monsters\zombie_narodnaya_solyanka\zombie_take_damage_
+sound_die				= monsters\zombie_narodnaya_solyanka\zombie_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_narodnaya_solyanka\zombie_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_narodnaya_solyanka\zombie_die_
+
+[zombie_other_15]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_gasmask
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_
+
+[zombie_other_16]:zombie_weak
+visual				 = monsters_narodnaya_solyanka\zombie\zombie_mask_neutral
+panic_threshold		= 0.5
+sound_idle				= monsters\zombie_secret_way\zombie_g_idle_
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\zombie_secret_way\zombie_attack_
+sound_attack_hit		= monsters\zombie\zombie_attack_hit_
+sound_take_damage		= monsters\zombie\zombie_take_damage_
+sound_die				= monsters\zombie_secret_way\zombie_g_die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\zombie_secret_way\zombie_g_attack_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\zombie_secret_way\zombie_g_die_

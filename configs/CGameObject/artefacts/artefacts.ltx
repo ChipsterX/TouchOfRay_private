@@ -1,0 +1,405 @@
+;--------------------------------------------------------------------------------
+; ARTEFACTS
+;--------------------------------------------------------------------------------
+;медуза - медуза редкая 
+
+;каменный цветок - пирог
+
+;ночная звезда - солнечный свет
+
+;выверт - шиповник
+
+;грави - сердце трамплина
+
+;золотая рыбка - желтый лист
+
+;кристалл - феникс
+
+;огненный шар - лава
+
+;мамины бусы - четки
+
+;глаз
+
+;пламя
+
+;кровь камня - хим-камень
+
+;ломоть мяса - болотный гнилец
+
+;душа - медиум
+
+;колобок - болотный еж
+
+;пузырь
+
+;Светляк - изумрудная вспышка
+
+;Бенгальский огонь - голубой огонек
+
+;Вспышка - небесный камень
+
+;Лунный свет - импульс
+
+;Батарейка - скат
+
+;пружина - катушка
+
+;?????????, ??????? ??? ??????????? ??????? ?????????? ????
+;??????: {??????_?????????} = {??????_????},Radius,Power
+[artefact_spawn_zones]
+af_medusa                                = zone_mosquito_bald_weak, 2.0, 30.0
+af_cristall_flower                       = zone_mosquito_bald_weak, 3.0, 50.0
+af_night_star                            = zone_mosquito_bald_weak, 5.0, 100.0
+af_vyvert                                = zone_gravi_zone_weak, 2.0, 30.0
+af_gravi                                 = zone_gravi_zone_weak, 3.0, 50.0
+af_gold_fish                             = zone_gravi_zone_weak, 5.0, 100.0
+af_cristall                              = torrid_zone, 3.0, 50.0
+af_blood                                 = zone_mincer_weak, 2, 30.0
+af_mincer_meat                           = zone_mincer_weak, 3, 50.0
+af_soul                                  = zone_mincer_weak, 5, 100.0
+af_electra_sparkler                      = zone_witches_galantine, 2, 30.0
+af_electra_flash                         = zone_witches_galantine, 3, 50.0
+af_electra_moonlight                     = zone_witches_galantine, 5, 100.0
+
+[af_activation_gravi]
+;----------------------------------------------------------------------------------------------------------------------------------------
+;format:						time(sec),	sound_name,	         	light_R,G,B,  	light_range,    	particle_name,						af_animation_name
+;----------------------------------------------------------------------------------------------------------------------------------------
+starting                                 = 5.0,		anomaly\gravi_idle00,	0.5, 1.0, 1.5,  	5.0,			"anomaly2\artefact_gravi_blast_start",	"idle"
+flying                                   = 2.0,		anomaly\gravi_idle01,	0.8, 1.0, 1.2,  	3.0,			"artefact\artefact_gravi",				"idle"
+idle_before_spawning                     = 5.0,		anomaly\gravi_blowout5,	1.0, 1.0, 1,    	0.0,			"anomaly2\artefact_gravi_blast_finished",	"idle"
+spawning                                 = 1,  		anomaly\gravity_entrance,	0.9, 1.1, 1.01,  	0.0,		"",		"idle"
+
+[af_activation_bold]
+;----------------------------------------------------------------------------------------------------------------------------------------
+;format:						time(sec),	sound_name,	         	light_R,G,B,  	light_range,    	particle_name,						af_animation_name
+;----------------------------------------------------------------------------------------------------------------------------------------
+starting                                 = 5.0,		anomaly\gravi_idle00,	0.8, 1.5, 0.9,  	5.0,			"anomaly2\artefact_bold_blast_start",	"idle"
+flying                                   = 2.0,		anomaly\gravi_idle01,	0.8, 0.9, 0.8,  	2.0,			"artefact\artefact_zharka",				"idle"
+idle_before_spawning                     = 2.0,		anomaly\gravity_entrance,1.0, 1.1, 1.0,  	0.0,			"anomaly2\artefact_bold_blast_finished",	"idle"
+spawning                                 = 0.5,		anomaly\pux_blast,  	1.0, 1.0, 0.5,  	5.0,			"anomaly2\gravi_anomaly_00",		"idle"
+
+[af_activation_mincer]
+;----------------------------------------------------------------------------------------------------------------------------------------
+;format:						time(sec),	sound_name,	         	light_R,G,B,  	light_range,    	particle_name,						af_animation_name
+;----------------------------------------------------------------------------------------------------------------------------------------
+starting                                 = 5.0,		anomaly\gravi_idle00,	0.5, 1.0, 1.5,  	5.0,			"anomaly2\artefact_gravi_blast_start",	"idle"
+flying                                   = 2.0,		anomaly\gravi_idle01,	0.8, 1.0, 1.2,  	3.0,			"artefact\artefact_mincer",				"idle"
+idle_before_spawning                     = 5.0,		anomaly\gravi_blowout2,	1.0, 1.0, 1.0,  	0.0,			"anomaly2\artefact_gravi_blast_finished",	"idle"
+spawning                                 = 0.0,		"",						1.0, 1.0, 0.5,  	0.0,			"",		"idle"
+
+[af_activation_electra]
+;----------------------------------------------------------------------------------------------------------------------------------------
+;format:						time(sec),	sound_name,	         	light_R,G,B,  	light_range,    	particle_name,						af_animation_name
+;----------------------------------------------------------------------------------------------------------------------------------------
+starting                                 = 5.0,		anomaly\bfuzz_blowout,	0.8, 1.0, 1.5,  	5.0,			"anomaly2\artefact_electra_blast_start",	"idle"
+flying                                   = 2.0,		anomaly\electra_idle1,	1.0, 1.0, 1.0,  	5.0,			"artefact\artefact_electra",				"idle"
+idle_before_spawning                     = 0.0,		"",	                	1.0, 1.0, 2.5,  	0,		    	"",	"idle"
+spawning                                 = 2,		"anomaly\pux_blast",	1.0, 1.0, 1.5,  	5.0,			"anomaly2\artefact_electra_blast_finished",		"idle"
+
+#include "call_of_pripyat\af_medusa.ltx"
+#include "call_of_pripyat\af_cristall_flower.ltx"
+#include "call_of_pripyat\af_night_star.ltx"
+#include "call_of_pripyat\af_vyvert.ltx"
+#include "call_of_pripyat\af_gravi.ltx"
+#include "call_of_pripyat\af_gold_fish.ltx"
+#include "call_of_pripyat\af_cristall.ltx"
+#include "call_of_pripyat\af_fireball.ltx"
+#include "call_of_pripyat\af_dummy_glassbeads.ltx"
+#include "call_of_pripyat\af_eye.ltx"
+#include "call_of_pripyat\af_fire.ltx"
+#include "call_of_pripyat\af_blood.ltx"
+#include "call_of_pripyat\af_mincer_meat.ltx"
+#include "call_of_pripyat\af_soul.ltx"
+#include "call_of_pripyat\af_fuzz_kolobok.ltx"
+#include "call_of_pripyat\af_baloon.ltx"
+#include "call_of_pripyat\af_glass.ltx"
+#include "call_of_pripyat\af_electra_sparkler.ltx"
+#include "call_of_pripyat\af_electra_flash.ltx"
+#include "call_of_pripyat\af_electra_moonlight.ltx"
+#include "call_of_pripyat\af_dummy_battery.ltx"
+#include "call_of_pripyat\af_dummy_dummy.ltx"
+#include "call_of_pripyat\af_ice.ltx"
+
+#include "shadow_of_chernobyl\af_ameba_mica.ltx"
+#include "shadow_of_chernobyl\af_ameba_slime.ltx"
+#include "shadow_of_chernobyl\af_ameba_slug.ltx"
+#include "shadow_of_chernobyl\af_blood.ltx"
+#include "shadow_of_chernobyl\af_cristall.ltx"
+#include "shadow_of_chernobyl\af_cristall_flower.ltx"
+#include "shadow_of_chernobyl\af_drops.ltx"
+#include "shadow_of_chernobyl\af_dummy_battery.ltx"
+#include "shadow_of_chernobyl\af_dummy_dummy.ltx"
+#include "shadow_of_chernobyl\af_dummy_glassbeads.ltx"
+#include "shadow_of_chernobyl\af_dummy_pellicle.ltx"
+#include "shadow_of_chernobyl\af_dummy_spring.ltx"
+#include "shadow_of_chernobyl\af_electra_flash.ltx"
+#include "shadow_of_chernobyl\af_electra_moonlight.ltx"
+#include "shadow_of_chernobyl\af_electra_sparkler.ltx"
+#include "shadow_of_chernobyl\af_electra.ltx"
+#include "shadow_of_chernobyl\af_fireball.ltx"
+#include "shadow_of_chernobyl\af_fuzz_kolobok.ltx"
+#include "shadow_of_chernobyl\af_gold_fish.ltx"
+#include "shadow_of_chernobyl\af_gravi.ltx"
+#include "shadow_of_chernobyl\af_medusa.ltx"
+#include "shadow_of_chernobyl\af_mincer_meat.ltx"
+#include "shadow_of_chernobyl\af_night_star.ltx"
+#include "shadow_of_chernobyl\af_rusty_kristall.ltx"
+#include "shadow_of_chernobyl\af_rusty_sea.ltx"
+#include "shadow_of_chernobyl\af_rusty_thorn.ltx"
+#include "shadow_of_chernobyl\af_soul.ltx"
+#include "shadow_of_chernobyl\af_vyvert.ltx"
+
+#include "amk_artefacts\amk_mod_af_armor_1.ltx"
+#include "amk_artefacts\amk_mod_af_armor_2.ltx"
+#include "amk_artefacts\amk_mod_af_armor_3.ltx"
+#include "amk_artefacts\amk_mod_af_armor_4.ltx"
+
+#include "amk_artefacts\amk_mod_af_babka_1.ltx"
+#include "amk_artefacts\amk_mod_af_babka_2.ltx"
+#include "amk_artefacts\amk_mod_af_babka_3.ltx"
+#include "amk_artefacts\amk_mod_af_simbion.ltx"
+
+#include "amk_artefacts\amk_mod_af_buliz.ltx"
+#include "amk_artefacts\amk_mod_af_cry_1.ltx"
+#include "amk_artefacts\amk_mod_af_cry_2.ltx"
+#include "amk_artefacts\amk_mod_af_cry_3.ltx"
+
+#include "amk_artefacts\amk_mod_af_dik_1.ltx"
+#include "amk_artefacts\amk_mod_af_dik_2.ltx"
+#include "amk_artefacts\amk_mod_af_dik_3.ltx"
+#include "amk_artefacts\amk_mod_af_dik_4.ltx"
+
+#include "amk_artefacts\amk_mod_af_kol_1.ltx"
+#include "amk_artefacts\amk_mod_af_kol_2.ltx"
+#include "amk_artefacts\amk_mod_af_kol_3.ltx"
+#include "amk_artefacts\amk_mod_af_kol_4.ltx"
+
+#include "amk_artefacts\amk_mod_af_pudd_1.ltx"
+#include "amk_artefacts\amk_mod_af_pudd_2.ltx"
+#include "amk_artefacts\amk_mod_af_pudd_3.ltx"
+#include "amk_artefacts\amk_mod_af_pudd_4.ltx"
+
+#include "amk_artefacts\amk_mod_af_spirit_1.ltx"
+#include "amk_artefacts\amk_mod_af_spirit_2.ltx"
+#include "amk_artefacts\amk_mod_af_spirit_3.ltx"
+#include "amk_artefacts\amk_mod_af_spirit_4.ltx"
+
+#include "new_artefacts\af_caterpillar.ltx"
+
+;--------------------------------------------------------------------------------
+; «Compass»
+;--------------------------------------------------------------------------------
+[af_compass]:af_base
+$spawn                                   = "artefacts\compass"
+class                                    = SCRPTART
+
+visual                                   = dynamics\artefacts\af_compass.ogf
+description                              = st_compass_descr
+inv_name                                 = st_compass
+inv_name_short                           = st_compass
+inv_weight                               = 0.5
+
+inv_grid_x                               = 9
+inv_grid_y                               = 16
+jump_height                              = .2
+
+cost                                     = 100000
+
+particles                                = artefact\af_electra_idle
+det_show_particles                       = artefact\af_electra_show
+det_hide_particles                       = artefact\af_electra_hide
+
+af_rank                                  = 0
+
+lights_enabled                           = true
+
+trail_light_color                        = 1.0,1.0,0.75	                                       ;1.0,0.9,0.5
+trail_light_range                        = 2.0
+
+
+health_restore_speed                     = 0
+radiation_restore_speed                  = 0.005
+satiety_restore_speed                    = 0
+power_restore_speed                      = 0.001
+bleeding_restore_speed                   = 0
+hit_absorbation_sect                     = af_compass_absorbation
+degrade_rate 							 = 0	;Artefact Degradation
+
+slot									 = 10
+highlight_equipped						 = true
+default_to_ruck							 = false
+
+[af_compass_absorbation]
+burn_immunity                            = 0.02	                                       ;???????????? ??????????
+strike_immunity                          = 0
+shock_immunity                           = 0.06
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0.01
+chemical_burn_immunity                   = 0.02
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0
+
+;--------------------------------------------------------------------------------
+; «Oasis»
+;--------------------------------------------------------------------------------
+[af_oasis_heart]:af_base
+$spawn                                   = "artefacts\af_oasis_heart"
+class                                    = SCRPTART
+;story_id                                 = jup_b16_oasis_artifact
+
+visual                                   = dynamics\artefacts\af_cristall_plant.ogf
+description                              = st_oasis_heart_descr
+inv_name                                 = st_oasis_heart
+inv_name_short                           = st_oasis_heart
+inv_weight                               = 0.5
+
+inv_grid_x                               = 8
+inv_grid_y                               = 16
+jump_height                              = .2
+
+cost                                     = 200000
+
+;particles			= artefact\af_acidic_idle
+det_show_particles                       = artefact\af_acidic_show
+det_hide_particles                       = artefact\af_acidic_hide
+particles_bone                           = cristall
+
+af_rank                                  = 0
+
+lights_enabled                           = true
+
+trail_light_color                        = 1.0,1.0,0.75	                                       ;1.0,0.9,0.5
+trail_light_range                        = 2.0
+
+
+
+health_restore_speed                     = 0.0003
+radiation_restore_speed                  = 0.004
+satiety_restore_speed                    = 0
+power_restore_speed                      = 0.001
+bleeding_restore_speed                   = 0.002
+hit_absorbation_sect                     = af_oasis_heart_absorbation
+degrade_rate							 = 0 ;Artefact Degradation
+
+[af_oasis_heart_absorbation]
+burn_immunity                            = 0	                                       ;???????????? ??????????
+strike_immunity                          = 0
+shock_immunity                           = 0
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0
+chemical_burn_immunity                   = 0
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0
+
+;--------------------------------------------------------------------------------
+; CoP leftovers
+;--------------------------------------------------------------------------------
+[jup_b1_half_artifact]:af_base
+$spawn                                   = "artefacts\af_psi_field"
+class                                    = SCRPTART
+story_id                                 = jup_b1_half_artifact
+visual                                   = dynamics\artefacts\af_psi_field.ogf
+description                              = jup_b1_half_artifact_descr
+inv_name                                 = jup_b1_half_artifact
+inv_name_short                           = jup_b1_half_artifact
+can_trade                                = false
+quest_item                               = true
+
+particles                                = artefact\artefact_mincer
+
+inv_weight                               = 1.0
+
+inv_grid_x                               = 6
+inv_grid_y                               = 16
+jump_height                              = .2
+cost                                     = 4000
+
+;particles					= artefact\af_electra_idle
+det_show_particles                       = artefact\af_electra_show
+det_hide_particles                       = artefact\af_electra_hide
+
+af_rank                                  = 0
+
+lights_enabled                           = true
+
+trail_light_color                        = 0.4,0.2,0.1
+trail_light_range                        = 2.0
+
+
+health_restore_speed                     = 0
+radiation_restore_speed                  = 0.006
+satiety_restore_speed                    = 0
+power_restore_speed                      = 0
+bleeding_restore_speed                   = 0
+
+additional_inventory_weight              = 0
+additional_inventory_weight2             = 0
+
+hit_absorbation_sect                     = jup_b1_half_artifact_absorbation
+
+[jup_b1_half_artifact_absorbation]
+burn_immunity                            = 0	                                       ;???????????? ??????????
+strike_immunity                          = 0
+shock_immunity                           = 0
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0
+chemical_burn_immunity                   = 0
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0
+
+;--------------------------------------------------------------------------------
+; CoP leftovers
+;--------------------------------------------------------------------------------
+[af_quest_b14_twisted]:af_base
+$spawn                                   = "artefacts\af_control"
+class                                    = SCRPTART
+
+visual                                   = dynamics\artefacts\af_control.ogf
+description                              = st_af_quest_b14_twisted_descr
+inv_name                                 = st_af_quest_b14_twisted
+inv_name_short                           = st_af_quest_b14_twisted
+inv_weight                               = 3.0
+inv_grid_x                               = 7
+inv_grid_y                               = 16
+jump_height                              = .2
+cost                                     = 4000
+
+;particles			= artefact\af_acidic_idle
+det_show_particles                       = artefact\af_acidic_show
+det_hide_particles                       = artefact\af_acidic_hide
+
+af_rank                                  = 0
+lights_enabled                           = true
+trail_light_color                        = 0.4,0.6,1.0	                                       ;0.85,1.0,0.5
+trail_light_range                        = 7.5
+
+can_trade                                = false
+quest_item                               = true
+
+attach_angle_offset                      = 1.922,1.551,-0.740	                                       ;??????????????? ? ???????? Angle*PI/180
+attach_position_offset                   = 0.15,0.002,0.25
+attach_bone_name                         = bip01_r_hand
+auto_attach                              = false
+
+health_restore_speed                     = 0
+radiation_restore_speed                  = 0.006
+satiety_restore_speed                    = 0
+power_restore_speed                      = 0
+bleeding_restore_speed                   = 0
+hit_absorbation_sect                     = af_control_absorbation
+
+[af_control_absorbation]
+burn_immunity                            = 0
+strike_immunity                          = 0
+shock_immunity                           = 0
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0
+chemical_burn_immunity                   = 0
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0

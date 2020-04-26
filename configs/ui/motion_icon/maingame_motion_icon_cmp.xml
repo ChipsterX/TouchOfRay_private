@@ -1,0 +1,10 @@
+
+<window>
+	<window rel_size="1.43" width="0" height="0" alignment="c"/>
+	<luminosity_progress x="10" y="10" width="10" height="10" alignment="c" stretch="1" sector_count="100" clockwise="0" begin_angle="-1.5" end_angle="0.0" blend="0">
+		<texture>ui_inGame2_Radar_green_bar_cmp</texture>
+	</luminosity_progress>
+	<noise_progress x="10" y="10" width="10" height="10" stretch="1" alignment="c" sector_count="100" clockwise="1" begin_angle="1.5" end_angle="0.0" blend="0">
+		<texture>ui_inGame2_Radar_blue_bar_cmp</texture>
+	</noise_progress>
+</window>

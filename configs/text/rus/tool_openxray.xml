@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="test_outfit">
+		<text>Куртка разработчика</text>
+	</string>
+
+	<string id="test_outfit_d">
+		<text>%c[255,0,255,0]Куртка разработчика</text>
+	</string>
+
+	<string id="set_mutants_relaction1">
+		<text>Сделать мутантов нейтральными</text>
+	</string>
+
+	<string id="set_mutants_relaction11">
+		<text>%c[255,0,255,0]Сетнуть мутантов на отношение - нет реакции</text>
+	</string>
+
+	<string id="set_mutants_relaction2">
+		<text>Сделать мутантов врагами</text>
+	</string>
+
+	<string id="set_mutants_relaction22">
+		<text>%c[255,0,255,0]Сетнуть мутантов на отношение - враг</text>
+	</string>
+
+</string_table>

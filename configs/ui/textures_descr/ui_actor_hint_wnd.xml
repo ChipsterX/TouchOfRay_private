@@ -1,0 +1,134 @@
+<w>
+    <file name="ui\ui_actor_hint_wnd">
+	    <texture id="ui_inGame2_inv_trash"    x="5" y="651" width="29" height="36" />
+
+	    <texture id="ui_inGame2_hint_wnd_main_window_lt"    x="0" y="0" width="60" height="150" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_t"     x="60" y="0" width="25" height="150" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_rt"    x="211" y="0" width="65" height="150" />
+
+	    <texture id="ui_inGame2_hint_wnd_main_window_l"     x="0" y="112" width="60" height="28" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_back"  x="60" y="112" width="25" height="28" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_r"     x="211" y="112" width="65" height="28" />
+
+	    <texture id="ui_inGame2_hint_wnd_main_window_lb"    x="0" y="318" width="60" height="85" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_b"     x="60" y="318" width="25" height="85" />
+	    <texture id="ui_inGame2_hint_wnd_main_window_rb"    x="211" y="318" width="65" height="85" />
+
+	    <texture id="ui_inGame2_hint_wnd_bar"           x="0" y="412" width="128" height="9" />
+	    <texture id="ui_inGame2_hint_wnd_bar_alfa_line" x="0" y="422" width="128" height="9" />
+            
+	    <texture id="ui_inGame2_hint_wnd_bar_16"           x="0" y="412" width="101" height="9" />
+	    <texture id="ui_inGame2_hint_wnd_bar_alfa_line_16" x="0" y="422" width="101" height="9" />
+
+	    <texture id="ui_inGame2_hint_wnd_Information" x="284" y="9" width="242" height="7" />
+	    <texture id="ui_inGame2_hint_wnd_Properties" x="284" y="21" width="242" height="7" />
+	    <texture id="ui_inGame2_hint_wnd_upgrades" x="284" y="33" width="242" height="7" />
+
+	    <texture id="ui_inGame2_Radar_main_window" x="529" y="7" width="226" height="226" />
+	    <texture id="ui_inGame2_Radar_blue_bar" x="540" y="235" width="206" height="206" />
+	    <texture id="ui_inGame2_Radar_green_bar" x="748" y="235" width="206" height="206" />
+	    <texture id="ui_inGame2_Radar_compass" x="508" y="53" width="9" height="30" />
+
+        <texture id="ui_inGame2_Patroni_HUD_main_window" x="782" y="14" width="222" height="126" />
+        <texture id="ui_inGame2_Patroni_HUD_red_bar" x="782" y="144" width="94" height="16" />
+        <texture id="ui_inGame2_Patroni_HUD_blue_bar" x="782" y="167" width="94" height="10" />
+
+		<texture id="ui_inGame2_Patroni_HUD_active_items_icon_b" 	x="503" y="92" width="3" height="23" />
+		<texture id="ui_inGame2_Patroni_HUD_active_items_icon_back" x="506" y="92" width="3" height="23" />
+		<texture id="ui_inGame2_Patroni_HUD_active_items_icon_e" 	x="509" y="92" width="12" height="23" />
+
+	    <texture id="storyline_task_spot_below" x="502" y="155" width="19" height="16" />
+	    <texture id="storyline_task_spot_above" x="502" y="141" width="19" height="16" />
+	    <texture id="secondary_task_spot_below" x="502" y="127" width="19" height="16" />
+	    <texture id="secondary_task_spot_above" x="502" y="113" width="19" height="16" />
+
+	</file>
+	    <file name="ui\ui_symbols">
+
+	    <texture id="ui_inGame2_circle_psy_green_coc" x="610" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_psy_yellow_coc" x="610" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_psy_red_coc" x="610" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_thirst_green_coc" x="657" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_thirst_yellow_coc" x="657" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_thirst_red_coc" x="657" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_sleep_green_coc" x="563" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_sleep_yellow_coc" x="563" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_sleep_red_coc" x="563" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_hunger_green_coc" x="704" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_hunger_yellow_coc" x="704" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_hunger_red_coc" x="704" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_bloodloose_green_coc" x="751" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_bloodloose_yellow_coc" x="751" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_bloodloose_red_coc" x="751" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_Overweight_green_coc" x="799" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Overweight_yellow_coc" x="799" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Overweight_red_coc" x="799" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_Gunbroken_green_coc" x="846" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Gunbroken_yellow_coc" x="846" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Gunbroken_red_coc" x="846" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_Helmetbroken_green_coc" x="893" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Helmetbroken_yellow_coc" x="893" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Helmetbroken_red_coc" x="893" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_Armorbroken_green_coc" x="940" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Armorbroken_yellow_coc" x="940" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_Armorbroken_red_coc" x="940" y="94" width="32" height="34" />
+
+	    <texture id="ui_inGame2_circle_radiation_green_coc" x="984" y="8" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_radiation_yellow_coc" x="984" y="51" width="32" height="34" />
+	    <texture id="ui_inGame2_circle_radiation_red_coc" x="984" y="94" width="32" height="34" />
+		
+		<texture id="ui_inGame2_circle_psy_green_cop" x="605" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_psy_yellow_cop" x="605" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_psy_red_cop" x="605" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_thirst_green_cop" x="652" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_yellow_cop" x="652" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_red_cop" x="652" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_sleep_green_cop" x="558" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleep_yellow_cop" x="558" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleep_red_cop" x="558" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_hunger_green_cop" x="699" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hunger_yellow_cop" x="699" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hunger_red_cop" x="699" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_bloodloose_green_cop" x="746" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_bloodloose_yellow_cop" x="746" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_bloodloose_red_cop" x="746" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_Overweight_green_cop" x="794" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Overweight_yellow_cop" x="794" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Overweight_red_cop" x="794" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_Gunbroken_green_cop" x="841" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Gunbroken_yellow_cop" x="841" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Gunbroken_red_cop" x="841" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_Helmetbroken_green_cop" x="888" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Helmetbroken_yellow_cop" x="888" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Helmetbroken_red_cop" x="888" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_Armorbroken_green_cop" x="935" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Armorbroken_yellow_cop" x="935" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_Armorbroken_red_cop" x="935" y="234" width="33" height="35" />
+
+	    <texture id="ui_inGame2_circle_radiation_green_cop" x="979" y="152" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_radiation_yellow_cop" x="979" y="193" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_radiation_red_cop" x="979" y="234" width="33" height="35" />
+
+		<texture id="ui_inGame2_PDA_icon_secret" x="52" y="563" width="25" height="25" />
+	    <texture id="ui_inGame2_PDA_icon_secret_player" x="977" y="938" width="25" height="25" />
+	    <texture id="ui_inGame2_PDA_icon_secret_searched" x="951" y="938" width="25" height="25" />
+	    <texture id="ui_inGame2_PDA_icon_secret_unique" x="978" y="964" width="25" height="25" />		
+		
+		</file>
+</w>

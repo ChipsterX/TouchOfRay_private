@@ -1,0 +1,349 @@
+; Вепрь-12 Молот ВПО-205
+;-(TrickSR, Ga2z)-----------------------------------------
+; калибр 				12/70
+; длина ствола 				430 мм
+; магазин				4/8
+; вес с пустым магазином на 4 патрона	4.30 кг
+; вес с пустым магазином на 8 патронов	4.38 кг
+; максимальная дальность стрельбы	-- м
+; эффективная дальность стрельбы	25-50 м
+; прицельная дальность			50 м
+; дульная скорость пули			354 м/с
+; темп стрельбы				4 в/с
+;---------------------------------------------------
+[wpn_vepr]:weapon_probability,default_weapon_params,wpn_vepr_sounds
+GroupControlSection			= spawn_group
+$spawn					= "weapons\vepr"
+$npc			 		= on
+$prefetch 		 		= 8
+scheduled				= off
+cform					= skeleton
+class					= WP_AK74
+description				= st_wpn_vepr_descr
+
+scopes 					= 1p29, kobra, ekp, pso
+parent_section  			= wpn_vepr
+
+ef_main_weapon_type			= 1
+ef_weapon_type				= 9
+
+inv_name				= st_wpn_vepr
+inv_name_short				= st_wpn_vepr
+
+inv_grid_width				= 5
+inv_grid_height				= 2
+inv_grid_x				= 30
+inv_grid_y				= 24
+
+upgr_icon_x				= 1450
+upgr_icon_y				= 1350
+upgr_icon_width				= 300
+upgr_icon_height 			= 100
+
+kill_msg_x				= 91
+kill_msg_y				= 104
+kill_msg_width 				= 80
+kill_msg_height				= 20
+
+cost					= 50000
+weapon_class				= shotgun
+inv_weight				= 4.38
+hud					= wpn_vepr_baraban_hud
+visual 					= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban.ogf
+
+upgrades                		= up_gr_firstab_protecta, up_gr_seconab_protecta, up_gr_thirdab_protecta, up_gr_fourtab_protecta
+installed_upgrades      		=
+upgrade_scheme          		= upgrade_scheme_protecta
+
+ph_mass			 		= 4
+
+ammo_class				= ammo_12x70_buck, ammo_12x76_zhekan, ammo_12x70_kart
+
+startup_ammo 				= 90
+ammo_current		 		= 48
+ammo_elapsed		 		= 0
+ammo_limit		 		= 56
+ammo_mag_size		 		= 20
+
+fire_modes				= 1
+grenade_class				= ammo_vog-25, ammo_vog-25p
+
+launch_speed				= 76
+hand_dependence				= 1
+single_handed				= 0
+
+hit_power				= 0.65
+hit_impulse				= 35
+hit_type 				= fire_wound
+fire_distance				= 200
+bullet_speed				= 354
+rpm					= 240
+rpm_empty_click 			= 200
+
+misfire_probability			= 0.005
+misfire_start_condition			= 0.6
+misfire_end_condition			= 0.1
+misfire_start_prob	 		= 0
+misfire_end_prob	 		= 0
+condition_shot_dec			= 0.003
+condition_queue_shot_dec		= 0.0035
+
+zoom_dof				= 0.5,1,180
+reload_dof				= 0,0.5,5,1.7
+
+fire_dispersion_base			= 0.37
+fire_dispersion_condition_factor	= 3
+control_inertion_factor			= 1.4f
+crosshair_inertion			= 7.0
+
+cam_return				= 0
+cam_relax_speed				= 20
+cam_relax_speed_ai			= 360
+cam_dispersion				= 5
+cam_dispersion_inc			= 1.5
+cam_dispersion_frac			= 1
+cam_max_angle				= 30
+cam_max_angle_horz			= 30
+cam_step_angle_horz			= 5
+
+zoom_cam_relax_speed			= 10
+zoom_cam_relax_speed_ai			= 120.75
+zoom_cam_dispersion			= 5
+zoom_cam_dispersion_inc			= 1.5
+zoom_cam_dispersion_frac		= 0.7
+zoom_cam_max_angle			= 15
+zoom_cam_max_angle_horz			= 15
+zoom_cam_step_angle_horz		= 5
+
+PDM_disp_base 				= 0.5
+PDM_disp_vel_factor 			= 2
+PDM_disp_accel_factor 			= 2
+PDM_disp_crouch	 			= 1
+PDM_disp_crouch_no_acc 			= 1
+
+min_radius				= 30
+max_radius				= 50
+
+holder_range_modifier			= 1
+holder_fov_modifier			= 1
+
+slot 					= 2
+animation_slot				= 2
+
+position				= -0.026,-0.175,0
+orientation				= 0,0,0
+
+fire_point				= 0,0.218,0.656
+fire_point2				= 0,0.161,0.583
+
+shell_point				= 0,0.138,0.07
+shell_particles				= weapons\12ga
+
+flame_particles				= weapons\generic_weapon05
+smoke_particles     			= ghost_particles\weapons\flame_eft_shotgun
+grenade_flame_particles 		= amik\weapons\grenade_flame_particles\grenade_flame_particles_00
+silencer_smoke_particles   		= ghost_particles\weapons\generic_smoke_eft_sil
+
+strap_position				= -0.26,-0.10,0.05
+strap_orientation			= -15,-9,110
+strap_bone0				= bip01_spine2
+strap_bone1				= bip01_spine1
+
+light_color		 		= 0.6,0.5,0.3
+light_range		 		= 6.0
+light_var_color		 		= 0.05
+light_var_range		 		= 0.5
+light_time 		 		= 0.2
+
+scope_status				= 2
+silencer_status				= 2
+grenade_launcher_status			= 0
+
+scope_name 				= pso
+scope_x					= 48
+scope_y					= 9
+
+silencer_name				= sil_pbs1
+silencer_x                  		= 218
+silencer_y                  		= 20
+
+zoom_enabled				= true
+zoom_rotate_time			= 0.25
+scope_zoom_factor			= 100
+
+silencer_hit_power			= 0.7
+;silencer_hit_impulse			= 10
+silencer_fire_distance			= 150
+silencer_bullet_speed			= 290
+
+silencer_light_color			= 0.6,0.5,0.3
+silencer_light_range			= 0.01
+silencer_light_var_color		= 0.05
+silencer_light_var_range		= 0.5
+silencer_light_time			= 0.2
+
+[wpn_vepr_hud]:hud_base
+zoom_hide_crosshair			= true
+attach_place_idx			= 0
+item_visual				= dynamics\weapons\wpn_vepr12\wpn_vepr12_hud.ogf
+
+hands_position				= -0.056500,-0.129000,0.064500
+hands_orientation			= 3.549999,2.949999,0
+
+hands_position_16x9			= -0.056500,-0.129000,0.064500
+hands_orientation_16x9			= 3.549999,2.949999,0
+
+item_position				= 0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos 			= -0.082000,0.039600,-0.12
+aim_hud_offset_rot 			= 0.062931,0.064537,0
+
+aim_hud_offset_pos_16x9			= -0.082000,0.039600,-0.12
+aim_hud_offset_rot_16x9			= 0.062931,0.064537,0
+
+shell_point                		= 0,0,0
+shell_dir              	 		= 0,0,0
+shell_bone                		= wpn_body
+
+fire_point				= 0,0,0
+fire_bone                   		= muzzle
+
+fire_point2				= 0.0,-0.011,0.553
+fire_bone2				= wpn_body
+
+anm_show				= vepr12_draw
+anm_hide                		= vepr12_holster
+anm_idle                		= vepr12_idle
+anm_idle_sprint         		= vepr12_idle_sprint
+anm_idle_moving         		= vepr12_idle_move
+anm_shots               		= vepr12_shoot, shoot
+anm_reload              		= vepr12_reload, reload
+anm_idle_aim           	 		= vepr12_idle_aim
+anm_bore                		= vepr12_idle_aim
+
+gl_hud_offset_pos_16x9 			= 0,0,0
+gl_hud_offset_rot_16x9 			= 0,0,0
+
+gl_hud_offset_pos 			= 0,0,0
+gl_hud_offset_rot 			= 0,0,0
+
+lean_hud_offset_pos        		= 0,0,0
+lean_hud_offset_rot        		= 0,0,0
+;-----------------------------------------------------------------------------
+; Уникальные
+;-----------------------------------------------------------------------------
+[wpn_vepr_baraban_hud]:hud_base
+zoom_hide_crosshair			= true
+attach_place_idx			= 0
+item_visual				= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_hud.ogf
+
+hands_position				= -0.11,-0.18,0.08
+hands_orientation			= 3.5,2.7,-4.2
+
+hands_position_16x9			= -0.11,-0.18,0.08
+hands_orientation_16x9			= 3.5,2.7,-4.2
+
+item_position				= 0,0.004,0
+item_orientation			= -16.2,-1.820898,7.220154
+
+aim_hud_offset_pos 			= -0.109,0.063,-0.26
+aim_hud_offset_rot 			= 0.062775,0.0646,-0.0060
+
+aim_hud_offset_pos_16x9			= -0.109,0.063,-0.26
+aim_hud_offset_rot_16x9			= 0.062775,0.0646,-0.006
+
+shell_point				= 0.028,0.078,0.183
+shell_dir				= 0,1,0
+shell_bone				= wpn_body
+
+fire_point				= -0.011,0.037545,0.642951
+fire_bone				= wpn_body
+fire_point2				= 0,-0.028,0.678
+fire_bone2				= wpn_body
+
+anm_show				= vepr12_baraban_draw_1
+anm_hide                		= vepr12_baraban_holster_1
+anm_idle                		= vepr12_baraban_idle
+anm_idle_sprint         		= vepr12_baraban_sprint_1
+anm_idle_moving        			= vepr12_baraban_moving
+anm_shots               		= vepr12_baraban_shoot, shoot
+anm_reload             		 	= vepr12_baraban_reload_1, reload_1
+anm_idle_aim           			= vepr12_baraban_idle_aim
+anm_bore               			= vepr12_baraban_idle_aim
+
+gl_hud_offset_pos			= 0,0,0
+gl_hud_offset_rot			= 0,0,0
+
+gl_hud_offset_pos_16x9			= 0,0,0
+gl_hud_offset_rot_16x9			= 0,0,0
+
+lean_hud_offset_pos			= 0,0,0
+lean_hud_offset_rot			= 0,0,0
+;-----------------------------------------------------------------------------
+; Аддоны
+;-----------------------------------------------------------------------------
+[wpn_vepr_ekp]:wpn_vepr
+$spawn             			= "weapons\wpn_vepr_ekp"
+hud					= wpn_vepr_ekp_hud
+visual					= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_ekp.ogf
+
+scope_x					= 68
+scope_y					= 11
+
+[wpn_vepr_ekp_hud]:wpn_vepr_baraban_hud
+item_visual                		= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_ekp_hud.ogf
+
+aim_hud_offset_pos 			= -0.109000,0.032000,-0.25
+aim_hud_offset_rot 			= 0.062450,0.066612,-0.006
+
+aim_hud_offset_pos_16x9			= -0.109000,0.032000,-0.25
+aim_hud_offset_rot_16x9			= 0.062450,0.066612,-0.006
+
+[wpn_vepr_kobra]:wpn_vepr
+$spawn                  		= "weapons\vepr_kobra"
+hud					= wpn_vepr_kobra_hud
+visual					= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_kobra.ogf
+
+scope_x					= 71
+scope_y					= 16
+
+[wpn_vepr_kobra_hud]:wpn_vepr_baraban_hud
+item_visual                		= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_kobra_hud.ogf
+
+aim_hud_offset_pos 			= -0.109000,0.040300,-0.25
+aim_hud_offset_rot 			= 0.061738,0.067300,-0.006000
+
+aim_hud_offset_pos_16x9			= -0.109000,0.040300,-0.25
+aim_hud_offset_rot_16x9			= 0.061738,0.067300,-0.006000
+
+[wpn_vepr_1p29]:wpn_vepr
+$spawn             			= "weapons\wpn_vepr_1p29"
+hud					= wpn_vepr_1p29_hud
+visual					= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_1p29.ogf
+
+scope_x					= 60
+scope_y					= 9
+
+[wpn_vepr_1p29_hud]:wpn_vepr_kobra_hud
+item_visual                		= dynamics\weapons\wpn_vepr12\wpn_vepr12_baraban_1p29_hud.ogf
+
+aim_hud_offset_pos			= -0.109000,0.040300,-0.184877
+aim_hud_offset_rot			= 0.071613,0.059175,-0.006000
+
+aim_hud_offset_pos_16x9			= -0.109000,0.040300,-0.184877
+aim_hud_offset_rot_16x9			= 0.071613,0.059175,-0.006000
+
+[wpn_vepr_pso]:wpn_vepr
+$spawn             			= "weapons\wpn_vepr_pso"
+hud					= wpn_vepr_pso_hud
+
+scope_x					= 48
+scope_y					= 9
+
+[wpn_vepr_pso_hud]:wpn_vepr_baraban_hud
+aim_hud_offset_pos			= -0.100500,0.048500,-0.164001
+aim_hud_offset_rot			= 0.062206,0.064844,-0.006000
+
+aim_hud_offset_pos_16x9			= -0.100500,0.048500,-0.164001
+aim_hud_offset_rot_16x9			= 0.062206,0.064844,-0.006000

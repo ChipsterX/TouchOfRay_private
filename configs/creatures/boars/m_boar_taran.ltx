@@ -1,0 +1,49 @@
+[boar_taran]:boar_normal
+visual				= monsters_narodnaya_solyanka\mutant_boar\boar_taran
+panic_threshold		= 0.01
+rank				= 801
+immunities_sect		= taran_immunities
+attack_params		= taran_attack_params
+spec_rank			= strong
+community			= boar
+
+class				= SM_BOART
+
+damage          	= m_taran_damage
+
+[taran_immunities]
+burn_immunity       	= 0.05     ;коэффициенты иммунитета 
+strike_immunity     	= 0.1
+shock_immunity      	= 0.05
+wound_immunity      	= 0.1    
+radiation_immunity    	= 0.1
+telepatic_immunity    	= 0.0
+chemical_burn_immunity  = 0.02
+explosion_immunity    	= 0.1
+fire_wound_immunity   	= 0.085
+
+
+[taran_attack_params]
+;----------------------------------------------------------------------------------------------------------------
+; anim      | time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  | Field of hit_test  (left,right, bottom, top ) | Test Dist
+;----------------------------------------------------------------------------------------------------------------
+;Bite
+stand_attack_0 =      0.50,   1.0,       200,        0.0, 0.5, 0.5,   -1.0, 1.0, -1.0, 1.0,            2.3
+;Bite2
+stand_attack_1 =      0.50,   1.1,       200,        0.0, 0.5, 0.5,   -1.0, 1.0, -1.0, 1.0,            2.3
+;Right Leg Attack
+stand_attack_2 =      0.50,   1.05,       200,        0.0, 1.0, 2.0,   -0.8, 0.8, -1.0, 1.0,            2.5
+stand_attack_run_0 =  0.70,   1.15,       400,        0.0, 1.0, 2.0,   -1.0, 1.0, -1.0, 1.0,            2.2
+
+[m_taran_damage]
+;bone_name     = <hit_scale>,-1,<wound_scale>
+;<hit_scale>  - коэфф. изменения хита (уменьшения здоровья) 
+;<wound_scale>  - коэфф. изменения величины открытой раны
+
+default       = 1, -1, 0.3
+
+bip01_pelvis    = 0.1, -1, 0.1
+bip01_spine     = 0.1, -1, 0.1
+bip01_spine1    = 0.1, -1, 0.1
+bip01_neck      = 0.7, -1, 0.5
+bip01_head      = 1.6, -1, 0.45, 1

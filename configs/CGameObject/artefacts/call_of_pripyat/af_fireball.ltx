@@ -1,0 +1,55 @@
+;--------------------------------------------------------------------------------
+; Лава
+;--------------------------------------------------------------------------------
+[af_fireball]:af_base
+$spawn                                   = "artefacts\thermal_2_fireball"
+class                                    = SCRPTART
+
+visual                                   = dynamics\artefacts\af_fireball.ogf
+description                              = st_af_fireball_descr
+inv_name                                 = st_af_fireball_name
+inv_name_short                           = st_af_fireball_name
+inv_weight                               = 0.5
+
+inv_grid_x                               = 8
+inv_grid_y                               = 19
+
+cost                                     = 10000
+
+impulse_threshold                        = 10
+radius                                   = 10
+strike_impulse                           = 20
+
+particles                                = artefact\af_thermal_idle
+det_show_particles                       = artefact\af_thermal_show
+det_hide_particles                       = artefact\af_thermal_hide
+
+af_rank                                  = 2
+
+lights_enabled                           = true
+
+trail_light_color                        = 0.9,0.4,0.2
+trail_light_range                        = 2.0
+
+
+health_restore_speed                     = 0
+radiation_restore_speed                  = 0.0035
+satiety_restore_speed                    = 0
+power_restore_speed                      = 0
+bleeding_restore_speed                   = 0
+
+additional_inventory_weight              = 0
+additional_inventory_weight2             = 0
+
+hit_absorbation_sect                     = af_fireball_absorbation
+
+[af_fireball_absorbation]
+burn_immunity                            = 0.05
+strike_immunity                          = 0
+shock_immunity                           = 0
+wound_immunity                           = 0
+radiation_immunity                       = 0
+telepatic_immunity                       = 0
+chemical_burn_immunity                   = 0
+explosion_immunity                       = 0
+fire_wound_immunity                      = 0

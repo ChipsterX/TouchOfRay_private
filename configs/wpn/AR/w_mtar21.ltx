@@ -1,0 +1,309 @@
+; Tavor Assault Rifle-21 - штурмовая винтовка «Тавор» (не закончен)
+;-(TrickSR, Gaz1k)-----------------------------------------
+; калибр 				5.56x45 мм
+; длина ствола 				330 мм
+; магазин				30
+; вес с пустым магазином		2.95 кг
+; максимальная дальность стрельбы	-- м
+; эффективная дальность стрельбы	-- м
+; прицельная дальность			300 м
+; дульная скорость пули			870 м/с
+; темп стрельбы				900 в/м
+;---------------------------------------------------
+[wpn_mtar21]:weapon_probability,default_weapon_params,wpn_mtar21_sounds
+GroupControlSection			= spawn_group
+$spawn 					= "weapons\mtar-21"
+$npc					= on
+$prefetch				= 8
+scheduled				= off
+cform					= skeleton
+class					= WP_AK74
+description				= st_wpn_mtar21_descr
+
+ef_main_weapon_type			= 2
+ef_weapon_type				= 7
+
+scopes 					= ac10632, acog, eot, c-more
+parent_section  			= wpn_mtar21
+
+inv_name				= st_wpn_mtar21
+inv_name_short 				= st_wpn_mtar21
+
+inv_grid_width				= 4
+inv_grid_height				= 2
+inv_grid_x 				= 25
+inv_grid_y 				= 30
+
+upgr_icon_x				= 1750
+upgr_icon_y				= 1450
+upgr_icon_width				= 200
+upgr_icon_height 			= 100
+
+kill_msg_x 				= 84
+kill_msg_y 				= 28
+kill_msg_width 				= 73
+kill_msg_height				= 30
+
+cost					= 37500
+weapon_class				= assault_rifle
+inv_weight 				= 2.95
+hud					= wpn_mtar21_hud
+visual					= dynamics\weapons\wpn_mtar21\wpn_mtar21.ogf
+
+upgrades				= up_gr_firstab_sig550, up_gr_seconab_sig550, up_gr_thirdab_sig550, up_gr_fourtab_sig550, up_gr_fifthab_sig550
+installed_upgrades			=
+upgrade_scheme				= upgrade_scheme_sig550
+
+ph_mass					= 5
+
+ammo_class				= ammo_5.56x45_ss190, ammo_5.56x45_ap
+
+startup_ammo				= 90
+ammo_current				= 180
+ammo_elapsed				= 30
+ammo_limit				= 210
+ammo_mag_size				= 30
+
+fire_modes				= 1,-1
+
+grenade_class				= ammo_m209
+
+grenade_vel 				= 76
+launch_speed				= 76
+hand_dependence				= 1
+single_handed				= 0
+
+hit_power				= 0.26
+;hit_impulse				= 10
+hit_type				= fire_wound
+fire_distance				= 1000
+bullet_speed				= 870
+rpm					= 800
+rpm_empty_click				= 200
+
+use_aim_bullet				= true
+time_to_aim				= 3.0
+misfire_probability			= 0.005
+misfire_start_condition			= 0.6
+misfire_end_condition			= 0.1
+misfire_start_prob	 		= 0.006
+misfire_end_prob	 		= 0.077
+condition_shot_dec			= 0.000125
+condition_queue_shot_dec		= 0.0002
+
+zoom_dof				= 0.5,1,180
+reload_dof				= 0,0.5,5,2
+
+fire_dispersion_base 			= 0.33
+fire_dispersion_condition_factor	= 2
+control_inertion_factor 		= 1.25f
+crosshair_inertion			= 6
+
+cam_return				= 0
+cam_relax_speed				= 5
+cam_relax_speed_ai			= 360
+cam_dispersion				= 0.6
+cam_dispersion_inc			= 0.3
+cam_dispersion_frac			= 1
+cam_max_angle				= 50
+cam_max_angle_horz			= 50
+cam_step_angle_horz			= 2
+
+zoom_cam_relax_speed			= 5
+zoom_cam_relax_speed_ai			= 360
+zoom_cam_dispersion			= 0.4
+zoom_cam_dispersion_inc			= 0.2
+zoom_cam_dispersion_frac		= 1.0
+zoom_cam_max_angle			= 50
+zoom_cam_max_angle_horz			= 50
+zoom_cam_step_angle_horz		= 1.8
+
+PDM_disp_base 				= 0.5
+PDM_disp_vel_factor 			= 2
+PDM_disp_accel_factor 			= 2
+PDM_disp_crouch	 			= 1
+PDM_disp_crouch_no_acc 			= 1
+
+min_radius				= 30
+max_radius				= 90
+
+holder_range_modifier			= 1.25
+holder_fov_modifier			= 1
+
+hit_probability_gd_novice		= 0.55
+hit_probability_gd_stalker		= 0.65
+hit_probability_gd_veteran		= 0.75
+hit_probability_gd_master		= 0.85
+
+slot					= 2
+animation_slot				= 8
+
+position				= -0.026,-0.135,0
+orientation				= 0,0,0
+
+fire_point				= 0,0.186,0.435
+fire_point2				= 0,0.106,0.468
+
+flame_particles				= amik\weapons\nato_shoot_00
+smoke_particles				= amik\weapons\nato_smoke_00
+grenade_flame_particles			= weapons\generic_weapon01
+
+shell_point				= -0.02,0.167,0.082
+shell_dir				= 0,0,0.4
+shell_particles				= weapons\556x45
+
+strap_position 				= -0.15,-0.36,0.25
+strap_orientation			= -10,-5,10
+strap_bone0				= bip01_spine2
+strap_bone1				= bip01_spine1
+
+light_disabled				= false
+light_color				= 0.6,0.5,0.3
+light_range				= 5
+light_var_color				= 0.05
+light_var_range				= 0.5
+light_time				= 0.2
+
+scope_status				= 2
+silencer_status				= 2
+grenade_launcher_status			= 0
+
+zoom_enabled				= true
+zoom_rotate_time			= 0.25
+scope_zoom_factor			= 100
+
+grenade_launcher_name 			= wpn_addon_grenade_launcher_m203
+grenade_launcher_x 			= 140
+grenade_launcher_y 			= 29
+	
+silencer_name				= sil_nato
+silencer_x 				= 168
+silencer_y 				= 18
+
+silencer_hit_power 			= 0.25
+silencer_hit_impulse	 		= 20
+silencer_fire_distance 			= 1000
+silencer_bullet_speed	 		= 940
+silencer_smoke_particles 		= amik\weapons\smoke_particles\silencer_smoke_particles_00
+
+silencer_light_color			= 0.6,0.5,0.3
+silencer_light_range			= 0.01
+silencer_light_var_color		= 0.05
+silencer_light_var_range		= 0.5
+silencer_light_time			= 0.2
+
+[wpn_mtar21_hud]:hud_base
+zoom_hide_crosshair 			= true
+attach_place_idx			= 0
+item_visual				= dynamics\weapons\wpn_mtar21\wpn_mtar21_hud.ogf
+
+hands_position				= 0.072,-0.06,0.16
+hands_orientation			= 3,4.5,0
+
+hands_position_16x9			= 0.072,-0.06,0.16
+hands_orientation_16x9			= 3,4.5,0
+
+item_position				= 0.0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos 			= -0.076,0.02425,-0.27
+aim_hud_offset_rot 			= 0.077236,0.052422,0.004
+
+aim_hud_offset_pos_16x9			= -0.076,0.02425,-0.27
+aim_hud_offset_rot_16x9			= 0.077236,0.052422,0.004
+
+shell_point				= 0,0,0
+shell_dir              		 	= 0,1,0
+shell_bone				= wpn_body
+
+fire_point				= 0,0,0
+fire_bone      	      			= muzzle
+
+anm_show             			= tavor_draw
+anm_hide             			= tavor_holster
+anm_idle             			= tavor_idle
+anm_idle_sprint         		= tavor_idle_sprint
+anm_idle_moving 			= tavor_idle_move
+anm_shots               		= tavor_shoot
+anm_reload              		= tavor_reload, reload
+anm_idle_aim           			= tavor_idle_aim
+anm_bore				= tavor_idle
+
+gl_hud_offset_pos_16x9 			= -0.12025,-0.2,-0.05
+gl_hud_offset_rot_16x9 			= -0.255,0.0349,0
+
+gl_hud_offset_pos 			= -0.12025,-0.2,-0.05
+gl_hud_offset_rot 			= -0.255,0.0349,0
+
+lean_hud_offset_pos			= 0,0,0
+lean_hud_offset_rot			= 0,0,0
+;-----------------------------------------------------------------------------
+; Аддоны
+;-----------------------------------------------------------------------------
+[wpn_mtar21_ac10632]:wpn_mtar21
+$spawn             			= "weapons\mtar21_ac10632"
+visual					= dynamics\weapons\wpn_mtar21\wpn_mtar21_barska.ogf
+hud					= wpn_mtar21_ac10632_hud
+
+scope_x					= 88
+scope_y					= -8
+
+[wpn_mtar21_ac10632_hud]:wpn_mtar21_hud
+item_visual            	 		= dynamics\weapons\wpn_mtar21\wpn_mtar21_barska_hud.ogf
+
+aim_hud_offset_pos			= -0.075750,0.022500,-0.285
+aim_hud_offset_rot			= 0.076636,0.052397,0.004
+
+aim_hud_offset_pos_16x9			= -0.075750,0.022500,-0.285
+aim_hud_offset_rot_16x9			= 0.076636,0.052397,0.004
+
+[wpn_mtar21_acog]:wpn_mtar21
+$spawn					= "weapons\mtar21_acog"
+visual					= dynamics\weapons\wpn_mtar21\wpn_mtar21_acog.ogf
+hud					= wpn_mtar21_acog_hud
+
+scope_x					= 85
+scope_y					= -10
+
+[wpn_mtar21_acog_hud]:wpn_mtar21_hud
+item_visual            	 		= dynamics\weapons\wpn_mtar21\wpn_mtar21_acog_hud.ogf
+
+aim_hud_offset_pos			= -0.076125,0.027750,-0.29
+aim_hud_offset_rot			= 0.077924,0.052484,0.008125
+
+aim_hud_offset_pos_16x9			= -0.076125,0.027750,-0.29
+aim_hud_offset_rot_16x9			= 0.077924,0.052484,0.008125
+
+[wpn_mtar21_eot]:wpn_mtar21
+$spawn					= "weapons\mtar21_eot"
+visual					= dynamics\weapons\wpn_mtar21\wpn_mtar21_eot.ogf
+hud					= wpn_mtar21_eot_hud
+
+scope_x					= 87
+scope_y					= -9
+
+[wpn_mtar21_eot_hud]:wpn_mtar21_hud
+item_visual				= dynamics\weapons\wpn_mtar21\wpn_mtar21_eot_hud.ogf
+
+aim_hud_offset_pos			= -0.076000,0.015250,-0.22
+aim_hud_offset_rot			= 0.076273,0.052247,0.004000
+
+aim_hud_offset_pos_16x9			= -0.076000,0.015250,-0.22
+aim_hud_offset_rot_16x9			= 0.076273,0.052247,0.004000
+
+[wpn_mtar21_c-more]:wpn_mtar21
+$spawn					= "weapons\mtar21_c-more"
+visual					= dynamics\weapons\wpn_mtar21\wpn_mtar21_c-more.ogf
+hud					= wpn_mtar21_c-more_hud
+
+scope_x					= 88
+scope_y					= -7
+
+[wpn_mtar21_c-more_hud]:wpn_mtar21_hud
+item_visual				= dynamics\weapons\wpn_mtar21\wpn_mtar21_c-more_hud.ogf
+
+aim_hud_offset_pos			= -0.075750,0.026500,-0.293
+aim_hud_offset_rot			= 0.076148,0.05211,0.004
+
+aim_hud_offset_pos_16x9			= -0.075750,0.026500,-0.293
+aim_hud_offset_rot_16x9			= 0.076148,0.05211,0.004

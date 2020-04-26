@@ -1,0 +1,46 @@
+[bibliotekar]:fracture_strong
+monster_type		= indoor
+rank				= 0
+visual			 	= monsters_narodnaya_solyanka\izloms\bibliotekar
+spec_rank			= strong
+panic_threshold		= 0.0
+class				= SM_BIBLO
+Spawn_Inventory_Item_Section = part_digitis_biblio
+Spawn_Inventory_Item_Probability = 0.0
+
+sound_distant_idle		= monsters\bibliotekar\idle_
+sound_idle				= monsters\bibliotekar\idle_ 
+sound_eat				= monsters\zombie\zombie_eat_ 
+sound_aggressive		= monsters\bibliotekar\swamp_run_1
+sound_attack_hit		= monsters\bibliotekar\attack_hit_
+sound_take_damage		= monsters\bibliotekar\hurt_
+sound_die				= monsters\bibliotekar\die_
+sound_threaten			= monsters\biting\def_		
+sound_landing			= monsters\biting\def_
+sound_steal				= monsters\biting\def_
+sound_panic				= monsters\bibliotekar\hurt_
+sound_growling			= monsters\biting\def_
+sound_die_in_anomaly	= monsters\bibliotekar\die_
+
+attack_params			= bibliotekar_attack_params
+immunities_sect			= bibliotekar_immunities
+
+;===========================================================
+; IMMUNITIES
+;===========================================================
+[bibliotekar_immunities]
+burn_immunity          		= 0.05
+strike_immunity        		= 0.05
+shock_immunity         	= 0.1
+wound_immunity         	= 0.005     
+radiation_immunity     	= 0.00
+telepatic_immunity     	= 1.0
+chemical_burn_immunity = 0.05
+explosion_immunity     	= 0.05
+fire_wound_immunity    	= 0.01
+
+[bibliotekar_attack_params]
+;	anim			| time[0..1] | hit_power | impulse | impulse_dir (x,y,z)  |	Field of hit_test  (left,right, bottom, top ) |	Test Dist
+stand_attack_0 =	  	0.35,		1.60,		    750,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5
+stand_attack_1 =	  	0.40,		1.30,		    600,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5
+stand_attack_2 =	  	0.90,		1.70,		    950,        0.0, 1.0, 0.0,		 -1.6, 1.6, -1.6, 1.6,							  3.5

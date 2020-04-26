@@ -1,0 +1,47 @@
+[af_ameba_slug]:af_base1
+GroupControlSection	= spawn_group
+$spawn				= "artifacts\ameba slug"
+
+$prefetch 			= 64
+cform				= skeleton
+class				= ARTEFACT
+
+visual				= physics\anomaly\artefact_ameba2.ogf
+description			= enc_zone_artifact_af-ameba-slug
+inv_name			= af-ameba-slug
+inv_name_short		= af-ameba-slug
+inv_weight			= 0.5
+
+inv_grid_x			= 18
+inv_grid_y			= 25
+
+cost				= 1400
+
+jump_height			= .1
+
+particles			= anomaly2\artefact\artefact_ameba
+
+lights_enabled = true	 
+trail_light_color = 0.0,6.0,0.3
+trail_light_range = 1.0
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = 0
+satiety_restore_speed   = 0
+power_restore_speed     = 0
+bleeding_restore_speed  = 0.00267 
+artefact_reaction		= 0.1
+hit_absorbation_sect = af_ameba_absorbation
+
+;коэффициенты иммунитета 
+[af_ameba_absorbation]
+burn_immunity          = -0.02
+strike_immunity        = 0
+shock_immunity         = 0
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = -0.02
+explosion_immunity     = 0
+fire_wound_immunity    = 0

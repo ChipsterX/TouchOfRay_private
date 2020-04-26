@@ -1,0 +1,38 @@
+;Плазменная гусеница
+
+[af_caterpillar]:af_base
+visual				= artefacts\caterpillar.ogf  
+cform          		= skeleton
+class   			= ARTEFACT
+af_rank = 0
+description			= af_caterpillar_d
+inv_name			= af_caterpillar
+inv_name_short		= af_caterpillar
+inv_weight			= 1.5
+inv_grid_x			= 50
+inv_grid_y			= 29
+cost				= 15000
+jump_height			= .4
+particles			= anomaly2\artefact\artefact_ameba
+
+lights_enabled = true
+trail_light_color = 2, 1.866, 0.572
+trail_light_range = 1
+
+health_restore_speed		= 0.0			
+satiety_restore_speed		= 0.0				
+power_restore_speed			= 0.0					
+radiation_restore_speed	= -0.0015
+bleeding_restore_speed	= 0.001
+
+hit_absorbation_sect = af_caterpillar_absorbation
+[af_caterpillar_absorbation]
+burn_immunity = 0.02
+strike_immunity = 0
+shock_immunity = 0
+wound_immunity = 0.15		
+radiation_immunity = 0
+telepatic_immunity = 0
+chemical_burn_immunity = 0
+explosion_immunity = 0.15
+fire_wound_immunity  = 0.2

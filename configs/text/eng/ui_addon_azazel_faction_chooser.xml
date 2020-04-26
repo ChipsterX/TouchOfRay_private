@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_addon_azazel_faction_chooser_label_chooseFaction">
+		<text>DEAD</text>
+	</string>
+	<string id="st_addon_azazel_faction_chooser_label_dead">
+		<text>Select factions</text>
+	</string>
+	<string id="st_addon_azazel_faction_chooser_label_doNotPlayAnimation">
+		<text> Do not play animation</text>
+	</string>
+	
+	<string id="st_addon_azazel_faction_chooser_label_findNearest">
+		<text> Find the nearest stalker(experimental)</text>
+	</string>
+</string_table>

@@ -1,0 +1,163 @@
+; This plugin determines the categories and their articles for the encyclopedia.
+; Categories are listed in "encyclopedia" and their articles in sections of the same names.
+
+; Flags can be used to alter the behaviour of specific articles.
+
+; Tier flags ensure that random unlocks via memory sticks will primarily work through articles based on their relevance.
+; By using this you can ensure that the player has access to early-game content long before that of the very late-game.
+; However, tiers will do nothing to hinder progress at the occasional possibility of discovering late-game content early on.
+; Whilst regular articles are always randomly unlockable, there is a 50% chance of selecting exclusively from tiered articles.
+
+; Mode flags make available/unavailable an article based on whether a certain mode is in use.
+; A value of "0" requires the mode not be used for the article to be available, and vice versa for a value of "1".
+; For an article to be available regardless of the current mode, the absence of this flag altogether will suffice.
+; The available mode flags are as follows: "azazal", "debug", "dev_debug", "ironman", "story" and "survival".
+
+; Unlock flags remove the requirement of having to discover an article or randomly unlock it.
+; This is extremely useful for tutorial-esque articles, such as those about achievements or features.
+; Valuing the unlock flag at "0" has the same effect as if the flag didn't exist whatsoever.
+
+; For any article which you add it is HIGHLY recommended to add texture description for it for reasons too long to list, even if it lacks an image.
+; You can create this by looking in the /configs/ui/textures_descr/ui_pda_encyclopedia.xml file and following the existing examples.
+
+[encyclopedia]
+encyclopedia_mutants
+encyclopedia_items
+
+[encyclopedia_mutants]
+encyclopedia_mutants_blind_dog 					= tier = 1
+encyclopedia_mutants_blind_dog_oso				= tier = 3
+encyclopedia_mutants_bloodsucker 				= tier = 3
+encyclopedia_mutants_venom						= tier = 4
+
+encyclopedia_mutants_krovosos_anomaly			= tier = 4
+encyclopedia_mutants_krovosos_anomaly_marsh		= tier = 4
+encyclopedia_mutants_krovosos_hell				= tier = 4
+encyclopedia_mutants_krovosos_hell_little		= tier = 4
+encyclopedia_mutants_krovosos_albinos			= tier = 4
+encyclopedia_mutants_krovosos_marsh				= tier = 4
+encyclopedia_mutants_krovosos_zombie			= tier = 4
+encyclopedia_mutants_krovosos_obt				= tier = 4
+encyclopedia_mutants_krovosos_und				= tier = 4
+
+encyclopedia_mutants_boar 						= tier = 1
+encyclopedia_mutants_bear 						= tier = 4
+encyclopedia_mutants_boar_vepr 					= tier = 2
+encyclopedia_mutants_boar_mini 					= tier = 1
+encyclopedia_mutants_boar_taran 				= tier = 4
+encyclopedia_mutants_burer 					    = tier = 4
+encyclopedia_mutants_controller_act				= tier = 4
+
+encyclopedia_mutants_controller_act_electro		= tier = 4
+encyclopedia_mutants_controller_act_fire		= tier = 4
+
+encyclopedia_mutants_winger						= tier = 2
+encyclopedia_mutants_fly						= tier = 1
+encyclopedia_mutants_komar						= tier = 1
+encyclopedia_mutants_stinger					= tier = 2
+
+encyclopedia_mutants_burer_el                   = tier = 4
+encyclopedia_mutants_burer_fi                   = tier = 4
+encyclopedia_mutants_burer_bi                   = tier = 4
+encyclopedia_mutants_polter_bb					= tier = 3
+encyclopedia_mutants_polter_be					= tier = 3
+encyclopedia_mutants_polter_bx					= tier = 3
+encyclopedia_mutants_polter_bo					= tier = 3
+encyclopedia_mutants_polter_pp					= tier = 3
+encyclopedia_mutants_cat 						= tier = 1
+encyclopedia_mutants_chimera 					= tier = 3
+encyclopedia_mutants_lican						= tier = 3
+encyclopedia_mutants_bear_chimere				= tier = 3
+encyclopedia_mutants_wolf						= tier = 3
+encyclopedia_mutants_wolfw						= tier = 3
+encyclopedia_mutants_chimefi 					= tier = 3
+encyclopedia_mutants_chimeel1 					= tier = 3
+encyclopedia_mutants_chimeel2 					= tier = 3
+encyclopedia_mutants_chimera_black 				= tier = 3
+encyclopedia_mutants_chimera_red 				= tier = 3
+encyclopedia_mutants_chimera_rad 				= tier = 3
+encyclopedia_mutants_chimera_ray 				= tier = 3
+encyclopedia_mutants_chimera_xray 				= tier = 3
+encyclopedia_mutants_controller 				= tier = 3
+encyclopedia_mutants_controller_babka 			= tier = 3
+encyclopedia_mutants_controller_arhi 			= tier = 3
+encyclopedia_mutants_controller_marsh 			= tier = 3
+encyclopedia_mutants_controller_mogilshik       = tier = 3
+encyclopedia_mutants_flesh 						= tier = 1
+encyclopedia_mutants_fracture 					= tier = 2
+encyclopedia_mutants_karlik						= tier = 2
+encyclopedia_mutants_morlok 					= tier = 3
+encyclopedia_mutants_fracture_karlik 			= tier = 2
+encyclopedia_mutants_fracture_lab 				= tier = 2
+encyclopedia_mutants_bibliotekar 				= tier = 4
+encyclopedia_mutants_bibliotekar_black 			= tier = 4
+encyclopedia_mutants_pseudodog 					= tier = 2
+encyclopedia_mutants_poltergeists				= tier = 3
+
+encyclopedia_mutants_gigant_marsh 				= tier = 4
+encyclopedia_mutants_gigant_big					= tier = 4
+encyclopedia_mutants_gigant_marsh_lapa          = tier = 4
+encyclopedia_mutants_gigant_lapa				= tier = 4
+encyclopedia_mutants_gigant_red					= tier = 4
+
+encyclopedia_mutants_pseudogiant 				= tier = 4
+encyclopedia_mutants_pseudogiant_j 				= tier = 4
+encyclopedia_mutants_psydog 					= tier = 3
+encyclopedia_mutants_rat 						= tier = 2
+encyclopedia_mutants_snork 						= tier = 2
+
+encyclopedia_mutants_snork_marsh				= tier = 2
+encyclopedia_mutants_snork_fly					= tier = 2
+encyclopedia_mutants_snork_nosach				= tier = 2
+encyclopedia_mutants_snork_mozg					= tier = 2
+encyclopedia_mutants_snork_pseudo				= tier = 2
+
+encyclopedia_mutants_vypolzen					= tier = 2
+encyclopedia_mutants_vipolzen					= tier = 2
+encyclopedia_mutants_tushkano 					= tier = 2
+encyclopedia_mutants_zombie 					= tier = 2
+
+encyclopedia_mutants_zanoza						= tier = 2
+encyclopedia_mutants_pseudo_flesh				= tier = 1
+encyclopedia_mutants_lyguh						= tier = 1
+encyclopedia_mutants_marsh_flesh				= tier = 2
+encyclopedia_mutants_rotan						= tier = 2
+
+encyclopedia_mutants_tarakan				    = tier = 1
+encyclopedia_mutants_tarakan_black			    = tier = 1
+
+encyclopedia_mutants_tushkano_black			    = tier = 1
+encyclopedia_mutants_tushkano_big				= tier = 3
+encyclopedia_mutants_tushkano_big_black         = tier = 3
+encyclopedia_mutants_deathclaw_white            = tier = 4
+encyclopedia_mutants_deathclaw_black            = tier = 4
+
+[encyclopedia_items]
+encyclopedia_recept_1 							= tier = 1
+encyclopedia_recept_2 							= tier = 1
+encyclopedia_recept_3 							= tier = 1
+encyclopedia_recept_4 							= tier = 1
+encyclopedia_recept_5 							= tier = 1
+encyclopedia_recept_6 							= tier = 1
+encyclopedia_recept_7 							= tier = 1
+encyclopedia_recept_8 							= tier = 1
+encyclopedia_recept_9 							= tier = 1
+encyclopedia_recept_10 							= tier = 1
+encyclopedia_recept_11 							= tier = 1
+encyclopedia_recept_12 							= tier = 1
+encyclopedia_recept_13 							= tier = 1
+encyclopedia_recept_14 							= tier = 1
+encyclopedia_recept_15 							= tier = 1
+encyclopedia_recept_16 							= tier = 1
+encyclopedia_recept_17 							= tier = 1
+encyclopedia_recept_18 							= tier = 1
+encyclopedia_recept_19 							= tier = 1
+encyclopedia_recept_20							= tier = 1
+encyclopedia_recept_22							= tier = 1
+encyclopedia_recept_23							= tier = 1
+encyclopedia_recept_24							= tier = 1
+encyclopedia_recept_25 							= tier = 1
+encyclopedia_recept_26 							= tier = 1
+encyclopedia_recept_27 							= tier = 1
+encyclopedia_recept_28							= tier = 1
+encyclopedia_recept_29							= tier = 1

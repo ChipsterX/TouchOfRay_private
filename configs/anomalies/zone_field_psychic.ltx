@@ -1,0 +1,57 @@
+[zone_field_psychic]:zone_base
+GroupControlSection	= spawn_group_zone
+$def_sphere = 15
+class			= ZS_RADIO
+hit_impulse_scale	= .01
+effective_radius	= 1.00 ;размер радиуса в процентах от оригинального, где действует зона
+postprocess		= postprocess_psi
+
+ef_anomaly_type			= 3
+ef_weapon_type			= 15
+
+;----------- Anomaly settings -----------------------
+max_start_power		= 0
+attenuation			= 0.5
+
+idle_particles		= ;zones\zone_electra_idle
+
+idle_particles_dont_stop	= true;
+
+hit_type		= telepatic
+
+disable_time		= -1	;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small	= -1		;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time	= -1	;время отключения idle партиклов
+
+ignore_nonalive		= true;
+ignore_small		= false;
+ignore_artefacts	= true
+
+blowout_light		= off
+idle_light			= off
+
+awaking_time		= 100
+blowout_time		= 800
+accamulate_time		= 100
+
+blowout_wind		= off
+
+shape_transp_color		= 200, 200, 0, 60
+shape_edge_color		= 32, 32, 32, 255
+
+artefacts					= af_soul_soc, 0.1, af_vyvert_soc, 0.35, af_blood_soc, 0.45, af_gold_fish_soc, 0.10, af_gravi_soc, 0.09, af_medusa_soc, 0.7, af_mincer_meat_soc, 0.65, af_night_star_soc, 0.1
+spawn_blowout_artefacts 		= on
+[zone_field_psychic_weak]:zone_field_psychic
+$spawn 			= "zones\field_psychic_weak"
+
+max_start_power		= 0.1
+
+[zone_field_psychic_average]:zone_field_psychic
+$spawn 			= "zones\field_psychic_average"
+
+max_start_power		= 0.1
+
+[zone_field_psychic_strong]:zone_field_psychic
+$spawn 			= "zones\field_psychic_strong"
+
+max_start_power		= 0.1

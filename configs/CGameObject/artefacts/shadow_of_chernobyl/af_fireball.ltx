@@ -1,0 +1,51 @@
+[af_fireball_soc]:af_base1
+GroupControlSection	= spawn_group
+$spawn 			= "artifacts\zharka fireball"
+$npc			= on				; option for Level Editor
+;$prefetch 		= 3
+cform           = skeleton
+class   		= ARTEFACT
+
+visual				= physics\anomaly\artefact_fire.ogf
+description			= enc_zone_artifact_af-fireball
+inv_name			= af-fireball
+inv_name_short		= af-fireball
+inv_weight			= 0.5
+
+inv_grid_x			= 18
+inv_grid_y			= 23
+
+cost				= 1100
+
+impulse_threshold		= 10
+radius					= 10
+strike_impulse			= 20
+
+
+particles			= anomaly2\artefact\artefact_zharka
+
+lights_enabled = true	 
+trail_light_color = 1.9,1.5,0.5
+trail_light_range = 3.0
+
+
+;скорости увеличения (уменьшения) 
+health_restore_speed    = 0			
+radiation_restore_speed = -0.0020
+satiety_restore_speed   = 0
+power_restore_speed     = -0.0009 
+bleeding_restore_speed  = 0
+artefact_reaction		= 0.12
+hit_absorbation_sect = af_fireball1_absorbation
+
+;коэффициенты иммунитета 
+[af_fireball1_absorbation]
+burn_immunity          = 0
+strike_immunity        = 0
+shock_immunity         = 0
+wound_immunity         = 0		
+radiation_immunity     = 0
+telepatic_immunity     = 0
+chemical_burn_immunity = 0
+explosion_immunity     = 0
+fire_wound_immunity    = 0

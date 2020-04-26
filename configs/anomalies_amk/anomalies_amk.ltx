@@ -1,0 +1,265 @@
+
+; Хим. аномалии
+[zone_buzz_average_amk]:zone_buzz
+max_start_power		= 0.50
+
+[zone_buzz_strong_amk]:zone_buzz
+max_start_power		= 1.00
+
+[zone_boloto_amk]:zone_buzz_strong
+visible_by_detector 		= on
+idle_particles				= amik\anomaly\boloto\boloto_idle_3
+blowout_particles			= anomaly2\pux_blast
+
+idle_sound					= anomaly\marsh_bubbles	;buzz_idle
+blowout_sound				= anomaly\buzz_idle	;monolith_idle
+hit_sound					= anomaly\bfuzz_hit		;на персонаже, когда тот получает хит
+entrance_sound				= anomaly\buzz_hit; bfuzz_hit
+
+; Очаги радиации
+[zone_radioactive_average_amk]:zone_radioactive
+max_start_power		= 0.031
+
+[zone_radioactive_strong_amk]:zone_radioactive
+max_start_power		= 0.061
+
+; Электро-аномалии
+[zone_mine_electric_average_amk]:zone_mine_electric
+max_start_power		= 0.8
+
+[zone_mine_electric_strong_amk]:zone_mine_electric
+max_start_power		= 0.8
+
+[zone_electro_die_amk]:zone_mine_electric
+visible_by_detector 		= on
+min_start_power		= 1.00
+max_start_power		= 1.40
+attenuation			= 1
+period				= 1
+min_artefact_count	= 0
+max_artefact_count	= 0
+
+idle_particles		= anomaly2\emi_idle_00
+blowout_particles	= anomaly2\tornado_00
+
+hit_small_particles			= hit_fx\hit_metal_02
+hit_big_particles			= anomaly2\emi_damage_big_smoke
+idle_small_particles		= anomaly2\electra_damage_01_smoke
+idle_big_particles			= anomaly2\emi_damage_big_smoke
+entrance_small_particles	= anomaly2\electra_entrance_small
+entrance_big_particles		= anomaly2\emi_entrance_big_00
+
+idle_sound			= anomaly\emi_idle; anomaly_gravy_idle
+blowout_sound		= anomaly\emi_blowout
+hit_sound			= anomaly\electra_blast
+entrance_sound		= anomaly\emi_entrance
+
+blowout_light		= on
+light_color		    = 1.4,1.5,1.8
+light_range		    = 80.0
+light_time 		    = 1;0.35
+light_height		= 15			;подъем источника света на высоту
+
+idle_light			= off
+
+hit_type		= shock
+
+awaking_time		= 0
+blowout_time		= 6000	
+accamulate_time		= 5000
+ignore_nonalive		= true;
+ignore_small		= true;
+ignore_artefacts	= true
+blowout_light_time		= 5600
+blowout_explosion_time	= 5000
+blowout_particles_time	= 0
+blowout_sound_time  	= 0
+
+disable_time		= -1	;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small	= 500	;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time	= 1000	;время отключения idle партиклов
+
+blowout_wind		= off
+
+; Гравиатационные аномалии 
+[zone_mine_gravitational_average_amk]:zone_mine_gravitational_average
+
+[zone_mine_gravitational_strong_amk]:zone_mine_gravitational_strong
+
+; Жарки
+[zone_zharka_static_amk]:zone_mine_thermal
+idle_sound			= ambient\fire2
+
+[zone_zharka_static_weak_amk]:zone_zharka_static
+
+[zone_zharka_static_strong_amk]:zone_zharka_static
+idle_particles		= _ecp\group_items\anomaly_burner_fog
+idle_sound          = ambient\fire2_1
+
+; Очаговый туман
+[zone_smallrain_amk]:zone_base
+GroupControlSection	= spawn_group_zone
+;$prefetch 		= 16
+class			= Z_RADIO
+hit_impulse_scale	= .01
+effective_radius	= 1.00 ;размер радиуса в процентах от оригинального, где действует зона
+sound			= zone_mosquito_bald
+postprocess		= postprocess_rad
+
+ef_anomaly_type			= 3
+ef_weapon_type			= 15
+
+artefacts		= 
+BirthProbability = 0.0;0.1
+
+min_start_power		= 0.99
+max_start_power		= 1.00
+attenuation			= 0.1
+period				= 1
+min_artefact_count	= 0
+max_artefact_count	= 0
+
+hit_type					= strike
+hit_impulse_scale			= 0.1							;соотношение физического импульса и силы хита
+effective_radius			= 3.0		
+
+disable_time		= 5000		;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small	= 500		;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time	= 100		;-1	;время отключения idle партиклов
+
+idle_particles			= a_ufp_particles\fog_ground
+blowout_particles		= a_ufp_particles\fog_ground
+
+ignore_nonalive		= true
+ignore_small		= true;
+ignore_artefacts	= true
+
+blowout_light		= off
+idle_light			= off
+
+awaking_time		= 1
+blowout_time		= 3500
+accamulate_time		= 1
+
+visible_by_detector = on
+
+blowout_wind		= off
+
+;рождение артефактов во время срабатывания
+spawn_blowout_artefacts = off
+
+shape_transp_color		= 255, 0, 0, 60
+shape_edge_color		= 32, 32, 32, 255
+
+; Зона монолита
+[zone_monolith_amk]:zone_base
+GroupControlSection	= spawn_group_zone
+
+;$prefetch 		= 16
+class			= Z_RADIO
+hit_impulse_scale	= .01
+effective_radius	= 1.00 ;размер радиуса в процентах от оригинального, где действует зона
+sound			= zone_mosquito_bald
+postprocess		= postprocess_electra
+
+ef_anomaly_type			= 3
+ef_weapon_type			= 15
+
+artefacts		= 
+BirthProbability = 0.0;0.1
+
+;----------- Anomaly settings -----------------------
+min_start_power		= 0.99
+max_start_power		= 1.00
+attenuation			= 0.1
+period				= 1
+min_artefact_count	= 0
+max_artefact_count	= 0
+
+hit_type		= telepatic
+
+idle_particles		= anomaly2\monolith
+blowout_particles	= anomaly2\monolith_active
+
+disable_time		= -1	;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small	= -1		;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time	= -1	;время отключения idle партиклов
+
+idle_sound			= anomaly\monolith_idle; anomaly_gravy_idle
+blowout_sound		= anomaly\monolith_idle
+
+ignore_nonalive		= true;
+ignore_small		= true;
+ignore_artefacts	= true
+
+blowout_light		= off
+idle_light			= off
+
+awaking_time		= 1
+blowout_time		= 9000	
+accamulate_time		= 1
+
+visible_by_detector = on
+
+blowout_wind		= off
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;рождение артефактов во время срабатывания
+spawn_blowout_artefacts = off
+
+shape_transp_color		= 255, 0, 0, 60
+shape_edge_color		= 32, 32, 32, 255
+
+; Огненный шар
+[zone_torrid_amk]:zone_mine_thermal, zone_zharka_static_weak_amk
+effective_radius		= 0.75 ;размер радиуса в процентах от оригинального, где действует зона
+postprocess				= postprocess_flame
+
+BirthProbability		= 0.01
+idle_light				= off
+
+idle_particles			= anomaly2\heat_00
+blowout_particles		= anomaly2\heat_01
+
+hit_small_particles	    	= damage_fx\burn_creatures
+hit_big_particles			= damage_fx\burn_creatures00
+idle_small_particles		= damage_fx\burn_creatures
+idle_big_particles			= damage_fx\burn_creatures00
+entrance_small_particles	= damage_fx\burn_creatures
+entrance_big_particles		= damage_fx\burn_creatures00 ;
+
+idle_sound					= anomaly\torrid_idle						;постоянный звук
+blowout_sound				= anomaly\fireball_blow		;во время выброса(удара) в центре аномалии	
+hit_sound					= ambient\fire2								;на персонаже, когда тот получает хит
+entrance_sound				= ambient\fire2									;при попадании объекта в аномалию
+
+hit_type					= burn
+
+disable_time		= 0	;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small	= 0	;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time	= 50000	;время отключения idle партиклов
+
+ignore_nonalive				= true
+ignore_small				= true
+ignore_artefacts			= true
+
+blowout_light				= on
+light_color					= 1.8,1.7,1.4
+light_range					= 15.0
+light_time 					= 5
+light_height				= 1.5			;подъем источника света на высоту
+
+idle_light					= on
+idle_light_range			= 15.0
+idle_light_range_delta		= 0.2
+idle_light_height			= 1.5			;
+
+awaking_time				= 100
+blowout_time				= 300	
+accamulate_time				= 1000
+
+visible_by_detector			= on
+
+blowout_wind				= off
+
+

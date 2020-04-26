@@ -1,0 +1,25 @@
+[chimera_cs_strong_xray]:chimera_cs_strong
+visual				 = monsters_narodnaya_solyanka\chimers\chimera_xray
+
+class                = SM_CHIMY
+
+velocity_factor		= 0.8
+immunities_sect	  	= chimera_x_ray_immunities
+attack_params    	= chimera_x_ray_attack_params
+
+[chimera_x_ray_immunities]
+burn_immunity          		= 0.3
+strike_immunity        		= 0.3
+shock_immunity         	= 0.3
+wound_immunity         	= 0.2     
+radiation_immunity     	= 0.0
+telepatic_immunity     	= 0.1
+chemical_burn_immunity = 0.02
+explosion_immunity     	= 0.05
+fire_wound_immunity    	= 0.075
+
+[chimera_x_ray_attack_params]
+; anim |          time[0..1] | hit_power | impulse | impulse_dir (x,y,z) | Field of hit_test (left,right, bottom, top )| Test Dist
+stand_attack_0 =	  	0.45,		0.90,        100,       0.0, 1.0, 0.0,		 -1.0, 1.0, -1.0, 1.0,							  2.5
+stand_attack_1 =	  	0.45,		0.75,        100,       0.0, 1.0, 0.0,		 -1.0, 1.0, -1.0, 1.0,							  2.5
+jump_attack_1  = 		0.45,		0.95,	    750,       0.0, 1.0, 0.0,		 -1.0, 1.0, -1.0, 1.0,							  2.5

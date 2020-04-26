@@ -1,0 +1,454 @@
+; Пистолет-пулемет Heckler-Koch MP5A3
+;-(TrickSR, Ga2z)-----------------------------------------
+; калибр 				9х19 мм
+; длина ствола 				225 мм
+; магазин				30
+; вес с пустым магазином		3.1 кг
+; максимальная дальность стрельбы	1700 м
+; эффективная дальность стрельбы	100 м
+; прицельная дальность			200 м
+; дульная скорость пули			400 м/с
+; темп стрельбы				800 в/м
+;---------------------------------------------------
+[wpn_mp5]:weapon_probability,default_weapon_params,wpn_mp5_sounds
+GroupControlSection 			= spawn_group
+$spawn					= "weapons\mp5"
+$npc					= on
+$prefetch				= 8
+scheduled				= off
+cform					= skeleton
+class					= WP_LR300
+description 				= st_wpn_mp5_descr
+
+scopes 					= ac10632, acog, eot, c-more
+parent_section  			= wpn_mp5
+
+ef_main_weapon_type			= 2
+ef_weapon_type				= 6
+
+inv_name				= st_wpn_mp5
+inv_name_short				= st_wpn_mp5
+
+inv_grid_width				= 4
+inv_grid_height				= 2
+inv_grid_x				= 24
+inv_grid_y				= 32
+
+upgr_icon_x				= 900
+upgr_icon_y				= 500
+upgr_icon_width				= 250
+upgr_icon_height 			= 100
+
+kill_msg_x				= 72
+kill_msg_y				= 82
+kill_msg_width				= 56
+kill_msg_height				= 23
+
+cost					= 25000
+weapon_class				= assault_rifle
+inv_weight				= 3.1
+hud					= wpn_mp5_hud
+visual					= dynamics\weapons\wpn_mp5\wpn_mp5.ogf
+
+upgrades                		= up_gr_firstab_mp5, up_gr_seconab_mp5, up_gr_thirdab_mp5, up_gr_fourtab_mp5, up_gr_fifthab_mp5, up_gr_fifthcd_mp5
+installed_upgrades      		=
+upgrade_scheme          		= upgrade_scheme_mp5
+
+ph_mass					= 3
+
+ammo_class				= ammo_9x19_fmj, ammo_9x19_pbp
+
+startup_ammo				= 90
+ammo_current		 		= 180
+ammo_elapsed		 		= 30
+ammo_limit		 		= 210
+ammo_mag_size		 		= 30
+
+fire_modes				= 1, -1
+
+grenade_class				= ammo_vog-25
+
+launch_speed				= 0
+hand_dependence				= 1
+single_handed				= 0
+
+hit_power				= 0.24
+;hit_impulse				= 10
+hit_type				= fire_wound
+fire_distance				= 1000
+bullet_speed				= 400
+rpm					= 800
+rpm_empty_click				= 200
+
+use_aim_bullet				= false
+time_to_aim				= 3
+misfire_probability			= 0.005
+misfire_start_condition			= 0.6
+misfire_end_condition			= 0.1
+misfire_start_prob	 		= 0.004
+misfire_end_prob	 		= 0.057
+condition_shot_dec 			= 0.000125
+condition_queue_shot_dec		= 0.0002
+
+zoom_dof				= 0.5,1,180
+reload_dof				= 0,0.5,5,2
+
+fire_dispersion_base			= 0.28
+fire_dispersion_condition_factor	= 2.5
+control_inertion_factor			= 1.15f
+crosshair_inertion 			= 4.35
+
+cam_return				= 0
+cam_relax_speed				= 5
+cam_relax_speed_ai			= 120.75
+cam_dispersion				= 0.5
+cam_dispersion_inc			= 0.25
+cam_dispersion_frac			= 1
+cam_max_angle				= 50
+cam_max_angle_horz			= 50
+cam_step_angle_horz			= 1.5
+
+zoom_cam_relax_speed			= 10
+zoom_cam_relax_speed_ai			= 120.75
+zoom_cam_dispersion			= 0.5
+zoom_cam_dispersion_inc			= 0.25
+zoom_cam_dispersion_frac		= 1
+zoom_cam_max_angle			= 50
+zoom_cam_max_angle_horz			= 50
+zoom_cam_step_angle_horz		= 1.5
+
+PDM_disp_base 				= 0.5
+PDM_disp_vel_factor 			= 1.5
+PDM_disp_accel_factor 			= 1.5
+PDM_disp_crouch	 			= 1.0
+PDM_disp_crouch_no_acc 			= 1.0
+
+min_radius				= 30
+max_radius				= 40
+
+holder_range_modifier			= 1
+holder_fov_modifier			= 1
+
+slot					= 2
+animation_slot				= 8
+
+position				= -0.026,-0.125,-0.03
+orientation				= 0,-10,0
+
+fire_point				= 0,0.188,0.392
+fire_point2				= 0,0.188,0.392
+
+flame_particles				= weapons\generic_weapon05
+smoke_particles        			= ghost_particles\weapons\flame_eft_pistol
+silencer_smoke_particles   		= ghost_particles\weapons\generic_smoke_eft_sil
+
+shell_point				= 0,0.188,0.082
+shell_dir				= 0,1,0
+shell_particles	 			= weapons\9x19
+
+strap_position 				= -0.16,-0.36,0.15
+strap_orientation 			= -10,-5,10
+strap_bone0				= bip01_spine2
+strap_bone1				= bip01_spine1
+
+light_disabled				= false
+light_color				= 0.6,0.5,0.3
+light_range				= 5
+light_var_color				= 0.05
+light_var_range				= 0.5
+light_time				= 0.2
+
+scope_status				= 2
+silencer_status				= 2
+grenade_launcher_status			= 0
+
+zoom_enabled				= true
+zoom_rotate_time			= 0.2
+scope_zoom_factor			= 100
+
+scope_name 				= wpn_addon_scope_susat
+scope_x                     		= 67
+scope_y                     		= -1
+
+silencer_name				= wpn_addon_silencer
+silencer_x                  		= 170
+silencer_y                  		= 16
+
+silencer_hit_power 			= 0.22
+;silencer_hit_impulse			= 10
+silencer_fire_distance 			= 500
+silencer_bullet_speed	 		= 290
+
+silencer_light_color			= 0.6, 0.5, 0.3
+silencer_light_range			= 0.01
+silencer_light_var_color		= 0.05
+silencer_light_var_range		= 0.5
+silencer_light_time			= 0.2
+
+[wpn_mp5_hud]
+zoom_hide_crosshair     		= true
+attach_place_idx        		= 0
+item_visual            	 		= dynamics\weapons\wpn_mp5\wpn_mp5_hud.ogf
+
+hands_position				= 0.025,-0.017,0.2
+hands_orientation			= 5.8,5.3,0
+
+hands_position_16x9			= 0.025,-0.017,0.2
+hands_orientation_16x9			= 5.8,5.3,0
+
+item_position				= 0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos			= -0.112775,0.049,-0.215
+aim_hud_offset_rot			= 0.0847,0.101,0
+
+aim_hud_offset_pos_16x9			= -0.112775,0.049,-0.215
+aim_hud_offset_rot_16x9			= 0.0847,0.101,0
+
+shell_point				= 0,0,0
+shell_dir       			= 0,1,0
+shell_bone				= gilza
+
+fire_point				= 0,0,0
+fire_bone      				= muzzle
+fire_point2				= 0,0,0
+fire_bone2				= wpn_body
+
+anm_show              	  		= mp5_draw
+anm_hide                		= mp5_holster
+anm_idle                		= mp5_idle
+anm_idle_sprint         		= mp5_idle_sprint
+anm_idle_moving         		= mp5_idle_moving
+anm_idle_moving_crouch			= mp5_idle_crouch
+anm_shots               		= mp5_shoot, shoot
+anm_reload              		= mp5_reload_empty, reload_empty ;mp5_reload, reload
+anm_reload_empty			= mp5_reload_empty, reload_empty
+anm_idle_aim            		= mp5_idle_aim
+anm_bore                		= mp5_idle_aim
+
+gl_hud_offset_pos       		= 0,0,0
+gl_hud_offset_rot       		= 0,0,0
+
+gl_hud_offset_pos_16x9    		= 0,0,0
+gl_hud_offset_rot_16x9    		= 0,0,0
+
+lean_hud_offset_pos        		= 0,0,0
+lean_hud_offset_rot        		= 0,0,0
+;-----------------------------------------------------------------------------
+; Addons
+;-----------------------------------------------------------------------------
+[wpn_mp5_ac10632]:wpn_mp5
+$spawn             			= "weapons\mp5_ac10632"
+visual					= dynamics\weapons\wpn_mp5\wpn_mp5_barska.ogf
+hud					= wpn_mp5_ac10632_hud
+parent_section  			= wpn_mp5_ac10632
+
+scope_x					= 84
+scope_y					= 0
+
+[wpn_mp5_ac10632_hud]:wpn_mp5_hud
+item_visual            	 		= dynamics\weapons\wpn_mp5\wpn_mp5_barska_hud.ogf
+
+aim_hud_offset_pos			= -0.112,0.00725,-0.3
+aim_hud_offset_rot			= 0.083269,0.099518,0
+
+aim_hud_offset_pos_16x9			= -0.112,0.00725,-0.3
+aim_hud_offset_rot_16x9			= 0.083269,0.099518,0
+
+[wpn_mp5_acog]:wpn_mp5
+$spawn					= "weapons\mp5_acog"
+hud					= wpn_mp5_acog_hud
+parent_section  			= wpn_mp5_acog
+
+scope_x					= 79
+scope_y					= -2
+
+[wpn_mp5_acog_hud]:wpn_mp5_hud
+item_visual            	 		= dynamics\weapons\wpn_mp5\wpn_mp5_acog_hud.ogf
+
+aim_hud_offset_pos			= -0.112500,0.011000,-0.245254
+aim_hud_offset_rot			= 0.080887,0.099625,0
+
+aim_hud_offset_pos_16x9			= -0.112500,0.011000,-0.245254
+aim_hud_offset_rot_16x9			= 0.080887,0.099625,0
+
+[wpn_mp5_eot]:wpn_mp5
+$spawn					= "weapons\mp5_eot"
+visual					= dynamics\weapons\wpn_mp5\wpn_mp5_eot.ogf
+hud					= wpn_mp5_eot_hud
+parent_section  			= wpn_mp5_eot
+
+scope_x					= 84
+scope_y					= -3
+
+[wpn_mp5_eot_hud]:wpn_mp5_hud
+item_visual				= dynamics\weapons\wpn_mp5\wpn_mp5_eot_hud.ogf
+
+aim_hud_offset_pos			= -0.1105,0.0105,-0.275
+aim_hud_offset_rot			= 0.097225,0.096444,0
+
+aim_hud_offset_pos_16x9			= -0.1105,0.0105,-0.275
+aim_hud_offset_rot_16x9			= 0.097225,0.096444,0
+
+[wpn_mp5_c-more]:wpn_mp5
+$spawn					= "weapons\mp5_c-more"
+visual					= dynamics\weapons\wpn_mp5\wpn_mp5_c-more.ogf
+hud					= wpn_mp5_c-more_hud
+parent_section  			= wpn_mp5_c-more
+
+scope_x					= 85
+scope_y					= 0
+
+[wpn_mp5_c-more_hud]:wpn_mp5_hud
+item_visual				= dynamics\weapons\wpn_mp5\wpn_mp5_c-more_hud.ogf
+
+aim_hud_offset_pos			= -0.1133,0.0158,-0.3
+aim_hud_offset_rot			= 0.096975,0.101176,0
+
+aim_hud_offset_pos_16x9			= -0.1133,0.0158,-0.3
+aim_hud_offset_rot_16x9			= 0.096975,0.101176,0
+;-----------------------------------------------------------------------------
+; ”никальные
+;-----------------------------------------------------------------------------
+[wpn_mp5sd]:wpn_mp5,wpn_mp5sd_sounds
+$spawn					= "weapons\mp5sd"
+hud					= wpn_mp5sd_hud
+visual					= dynamics\weapons\wpn_mp5sd\wpn_mp5sd.ogf
+description 				= st_wpn_mp5sd_descr
+
+parent_section  			= wpn_mp5sd
+
+inv_name				= st_wpn_mp5sd
+inv_name_short				= st_wpn_mp5sd
+
+inv_weight				= 2.97
+fire_distance				= 500
+bullet_speed				= 285
+hit_power				= 0.23
+
+inv_grid_x				= 20
+inv_grid_y				= 32
+
+orientation				= 0,-9,0
+
+upgr_icon_x				= 900
+upgr_icon_y				= 600
+
+silencer_status				= 1
+
+flame_particles				= amik\weapons\smoke_particles\silencer_smoke_particles_00
+
+[wpn_mp5sd_hud]:wpn_mp5_hud
+item_visual            	 		= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_hud.ogf
+
+hands_position				= -0.05,-0.2,0.15
+hands_orientation			= 5.5,5.5,0.15
+
+hands_position_16x9			= -0.05,-0.2,0.15
+hands_orientation_16x9			= 5.5,5.5,0.15
+
+item_position				= 0,0,0
+item_orientation			= 0,0,0
+
+aim_hud_offset_pos			= -0.118,0.074,-0.28
+aim_hud_offset_rot			= 0.096556,0.094925,0
+
+aim_hud_offset_pos_16x9 		= -0.118,0.074,-0.28
+aim_hud_offset_rot_16x9 		= 0.096556,0.094925,0
+
+shell_point             		= 0.021,0.099,0.286
+shell_dir               		= 0,1,0
+shell_bone              		= wpn_body
+
+fire_point				= 0,0.087762,0.375585
+fire_bone              	 		= wpn_body
+fire_point2				= -0.03,0.0745,-0.037
+fire_bone2              		= wpn_body
+
+anm_show				= lancew_mp5_draw
+anm_hide				= lancew_mp5_holster
+anm_idle				= lancew_mp5_idle
+anm_idle_sprint				= lancew_mp5_sprint
+anm_idle_moving				= lancew_mp5_moving
+anm_shots				= lancew_mp5_shoot, idle_aim
+anm_reload				= lancew_mp5_reload_2, reload_2
+anm_idle_aim				= lancew_mp5_idle_aim, idle_aim
+anm_bore				= lancew_mp5_no_reload
+;-----------------------------------------------------------------------------
+; Аддоны
+;-----------------------------------------------------------------------------
+[wpn_mp5sd_ac10632]:wpn_mp5sd
+$spawn             			= "weapons\mp5sd_ac10632"
+visual					= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_barska.ogf
+hud					= wpn_mp5sd_ac10632_hud
+
+scope_x					= 72
+scope_y					= 1
+
+[wpn_mp5sd_ac10632_hud]:wpn_mp5sd_hud
+item_visual            	 		= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_barska_hud.ogf
+
+anm_shots               		= lancew_mp5_shoot_scope, idle_aim
+
+aim_hud_offset_pos			= -0.117000,0.044750,-0.375
+aim_hud_offset_rot			= 0.084750,0.093536,0
+
+aim_hud_offset_pos_16x9			= -0.117000,0.044750,-0.375
+aim_hud_offset_rot_16x9			= 0.084750,0.093536,0
+
+[wpn_mp5sd_acog]:wpn_mp5sd
+$spawn					= "weapons\mp5sd_acog"
+hud					= wpn_mp5sd_acog_hud
+
+scope_x					= 66
+scope_y					= 0
+
+[wpn_mp5sd_acog_hud]:wpn_mp5sd_hud
+anm_shots               		= lancew_mp5_shoot_scope, idle_aim
+
+aim_hud_offset_pos			= -0.118250,0.053375,-0.320625
+aim_hud_offset_rot			= 0.098250,0.094175,0.010938
+
+aim_hud_offset_pos_16x9			= -0.118250,0.053375,-0.320625
+aim_hud_offset_rot_16x9			= 0.098250,0.094175,0.010938
+
+[wpn_mp5sd_eot]:wpn_mp5sd
+$spawn					= "weapons\mp5sd_eot"
+visual					= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_eot.ogf
+hud					= wpn_mp5sd_eot_hud
+
+scope_x					= 74
+scope_y					= 1
+
+[wpn_mp5sd_eot_hud]:wpn_mp5sd_hud
+item_visual				= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_eot_hud.ogf
+
+anm_shots               		= lancew_mp5_shoot_scope, idle_aim
+
+aim_hud_offset_pos			= -0.118000,0.045500,-0.35
+aim_hud_offset_rot			= 0.096450,0.095025,0
+
+aim_hud_offset_pos_16x9			= -0.118000,0.045500,-0.35
+aim_hud_offset_rot_16x9			= 0.096450,0.095025,0
+
+[wpn_mp5sd_c-more]:wpn_mp5sd
+$spawn					= "weapons\mp5sd_c-more"
+visual					= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_c-more.ogf
+hud					= wpn_mp5sd_c-more_hud
+
+scope_x					= 77
+scope_y					= 2
+
+[wpn_mp5sd_c-more_hud]:wpn_mp5sd_hud
+item_visual				= dynamics\weapons\wpn_mp5sd\wpn_mp5sd_c-more_hud.ogf
+
+anm_shots               		= lancew_mp5_shoot_scope, idle_aim
+
+aim_hud_offset_pos			= -0.118300,0.048300,-0.372
+aim_hud_offset_rot			= 0.095950,0.094925,0
+
+aim_hud_offset_pos_16x9			= -0.118300,0.048300,-0.372
+aim_hud_offset_rot_16x9			= 0.095950,0.094925,0
+
+[wpn_mp5_nimble]:wpn_mp5
+$spawn             			= "weapons\mp5_nimble"

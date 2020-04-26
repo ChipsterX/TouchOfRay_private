@@ -1,0 +1,82 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Actor Effector Section
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[bobbing_effector]
+
+run_amplitude			=	0.0063
+walk_amplitude			=	0.0057
+limp_amplitude			=	0.00163
+
+run_speed				=	6.74
+walk_speed				=   6.26
+limp_speed				=	4.6
+
+;run_amplitude			=	0.0075
+;walk_amplitude			=	0.005
+;limp_amplitude			=	0.011
+
+;run_speed				=	10.0
+;walk_speed				=   7.0
+;limp_speed				=	6.0
+
+
+[monster_attack_effector]
+duality_h		= 0.01
+duality_v		= 0.01
+blur			= 0.01
+gray			= 0.5
+noise_intensity = 0.01
+noise_grain		= 1
+noise_fps		= 30
+color_base		= 0.65,0.15,0.1
+color_gray		= 0.333,0.333,0.333
+color_add		= 0,0,0
+time			= 0.3
+time_attack		= 0.05		; fade in
+time_release	= 0.25		; fade out
+
+; camera effects
+ce_time				= 0.65
+ce_amplitude		= 12.0
+ce_period_number	= 1.0 ;2.0 
+ce_power			= 3.0 ;0.7
+
+[small_monster_attack_effector]
+duality_h		= 0.01
+duality_v		= 0.01
+blur			= 0.01
+gray			= 0.5
+noise_intensity = 0.01
+noise_grain		= 1
+noise_fps		= 30
+color_base		= 0.65,0.15,0.1
+color_gray		= 0.333,0.333,0.333
+color_add		= 0,0,0
+time			= 0.3
+time_attack		= 0.05		; fade in
+time_release	= 0.25		; fade out
+
+; camera effects
+ce_time				= 0.65
+ce_amplitude		= 12.0
+ce_period_number	= 1.0 ;2.0 
+ce_power			= 3.0 ;0.7
+[explode_effector]
+effect_sect_name= effector_explode_hit
+
+[sleep_effector]
+duality_h		= 0.01
+duality_v		= 0.01
+blur			= 0.01
+gray			= 0.5
+noise_intensity = 0.01
+noise_grain		= 1
+noise_fps		= 30
+color_base		= 0.00,0.00,0.00
+color_gray		= 0.33,0.33,0.33
+color_add		= 0,0,0
+time			= 3.3
+time_attack		= 0.4		; fade in
+time_release	= 0.5		; fade out
+
