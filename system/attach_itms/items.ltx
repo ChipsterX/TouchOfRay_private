@@ -1,0 +1,127 @@
+[attachable_item]
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$spawn                                   = "equipment\attachable_item"
+cform                                    = skeleton
+class                                    = II_ATTCH
+cost                                     = 100
+inv_name                                 = "Attachable item"
+inv_name_short                           = "Attachable item"
+inv_weight                               = .5
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 16
+inv_grid_y                               = 12
+attach_angle_offset                      = 0, -3.14, 1.6
+attach_position_offset                   = 0.105, 0.00, 0.085
+attach_bone_name                         = bip01_head
+
+[new_attachable_item]
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$spawn                                   = "equipment\new_attachable_item"
+cform                                    = skeleton
+class                                    = II_BTTCH
+cost                                     = 100
+inv_name                                 = "Attachable item"
+inv_name_short                           = "Attachable item"
+inv_weight                               = .5
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 16
+inv_grid_y                               = 12
+attach_angle_offset                      = 0, -3.14, 1.6
+attach_position_offset                   = 0.105, 0.00, 0.085
+attach_bone_name                         = bip01_head
+
+[hand_radio]:identity_immunities
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$spawn                                   = "equipment\hand_radio"
+cform                                    = skeleton
+class                                    = II_ATTCH
+visual                                   = dynamics\devices\dev_fmradio\dev_fmradio.ogf
+cost                                     = 0
+inv_name                                 = "hand_radio"
+inv_name_short                           = "hand_radio"
+inv_weight                               = .5
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 14
+inv_grid_y                               = 7
+attach_angle_offset                      = -1.5708,0.1919,3.1416	                                       ;устанавливаетсЪ в радианах Angle*PI/180
+attach_position_offset                   = 0.075, 0.066, 0.023
+attach_bone_name                         = bip01_l_hand
+auto_attach                              = false
+
+; раци¤ дл¤ правой руки
+[hand_radio_r]:identity_immunities
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$spawn                                   = "equipment\hand_radio_r"
+cform                                    = skeleton
+class                                    = II_ATTCH
+visual                                   = dynamics\devices\dev_fmradio\dev_fmradio.ogf
+cost                                     = 0
+inv_name                                 = "hand_radio"
+inv_name_short                           = "hand_radio"
+inv_weight                               = .5
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 14
+inv_grid_y                               = 7
+attach_angle_offset                      = 1.571,0.75,0.0	                                       ;устанавливаетсЪ в радианах Angle*PI/180
+attach_position_offset                   = 0.015, -0.084, 0.023
+attach_bone_name                         = bip01_r_hand
+auto_attach                              = false
+
+[anim_knife]:hand_radio
+visual                                   = dynamics\weapons\wpn_knife\wpn_knife.ogf
+inv_name                                 = st_knife
+inv_name_short                           = st_knife
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 18
+inv_grid_y                               = 9
+attach_angle_offset                      = 0.35, -1.8, -1.3
+attach_position_offset                   = 0.1, 0.03, 0.02
+attach_bone_name                         = bip01_r_hand
+
+[anim_binoc]:hand_radio
+visual                                   = dynamics\devices\dev_binoculars\dev_binoculars.ogf
+inv_name                                 = st_binocular_name
+inv_name_short                           = st_binocular_name
+inv_grid_width                           = 2
+inv_grid_height                          = 1
+inv_grid_x                               = 14
+inv_grid_y                               = 9
+attach_angle_offset                      = 3.080506,-1.493053,-1.202040	                                       ;устанавливается в радианах Angle*PI/180
+attach_position_offset                   = 0.080000,0.021273,0.100000
+attach_bone_name                         = bip01_r_hand
+auto_attach                              = false
+
+[document]
+GroupControlSection                      = spawn_group
+;discovery_dependency =
+$spawn                                   = "documents\document 01"
+;$prefetch      = 32
+class                                    = II_DOC
+cform                                    = skeleton
+visual                                   = dynamics\equipments\item_document_1.ogf
+
+inv_name                                 = Document
+inv_name_short                           = Document
+inv_weight                               = 1	                                       ;0.2
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 0
+inv_grid_y                               = 0
+cost                                     = 0
+
+[spectator]
+$player                                  = on
+class                                    = SPECT
+
+[??tg_event]
+class                                    = EVENT

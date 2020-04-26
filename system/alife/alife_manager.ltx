@@ -1,0 +1,41 @@
+[smart_terrain]
+GroupControlSection						= 
+$spawn 									= "ai\smart_terrain"
+$def_sphere								= 2
+class									= SMRTTRRN
+script_binding							= bind_smart_terrain.bind
+shape_transp_color						= 100, 100, 180, 60 ;0x1800FF00
+shape_edge_color						= 32, 32, 32, 255 ;0xFF202020
+
+[graph_point]
+class                                   = AI_GRAPH
+$spawn                                  = "ai\graph point"
+
+[spawn_group_zone]
+GroupControlSection                     = spawn_group_zone
+$spawn                                  = "ai\group zone"	                                       ; option for Level Editor
+class                                   = AI_SPGRP
+
+[spawn_group]
+GroupControlSection                     = spawn_group
+$spawn                                  = "ai\spawn group"	                                       ; option for Level Editor
+class                                   = AI_SPGRP
+
+[level_changer]
+GroupControlSection                     =
+$spawn                                  = "ai\level changer"
+class                                   = LVL_CHNG
+script_binding                          = bind_level_changer.bind
+
+shape_transp_color                      = 255, 255, 255, 100
+shape_edge_color                        = 32, 32, 32, 255
+
+[squad_manager]
+schedule_min                             = 1
+schedule_max                             = 999
+
+[agent_manager]
+schedule_min                             = 100
+schedule_max                             = 1000
+
+#include "space_rest.ltx"

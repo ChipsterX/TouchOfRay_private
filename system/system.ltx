@@ -1,0 +1,60 @@
+#include "map\map_spots.ltx"
+#include "alife\alife_manager.ltx"
+#include "zones\zones.ltx"
+#include "attach_itms\items.ltx"
+#include "camera\camera_manager.ltx"
+#include "sound\sounds.ltx"
+#include "stalkers\names.ltx"
+#include "lights\light.ltx"
+#include "marks\marks_xr.ltx"
+#include "cursor\cursor.ltx"
+#include "visuals\capture_visuals.ltx"
+#include "maingame\main_game.ltx"
+#include "vehicles\vehicles_obj.ltx"
+#include "trade.ltx"
+
+[demo_record]
+speed0                                   = 0.3
+speed1                                   = 3.0
+speed2                                   = 15.0
+speed3                                   = 60.0
+ang_speed0                               = 0.1
+ang_speed1                               = 0.5
+ang_speed2                               = 7.0
+ang_speed3                               = 2.0
+
+[climable_object]
+class                                    = O_CLMBL
+
+[script]
+current_server_entity_version            = 12
+
+[collision_damage]
+bonce_damage_factor_for_objects          = 1.
+
+[details]
+swing_normal_amp1                        = .1
+swing_normal_amp2                        = .05
+swing_normal_rot1                        = 30.0
+swing_normal_rot2                        = 1.0
+swing_normal_speed                       = 2.0
+; fast
+swing_fast_amp1                          = 0.35	                                       ;0.25
+swing_fast_amp2                          = .20	                                       ;0.15
+swing_fast_rot1                          = 5
+swing_fast_rot2                          = .5	                                       ;0.75
+swing_fast_speed                         = 0.5	                                       ;1
+
+[pkm_visual_memory]
+min_view_distance                        = 1	                                       ;0.4        ; коэффициент, которvй множитсЪ на eye_range, в зависимости от угла
+max_view_distance                        = 1	                                       ;0.8        ; коэффициент, которvй множитсЪ на eye_range, в зависимости от угла
+visibility_threshold                     = 50	                                       ;150.0       ; значение, при достижении суммой которого объект считаетсЪ видимvм
+always_visible_distance                  = 1	                                       ;0.1
+time_quant                               = 0.00001
+decrease_value                           = 0.1	                                       ; значение, на которое уменьшаетсЪ вес, если объект попал в фрустум, но отс£ксЪ по каким-то причинам
+velocity_factor                          = 0.5
+luminocity_factor                        = 0.5	                                       ; фактор освеениЪ (только длЪ Lкт£ра)
+transparency_threshold                   = 0.4	                                       ;
+view_fov_deg                             = 90
+view_aspect                              = 1
+view_far_plane                           = 100

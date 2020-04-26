@@ -1,0 +1,484 @@
+[hud_base]
+aim_hud_offset_pos				= 0,0,0
+aim_hud_offset_rot				= 0,0,0
+
+aim_hud_offset_pos_16x9			= 0,0,0
+aim_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos_16x9			= 0,0,0
+gl_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos				= 0,0,0
+gl_hud_offset_rot				= 0,0,0
+
+lean_hud_offset_pos				= 0,0,0
+lean_hud_offset_rot				= 0,0,0
+
+
+[sect_identity_immunities]
+burn_immunity			= 1.0
+strike_immunity			= 1.0
+shock_immunity			= 1.0
+wound_immunity			= 1.0
+wound_2_immunity		= 1.0
+radiation_immunity		= 1.0
+telepatic_immunity		= 1.0
+chemical_burn_immunity	= 1.0
+explosion_immunity		= 1.0
+fire_wound_immunity		= 1.0
+
+[sect_helm_immunities]
+burn_immunity			= 1.0
+strike_immunity			= 0.0
+shock_immunity			= 1.0
+wound_immunity			= 0.0
+wound_2_immunity		= 0.0
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity	= 1.0
+explosion_immunity		= 1.0
+fire_wound_immunity		= 1.0
+
+[sect_zero_immunities]
+burn_immunity			= 0.0
+strike_immunity			= 0.0
+shock_immunity			= 0.0
+wound_immunity			= 0.0
+wound_2_immunity		= 0.0
+radiation_immunity		= 0.0
+telepatic_immunity		= 0.0
+chemical_burn_immunity	= 0.0
+explosion_immunity		= 0.0
+fire_wound_immunity		= 0.0
+
+
+[identity_immunities]
+immunities_sect				= sect_identity_immunities
+slot 						= -1
+description					= no_description
+default_to_ruck             = true
+sprint_allowed              = true
+control_inertion_factor     = 1.0
+zoom_rotate_time            = 0.25
+
+[wpn_scope]
+addon_bone = wpn_scope
+scope_name = wpn_addon_scope
+
+[wpn_silencer]
+addon_bone = wpn_silencer
+
+[wpn_launcher]
+addon_bone = wpn_launcher
+
+[booster]:identity_immunities
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$prefetch                                = 8
+class                                    = S_FOOD			; Change to S_FOOD to use se_item.eatable_item script binding!
+cform                                    = skeleton
+visual                                   = dynamics\devices\dev_aptechka\dev_aptechka_low.ogf
+description                              = default
+inv_name                                 = default
+inv_name_short                           = default
+inv_weight                               = 0.01
+
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+inv_grid_x                               = 3
+inv_grid_y                               = 18
+cost                                     = 1
+
+; eatable item
+eat_health                               = 0
+eat_satiety                              = 0
+eat_power                                = 0
+eat_max_power                            = 0
+eat_radiation                            = 0
+eat_alcohol                              = 0
+eat_thirst								 = 0
+eat_sleep								 = 0
+eat_kurr								 = 0
+wounds_heal_perc                         = 0
+
+boost_time                               = 0.0
+boost_max_weight                         = 0.0
+boost_health_restore                     = 0.0
+boost_power_restore                      = 0.0
+boost_radiation_restore                  = 0.0
+boost_bleeding_restore                   = 0.0
+
+boost_radiation_protection               = 0.0
+boost_telepat_protection                 = 0.0
+boost_chemburn_protection                = 0.0
+
+boost_burn_immunity                      = 0.0
+boost_shock_immunity                     = 0.0
+boost_radiation_immunity                 = 0.0
+boost_telepat_immunity                   = 0.0
+boost_chemburn_immunity                  = 0.0
+boost_strike_immunity                    = 0.0
+boost_wound_immunity                     = 0.0
+boost_explosion_immunity                 = 0.0
+boost_fire_wound_immunity                = 0.0
+
+;New fields
+use_condition                            = false
+max_uses                                 = 1
+remove_after_use                         = true
+empty_weight                             = 0.1
+allow_repair                             = false
+dont_stack								 = false
+
+hide_time_wpn							 = 0 
+
+;USE THIS IF YOU WANT ITEM TO HAVE STORY ID
+[booster_script]:booster
+class									 = S_FOOD
+
+[artefacts_new_immunitets]:identity_immunities
+thirst_restore_speed                     = 0
+sleep_restore_speed                    	 = 0
+artefact_reaction					     = 0
+
+[outfit_new_immunitets]
+fire_wound_protection 				     = 0
+
+[helmet_new_immunitets]
+fire_wound_protection 				     = 0
+
+[collisio_wpn_engine]
+nearwall_on 							 = true ; - включание (умолчание false)
+nearwall_target_hud_fov 			     = 0.27; - HUD FOV когда ГГ полностью уперся в стену
+nearwall_dist_min 						 = 0.5;  - мин расстояние когда уже дошли до nearwall_target_hud_fov
+nearwall_dist_max 						 = 1.0; - макс рассятоние с которого текущий HUD FOV начинает меняться к nearwall_target_hud_fov
+nearwall_speed_mod 						 = 10.0; - скорость изменения HUD FOV
+
+; Настройки для обычного режима (стрельба от бедра)
+strafe_enabled = true ;Включить эффект?
+strafe_transition_time = 0.25 ;Скорость эффекта
+strafe_hud_offset_pos = 0.015,0.0,0.00 ;Смещение худа при стрейфах
+strafe_hud_offset_rot = 0.0,0.0,4.5 ;Поворот худа при стрейфах
+
+; Настройки для режима прицеливания
+strafe_aim_enabled = true
+strafe_aim_transition_time = 0.15
+strafe_aim_hud_offset_pos = 0.005,0.0,0.00
+strafe_aim_hud_offset_rot = 0.0,0.0,2.5
+
+
+[zone_base]
+idle_light_volumetric 	= false
+idle_light_shadow		= true
+effective_radius		= 1 	;0.75
+pick_dof_effector		= false
+idle_light_r1			= true
+script_binding          = bind_anomaly_field.bind
+
+artefacts 						= af_armor_1, 0.0	; Отключено
+spawn_blowout_artefacts 		= off			; главный переключатель возможности рождения
+artefact_spawn_probability 		= 0				;вероятность, что во время срабатывания аномалии будет рожден артефакт
+
+birth_on_death_probability 		= 5			; вероятность рождения артефакта после смерти существа в аномалии
+birth_on_torn_probability 		= 20			; вероятность рождения артефакта при разрыве тела в мясорубке
+
+birth_on_nonalive 				= false			; возможность рождения при срабатывании на предмет
+birth_on_alive 					= false			; возможность рождения при срабатывании на живое существо
+birth_on_dead 					= false			; возможность рождения при срабатывании на труп
+
+min_start_power 				= 0				; сила с который артефакт вытетит из зоны при рождении (float min)
+max_start_power 				= 5				; сила с который артефакт вытетит из зоны при рождении (float max)
+
+throw_out_power 				= 50			; не менять
+
+min_artefact_count 				= 0				; не менять
+max_artefact_count				= 0				; не менять
+
+artefact_spawn_height   		= 5 								; высота появления арта над аномалией
+artefact_spawn_particles  		= anomaly2\gravi_anomaly_shield_00  ;партиклы, которые отыграются на месте рождения артефакта (опционально)
+artefact_born_sound     		= anomaly\gravity_entrance         	;звук, который отыграются на месте рождения артефакта (опционально)
+
+[zone_base_noshadow]:zone_base
+idle_light_shadow		= false
+idle_light_r1			= true
+
+
+[abvesy_base]:identity_immunities, artefacts_new_immunitets
+GroupControlSection		= spawn_group
+cform           		= skeleton
+hud				= artefact_hud
+animation_slot			= 11
+allow_inertion			= true
+attach_angle_offset		= 0,0,0
+attach_position_offset		= -0.1,-0.1,0
+attach_bone_name		= bip01_root
+inv_grid_width			= 1
+inv_grid_height			= 1
+belt				= true
+slot 				= -1
+af_actor_properties		= on
+actor_properties		= on
+det_show_particles		= anomaly2\plasma_generator_death
+det_hide_particles		= anomaly2\plasma_generator_death
+det_show_snd			= anomaly\bfuzz_blowout
+det_hide_snd			= anomaly\pux_blast
+af_rank				= 1
+can_be_controlled		= true
+script_binding                  = bind_artefact.bind
+particles_bone			= link
+additional_inventory_weight     = 0
+default_to_ruck			= true
+
+;‘оздадим осноу длЯ шкур мутантов
+[hide_base]:abvesy_base, artefacts_new_immunitets
+$spawn				= "artefacts\af_kevlar"
+class				= SCRPTART  	; будет подпрыгивать
+inv_grid_width		= 1
+inv_grid_height		= 1
+jump_height			= 0.0
+;particles		        = artefact\af_thermal_idle
+det_show_particles		= artefact\af_thermal_show
+det_hide_particles		= artefact\af_thermal_hide
+particles_bone			= joint2
+af_rank				= 0
+lights_enabled                  = false
+trail_light_color 		= 0.9,0.4,0.2
+trail_light_range 		= 2.0
+attach_angle_offset		= 1.922,1.551,-0.740   
+attach_position_offset          = 0.15,0.002,0.25
+attach_bone_name		= bip01_r_hand
+auto_attach			= false
+health_restore_speed		= 0
+radiation_restore_speed		= 0
+satiety_restore_speed		= 0
+power_restore_speed		= 0
+bleeding_restore_speed		= 0
+
+
+[mutant_part_general]:identity_immunities
+GroupControlSection                      = spawn_group
+discovery_dependency                     =
+$spawn                                   = "devices\monster_items\mutant_part_general"
+class                                    = II_ATTCH
+cform                                    = skeleton
+visual                                   = dynamics\equipments\item_psevdodog_tail.ogf
+radius                                   = 1
+inv_weight                               = 0.2
+can_trade                                = true
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+
+[af_base1]:identity_immunities, artefacts_new_immunitets
+GroupControlSection		= spawn_group
+cform           		= skeleton
+hud				= artefact_hud
+invisible = false
+animation_slot			= 11
+allow_inertion			= true
+attach_angle_offset		= 0,0,0
+attach_position_offset		= -0.1,-0.1,0
+attach_bone_name		= bip01_root
+inv_grid_width			= 1
+inv_grid_height			= 1
+belt				= true
+slot 				= -1 ;10
+default_to_ruck			= true
+af_actor_properties		= on
+actor_properties			= on ;влияние артефакта на поясе у актера
+det_show_particles		= anomaly2\plasma_generator_death
+det_hide_particles		= anomaly2\plasma_generator_death
+
+det_show_snd			= anomaly\bfuzz_blowout
+det_hide_snd			= anomaly\pux_blast
+
+af_rank					= 0
+can_be_controlled		= true
+script_binding                  = bind_artefact.bind
+particles_bone			= link
+additional_inventory_weight 	= 0
+idle_light_shadow		= false
+lights_enabled = false			;свет вокруг ракеты, во время полета
+
+;скорости увеличения (уменьшения) 
+health_restore_speed	= 0			
+radiation_restore_speed	= 0
+satiety_restore_speed	= 0
+power_restore_speed		= 0
+bleeding_restore_speed	= 0
+
+hit_absorbation_sect	= af_base1_absorbation
+
+;коэффициенты иммунитета 
+[af_base1_absorbation]
+burn_immunity 			= 0
+strike_immunity 		= 0
+shock_immunity 		    = 0
+wound_immunity 		    = 0
+wound_2_immunity		= 0
+radiation_immunity 		= 0
+telepatic_immunity 		= 0
+chemical_burn_immunity 	= 0
+explosion_immunity 		= 0
+fire_wound_immunity  	= 0
+
+[af_base]:identity_immunities, artefacts_new_immunitets
+GroupControlSection                      = spawn_group
+cform                                    = skeleton
+hud                                      = artefact_hud
+animation_slot                           = 11
+allow_inertion                           = true
+attach_angle_offset                      = 0,0,0
+attach_position_offset                   = -0.1,-0.1,0
+attach_bone_name                         = bip01_root
+inv_grid_width                           = 1
+inv_grid_height                          = 1
+belt                                     = true
+slot                                     = -1	                                       ;10
+default_to_ruck                          = true
+af_actor_properties                      = on
+actor_properties                         = on
+det_show_particles                       = anomaly2\plasma_generator_death
+det_hide_particles                       = anomaly2\plasma_generator_death
+
+det_show_snd                             = anomaly\bfuzz_blowout
+det_hide_snd                             = anomaly\pux_blast
+
+af_rank                                  = 1
+can_be_controlled                        = true
+script_binding                           = bind_artefact.bind
+particles_bone                           = link
+additional_inventory_weight              = 0
+idle_light_shadow                        = false
+
+;use_condition 							 = true
+degrade_rate							 = 1.0	;Artefact Degradation
+
+[artefact_hud]:hud_base
+item_visual                              = dynamics\artefacts\artefact_electra_blue_hud
+attach_place_idx                         = 0
+
+hands_position                           = 0,0,0
+hands_orientation                        = 0,0,0
+hands_position_16x9                      = 0,0,0
+hands_orientation_16x9                   = 0,0,0
+
+item_position                            = 0,0,0
+item_orientation                         = 0,0,0
+aim_hud_offset_pos                       = 0,0,0
+aim_hud_offset_rot                       = 0,0,0
+
+gl_hud_offset_pos                        = 0,0,0
+gl_hud_offset_rot                        = 0,0,0
+
+lean_hud_offset_pos                      = 0,0,0
+lean_hud_offset_rot                      = 0,0,0
+
+anm_idle                                 = dev_artefact_idle
+anm_idle_sprint                          = dev_artefact_idle
+anm_hide                                 = dev_artefact_holster
+anm_show                                 = dev_artefact_draw
+anm_activate                             = dev_artefact_use
+
+[zero_immunities]:identity_immunities
+immunities_sect				= sect_zero_immunities
+
+[weapon_probability]:collisio_wpn_engine
+hit_probability_gd_novice	= 1
+hit_probability_gd_stalker	= 1
+hit_probability_gd_veteran	= 1
+hit_probability_gd_master	= 1
+
+
+[default_weapon_params]:identity_immunities
+use_aim_bullet				= false
+use_first_bullet			= false
+k_hit_critical				= 0
+frag_hit_critical			= 0
+hit_power					= 0.50, 0.50, 0.50, 0.50
+hit_power_critical			= 1.00, 1.00, 1.00, 1.00
+silencer_hit_power			= 0.45, 0.45, 0.45, 0.45
+hit_impulse					= 10						; size of physic impulse by bullet
+silencer_hit_impulse	 	= 9
+slot 						= -1
+description					= no_description
+;----------------------------
+default_to_ruck             = false
+sprint_allowed              = true
+control_inertion_factor     = 1.0
+zoom_rotate_time            = 0.25
+ironsight_zoom_factor		= 1.25		;Really only used for Grenade Launcher Attachments
+;----------------------------
+
+; Переключение версий STCoP
+; Если включить параметр true, то подключиться не полная перезарядка
+; Добавиться анимация передергивания затвора при клине
+; Подключать только к оружию, у которого есть эти анимации
+; Подключаться индивидуально для КАЖДОГО ствола
+; Подключиться 31 патрон при не полной перезарядке
+
+; Параметры звуков:
+;snd_reload				= Неполная перезарядка
+;snd_reload_empty		= Полная перезарядка
+;snd_reload_misfire		= Передергивание затвора при клине 
+
+; Анимации:
+;anm_reload             = Неполная перезарядка
+;anm_reload_empty       = Полная перезарядка
+;anm_reload_misfire     = Анимация передергивания затвора
+
+reload_stcop3_3			= false
+
+[zoom_inertion_effector]
+camera_speed_threshold = 1.5   ;максимальная скорость поворота камеры игроком, при которой возможно действие эффектора
+disp_min               = 0.002 ;минимальная сила раскачки камеры
+disp_epsilon           = 0.04  ;изменение текущей силы раскачки, выше которого произойдет преждевременный поиск следующей точки
+zoom_aim_disp_k        = 0.4   ;коэффициент силы раскачки камеры (умножается на текущий разброс стрельбы актора)
+disp_horz_koef         = 1.4   ;сила покачивания в ширину, относительно высоты
+delta_time             = 1200  ;время через которое эффектор меняет направление движения (в милисекундах)
+
+[common_ph_friction_params_on_npc_death] ; Parameters for setting change of friction at the time of the death of a character
+
+ph_skeleton_airr_lin_factor   = 2.0 ;550.0 (Precisely because of the fact that the multiplication factor of 0.002 removed from the code)
+ph_skeleton_airr_ang_factor   = 0.0 ;0.0 (Precisely because of the fact that removed the multiplication by a factor of 0.3 from the code (0.0 * 0.3 = 0.0))
+ph_skeleton_hinger_factor1    = 1.0 ;1.0 (Because of the fact that the multiplication factor removed from the code 5.0)
+ph_skeleton_ddelay	     	  = 15.0 ;Time changes in friction values ??in the joint since the inception of the shell, s
+
+ph_skel_fatal_impulse_factor  = 6.0
+ph_after_death_velocity_factor= 0.75
+ph_skel_shot_up_factor        = 0.25
+
+ph_skeleton_skin_friction_start	= 0.0   ; The starting value for the shell friction
+ph_skeleton_skin_friction_end	= 2.0   ; The final value for the shell friction
+ph_skeleton_skin_ddelay			= 6.0		; Time changes in friction values since the inception of the shell, s.
+ph_skeleton_skin_ddelay_after_wound = 2.0 ; Changes in the friction values time since the creation of shell, s (for the character after injury).
+ph_pelvis_factor_low_pose_detect =0.3	; Length of the beam in the collision with the ground from the center pelvisa
+										; If the collision, the character is in the lower position (or hurt) (in this case zadayutsya other options for him
+										; Friction and no pulse multiplication for the first hit)
+ph_character_have_wounded_state = false; имеет ли персонаж состояние раненый
+
+[monster_base]:common_ph_friction_params_on_npc_death
+actor_hit_effect 	= effector_monster_hit
+custom_data			= default_custom_data.ltx		; option for Level Editor
+
+feel_enemy_who_made_sound_max_distance = 30
+feel_enemy_who_just_hit_max_distance = 200
+feel_enemy_max_distance = 50
+
+;Spawn_Inventory_Item_Section = mutant_dog_tail ;эта строка была с ней нечего не делаем 
+;Spawn_Inventory_Item_Probability = 0    	   ;тут было 0.5 мы это за комментируем и напишем 0, что бы не выпадало из инвентаря, либо стереть так как есть в родительской секции 
+;Spawn_Drop_Item_Probability = 0.0 			   ; Прописываем вероятность выпадения из тела раньше не было мы пишем на пример как раньше было в инвентарь 0.5
+;Spawn_Max_Item = 0                             ;Так как у собаки один хвост то максиму пишем может выпасть 1
+
+[wpn_vodka_hud]:identity_immunities,hud_base
+fire_point                               = 0.0, 0.0, 0.06
+fire_bone                                = bip01_head
+orientation                              = 0, 0, 0
+position                                 = 0, 0, 0
+visual                                   = dynamics\devices\dev_vodka\dev_vodka.ogf
+
+anim_idle                                = vodka_2
+anim_show                                = vodka_1
+anim_hide                                = vodka_4
+anim_play                                = vodka_5
+anim_prepare                             = vodka_5
+anim_eat                                 = vodka_3
