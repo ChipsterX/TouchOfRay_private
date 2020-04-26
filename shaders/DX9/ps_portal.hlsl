@@ -1,0 +1,18 @@
+#include "common.h"
+
+float4 	main	( float4 C:COLOR0 )	: COLOR
+{
+		float4	result;
+
+#ifdef        USE_VTF
+        result.rgb	= C;
+#else
+		float4	high;
+        float    scale	= tex2D(s_tonemap,float2(.5h,.5h)).x;
+		tonemap			(result, high, C, scale);
+#endif
+
+	result.a = C.a;
+
+	return	result;
+}
