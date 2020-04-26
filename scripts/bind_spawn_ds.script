@@ -1,0 +1,849 @@
+-- #######################################################################################################################
+-- 									ДИНАМИЧЕСКИЙ СПАВН МУТАНТОВ
+-- #######################################################################################################################
+--' Модуль: динамический спавн мутантов
+--' Автор: OldSerpski Stalker, Back to the roots
+--' База скрипта: 
+--' Заметки: [...]
+--' Другое: [...]
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' ----------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_update", dynamic_spawn_SoC)
+	RegisterScriptCallback("actor_on_update", dynamic_spawn_active)
+end	
+
+local CTimerSpawnMutants 		  		--' Таймер = 0
+local CTimerSpawnMutantsDebug = 2500    --' Спавн по истечению {debug}
+local k = 1                       		--' k
+local Xint = -250				  		--' Раньше эта хрень регулировалась xD
+local Yint = 250				  		--' Потом мне стало лень ее настраивать
+local time_mutant_spawn = 156000  		--' Основной таймер спавна
+
+--' Таблицы
+local tabl_tushkano 	= {"tushkano_normal"}
+local tabl_zombie 		= {"zombie_weak", "zombie_normal", "zombie_strong","zombie_ghost","zombie_fake","zombie_beee", "zombie_blow"}
+local tabl_bloodsucker  = {"bloodsucker_weak","bloodsucker_normal","bloodsucker_strong"}
+local tabl_burer 		= {"burer_normal"}
+local tabl_giant 		= {"gigant_normal"}
+local tabl_snork 		= {"snork_weak", "snork_normal", "snork_strong"}
+local tabl_psypseudo 	= {"psy_dog_normal"}
+local tabl_pseudo 		= {"pseudodog_normal"}
+local tabl_polter 		= {"m_poltergeist_normal_tele", "m_poltergeist_normal_flame"}
+local tabl_fract 		= {"fracture_normal","fracture_weak", "fracture_strong", "fracture_3","fracture_2"}
+local tabl_flesh 		= {"flesh_normal","flesh_strong"}
+local tabl_dogs 		= {"dog_weak", "dog_normal", "dog_cute", "dog_strong"}
+local tabl_controller 	= {"m_controller_normal"}
+local tabl_chimer 		= {"chimera_normal"}
+local tabl_cat 			= {"cat_normal"}
+local tabl_boar 		= {"boar_normal","boar_strong"}
+local tR 				= math.random(0, 4) -- Тушканы
+local zR 				= math.random(0, 4) -- Зомби 
+local bR 				= math.random(0, 2) -- Кровососы
+local boR 				= math.random(0, 3) -- Кабаны
+local buR 				= math.random(0, 1) -- Бюреры
+local cR 				= math.random(0, 3) -- Коты
+local chR 				= math.random(0, 1) -- Химеры
+local coR 				= math.random(0, 1) -- Контролеры
+local dR 				= math.random(0, 3) -- Собаки
+local fR 				= math.random(0, 3) -- Плоти
+local frR		 		= math.random(0, 3) -- Изломы
+local gR 				= math.random(0, 1) -- Гиганты
+local pR 				= math.random(0, 1) -- Полтергейсты
+local psR 				= math.random(0, 3) -- Псевдопсы
+local pssyR 			= math.random(0, 1) -- Пси-псы
+local sR 				= math.random(0, 2) -- Снорки
+
+local table_mutant_spawn_for_level = {     
+	jupiter = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},
+	k00_marsh = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	k01_darkscape = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = 0*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	k02_trucks_cemetery = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l01_escape = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = 0*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l02_garbage = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l03_agroprom = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l04_darkvalley = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l05_bar = 
+	{
+        tushkano_s        = 0*k,
+        zombie_s          = 0*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = 0*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = 0*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},	
+	l06_rostok = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l07_military = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = 0*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l08_yantar = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l09_deadcity = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l10_limansk = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l10_radar = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l10_red_forest = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l11_hospital = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l11_pripyat = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l12_stancia = 
+	{
+        tushkano_s        = 0*k,
+        zombie_s          = 0*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l12_stancia_2 = 
+	{
+        tushkano_s        = 0*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	l13_generators = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = cR*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	pripyat = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = dR*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = sR*k,
+	},	
+	zaton = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = boR*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = chR*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = fR*k,
+        fracturers_s      = frR*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = psR*k,
+        psy_pseudodogs_s  = pssyR*k,	
+        snorks_s 	      = 0*k,
+	},
+	jupiter_underground = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = frR*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	labx8 = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l03u_agr_underground = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l04u_labx18 = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l08u_brainlab = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l10u_bunker = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = 0*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = 0*k,
+	},
+	l12u_control_monolith = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = 0*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = 0*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = 0*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = 0*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l12u_sarcofag = 
+	{
+        tushkano_s        = 0*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = 0*k,
+        boars_s           = 0*k,
+        burers_s          = 0*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = 0*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	},
+	l13u_warlab = 
+	{
+        tushkano_s        = tR*k,
+        zombie_s          = zR*k,
+        bloodsukers_s     = bR*k,
+        boars_s           = 0*k,
+        burers_s          = buR*k,
+        cats_s            = 0*k,
+        chimers_s         = 0*k,
+        controllers_s     = coR*k,
+        dogs_s            = 0*k,
+        fleshs_s          = 0*k,
+        fracturers_s      = 0*k,
+        giants_s          = gR*k,
+        poltergeists_s    = pR*k,
+        pseudodogs_s      = 0*k,
+        psy_pseudodogs_s  = 0*k,	
+        snorks_s 	      = sR*k,
+	}
+}
+
+function dynamic_spawn_active(self)
+	if bool_module_smart_terrain_soc == false then return end
+    if (axr_main.config:r_value("mm_options","enable_dynamic_spawn",1,false) ~= true) then return end
+	
+    if db.actor and time_global()>(self.upd_time or 0) then
+        self.upd_time = time_global() + time_mutant_spawn
+        create_spawn()	
+	end
+end
+
+function debug() -- Debug
+    CTimerSpawnMutants = time_global() + CTimerSpawnMutantsDebug
+end
+
+function dynamic_spawn_SoC()
+    if CTimerSpawnMutants and CTimerSpawnMutants < time_global() then 
+        CTimerSpawnMutants = nil 
+        create_spawn()
+--		CallLog()
+    end
+end
+
+function create_spawn()	
+	if (bool_module_smart_terrain_soc == false) or (not table_mutant_spawn_for_level[level.name()]) then return end  
+	level_name = level.name()
+	level_info = table_mutant_spawn_for_level[level_name]
+	 if (math.random(1, 100) < 70) then
+		if level_info then
+			tushkanoG(level_name) zombieG(level_name) bloodsuckerG(level_name)
+            boarG(level_name) burerG(level_name) catG(level_name) chimeraG(level_name)
+			poltergeistG(level_name) pseudodogG(level_name) snorkG(level_name) pseudodog_psyG(level_name) 
+			controllerG(level_name)dogG(level_name)fleshG(level_name) fracturesG(level_name) gigantG(level_name) 
+	    end	  
+    end
+end
+
+function tushkanoG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["tushkano_s"]-0,table_mutant_spawn_for_level[level_name]["tushkano_s"]+0) do
+		alife():create(tabl_tushkano[math.random(table.getn(tabl_tushkano))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function zombieG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["zombie_s"]-0,table_mutant_spawn_for_level[level_name]["zombie_s"]+0) do
+		alife():create(tabl_zombie[math.random(table.getn(tabl_zombie))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function bloodsuckerG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["bloodsukers_s"]-0,table_mutant_spawn_for_level[level_name]["bloodsukers_s"]+0) do
+		alife():create(tabl_bloodsucker[math.random(table.getn(tabl_bloodsucker))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function boarG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["boars_s"]-0,table_mutant_spawn_for_level[level_name]["boars_s"]+0) do
+		alife():create(tabl_boar[math.random(table.getn(tabl_boar))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function burerG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["burers_s"]-0,table_mutant_spawn_for_level[level_name]["burers_s"]+0) do
+		alife():create(tabl_burer[math.random(table.getn(tabl_burer))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function catG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["cats_s"]-0,table_mutant_spawn_for_level[level_name]["cats_s"]+0) do
+		alife():create(tabl_cat[math.random(table.getn(tabl_cat))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function chimeraG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["chimers_s"]-0,table_mutant_spawn_for_level[level_name]["chimers_s"]+0) do
+		alife():create(tabl_chimer[math.random(table.getn(tabl_chimer))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function controllerG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["controllers_s"]-0,table_mutant_spawn_for_level[level_name]["controllers_s"]+0) do
+		alife():create(tabl_controller[math.random(table.getn(tabl_controller))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function dogG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["dogs_s"]-0,table_mutant_spawn_for_level[level_name]["dogs_s"]+0) do
+		alife():create(tabl_dogs[math.random(table.getn(tabl_dogs))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function fleshG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["fleshs_s"]-0,table_mutant_spawn_for_level[level_name]["fleshs_s"]+0) do
+		alife():create(tabl_flesh[math.random(table.getn(tabl_flesh))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function fracturesG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["fracturers_s"]-0,table_mutant_spawn_for_level[level_name]["fracturers_s"]+0) do
+		alife():create(tabl_fract[math.random(table.getn(tabl_fract))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function gigantG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["giants_s"]-0,table_mutant_spawn_for_level[level_name]["giants_s"]+0) do
+		alife():create(tabl_giant[math.random(table.getn(tabl_giant))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function poltergeistG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["poltergeists_s"]-0,table_mutant_spawn_for_level[level_name]["poltergeists_s"]+0) do
+		alife():create(tabl_polter[math.random(table.getn(tabl_polter))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function pseudodogG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["pseudodogs_s"]-0,table_mutant_spawn_for_level[level_name]["pseudodogs_s"]+0) do
+		alife():create(tabl_pseudo[math.random(table.getn(tabl_pseudo))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function snorkG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["snorks_s"]-0,table_mutant_spawn_for_level[level_name]["snorks_s"]+0) do
+		alife():create(tabl_snork[math.random(table.getn(tabl_snork))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end
+
+function pseudodog_psyG(level_name)
+local ap = db.actor:position()
+local lv = db.actor:level_vertex_id()
+local gv = db.actor:game_vertex_id()
+	for i=1,math.random(table_mutant_spawn_for_level[level_name]["psy_pseudodogs_s"]-0,table_mutant_spawn_for_level[level_name]["psy_pseudodogs_s"]+0) do
+		alife():create(tabl_psypseudo[math.random(table.getn(tabl_psypseudo))], vector():set(ap.x+math.random(Xint, Yint), ap.y, ap.z+math.random(Xint, Yint)), lv, gv)
+	end
+end							
+

@@ -1,0 +1,24 @@
+-- Скрипты для AZM 1.54 || CreZy exe
+
+function spawn_item(spawn_item, npc) 
+  if npc==nil then 
+    npc=db.actor 
+  end
+  return alife():create(spawn_item, 
+      npc:position(),
+      npc:level_vertex_id(),  
+      npc:game_vertex_id(),
+      npc:id())
+end
+
+function remove_item(actor, npc, p) 
+	if (p and p[1]) == nil then abort("Wrong parameters in function 'remove_item'!!!") end
+	local item = p[1]
+
+	local obj = db.actor:object(item)
+	if obj ~= nil then
+		alife():release(alife():object(obj:id()), true)
+	else
+		abort("Actor has no such item!")
+	end
+end

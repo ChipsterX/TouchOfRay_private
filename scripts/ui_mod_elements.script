@@ -1,0 +1,488 @@
+---==================================================================================================---
+--------------------------------------------------------------------------------------------------------
+----------------------------------------(Динамические окна)---------------------------------------------
+--------------------------------------------------------------------------------------------------------
+---==================================================================================================---
+------------------------------------------------------------------------------
+--                                 МП-3 плеер                               --
+------------------------------------------------------------------------------
+local mp3_obj
+local mp3_info=""
+local mp3_mode="default"
+local mp3_add_value=0.1
+local mp3_chosen_list=nil
+local mp3_played_list=nil
+local mp3_player_section=1
+mp3_length_position,mp3_last_position,mp3_plays=0,0,nil
+
+local mp3_table_merry = {
+	{sound=[[mp3_player\От разработчика\Track_1]],title="Дорожка 1",author="Miyagi - БадаБум",id=1},
+	{sound=[[mp3_player\От разработчика\Track_2]],title="Дорожка 2",author="Miyagi - Корабли",id=2},
+	{sound=[[mp3_player\От разработчика\Track_3]],title="Дорожка 3",author="Miyagi - Мы не одни",id=3},
+	{sound=[[mp3_player\От разработчика\Track_4]],title="Дорожка 4",author="Miyagi, Andy Panda - Говори мне",id=4},
+	{sound=[[mp3_player\От разработчика\Track_5]],title="Дорожка 5",author="Miyagi, Kadi - Colors",id=5},
+	
+	{sound=[[mp3_player\От разработчика\Track_6]],title="Дорожка 6",author="Miyagi, Kadi - Родная пой",id=6},
+	{sound=[[mp3_player\От разработчика\Track_7]],title="Дорожка 7",author="Miyagi, Эндшпиль - По пятам ",id=7},
+	{sound=[[mp3_player\От разработчика\Track_8]],title="Дорожка 8",author="Miyagi, Эндшпиль - God Bless",id=8},
+	{sound=[[mp3_player\От разработчика\Track_9]],title="Дорожка 9",author="Miyagi, Эндшпиль, Amigo - Райзап",id=9},
+	{sound=[[mp3_player\От разработчика\Track_10]],title="Дорожка 10",author="Miyagi - Ночи в одного",id=10},
+	
+	{sound=[[mp3_player\От разработчика\Track_11]],title="Дорожка 11",author="Miyagi, Andy Panda - Freeman",id=11},
+	{sound=[[mp3_player\От разработчика\Track_12]],title="Дорожка 12",author="Miyagi, TumaniYO - Jamm",id=12},
+	{sound=[[mp3_player\От разработчика\Track_13]],title="Дорожка 13",author="Miyagi, Andy Panda - При своём",id=13},
+	{sound=[[mp3_player\От разработчика\Track_14]],title="Дорожка 14",author="Miyagi, Эндшпиль - Колибри",id=14},
+	{sound=[[mp3_player\От разработчика\Track_15]],title="Дорожка 15",author="Miyagi, Andy Panda - Kosandra",id=15},
+	
+	{sound=[[mp3_player\От разработчика\Track_16]],title="Дорожка 16",author="Miyagi - Marlboro",id=16},
+	{sound=[[mp3_player\От разработчика\Track_17]],title="Дорожка 17",author="Miyagi - Давила та печаль",id=17},
+	{sound=[[mp3_player\От разработчика\Track_18]],title="Дорожка 18",author="HLOY, Moeazy, TumaniYO - Balance",id=18},
+	{sound=[[mp3_player\От разработчика\Track_19]],title="Дорожка 19",author="TumaniYO - Завтра",id=19},
+	{sound=[[mp3_player\От разработчика\Track_20]],title="Дорожка 20",author="TumaniYO, HLOY - Rainy Day",id=20},
+	
+	{sound=[[mp3_player\От разработчика\Track_21]],title="Дорожка 21",author="SaNni - В деле торпеды",id=21},
+	{sound=[[mp3_player\От разработчика\Track_22]],title="Дорожка 22",author="Rompasso - Paradise",id=22},
+	{sound=[[mp3_player\От разработчика\Track_23]],title="Дорожка 23",author="Andy Panda, Miyagi - Endorphin",id=23},
+	{sound=[[mp3_player\От разработчика\Track_24]],title="Дорожка 24",author="TumaniYO - Там, где есть свет",id=24},
+	{sound=[[mp3_player\От разработчика\Track_25]],title="Дорожка 25",author="Poetika - Kazdou vterinou",id=25},
+	
+	{sound=[[mp3_player\От разработчика\Track_26]],title="Дорожка 26",author="The Tech Thieves - Enough",id=26},
+	{sound=[[mp3_player\От разработчика\Track_27]],title="Дорожка 27",author="ZD - Далеку улечу я",id=27},
+	{sound=[[mp3_player\От разработчика\Track_28]],title="Дорожка 28",author="Zipp0 - Мы полетим туда где мы дети",id=28},
+	{sound=[[mp3_player\От разработчика\Track_29]],title="Дорожка 29",author="Navai, Bahh Tee - Не приму и даром",id=29},
+	{sound=[[mp3_player\От разработчика\Track_30]],title="Дорожка 30",author="QONTRAST - завяжи глаза",id=30},
+	
+	{sound=[[mp3_player\От разработчика\Track_31]],title="Дорожка 31",author="Cvetocek7 - Завяжи глаза",id=31},
+	{sound=[[mp3_player\От разработчика\Track_32]],title="Дорожка 32",author="kerwprod - Не тревожте землю",id=32},
+	{sound=[[mp3_player\От разработчика\Track_33]],title="Дорожка 33",author="Bodiev - Карусели",id=33},
+	{sound=[[mp3_player\От разработчика\Track_34]],title="Дорожка 34",author="Tanir, Tyomcha - Да да да",id=34},
+	{sound=[[mp3_player\От разработчика\Track_35]],title="Дорожка 35",author="Kuzgun - Bir Dal Sigara 2019",id=35},
+	
+	{sound=[[mp3_player\От разработчика\Track_36]],title="Дорожка 36",author="Chico Chicano - Flying Comits",id=36},
+	{sound=[[mp3_player\От разработчика\Track_37]],title="Дорожка 37",author="LIZER - Корабли",id=37},
+	{sound=[[mp3_player\От разработчика\Track_38]],title="Дорожка 38",author="T-Fest & Скриптонит - Одну дверь",id=38},
+	{sound=[[mp3_player\От разработчика\Track_39]],title="Дорожка 39",author="Тайпан и Agunda - Она кричит звезде помоги",id=39},
+	{sound=[[mp3_player\От разработчика\Track_40]],title="Дорожка 40",author="Мэвл - Магнитола",id=40},
+	
+	{sound=[[mp3_player\От разработчика\Track_41]],title="Дорожка 41",author="K.Flay - Giver (Original Mix)",id=41},
+	{sound=[[mp3_player\От разработчика\Track_42]],title="Дорожка 42",author="Asnova Corporation - Весна",id=42},
+	{sound=[[mp3_player\От разработчика\Track_43]],title="Дорожка 43",author="Bad Balance - Дон Хосе",id=43},
+	{sound=[[mp3_player\От разработчика\Track_44]],title="Дорожка 44",author="Arensky, Adam Knight - Falling Dreamer",id=44},
+	{sound=[[mp3_player\От разработчика\Track_45]],title="Дорожка 45",author="Vicetone - Nevada (feat. Cozi Zuehlsdorff)",id=45},
+	
+	{sound=[[mp3_player\От разработчика\Track_46]],title="Дорожка 46",author="Broken Angel Feat Helena - I'm So lonely",id=46},
+	{sound=[[mp3_player\От разработчика\Track_47]],title="Дорожка 47",author="Coldplay - Hymn For The Weekend",id=47},
+	{sound=[[mp3_player\От разработчика\Track_48]],title="Дорожка 48",author="Icy Narco - Numb & Frozen(Sakura Remix)",id=48},
+	{sound=[[mp3_player\От разработчика\Track_49]],title="Дорожка 49",author="NIVERSO - Never Letting Go",id=49},
+	{sound=[[mp3_player\От разработчика\Track_50]],title="Дорожка 50",author="МанТана, Jah-Far - Дайте мне встать",id=50},
+	
+	{sound=[[mp3_player\От разработчика\Track_51]],title="Дорожка 51",author="Maryana Ro - Снег",id=51},
+	{sound=[[mp3_player\От разработчика\Track_52]],title="Дорожка 52",author="Follow your dreams",id=52},
+	{sound=[[mp3_player\От разработчика\Track_53]],title="Дорожка 53",author="Следуй за своей мечтой",id=53},
+	{sound=[[mp3_player\От разработчика\Track_54]],title="Дорожка 54",author="Burak Yeter - Tuesday 2016",id=54},
+	{sound=[[mp3_player\От разработчика\Track_55]],title="Дорожка 55",author="Max Oazo feat.Cami - Set Me Free",id=55},
+	
+	{sound=[[mp3_player\От разработчика\Track_56]],title="Дорожка 56",author="Cozi Zuehlsdorff - The Girl",id=56},
+	{sound=[[mp3_player\От разработчика\Track_57]],title="Дорожка 57",author="Pascal Letoublon - Friendships",id=57},
+	{sound=[[mp3_player\От разработчика\Track_58]],title="Дорожка 58",author="Элджей, Era Istrefi - Sayonara детка",id=58},
+	{sound=[[mp3_player\От разработчика\Track_59]],title="Дорожка 59",author="VERBEE - Золотая осень",id=59},
+	{sound=[[mp3_player\От разработчика\Track_60]],title="Дорожка 60",author="VERBEE - Один",id=60},
+	
+	{sound=[[mp3_player\От разработчика\Track_61]],title="Дорожка 61",author="Грязь - Это лето тебя убьёт",id=61},
+	{sound=[[mp3_player\От разработчика\Track_62]],title="Дорожка 62",author="Честер Небро - Уведи меня за собои?",id=62},
+	{sound=[[mp3_player\От разработчика\Track_63]],title="Дорожка 63",author="Гуф & Мари Краймбрери - 31 февраля",id=63},
+	{sound=[[mp3_player\От разработчика\Track_64]],title="Дорожка 64",author="V7 - Шанхайский полдень",id=64},
+	{sound=[[mp3_player\От разработчика\Track_65]],title="Дорожка 65",author="Нурминский - Валим",id=65},
+	
+	{sound=[[mp3_player\От разработчика\Track_66]],title="Дорожка 66",author="Post Malone - Rockstar",id=66},
+	{sound=[[mp3_player\От разработчика\Track_67]],title="Дорожка 67",author="Cozi Zuehlsdorff - Where I'll Be Waiting",id=67},
+	{sound=[[mp3_player\От разработчика\Track_68]],title="Дорожка 68",author="Imagine Dragons - Bad Liar",id=68},
+	{sound=[[mp3_player\От разработчика\Track_69]],title="Дорожка 69",author="Don Omar - Virtual Diva",id=69},
+	{sound=[[mp3_player\От разработчика\Track_70]],title="Дорожка 70",author="KAZKA - ПЛАКАЛА",id=70},
+	
+	{sound=[[mp3_player\От разработчика\Track_71]],title="Дорожка 71",author="Rompasso - Angetenar",id=71},
+	{sound=[[mp3_player\От разработчика\Track_72]],title="Дорожка 72",author="Reflex - Я небо разбила",id=72},
+	{sound=[[mp3_player\От разработчика\Track_73]],title="Дорожка 73",author="Nana - I want you to know",id=73},
+	{sound=[[mp3_player\От разработчика\Track_74]],title="Дорожка 74",author="MARUV - Siren Song",id=74},
+	{sound=[[mp3_player\От разработчика\Track_75]],title="Дорожка 75",author="Kravz - Эндорфин",id=75},
+	
+	{sound=[[mp3_player\От разработчика\Track_76]],title="Дорожка 76",author="Tribute to Lilly Wood - Prayer in C",id=76},
+	{sound=[[mp3_player\От разработчика\Track_77]],title="Дорожка 77",author="ДДТ - Просвистела и упала на столе",id=77},
+	{sound=[[mp3_player\От разработчика\Track_78]],title="Дорожка 78",author="ДДТ - Что такое осень",id=78},
+	{sound=[[mp3_player\От разработчика\Track_79]],title="Дорожка 79",author="ДДТ и Юрий Шевчук - Новая жизнь",id=79},
+	{sound=[[mp3_player\От разработчика\Track_80]],title="Дорожка 80",author="Две дороги, два пути",id=80},
+	
+	{sound=[[mp3_player\От разработчика\Track_81]],title="Дорожка 81",author="Многоточие - Дыши",id=81},
+	{sound=[[mp3_player\От разработчика\Track_82]],title="Дорожка 82",author="Олег Газманов - Сделан в СССР",id=82},
+	{sound=[[mp3_player\От разработчика\Track_83]],title="Дорожка 83",author="Олег Шак - Поворот, зашуршали колёса",id=83},
+	{sound=[[mp3_player\От разработчика\Track_84]],title="Дорожка 84",author="Сергей Галанин - А что мне надо...",id=84},
+	{sound=[[mp3_player\От разработчика\Track_85]],title="Дорожка 85",author="Сектор Газа - Водку я налил в стакан",id=85},
+	
+	{sound=[[mp3_player\От разработчика\Track_86]],title="Дорожка 86",author="Рем Дигга - Почему дрожит осина",id=86}
+}
+
+local mp3_table_dance = {
+	{sound=[[mp3_player\От подписчиков\Track_1]],title="Дорожка 1",author="Элизиум - В сердце лед",id=1},
+	{sound=[[mp3_player\От подписчиков\Track_2]],title="Дорожка 2",author="Рождённый убивать",id=2},
+	{sound=[[mp3_player\От подписчиков\Track_3]],title="Дорожка 3",author="Океан Эльзи - Коли тебе нема",id=3},
+	{sound=[[mp3_player\От подписчиков\Track_4]],title="Дорожка 4",author="Макс Корж - 2 типа людей",id=4},
+	{sound=[[mp3_player\От подписчиков\Track_5]],title="Дорожка 5",author="Люмен - Три Пути",id=5},
+	{sound=[[mp3_player\От подписчиков\Track_6]],title="Дорожка 6",author="Король и Шут - Кукла Колдуна",id=6},
+	{sound=[[mp3_player\От подписчиков\Track_7]],title="Дорожка 7",author="Король и Шут - Камнем по Голове",id=7},
+	{sound=[[mp3_player\От подписчиков\Track_8]],title="Дорожка 8",author="Диспетчер - 2000 $ за сигарету",id=8},
+	{sound=[[mp3_player\От подписчиков\Track_9]],title="Дорожка 9",author="Г. О. - Про дурачка",id=9},
+	{sound=[[mp3_player\От подписчиков\Track_10]],title="Дорожка 10",author="Г. О. - Невыносимая легкость бытия",id=10},	
+	{sound=[[mp3_player\От подписчиков\Track_11]],title="Дорожка 11",author="Гимн Монолита",id=11},
+	{sound=[[mp3_player\От подписчиков\Track_12]],title="Дорожка 12",author="А мы не ангелы, парень",id=12},
+	{sound=[[mp3_player\От подписчиков\Track_13]],title="Дорожка 13",author="Blue Stahli - Corner",id=13},	
+	{sound=[[mp3_player\От подписчиков\Track_14]],title="Дорожка 14",author="STALKER OST — Бандиты",id=14},	
+	{sound=[[mp3_player\От подписчиков\Track_15]],title="Дорожка 15",author="STALKER - Бандиты (8 bit)",id=15},	
+	{sound=[[mp3_player\От подписчиков\Track_16]],title="Дорожка 16",author="Snoop Dogg - The Next Episode",id=16},	
+	{sound=[[mp3_player\От подписчиков\Track_17]],title="Дорожка 17",author="Skillet - Monster",id=17},	
+	{sound=[[mp3_player\От подписчиков\Track_18]],title="Дорожка 18",author="Pyrokinesis - Корми демонов по расписанию",id=18},	
+	{sound=[[mp3_player\От подписчиков\Track_19]],title="Дорожка 19",author="Нурминский - Статус",id=19},
+	{sound=[[mp3_player\От подписчиков\Track_20]],title="Дорожка 20",author="Кино - следи за собой",id=20},
+	{sound=[[mp3_player\От подписчиков\Track_21]],title="Дорожка 21",author="Imagine Dragons - Radioactive",id=21},	
+	{sound=[[mp3_player\От подписчиков\Track_22]],title="Дорожка 22",author="Diplo - Welcome to the Party",id=22},
+	{sound=[[mp3_player\От подписчиков\Track_23]],title="Дорожка 23",author="Ангел-Хранитель - уставший путник",id=23},	
+	{sound=[[mp3_player\От подписчиков\Track_24]],title="Дорожка 24",author="Lodoss - Время чудес",id=24},	
+	{sound=[[mp3_player\От подписчиков\Track_25]],title="Дорожка 25",author="Fladar - Дед Фладар",id=25}
+}
+
+function mp3_update()
+  if has_alife_info("mp3_player_repeat") then
+     if mp3_mode~="repeat" then mp3_mode="repeat" end
+  elseif has_alife_info("mp3_player_queue") then
+     if mp3_mode~="queue" then mp3_mode="queue" end
+  else
+     if mp3_mode~="default" then mp3_mode="default" end
+  end
+  if mp3_mode=="repeat" then
+     if mp3_obj~=nil then
+       if mp3_obj:playing()==false then
+          mp3_obj:play(db.actor,0,sound_object.s2d)
+          mp3_obj.volume=read_mod_param("mp3_currert_volume")
+          mp3_last_position=string.format(math.floor(time_global()/1000))
+          mp3_length_position=string.format(math.floor(time_global()/1000))-mp3_last_position
+          mp3_obj.min_distance,mp3_obj.max_distance=2,6
+       end
+     end
+  elseif mp3_mode=="queue" then
+     if mp3_obj~=nil then
+       if mp3_obj:playing()==false then
+          local next_sound,next_title=nil,nil
+          if mp3_played_list~=nil and next_sound==nil then
+             for k,v in pairs(mp3_played_list) do
+                if v.title==mp3_plays then
+                   local next_id=v.id+1
+                   if next_id>get_table_lines(mp3_played_list) then
+                      next_id=1
+                   end
+                   for a,s in pairs(mp3_played_list) do
+                      if s.id==next_id then
+                         if s.precond==nil or (s.precond~=nil and has_alife_info(s.precond)) then
+                            next_sound=s.sound
+                            next_title=s.title
+                         else
+                            next_id=next_id+1
+                         end
+                      end
+                   end
+                end
+             end
+          end
+          if next_sound~=nil then
+             mp3_obj=sound_object(next_sound)
+             mp3_plays=next_title
+             mp3_info=next_title.." ("..mp3_player():get_sound_length(mp3_obj)..")"
+          end
+          mp3_obj:play(db.actor,0,sound_object.s2d)
+          mp3_obj.volume=read_mod_param("mp3_currert_volume")
+          mp3_last_position=string.format(math.floor(time_global()/1000))
+          mp3_length_position=string.format(math.floor(time_global()/1000))-mp3_last_position
+          mp3_obj.min_distance,mp3_obj.max_distance=2,6
+       end
+     end
+  else
+     if mp3_obj~=nil then
+       if mp3_obj:playing()==false and mp3_info~="" then
+          mp3_info=""
+       end
+       if mp3_obj:playing()==false and mp3_plays~=nil then
+          mp3_plays=nil
+          mp3_length_position,mp3_last_position=0,0
+       end
+     end
+  end
+  if db.actor and check_ui_worked() and (not db.actor:object("mp3_player")) then
+     if mp3_obj~=nil then
+        if mp3_obj:playing()==true then
+           mp3_obj:stop()
+           mp3_obj=nil
+           mp3_info=""
+        end
+     end
+     mp3_plays=nil
+     mp3_length_position,mp3_last_position=0,0
+  end
+end
+function add_mp3_bonus(info_name)
+  if dont_has_alife_info(info_name) then
+     news_manager.send_tip(db.actor,"st_mp3_new_content_descr",0,"mp3_player",3500,nil,"st_mp3_new_content_title")
+  end
+  give_info(info_name)
+end
+class "mp3_snd" (CUIListBoxItem)
+function mp3_snd:__init(height) super(height)
+   self.title=self:GetTextItem()
+   self:SetTextColor(GetARGB(255,210,210,210))
+   self.title:SetFont(GetFontLetterica18Russian())
+   self.title:SetWndSize(vector2():set(278,height))
+   self.title:SetEllipsis(true)
+end
+class "mp3_player" (CUIScriptWnd)
+function mp3_player:__init(owner) super()
+   self.owner = owner
+   self:InitControls()
+   self:InitCallBacks()
+   if mp3_player_section==1 then
+      self:FillList(mp3_table_merry)
+   elseif mp3_player_section==2 then
+      self:FillList(mp3_table_dance)
+   end
+end
+function mp3_player:__finalize()
+end
+function mp3_player:FillList(list)
+   self.mp3_list:Clear()
+   for k,v in pairs(list) do
+      if v.precond==nil or (v.precond~=nil and has_alife_info(v.precond)) then
+         self:AddItemToList(v.title,v.sound,v.author)
+      end
+   end
+   mp3_chosen_list=list
+end
+function mp3_player:AddItemToList(title,sound,author)
+   local source=mp3_snd(22)
+   source.title:SetText(title)
+   self.mp3_list:AddExistingItem(source)
+   if string.len(author)>34 then
+      author=string.sub(author,1,34)
+   end
+   if author=="-" then
+      source.author=source:AddIconField(0)
+      source.author:InitTexture("ui_mod_red_plate")
+      source.author:SetWndPos(vector2():set(120,6))
+   else
+      source.author=source:AddTextField(author,0)
+      source.author:SetWndPos(vector2():set(120,0))
+   end
+   source.length=source:AddTextField(self:get_sound_length(sound_object(sound)),0)
+   source.length:SetWndPos(vector2():set(430,0))
+end
+function mp3_player:InitControls()
+   self:SetWndRect(Frect():set(0,0,1024,768))
+   local xml = CScriptXmlInit()
+   xml:ParseFile("ui_mod_elements.xml")
+   self.mp3_player_form=xml:InitStatic("mp3_player_form",self)
+   self:Register(xml:Init3tButton("mp3_player_form:btn_dance",self.mp3_player_form),"btn_dance")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_merry",self.mp3_player_form),"btn_merry")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_play",self.mp3_player_form),"btn_play")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_close",self.mp3_player_form),"btn_close")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_stop",self.mp3_player_form),"btn_stop")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_volume_minus",self.mp3_player_form),"btn_volume_minus")
+   self:Register(xml:Init3tButton("mp3_player_form:btn_volume_plus",self.mp3_player_form),"btn_volume_plus")
+   self.volume_number=xml:InitStatic("mp3_player_form:volume_number",self.mp3_player_form)
+   self.repeat_check=xml:InitCheck("mp3_player_form:check_repeat",self.mp3_player_form)
+   self.repeat_check:SetCheck(sgm_functions.info_get_boolean("mp3_player_repeat"))
+   self.queue_check=xml:InitCheck("mp3_player_form:check_queue",self.mp3_player_form)
+   self.queue_check:SetCheck(sgm_functions.info_get_boolean("mp3_player_queue"))
+   self.mp3_red_diode=xml:InitStatic("mp3_player_form:mp3_red_diode",self.mp3_player_form)
+   self.mp3_green_diode=xml:InitStatic("mp3_player_form:mp3_green_diode",self.mp3_player_form)
+   self.mp3_info=xml:InitStatic("mp3_player_form:mp3_info",self.mp3_player_form)
+   self.mp3_timer=xml:InitStatic("mp3_player_form:mp3_timer",self.mp3_player_form)
+   self.mp3_list=xml:InitListBox("mp3_player_form:mp3_list",self)
+   self.mp3_list:ShowSelectedItem(true)
+   self:Register(self.mp3_list,"mp3_list_window")
+end
+function mp3_player:InitCallBacks()
+   self:AddCallback("btn_merry",ui_events.BUTTON_CLICKED,self.btn_merry,self)
+   self:AddCallback("btn_dance",ui_events.BUTTON_CLICKED,self.btn_dance,self)
+   self:AddCallback("btn_play",ui_events.BUTTON_CLICKED,self.btn_play,self)
+   self:AddCallback("btn_stop",ui_events.BUTTON_CLICKED,self.btn_stop,self)
+   self:AddCallback("btn_close",ui_events.BUTTON_CLICKED,self.btn_close,self)
+   self:AddCallback("mp3_list_window",ui_events.WINDOW_LBUTTON_DB_CLICK,self.btn_play,self)
+   self:AddCallback("btn_volume_minus",ui_events.BUTTON_CLICKED,self.btn_volume_minus,self)
+   self:AddCallback("btn_volume_plus",ui_events.BUTTON_CLICKED,self.btn_volume_plus,self)
+end
+function mp3_player:Update()
+   CUIScriptWnd.Update(self)
+   if not object_alive(db.actor) then
+      self:btn_close()
+   end
+   if read_mod_param("mp3_currert_volume")~=nil then
+      self.volume_number:TextControl():SetText(string.format(math.floor(read_mod_param("mp3_currert_volume")*100)))
+   end
+   if self.mp3_info:TextControl():GetText()~=mp3_info then
+      self.mp3_info:TextControl():SetText(mp3_info)
+   end
+   if mp3_info=="" then
+      self.mp3_green_diode:Show(false)
+   else
+      self.mp3_green_diode:Show(true)
+   end
+   if mp3_info~="" then
+      self.mp3_timer:TextControl():SetText(self:get_sound_length(nil,mp3_length_position))
+   else
+      self.mp3_timer:TextControl():SetText("")
+   end
+   self:check_config_update()
+end
+function mp3_player:OnKeyboard(dik,keyboard_action)
+   CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+   if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+      if dik == DIK_keys.DIK_ESCAPE then
+         self:btn_close()
+      end
+   end
+   return true
+end
+function mp3_player:check_config_update()
+   if self.repeat_check:GetCheck() then
+      self.queue_check:Enable(false)
+   else
+      self.queue_check:Enable(true)
+   end
+   if self.queue_check:GetCheck() then
+      self.repeat_check:Enable(false)
+   else
+      self.repeat_check:Enable(true)
+   end
+   sgm_functions.info_give_on_boolean(self.repeat_check:GetCheck(),"mp3_player_repeat")
+   sgm_functions.info_give_on_boolean(self.queue_check:GetCheck(),"mp3_player_queue")
+end
+function mp3_player:btn_volume_minus()
+   write_mod_param("mp3_currert_volume",read_mod_param("mp3_currert_volume")-mp3_add_value)
+   if mp3_obj~=nil then
+      mp3_obj.volume=read_mod_param("mp3_currert_volume")
+   end
+end
+function mp3_player:btn_volume_plus()
+   write_mod_param("mp3_currert_volume",read_mod_param("mp3_currert_volume")+mp3_add_value)
+   if mp3_obj~=nil then
+      mp3_obj.volume=read_mod_param("mp3_currert_volume")
+   end
+end
+function mp3_player:btn_merry()
+   self:FillList(mp3_table_merry)
+   mp3_player_section=1
+end
+function mp3_player:btn_dance()
+   self:FillList(mp3_table_dance)
+   mp3_player_section=2
+end
+function mp3_player:get_sound_length(snd_obj,other_length)
+   local length_second=0
+   if snd_obj~=nil and other_length==nil then
+      length_second=math.floor(snd_obj:length()/1000)
+   end
+   if other_length~=nil then
+      length_second=other_length
+   end
+   local currert_minute=math.floor(length_second/60)
+   local data="00:00"
+   if currert_minute<10 then
+      currert_minute="0"..currert_minute
+   end
+   if length_second<60 then
+      if length_second<10 then data=currert_minute..":0"..length_second else data=currert_minute..":"..length_second end
+   elseif length_second<120 then
+      if length_second<70 then data=currert_minute..":0"..length_second-60 else data=currert_minute..":"..length_second-60 end
+   elseif length_second<180 then
+      if length_second<130 then data=currert_minute..":0"..length_second-120 else data=currert_minute..":"..length_second-120 end
+   elseif length_second<240 then
+      if length_second<190 then data=currert_minute..":0"..length_second-180 else data=currert_minute..":"..length_second-180 end
+   elseif length_second<300 then
+      if length_second<250 then data=currert_minute..":0"..length_second-240 else data=currert_minute..":"..length_second-240 end
+   elseif length_second<360 then
+      if length_second<310 then data=currert_minute..":0"..length_second-300 else data=currert_minute..":"..length_second-300 end
+   elseif length_second<420 then
+      if length_second<370 then data=currert_minute..":0"..length_second-360 else data=currert_minute..":"..length_second-360 end
+   elseif length_second<480 then
+      if length_second<430 then data=currert_minute..":0"..length_second-420 else data=currert_minute..":"..length_second-420 end
+   elseif length_second<540 then
+      if length_second<490 then data=currert_minute..":0"..length_second-480 else data=currert_minute..":"..length_second-480 end
+   elseif length_second<600 then
+      if length_second<540 then data=currert_minute..":0"..length_second-540 else data=currert_minute..":"..length_second-540 end
+   elseif length_second<660 then
+      if length_second<610 then data=currert_minute..":0"..length_second-600 else data=currert_minute..":"..length_second-600 end
+   elseif length_second<720 then
+      if length_second<670 then data=currert_minute..":0"..length_second-660 else data=currert_minute..":"..length_second-660 end
+   elseif length_second<780 then
+      if length_second<730 then data=currert_minute..":0"..length_second-720 else data=currert_minute..":"..length_second-720 end
+   elseif length_second<840 then
+      if length_second<790 then data=currert_minute..":0"..length_second-780 else data=currert_minute..":"..length_second-780 end
+   elseif length_second<900 then
+      if length_second<850 then data=currert_minute..":0"..length_second-840 else data=currert_minute..":"..length_second-840 end
+   elseif length_second<960 then
+      if length_second<910 then data=currert_minute..":0"..length_second-900 else data=currert_minute..":"..length_second-900 end
+   elseif length_second<1020 then
+      if length_second<970 then data=currert_minute..":0"..length_second-960 else data=currert_minute..":"..length_second-960 end
+   elseif length_second<1080 then
+      if length_second<1030 then data=currert_minute..":0"..length_second-1020 else data=currert_minute..":"..length_second-1020 end
+   elseif length_second<1140 then
+      if length_second<1090 then data=currert_minute..":0"..length_second-1080 else data=currert_minute..":"..length_second-1080 end
+   elseif length_second<1200 then
+      if length_second<1150 then data=currert_minute..":0"..length_second-1140 else data=currert_minute..":"..length_second-1140 end
+   elseif length_second<1260 then
+      if length_second<1210 then data=currert_minute..":0"..length_second-1200 else data=currert_minute..":"..length_second-1200 end
+   elseif length_second<1320 then
+      if length_second<1270 then data=currert_minute..":0"..length_second-1260 else data=currert_minute..":"..length_second-1260 end
+   end
+   return data
+end
+function mp3_player:btn_play()
+   if mp3_obj~=nil then
+      if mp3_obj:playing()==true then
+         mp3_obj:stop()
+         mp3_length_position,mp3_last_position=0,0
+      end
+   end
+   if self.mp3_list:GetSize()==0 then return end
+   local item=self.mp3_list:GetSelectedItem()
+   if not item then return end
+   local sound_title=item.title:GetText()
+   local sound_name=""
+   for k,v in pairs(mp3_chosen_list) do
+      if v.title==sound_title then
+         sound_name=v.sound
+      end
+   end
+   mp3_obj=sound_object(sound_name)
+   mp3_obj:play(db.actor,0,sound_object.s2d)
+   mp3_obj.volume=read_mod_param("mp3_currert_volume")
+   mp3_plays=sound_title
+   mp3_last_position=string.format(math.floor(time_global()/1000))
+   mp3_length_position=string.format(math.floor(time_global()/1000))-mp3_last_position
+   mp3_info=sound_title.." ("..self:get_sound_length(mp3_obj)..")"
+   mp3_obj.min_distance,mp3_obj.max_distance=2,6
+   mp3_played_list=mp3_chosen_list
+end
+function mp3_player:btn_stop()
+   if mp3_obj~=nil then
+      if mp3_obj:playing()==true then
+         mp3_obj:stop()
+         mp3_obj=nil
+         mp3_info=""
+      end
+   end
+   mp3_plays=nil
+   mp3_length_position,mp3_last_position=0,0
+end
+function mp3_player:btn_close()
+   give_object_to_actor("mp3_player")
+   self:HideDialog()
+   set_ui_worked()
+   level.show_weapon(true)
+end
+---------------------------------//Copyright GeJorge//-----------------------------------------------

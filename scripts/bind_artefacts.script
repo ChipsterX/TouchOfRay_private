@@ -1,0 +1,319 @@
+----------------------------------------
+-- Artefact Respawn Script 1.2
+-- for Stalker ShoC 1.0004 - 1.0006
+-- by kstn
+-- oldSerpski stalker - АМК наше всё
+----------------------------------------
+local minHH = math.random(1, 5)  --' Минимум времени до респавна, часов
+local maxHH = math.random(5, 10) --' Максимум времени до респавна, часов
+
+local spawn_time = 0
+local lev_cur_sav, lev_str = "", ""
+local radius, d_min, d_max, qtt
+
+local lev = {
+	["k00_marsh"] 				=     {id = "q", qtt = math.random(5, 10), dmin = 20,	dmax = 70}, 	-- Болота
+	["l01_escape"]  			= 	  {id = "w", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Кордон
+	["k01_darkscape"]   		=     {id = "e", qtt = math.random(2, 10), dmin = 20,	dmax = 70}, 	-- Лощина
+	["l02_garbage"]   			=     {id = "r", qtt = math.random(3, 10), dmin = 20,	dmax = 70},		-- Свалка
+	["l03_agroprom"]			= 	  {id = "t", qtt = math.random(5, 15), dmin = 20,	dmax = 70},		-- Агропром
+	["l03u_agr_underground"]	= 	  {id = "y", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Подземка Агро
+	["l04_darkvalley"]			= 	  {id = "u", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- Темная долина
+	["l04u_labx18"]  			=     {id = "i", qtt = math.random(1, 10), dmin = 20,	dmax = 70},		-- Х18
+	["l05_bar"]       			=     {id = "o", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Бар
+	["l06_rostok"]    			=     {id = "p", qtt = math.random(1, 20), dmin = 20,	dmax = 70},		-- Дикая территория
+	["l07_military"]  			=     {id = "a", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- Армейские склады
+	["l08_yantar"]    			=     {id = "s", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- Янтарь
+	["l08u_brainlab"] 			=     {id = "d", qtt = math.random(1, 10), dmin = 20,	dmax = 70},		-- Х16
+	["l09_deadcity"] 			=     {id = "f", qtt = math.random(5, 20), dmin = 20,	dmax = 70},     -- Мертвый город
+	["l10_radar"] 				=     {id = "g", qtt = math.random(1, 20), dmin = 20,	dmax = 70},		-- Радар
+	["l10u_bunker"] 			=     {id = "h", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Х10
+	["l10_red_forest"]  		= 	  {id = "j", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- Рыжий лес
+	["l10_limansk"]  			= 	  {id = "k", qtt = math.random(1, 10), dmin = 20,	dmax = 70},		-- Лиманск
+	["l11_hospital"]  			= 	  {id = "l", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Госпиталь
+	["l11_pripyat"] 			= 	  {id = "z", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- Припять ТЧ
+	["l12_stancia"] 			=     {id = "x", qtt = math.random(1, 15), dmin = 20,	dmax = 70},     -- ЧАЭС
+	["l12_stancia_2"] 			=     {id = "c", qtt = math.random(1, 15), dmin = 20,	dmax = 70},		-- ЧАЭС-2
+	["l12u_sarcofag"] 			=     {id = "v", qtt = math.random(1, 10), dmin = 20,	dmax = 70},		-- Саркофаг 
+	["l13_generators"] 			=     {id = "b", qtt = math.random(1, 30), dmin = 20,	dmax = 70},     -- ЧАЭС
+	["l13u_warlab"] 			=     {id = "n", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Варлаб Генераторы
+	["labx8"]   				= 	  {id = "m", qtt = math.random(1, 5),  dmin = 20,	dmax = 70},		-- Х8
+	["zaton"]   				= 	  {id = "qw",qtt = math.random(1, 30), dmin = 20,	dmax = 70},		-- Затон
+	["pripyat"] 				= 	  {id = "qe",qtt = math.random(1, 25), dmin = 20,	dmax = 70},		-- Припять
+	["jupiter"] 				= 	  {id = "qr",qtt = math.random(1, 30), dmin = 20,	dmax = 70},		-- Юпитер
+	["jupiter_undeground"]		=     {id = "qt",qtt = math.random(1, 10), dmin = 20,	dmax = 70},		-- Путепровод Припять-1
+}
+
+local arts = {
+
+	["karusel"] = {
+		{"af_blood_soc", 50},
+		{"af_mincer_meat_soc", 45},
+		{"af_soul_soc", 5},
+		{"af_dummy_battery_soc", 5},
+		},
+		
+	["voronka"] = {
+		{"af_vyvert_soc", 45},
+		{"af_gravi_soc", 50},
+		{"af_night_star_soc", 5},
+		{"af_rusty_kristall", 5},
+		{"af_rusty_sea", 5},
+		{"af_rusty_thorn", 5},		
+		},
+		
+	["tramplin"] = {
+		{"af_medusa_soc", 40},
+		{"af_cristall_flower_soc", 40},
+		{"af_gold_fish_soc", 20},
+		{"af_fuzz_kolobok_soc", 5},
+		},
+		
+	["electra"] = {
+		{"af_electra_sparkler_soc", 40},
+		{"af_electra_flash_soc", 30},
+		{"af_electra_moonlight_soc", 10},
+		{"af_electra", 7},
+		},
+	
+	["ameba"] = {
+		{"af_ameba_slug", 45},	
+		{"af_ameba_slime", 25},		
+		{"af_ameba_mica", 15},
+		{"af_dummy_pellicle", 10},
+		},
+		
+	["zharka"] = {
+		{"af_cristall_soc", 30},
+		{"af_drops", 30},
+		{"af_fireball_soc", 30},
+		{"af_dummy_dummy_soc", 5},
+		{"af_dummy_spring", 5},
+		},
+}
+
+local function dbglog(frm, ...)
+	msg = string.format(frm, ...)
+	msg = string.gsub(msg, " ", "_")
+	operator:execute("dbg:" .. msg)
+	operator:execute("flush")
+end
+
+function save(packet)
+	set_save_marker(packet, "save", false, "art_mgr")
+	packet:w_stringZ("art_mgr")
+	packet:w_stringZ(lev_str)
+	packet:w_stringZ(lev_cur_sav)
+	packet:w_float(spawn_time)
+	set_save_marker(packet, "save", true, "art_mgr")
+end
+
+function load(packet)
+	set_save_marker(packet, "load", false, "art_mgr")
+	local flag = packet:r_stringZ()
+	if flag == "art_mgr" then
+		lev_str = packet:r_stringZ()
+		lev_cur_sav = packet:r_stringZ()
+		spawn_time = packet:r_float()
+	else
+		dbglog("First startup of Artefact Respawn Script")
+	end
+	set_save_marker(packet, "load", true, "art_mgr")
+end
+
+function check_time()
+	local game_time = game.time()
+	if spawn_time < game_time then
+		local delay = minHH + math.random()*(maxHH - minHH) 
+		spawn_time = game_time + delay*60*60*1000 
+		exec()
+	end
+end
+
+function update()
+	local level_name = level.name()
+	local lev_cur_tbl = lev[level_name]
+	lev = nil
+	if lev_cur_tbl == nil or lev_cur_tbl.qtt == 0 then
+		this.update = function() end
+		return
+	elseif lev_cur_sav ~= level_name then
+		lev_cur_sav = level_name
+		local lid = lev_cur_tbl.id
+		if not string.find(lev_str, lid) then
+			lev_str = lev_str .. lid
+			local delay = minHH + math.random()*(maxHH - minHH)
+			spawn_time = game.time() + delay*60*60*1000
+		end
+	end
+
+	radius = lev_cur_tbl.r or math.random(30,100)
+	d_min = lev_cur_tbl.dmin
+	d_max = lev_cur_tbl.dmax
+	qtt = lev_cur_tbl.qtt
+	--проверяем содержимое таблицы уровня, приводим сумму вероятностей к 100 и сортиртируем по убыванию
+	local sini = system_ini()
+	for anomaly_name, art_tbl in pairs(arts) do
+		local sum = 0
+		local art_tbl_corr = {}
+		for k,v in ipairs(art_tbl) do
+			if sini:section_exist(v[1]) then
+				sum = sum + v[2]
+				art_tbl_corr[#art_tbl_corr + 1] = v
+			end
+		end
+		
+		table.sort(art_tbl_corr, function(a,b) return (a[2] > b[2]) end)
+		for k,v in ipairs(art_tbl_corr) do
+			art_tbl_corr[k][2] = math.floor(100*v[2]/sum)
+		end
+		arts[anomaly_name] = art_tbl_corr
+	end
+	update = check_time
+end
+
+function exec()
+	math.randomseed(time_global())
+	local a_tbl = {}
+	local pos = db.actor:position()
+	for id=1,65534 do
+		local obj = level.object_by_id(id)
+		if obj then
+			local a_cls = obj:clsid()
+			if a_cls == clsid.zone_bfuzz_s or
+			a_cls == clsid.zone_galant_s or
+			a_cls == clsid.zone_mbald_s or
+			a_cls == clsid.zone_mincer_s then
+				local a_pos = obj:position()
+				if a_pos and pos:distance_to(a_pos) > radius then
+					table.insert(a_tbl, id)
+					for num,v in pairs(a_tbl) do
+						if v == id then
+							break
+						end
+						local b_obj = level.object_by_id(v)
+						if b_obj then
+							local dist = b_obj:position():distance_to(a_pos)
+							if dist<d_max and dist>d_min then
+								table.remove(a_tbl)
+								break
+							end
+						else
+							table.remove(a_tbl, i)
+						end
+					end
+				end
+			end
+		end
+	end
+	for n = 1,qtt do
+		local cnt = table.getn(a_tbl)
+		if cnt > 0 then
+			local id = math.random(cnt)
+			create_art(a_tbl[id])
+			table.remove(a_tbl, id)
+		end
+	end
+	
+	log("script.bind_artefacts, exec()")
+	
+	return
+end
+
+-- Создаём артефакты
+function create_art(id)
+
+	local obj = level.object_by_id(id)
+	if obj == nil then
+		return
+	end
+	
+	if bool_artefacts_hit == true then
+		bind_artefacts_hit.spawn_art()
+	end
+	
+	local key
+	local sect = obj:section()
+	
+	anomaliya_0 = string.find(sect, "zone_mine_field_amk")
+	anomaliya_1 = string.find(sect, "zone_mine_gravitational_average_amk")
+	anomaliya_2 = string.find(sect, "gravitational_strong")
+	anomaliya_3 = string.find(sect, "zone_mine_electric_average_amk") 
+	anomaliya_4 = string.find(sect, "zone_mine_electric_strong_amk") 
+	anomaliya_5 = string.find(sect, "zone_electro_die_amk") 
+	anomaliya_6 = string.find(sect, "zone_buzz_average_amk")
+	anomaliya_7 = string.find(sect, "zone_buzz_strong_amk")
+	anomaliya_8 = string.find(sect, "zone_boloto_amk")
+	anomaliya_9 = string.find(sect, "zone_zharka_static_amk")
+	anomaliya_10 = string.find(sect, "zone_zharka_static_weak_amk")
+	anomaliya_11 = string.find(sect, "zone_zharka_static_strong_amk")
+	
+	if anomaliya_0 then
+		key = "tramplin"
+	elseif anomaliya_1 then
+		key = "voronka"	
+	elseif anomaliya_2 then
+		key = "karusel"
+	elseif anomaliya_3 or anomaliya_4 or anomaliya_5 then
+		key = "electra"
+	elseif anomaliya_6 or anomaliya_7 or anomaliya_8 then
+		key = "ameba"
+	elseif anomaliya_9 or anomaliya_10 or anomaliya_11 then
+		key = "zharka"
+	end
+
+	if not (key and arts[key]) then return end
+
+	local lv = obj:level_vertex_id()
+	local gv = obj:game_vertex_id()
+	local pos = obj:position()
+
+	local off_x = 2
+	local off_y = 2.5
+	local off_z = 3
+	--рандомизируем положение арта относительно аномалии
+	local art_pos_tbl = {
+		{pos.x, pos.z + off_z},
+		{pos.x, pos.z - off_z},
+
+		{pos.x - off_x, pos.z},
+		{pos.x - off_x, pos.z + off_z},
+		{pos.x - off_x, pos.z - off_z},
+
+		{pos.x + off_x, pos.z},
+		{pos.x + off_x, pos.z + off_z},
+		{pos.x + off_x, pos.z - off_z},
+		}
+	local pos_tbl = art_pos_tbl[math.random(#art_pos_tbl)]
+	local art_pos = vector():set(pos_tbl[1], pos.y + off_y, pos_tbl[2])
+	local sec = rwc(arts[key])
+
+	if sec then
+		local art = alife():create(sec, art_pos, lv, gv)
+
+		if art then
+			local art_inv = game.translate_string(system_ini():r_string(art:section_name(), "inv_name"))
+			local text = "Аномалия:"..sect..", артефакт:"..art_inv
+			level.map_add_object_spot(art.id, "red_location", text)
+			dbglog(art_inv)
+		end
+	end
+	
+	printf("script.bind_artefacts, create_art: %s | %s | %s | %s", sec, art_pos, lv, gv)
+	
+	return
+end
+
+-- random weighted choice
+function rwc(t)
+	local sum = 0
+	local rnd = math.random(100)
+	for i,v in ipairs(t) do
+		sum = sum + v[2]
+		if rnd <= sum then
+			return v[1]
+		end
+	end
+	return
+end
+

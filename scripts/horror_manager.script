@@ -1,0 +1,1322 @@
+-- #######################################################################################################################
+-- 									МОДУЛЬ ЧАС УЖАСА НА БАЗЕ ВЫБРОСА + ПСИ-ШТОРМА
+-- #######################################################################################################################
+--' Час Ужаса - Оригинальная идея и реализация - Меченый(Стрелок)\by sapsan(исправление), Народная солянка ОП-2.1
+--' Перенос под новую базу для ЧУ - OldSerpski Stalker, Back to the roots
+--' База: скрипт выброса, за авторством Cromm Cruac и Alundaio
+--' Заметки: [ Разделен на 2 скрипта, обновление и шанс срабатывания: horror2_manager.script ]
+--' Другое: [...]
+--' TODO: Класс объекта:
+						class "ChorrorManager"
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+
+--------------------------------------------------------------------------------------------------------------------------
+--' TODO: Блок переменных: 
+local alife, math_random, pairs, tostring = alife,  math.random, pairs, tostring
+local _tmr
+local horror_shock_pp_eff 	= 1
+local sleep_cam_eff 		= 3
+local sleep_fade_pp_eff		= 4
+local prev_sec 				= -1
+local prev_game_sec 		= -1
+local currentPPEfactor 		= 0.001
+local __upd_fantom          = 12000 --' Обновление спавна фантомов, убрал 15, чтобы по шустрее спавнились
+local upd_antenna_value	    = 7500  --' Разряд молний в землю
+local upd_tornado_oblako	= 3500  --' Пси-облако в небе
+local upd_emi_horror        = 13000 --' Разряд электрического шара в округе
+local antenna_horror 		= particles_object("anomaly2\\psi_antenna_horror")
+local emi_blowout1    		= particles_object("anomaly2\\tornado_00")
+local emi_blowout2    		= particles_object("anomaly2\\tornado_02")
+local psy_horror_tornado1   = particles_object("crommcruac\\psi_storm_01")
+--' Не требующие "local"
+horrorManager 				= nil
+BOOL_SKIP_LOG				= true 	--' Пропустить функцию лога
+
+--' Таблица распределения:
+--'                       Спавна зомби
+--'						  Урона по гг
+--[[
+	Уровень из game_maps_single.ltx = 
+	{
+		spawn = k, --' Зомби на уровне, всего имеет 4 вызова:
+															Формула: 
+																    k*4,
+															           где k = кол-во зомби, 4 - коэф. вызова функции спавна на уровне 
+															При высоких значениях, будет просадка ФПС!
+															
+		hit = {												Чем выше число, тем сильнее долбанет
+															Имеет коэф. вызова 4, 
+															Пси-фактор выше 0.4 не ставить, или ГГ умрет за 4 раза апдейта схем
+				rad_hit = 0.f,                              
+				psy_hit = -0.f
+				
+			  }
+	},	
+--]]
+
+local tabl_horror_by_level = {
+																		--' math.random(15, 20), учитываем еще цикл: 
+																		--' 										for i = 1, -, + do
+																			
+	k00_marsh = 			{											
+								zombie_quantity = math.random(15, 20),
+								hit = {
+										rad_hit = 0.10, 
+										psy_hit = -0.1
+									  }
+							},	
+				
+	k01_darkscape = 		{
+								zombie_quantity = math.random(14, 15),
+								hit = {
+										rad_hit = 0.14, 
+										psy_hit = -0.11
+									  }
+							},	
+	
+	k02_trucks_cemetery = 	{
+								zombie_quantity = math.random(16, 18),
+								hit = {
+										rad_hit = 0.32, 
+										psy_hit = -0.2
+									  }
+							},	
+
+	l01_escape = 
+							{
+								zombie_quantity = math.random(10, 11),
+								hit = {
+										rad_hit = 0.12, 
+										psy_hit = -0.1
+									  }
+							},
+			  
+	l02_garbage = 			{
+								zombie_quantity = math.random(12, 14),
+								hit = {
+										rad_hit = 0.25, 
+										psy_hit = -0.15
+									  }
+							},
+							
+	l03_agroprom = 			{
+								zombie_quantity = math.random(15, 20),
+								hit = {
+										rad_hit = 0.35, 
+										psy_hit = -0.22
+									  }
+							},
+							
+	l04_darkvalley = 		{
+								zombie_quantity = math.random(14, 16),
+								hit = {
+										rad_hit = 0.36, 
+										psy_hit = -0.24
+									  }
+							},
+	
+	--' В баре нельзя включать ЧУ
+	
+	l06_rostok = 			{
+								zombie_quantity = math.random(17, 19),
+								hit = {
+										rad_hit = 0.40,
+										psy_hit = -0.25
+									  }
+							},
+							
+	l07_military = 			{
+								zombie_quantity = math.random(18, 22),
+								hit = {
+										rad_hit = 0.35, 
+										psy_hit = -0.23
+									  }
+							},
+	
+	l08_yantar = 			{
+								zombie_quantity = math.random(16, 20),
+								hit = {
+										rad_hit = 0.50, 
+										psy_hit = -0.29
+									  }
+							},
+							
+	l09_deadcity = 			{
+								zombie_quantity = math.random(19, 23),
+								hit = {
+										rad_hit = 0.75, 
+										psy_hit = -0.3
+									  }
+							},
+							
+	l10_limansk = 			{
+								zombie_quantity = math.random(18, 21),
+								hit = {
+										rad_hit = 0.6,
+										psy_hit = -0.35
+									  } 
+							},
+							
+	l10_radar = 			{
+								zombie_quantity = math.random(18, 23),
+								hit = {
+										rad_hit = 0.6, 
+										psy_hit = -0.35
+									  } 
+							},
+							
+	l10_red_forest = 		{
+								zombie_quantity = math.random(18, 24),
+								hit = {
+										rad_hit = 0.45, 
+										psy_hit = -0.29
+									  } 
+							},						
+	
+	l11_hospital = 		    {
+								zombie_quantity = math.random(12, 14),
+								hit = {
+										rad_hit = 0.5, 
+										psy_hit = -0.15
+									  } 
+							},			
+	
+	l11_pripyat = 			{
+								zombie_quantity = math.random(17, 21),
+								hit = {
+										rad_hit = 0.8, 
+										psy_hit = -0.34
+									  } 
+							},
+							
+	l12_stancia = 			{
+								zombie_quantity = math.random(18, 22),
+								hit = {
+									    rad_hit = 1.0, 
+										psy_hit = -0.39
+									  } 
+							},	
+							
+	l12_stancia_2 = 		{
+								zombie_quantity = math.random(15, 25),
+								hit = {
+										rad_hit = 1.0, 
+										psy_hit = -0.35
+									  } 
+							},	
+							
+	l13_generators = 		{
+								zombie_quantity = math.random(18, 26),
+								hit = {
+										rad_hit = 1.0, 
+										psy_hit = -0.4
+									  } 
+							},							
+	--' Локации ЗП... Пусть будут одинаково
+	jupiter =   			{
+								zombie_quantity = math.random(17, 21),
+								hit = {
+										rad_hit = 0.75, 
+										psy_hit = -0.25
+								      }
+							},
+							
+	pripyat =   			{
+								zombie_quantity = math.random(17, 21),
+								hit = {
+										rad_hit = 0.75, 
+										psy_hit = -0.25
+									  }
+							},
+
+	zaton =   				{
+								zombie_quantity = math.random(17, 21),
+								hit = {
+										rad_hit = 0.75, 
+										psy_hit = -0.25
+									  }
+							},						
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+--' TODO: Постоянное обновление, чтобы фазы не зависли
+local function main_loop()
+	local tg = time_global()
+	
+	if (_tmr and tg < _tmr) then 
+		return false 
+	end
+	
+	_tmr = tg + 1000
+	
+	if not (db.actor and db.actor.afterFirstUpdate) then 
+		return false
+	end
+	
+	get_horror_manager():update()
+	return false
+end
+
+function on_game_start() AddUniqueCall(main_loop) end
+---------------------------------------------------------------------
+
+function get_horror_manager()
+	horrorManager = horrorManager or ChorrorManager()
+	return horrorManager
+end
+
+function ChorrorManager:__init()
+	self.surge_manager = surge_manager.get_surge_manager()
+	self.surge_manager:init_surge_covers()
+	self.blowout_sounds = {
+							siren = sound_object("horror\\horror_start"),
+							emi_blowout = sound_object("ambient\\emi_blowout")
+						  }
+end
+
+function ChorrorManager:initialize()
+
+	self.aspectRatio = 1
+	if(device().width/device().height>(1024/768+0.01)) then
+		self.aspectRatio = 0.8
+	end
+	
+-------------------------------------------------------------
+--' Потому что state_load вызывается слишком рано
+--' Ждем, пока actor_on_load будет действительно в нем
+--' И мы не хотим перезаписывать уже загруженные им значения
+-------------------------------------------------------------
+	if not (self._state_loaded) then 
+		self.last_horror_time = game.get_game_time()
+		self.inited_time = game.get_game_time()
+		self.started = false
+		self.finished = true
+		self.game_time_factor = level.get_time_factor()
+	end
+	
+	if not (self._delta) then
+-------------------------------------------------------------
+--' Нужно будет исправить это вот:
+		local dummy = 65535 
+-------------------------------------------------------------
+		self._delta = math_random(math.floor(dummy/2)*3600, dummy*3600)
+	end
+	
+	self.FadeFactor = 0
+	self.horror_time = 222
+
+end
+
+function ChorrorManager:start(manual)
+	if (axr_main.config:r_value("mm_options","enable_horror_enable",1,false) ~= true) then return end
+	if (not tabl_horror_by_level[level.name()]) then return end
+	
+	if not (self._state_loaded) then 
+		self:initialize()
+	end
+	
+	self.game_time_factor = level.get_time_factor()
+
+	local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
+	Y, M, D, h, m, s, ms = self.last_horror_time:get(Y, M, D, h, m, s, ms)
+	if(manual or not self.inited_time) then
+		self.inited_time = game.get_game_time()
+	else
+		self.inited_time:set(Y, M, D, h, m, s + self._delta, ms)
+	end
+	
+	local diff_sec = math.ceil(game.get_game_time():diffSec(self.inited_time)/level.get_time_factor())
+	if(diff_sec+6>self.horror_time)then
+		self:skip_horror()
+	else
+		self.started = true
+		self.finished = false
+		--' Чтобы название схем отличалось от названия схем Fallout и Surge
+		--' Иначе забитие NET. пакетов\поломка сейва
+		self.load_scheme = empty_table(self.load_scheme) 
+		--------------------------------------------------------------------
+		self.FadeFactor = 0
+		level.set_time_factor(10)
+		message_int_start()
+		xr_effects.scenario_autosave(db.actor, nil, {"st_horror_save"})
+	end
+	
+end
+
+function message_int_start()
+	local message_int_random = math.random(1,7)
+	
+	if message_int_random == 1 then
+		db.actor:give_game_news("horror_int_start", "horror1", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 1")
+		end
+		
+	elseif message_int_random == 2 then
+		db.actor:give_game_news("horror_int_start", "horror2", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 2")
+		end
+		
+	elseif message_int_random == 3 then
+		db.actor:give_game_news("horror_int_start", "horror3", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 3")
+		end
+		
+	elseif message_int_random == 4 then
+		db.actor:give_game_news("horror_int_start", "horror4", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 4")
+		end
+		
+	elseif message_int_random == 5 then
+		db.actor:give_game_news("horror_int_start", "horror5", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 5")
+		end
+		
+	elseif message_int_random == 6 then
+		db.actor:give_game_news("horror_int_start", "horror6", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 6")
+		end
+		
+	elseif message_int_random == 7 then
+		db.actor:give_game_news("horror_int_start", "horror7", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("mes. type 7")
+		end
+		
+	end
+end
+
+function message_int_fail()
+	local message_int_random = math.random(1, 7)
+	
+	if message_int_random == 1 then
+		db.actor:give_game_news("horror_int_start", "horror1f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 1")
+		end
+		
+	elseif message_int_random == 2 then
+		db.actor:give_game_news("horror_int_start", "horror2f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 2")
+		end
+		
+	elseif message_int_random == 3 then
+		db.actor:give_game_news("horror_int_start", "horror3f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 3")
+		end
+		
+	elseif message_int_random == 4 then
+		db.actor:give_game_news("horror_int_start", "horror4f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 4")
+		end
+		
+	elseif message_int_random == 5 then
+		db.actor:give_game_news("horror_int_start", "horror5f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 5")
+		end
+		
+	elseif message_int_random == 6 then
+		db.actor:give_game_news("horror_int_start", "horror6f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 6")
+		end
+		
+	elseif message_int_random == 7 then
+		db.actor:give_game_news("horror_int_start", "horror7f", "ui_iconsTotal_horror", 0, 15000)
+		
+		if (BOOL_SKIP_LOG2) == false then 
+			log("mes2. type 7")
+		end
+	end
+end
+
+function ChorrorManager:skip_horror()
+
+	if not (self.inited_time) then 
+		self.inited_time = game.get_game_time()
+	end
+	if not (self.last_horror_time) then 
+		self.last_horror_time = game.get_game_time()
+	end
+	local Y, M, D, h, m, s, ms = 0, 0, 0, 0, 0, 0, 0
+	Y, M, D, h, m, s, ms = self.inited_time:get(Y, M, D, h, m, s, ms)
+	self.last_horror_time:set(Y, M, D, h, m, s + self.horror_time, ms)
+
+	self.started 			= false
+	self.finished 			= true
+	self.effector_set		= false
+	prev_sec				= 0
+	
+	if db.actor:has_info("horror_time_begin") then
+		db.actor:disable_info_portion("horror_time_begin")
+		if (BOOL_SKIP_LOG) == false then 
+			log("delete info portion:ChorrorManager")
+		end
+	end
+	
+	level.set_time_factor(self.game_time_factor)
+end
+
+function ChorrorManager:end_horror(manual)
+
+	self.last_horror_time 	= game.get_game_time()
+	self.started 			= false
+	self.finished 			= true
+	self.effector_set 		= false
+	prev_sec				= 0
+	self.FadeFactor			= 0
+
+	level.remove_pp_effector(horror_shock_pp_eff)
+
+	level.set_time_factor(self.game_time_factor)
+	
+	if db.actor:has_info("horror_time_begin") then
+		db.actor:disable_info_portion("horror_time_begin")
+		if (BOOL_SKIP_LOG2) == false then 
+			log("delete info portion:ChorrorManager")
+		end
+	end
+end
+
+-- #######################################################################################################################
+-- 									ОБНОВЛЕНИЕ СХЕМ ЗАГРУЗКИ ЧУ
+-- #######################################################################################################################
+--' Заметки: 
+--' [
+--' 	2 типа схем - глобальная схема, схема. 
+--'     Отличие: 1. Схема 	    - выполянется 1 раз(true, если nil then true)
+--'              2. Глобальная  - выполняется не один раз и имеет за собой проверки условий
+--' ]
+function ChorrorManager:update()
+
+	if not (self._state_loaded) then 
+		self:initialize() return
+	end 
+	
+	if not (self.first_update) then 
+		self.first_update = true
+		if (has_alife_info("bar_arena_fight")) then
+			if (self.started) then
+				self:end_horror()
+			end return end
+		local diff_sec = math.ceil(game.get_game_time():diffSec(self.inited_time)/level.get_time_factor())
+		if (diff_sec > self.horror_time)then
+			self:skip_horror()
+			return
+		end
+	end
+
+	if not(self.started) then
+		local g_time = game.get_game_time()
+		if(self.time_forwarded) then
+			local diff = math.abs(self._delta - g_time:diffSec(self.last_horror_time))
+			if(diff<3600) then
+				self._delta = 3*3600+g_time:diffSec(self.last_horror_time)
+			end
+			self.time_forwarded = false
+		end
+		if(g_time:diffSec(self.last_horror_time) < self._delta) then
+			return
+		end
+		self:start()
+		return
+	end
+	
+	local diff_sec = math.ceil(game.get_game_time():diffSec(self.inited_time)/level.get_time_factor())
+	if (diff_sec >= self.horror_time) then 
+		self:start(true)
+	end
+	
+	local diff_game_sec = math.ceil(game.get_game_time():diffSec(self.inited_time)/2)
+	
+	if(prev_sec~=diff_sec) then
+		prev_sec = diff_sec
+		
+------------------------------------------------------------------------------		
+--' Начало ЧУ: 
+--' Сирена и сообщение
+--' Схема: beginning
+		if (diff_sec>=0 and self.load_scheme['beginning'] ~= true) then
+			self.load_scheme['beginning']=true
+			self:play_siren_sound()
+			
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 0")
+			end
+		end
+------------------------------------------------------------------------------			
+------------------------------------------------------------------------------
+--' Начало ЧУ: 
+--' Сообщение, найдите укрытие и т.д
+--' Схема: siren		
+		if (diff_sec>=25) and (self.load_scheme['siren'] ~= true) then
+			self.load_scheme['siren'] = true
+			SetSound([[horror\horror_voice_start]])
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 25")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Подготовка к спавну: 
+--' Сообщение, найдите укрытие и т.д
+--' Схема: impact				
+		if (diff_sec>=49) and (self.load_scheme['impact'] ~= true) then
+			self.load_scheme['impact'] = true
+			level.add_pp_effector ("teleport.ppe", horror_start_pp_eff, false)
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 45")
+			end
+		end
+------------------------------------------------------------------------------	
+------------------------------------------------------------------------------
+--' Начало ЧУ, старт основной схемы: 
+--' Сообщение, найдите укрытие и т.д
+--' Глоб. схема: rumble		
+		if (diff_sec>=50) and (self.load_scheme['rumble'] == nil) and (self.load_scheme['_upd_fntm'] == nil) and (self.load_scheme['cam_earthquake_upd'] == nil) then
+			self.load_scheme['rumble'] = true
+			self.load_scheme['_upd_fntm'] = true
+			self.load_scheme['cam_earthquake_upd'] = true
+			local level_name = level.name()
+			horror_sound()
+			horrorspawn(level_name)
+			hit_actor(level_name)
+			
+			local start_horror_voice = math.random(1,2)
+			if start_horror_voice == 1 then
+				SetSound([[horror\horror_voice_3]])
+			elseif start_horror_voice == 2 then
+				SetSound([[horror\horror_voice_6]])
+			end
+			
+			level.add_pp_effector("dead_zone.ppe", horror_start_pp_eff1, false)
+			level.add_pp_effector("nano.ppe", horror_start_pp_eff2, false)
+			level.add_pp_effector("proba2.ppe", horror_start_pp_eff3, false) 
+			
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 50")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' Добавим фантомов и других сообщений
+--' Глоб. схема: quake20		
+		if (diff_sec>=80) and (self.load_scheme['quake20'] == nil) then
+			self.load_scheme['quake20'] = true
+			
+			local start_horror_voice = math.random(1,4)
+			if start_horror_voice == 1 then
+				SetSound([[horror\horror_voice_1]])
+			elseif start_horror_voice == 2 then
+				SetSound([[horror\horror_voice_2]])
+			elseif start_horror_voice == 3 then
+				SetSound([[horror\horror_voice_4]])
+			elseif start_horror_voice == 4 then
+				SetSound([[horror\horror_voice_6]])	
+			end
+			local level_name = level.name()
+			horrorspawn(level_name)
+			hit_actor(level_name)
+			
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 80")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Глоб. схема: quake40		
+		if (diff_sec>=100) and (self.load_scheme['quake40'] == nil) then
+			self.load_scheme['quake40'] = true
+			
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 100")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Глоб. схема: quake60		
+		if (diff_sec>=102) and (self.load_scheme['quake60'] == nil) then
+			self.load_scheme['quake60'] = true
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 102")
+			end
+			
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Глоб. схема: quake60		
+		if (diff_sec>=104) and (self.load_scheme['quake80'] == nil) then
+			self.load_scheme['quake80'] = true
+			local start_horror_voice = math.random(1,4)
+			if start_horror_voice == 1 then
+				SetSound([[horror\horror_voice_1]])
+			elseif start_horror_voice == 2 then
+				SetSound([[horror\horror_voice_2]])
+			elseif start_horror_voice == 3 then
+				SetSound([[horror\horror_voice_4]])
+			elseif start_horror_voice == 4 then
+				SetSound([[horror\horror_voice_6]])	
+			end
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 104")
+			end	
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Глоб. схема: quake100	
+		if (diff_sec>=106) and (self.load_scheme['quake100'] == nil) then
+			self.load_scheme['quake100'] = true
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 106")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Схема: 1stwavesnd		
+		if(diff_sec>=108) and (self.load_scheme['1stwavesnd'] == nil)  then
+			self.load_scheme['1stwavesnd'] = true
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 108")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Схема: 1stwave				
+		if(diff_sec>=120) and (self.load_scheme['1stwave'] == nil)  then
+			self.load_scheme['1stwave'] = true
+			local start_horror_voice = math.random(1,4)
+			if start_horror_voice == 1 then
+				SetSound([[horror\horror_voice_1]])
+			elseif start_horror_voice == 2 then
+				SetSound([[horror\horror_voice_2]])
+			elseif start_horror_voice == 3 then
+				SetSound([[horror\horror_voice_4]])
+			elseif start_horror_voice == 4 then
+				SetSound([[horror\horror_voice_6]])	
+			end
+			local level_name = level.name()
+			horrorspawn(level_name)
+			hit_actor(level_name)
+			
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 120")
+			end	
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' Середина ЧУ, добавим еще зомби. С другими позициями
+--' Схема: 2ndwavesnd		
+		if(diff_sec>=156) and (self.load_scheme['2ndwavesnd'] == nil)  then
+			self.load_scheme['2ndwavesnd'] = true
+			local level_name = level.name()
+			horrorspawn(level_name)
+			hit_actor(level_name)
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 156")
+			end	
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Продолжение ЧУ: 
+--' ...
+--' Схема: 2ndwave				
+		if(diff_sec>=168) and (self.load_scheme['2ndwave'] == nil)  then
+			self.load_scheme['2ndwave'] = true
+			local start_horror_voice = math.random(1,3)
+			if start_horror_voice == 1 then
+				SetSound([[horror\horror_voice_5]])
+			elseif start_horror_voice == 2 then
+				SetSound([[horror\horror_voice_7]])
+			elseif start_horror_voice == 3 then
+				SetSound([[horror\horror_voice_6]])	
+			end
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 168")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Окончание ЧУ: 
+--' ...
+--' Глоб. схема: quake100	
+		if (diff_sec>=200) and (self.load_scheme['quake100'] == true) and (self.load_scheme['cam_earthquake_upd'] == true) then
+			self.load_scheme['quake100'] = false
+			self.load_scheme['cam_earthquake_upd'] = false
+			level.remove_cam_effector(cam_eff)
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 200")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Окончание ЧУ: 
+--' ...
+--' Глоб. схема: quake80		
+		if (diff_sec>=202) and (self.load_scheme['quake80'] == true) then
+			self.load_scheme['quake80'] = false
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 202")
+			end
+			
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Окончание ЧУ: 
+--' ...
+--' Глоб. схема: quake60
+		if (diff_sec>=206) and (self.load_scheme['quake60'] == true) then
+			self.load_scheme['quake60'] = false
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 206")
+			end
+			
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Окончание ЧУ: 
+--' ...
+--' Глоб. схема: quake40		
+		if (diff_sec>=209) and (self.load_scheme['quake40'] == true) then
+			self.load_scheme['quake40'] = false
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 209")
+			end
+			
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Конец ЧУ: 
+--' Удаление зомби, доп. фантомы
+--' Глоб. схема: quake20 
+--' Схема quakeended
+		if (diff_sec>=214) and (self.load_scheme['quake20'] == true) and (self.load_scheme['quakeended'] == nil) then
+			self.load_scheme['quakeended'] = true
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 214")
+			end
+			
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Конец ЧУ: 
+--' Удаление зомби, доп. фантомы
+--' Глоб. схема: rumble
+		if (diff_sec>=214) and (self.load_scheme['rumble'] == true) and (self.load_scheme['_upd_fntm'] == true) then
+			self.load_scheme['rumble'] = false
+			
+			self.load_scheme['_upd_fntm'] = false
+			level.add_pp_effector ("teleport.ppe", horror_start_pp_eff, false)
+			remove_horror_mutant()
+			SetSound([[horror\horror_voice_end]])
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 214")
+			end
+		end
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Конец ЧУ: 
+--' ...
+--' Схема: endmessage				
+		if (diff_sec>=212) and (self.load_scheme['endmessage'] == nil) then
+			self.load_scheme['endmessage'] = true
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 212")
+			end
+		end	
+------------------------------------------------------------------------------		
+------------------------------------------------------------------------------
+--' Конец ЧУ: 
+--' НПС гуляют по карте дальше, финал ЧУ
+--' Глоб. схема: endsnd					
+		if(diff_sec>=220) and (self.load_scheme['endsnd']==nil)  then
+			self.load_scheme['endsnd']=true
+			self:end_horror()
+			if (BOOL_SKIP_LOG) == false then 
+				log("sec 220")
+			end
+		end
+	end
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+--' Другие функции, оригинального ЧУ из НС
+
+	if (time_global()>(self.timer_fantoms or 0) and (self.load_scheme['_upd_fntm'] == true)) then 
+		self.timer_fantoms = time_global() + __upd_fantom
+		fantom_horror()
+		if (BOOL_SKIP_LOG) == false then 
+			log("update fantoms")
+		end
+	end
+	
+	if (self.load_scheme['cam_earthquake_upd'] == true) then 
+	    level.add_cam_effector("camera_effects\\earthquake.anm", cam_eff, true, "")
+		if (BOOL_SKIP_LOG) == false then 
+			log("update cam_eff")
+		end
+	end
+	
+	if (time_global()>(self.upd_antenna or 0) and (self.load_scheme['_upd_fntm'] == true)) then 
+		self.upd_antenna = time_global() + upd_antenna_value
+		
+		if (self.load_scheme['_upd_fntm'] == true) then --' Чтобы не зависали эффекты после отл. таймера
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(5, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(6, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(7, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(8, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(9, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(5, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(6, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(7, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(8, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+			antenna_horror:play_at_pos(vector():set(db.actor:position().x+math.random(9, 10), db.actor:position().y, db.actor:position().z+math.random(1, 3)))
+		end
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("update antenna")
+		end
+	end
+	
+	if (time_global()>(self.upd_tornado_oblakoT or 0) and (self.load_scheme['_upd_fntm'] == true)) then 
+		self.upd_tornado_oblakoT = time_global() + upd_tornado_oblako
+		
+		if (self.load_scheme['_upd_fntm'] == true) then --' Чтобы не зависали эффекты после отл. таймера
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-50, 50), db.actor:position().y, db.actor:position().z+math.random(-50, 50)))
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-45, 45), db.actor:position().y, db.actor:position().z+math.random(-45, 45)))
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-35, 35), db.actor:position().y, db.actor:position().z+math.random(-35, 35)))
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-25, 25), db.actor:position().y, db.actor:position().z+math.random(-25, 25)))
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-15, 15), db.actor:position().y, db.actor:position().z+math.random(-15, 15)))
+			psy_horror_tornado1:play_at_pos(vector():set(db.actor:position().x+math.random(-5, 5),   db.actor:position().y, db.actor:position().z+math.random(-5, 5)))	
+		end
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("update tornado horror")
+		end
+	end
+	
+	if (time_global()>(self.emi_blowoutT or 0) and (self.load_scheme['_upd_fntm'] == true)) then 
+		self.emi_blowoutT = time_global() + upd_emi_horror
+		
+		local snd_obj = self.blowout_sounds["emi_blowout"]
+		local snd_position = vector():set(math.random(10, 19), 0, math.random(10, 20))
+		snd_obj:play_at_pos(db.actor, snd_position)
+		
+		emi_blowout1:play_at_pos(vector():set(db.actor:position().x+math.random(-50, 50), db.actor:position().y+math.random(1, 2), db.actor:position().z+math.random(-50, 50)))
+		emi_blowout2:play_at_pos(vector():set(db.actor:position().x+math.random(-50, 50), db.actor:position().y+math.random(1, 2), db.actor:position().z+math.random(-50, 50)))
+		
+		if (BOOL_SKIP_LOG) == false then 
+			log("update tornado horror")
+		end
+	end
+	
+--' ----------------------------------------------------------------------------
+--' Обновление каждые 2 секунды
+--' Пост-процесс на локации
+	if(prev_game_sec~=diff_game_sec) then
+		prev_game_sec = diff_game_sec
+		if(diff_sec<self.horror_time) then
+			if (diff_sec>=50) and (diff_sec<210) and (self.load_scheme['cam_earthquake_upd'] == true) then
+				level.add_pp_effector("psy_antenna.ppe", horror_shock_pp_eff, true)
+				level.set_pp_effector_factor(horror_shock_pp_eff, 0.001)
+				self.effector_set = true
+			end
+			if (diff_sec>=50) and (diff_sec<=75) and (self.effector_set) then
+				self.FadeFactor = fade(diff_game_sec,8*5,14*5,0.001,1)
+			end
+			if (diff_sec>=75) and (diff_sec<=168) and (self.effector_set) then
+				self.FadeFactor = fade(diff_game_sec,8*5,14*5,0.001,1)
+			end
+			if (diff_sec>=168) and (diff_sec<=189) and (self.effector_set) then
+				self.FadeFactor = fade(diff_game_sec,8*5,14*5,0.001,1)
+			end
+			if (diff_sec>=189) and (diff_sec<=200) and (self.effector_set) then
+				self.FadeFactor = fade(diff_game_sec,8*5,14*5,0.001,1)
+			end
+			if (diff_sec>=200) and (diff_sec<=210) and (self.effector_set) then
+				self.FadeFactor = fade(diff_game_sec,200*5,210*5,0.3,0.001)
+			end
+			if (diff_sec>=210) and (self.effector_set) then
+				self.FadeFactor = 0
+				level.remove_pp_effector(horror_shock_pp_eff)
+				self.effector_set = false
+			end
+
+			local PPEfactor
+			local PPEvalue
+
+			PPEfactor = self.FadeFactor
+			PPEvalue = self.FadeFactor/50
+			if PPEfactor < 0.001 then PPEfactor = 0.001 end
+
+			currentPPEfactor = currentPPEfactor+(PPEfactor - currentPPEfactor) * 0.1
+			
+			if (self.effector_set) then
+				level.set_pp_effector_factor(horror_shock_pp_eff, currentPPEfactor)
+			end
+			
+		end
+	end
+--' ----------------------------------------------------------------------------	
+end
+-- #######################################################################################################################
+
+-- #####################################
+-- Основные функции ЧУ
+-- #####################################
+
+--' Спавн фантомов
+function fantom_horror()
+	local radiusx = math.random(30,65)
+	local heightx = 0.55
+	local yaw 	  = math.pi*2.0*math.random()
+	local radius  = radiusx*(math.random()/2.0+0.5)
+	local height  = heightx*math.random()
+	local a_pos   = db.actor:position()
+	local pos     = vector():set(math.sin(yaw)*radius+a_pos.x,a_pos.y+height,math.cos(yaw)*radius+a_pos.z)
+	phantom_manager.spawn_phantom(pos)
+end
+
+--' Спавн зомбие
+function horrorspawn(level_name)
+	local level_name = level.name()
+	local ap = db.actor:position()
+	local lv = db.actor:level_vertex_id()
+	local gv = db.actor:game_vertex_id()
+	--' Цикл for
+	--' Удалим 3, а если, то накинем 4 еще по верх
+	for i = 1, math.random(tabl_horror_by_level[level_name]["zombie_quantity"]-math.random(1, 3), tabl_horror_by_level[level_name]["zombie_quantity"]+math.random(1, 4)) do
+		alife():create("zombie_horror"..tostring(math.random(35)), vector():set(ap.x+math.random(-50,50), ap.y, ap.z+math.random(-50,50)), lv, gv)
+	end
+end
+
+--' Выбираем Рандомный звук
+function horror_sound()
+	local horror_sound_int = math.random(1,8)
+	if horror_sound_int == 1 then
+		SetSound([[horror\horror_scrm1]])
+	elseif horror_sound_int == 2 then
+		SetSound([[horror\horror_scrm2]])
+	elseif horror_sound_int == 3 then
+		SetSound([[horror\horror_scrm3]])
+	elseif horror_sound_int == 4 then
+		SetSound([[horror\horror_scrm4]])
+	elseif horror_sound_int == 5 then
+		SetSound([[horror\horror_scrm5]])
+	elseif horror_sound_int == 6 then
+		SetSound([[horror\horror_scrm6]])
+	elseif horror_sound_int == 7 then
+		SetSound([[horror\horror_scrm7]])
+	elseif horror_sound_int == 8 then
+		SetSound([[horror\horror_scrm8]])
+	end
+end
+
+--' Наносим урон с учетом локации
+function hit_actor(level_name)
+	db.actor.radiation  = tabl_horror_by_level[level_name]["hit"]["rad_hit"]
+	db.actor.psy_health = tabl_horror_by_level[level_name]["hit"]["psy_hit"]
+end
+
+--' Удаляем живых зомби
+function remove_horror_mutant()
+	local id, obj, kto_nahuy
+	--' Правильный цикл удаления зомбарей
+	--' Нельзя 65535
+	--' Помощь в исправлении id: 
+	--'                          Xottab_duty
+		for id = 0, 65534 do
+	--' -------------------------------------
+		obj = alife():object(id)
+		if obj then
+			if IsMonster(obj) and obj:alive() then
+			
+				kto_nahuy = obj:section_name()
+				
+				if (BOOL_SKIP_LOG) == false then 
+					log("is zombie horror and obj alive -> delete")
+				end
+--' ------------------------------------------------------------------------
+--' Салам алейкум, 35 секций
+--' С таблицы удалется с багами
+--' Пришлось по нашему, по славянски с проверкой каждой секции
+--' if .. or .. or .. then ..
+				if kto_nahuy == "zombie_horror1" or
+				   kto_nahuy == "zombie_horror2" or 
+				   kto_nahuy == "zombie_horror3" or 
+				   kto_nahuy == "zombie_horror4" or 
+				   kto_nahuy == "zombie_horror5" or 
+				   kto_nahuy == "zombie_horror6" or 
+				   kto_nahuy == "zombie_horror7" or 
+				   kto_nahuy == "zombie_horror8" or 
+				   kto_nahuy == "zombie_horror9" or 
+				   kto_nahuy == "zombie_horror10" or 
+				   kto_nahuy == "zombie_horror11" or 
+				   kto_nahuy == "zombie_horror12" or 
+				   kto_nahuy == "zombie_horror13" or 
+				   kto_nahuy == "zombie_horror14" or 
+				   kto_nahuy == "zombie_horror15" or 
+				   kto_nahuy == "zombie_horror16" or 
+				   kto_nahuy == "zombie_horror17" or 
+				   kto_nahuy == "zombie_horror18" or 
+				   kto_nahuy == "zombie_horror19" or 
+				   kto_nahuy == "zombie_horror20" or 
+				   kto_nahuy == "zombie_horror21" or 
+				   kto_nahuy == "zombie_horror22" or 
+				   kto_nahuy == "zombie_horror23" or 
+				   kto_nahuy == "zombie_horror24" or 
+				   kto_nahuy == "zombie_horror25" or 
+				   kto_nahuy == "zombie_horror26" or 
+				   kto_nahuy == "zombie_horror27" or 
+				   kto_nahuy == "zombie_horror28" or 
+				   kto_nahuy == "zombie_horror29" or 
+				   kto_nahuy == "zombie_horror30" or 
+				   kto_nahuy == "zombie_horror31" or 
+				   kto_nahuy == "zombie_horror32" or 
+				   kto_nahuy == "zombie_horror33" or 
+				   kto_nahuy == "zombie_horror34" or 
+				   kto_nahuy == "zombie_horror35" then
+--' ------------------------------------------------------------------------				   
+					alife():release(alife():object(id), true)
+				end
+			end
+		else
+			if (BOOL_SKIP_LOG) == false then 
+				log("davay bez vilitov, ok?")
+			end
+		end
+	end
+end
+
+-- #######################################################################################################################
+function fade(currentTime,startTime,endTime,startValue,endValue)
+	local totalFadeTime=endTime-startTime
+	local totalFadeValue=endValue-startValue
+	local elapsedFadeTime=currentTime-startTime
+	local currentValue=(totalFadeValue*elapsedFadeTime)/totalFadeTime+startValue
+	if (totalFadeValue<0) then
+		if (currentValue>startValue) then
+			currentValue=startValue
+		end
+		if (currentValue<endValue) then
+			currentValue=endValue
+		end
+	else
+		if (currentValue>endValue) then
+			currentValue=endValue
+		end
+		if (currentValue<startValue) then
+			currentValue=startValue
+		end
+	end
+	return currentValue
+end
+
+function ChorrorManager:play_siren_sound()
+	local snd_obj = self.blowout_sounds["siren"]
+	local snd_position
+	
+	if (snd_obj == nil) then 
+		return  
+	end 
+	
+	if snd_obj:playing() then
+		snd_obj:stop()
+	end
+
+	snd_position = vector():set(147,15,-187)
+	snd_obj:play_at_pos(db.actor, snd_position)
+	snd_obj.volume = 1
+end
+
+function start_horror(p)
+	get_horror_manager():start(true)
+end
+
+function stop_horror()
+	if(get_horror_manager().started) then
+		get_horror_manager():end_horror(true)
+	end
+end
+
+function is_started()
+	return get_horror_manager().started
+end
+
+function is_finished()
+	return not get_horror_manager().started
+end
+
+-- #######################################################################################################################
+-- 									ВАЖНЫЕ ФУНКЦИИ ДЛЯ ЧУ
+-- #######################################################################################################################
+--' Заметки: [Не трогать салавливыми русками]
+
+function xr_conditions.surge_started()
+	if (psi_storm_manager and psi_storm_manager.is_loaded() and psi_storm_manager.is_started()) then 
+		return true 
+	end 
+	if (surge_manager and surge_manager.is_loaded() and surge_manager.is_started()) then 
+		return true 
+	end
+	return this.is_started()
+end
+
+function xr_conditions.surge_complete()
+	if (psi_storm_manager and psi_storm_manager.is_loaded()) then 
+		if not (psi_storm_manager.is_finished()) then 
+			return false
+		end
+	end 
+	if (surge_manager and surge_manager.is_loaded()) then
+		if not surge_manager.is_finished() then
+			return false
+		end
+	end
+	return this.is_finished()
+end
+
+-- #######################################################################################################################
+-- 									СОХРАНЕНИЯ ДАННЫХ В NET.ПАКЕТЫ
+-- #######################################################################################################################
+--' Заметки: [Не трогать салавливыми русками]
+
+--' Сейв в m_data актера
+function actor_on_save(binder,packet)
+	if (USE_MARSHAL) then 
+		return 
+	end 
+
+	local mgr = horrorManager
+	if not (mgr._state_loaded) then 
+		mgr:initialize()
+		mgr._state_loaded = true
+	end
+	set_save_marker(packet, "save", false, "horrorHide")
+
+	alun_utils.w_stpk(packet,"bool",mgr.finished,"ChorrorManager:finished")
+	alun_utils.w_stpk(packet,"bool",mgr.started,"ChorrorManager:started")
+	alun_utils.w_stpk(packet,"CTime",mgr.last_horror_time,"ChorrorManager:last_horror_time")
+
+	if(mgr.started) then
+		alun_utils.w_stpk(packet,"CTime",mgr.inited_time,"ChorrorManager:inited_time")
+		alun_utils.w_stpk(packet,"bool",mgr.effector_set,"ChorrorManager:effector_set")
+
+		alun_utils.w_stpk(packet,"u32",mgr.game_time_factor,"ChorrorManager:game_time_factor")
+	end
+	alun_utils.w_stpk(packet,"u32",mgr._delta,"ChorrorManager:_delta")
+
+	set_save_marker(packet, "save", true, "horrorHide")
+end 
+
+--' Загрузка из m_data актера
+function actor_on_load(binder,packet)
+	local mgr = get_horror_manager()
+	if not (mgr._state_loaded) then 
+		mgr:initialize()
+		mgr._state_loaded = true
+	end
+	if (USE_MARSHAL) then 
+		return 
+	end 
+	set_save_marker(packet, "load", false, "horrorHide")
+	mgr.finished = packet:r_bool()
+	mgr.started = packet:r_bool()
+
+	mgr.last_horror_time = utils.r_CTime(packet,"horror_manager") or game.get_game_time()
+	if(mgr.started) then
+		mgr.inited_time = utils.r_CTime(packet,"horror_manager") or game.get_game_time()
+		mgr.effector_set = packet:r_bool()
+
+		mgr.game_time_factor = packet:r_u32()
+		mgr.load_scheme = empty_table(mgr.load_scheme)
+	end
+	mgr._delta = packet:r_u32()
+	set_save_marker(packet, "load", true, "horrorHide")
+end
+
+--' Записать данные в m_data
+function save_state(m_data)
+	m_data.horrorManager = {}
+
+	local mgr = get_horror_manager()
+	if not (mgr._state_loaded) then 
+		mgr:initialize()
+		mgr._state_loaded = true
+	end
+	
+	m_data.horrorManager.finished = mgr.finished == nil and true or mgr.finished
+	m_data.horrorManager.started = mgr.started == nil and false or mgr.started
+	m_data.horrorManager.last_horror_time = mgr.last_horror_time and utils.CTime_to_table(mgr.last_horror_time) or game.get_game_time()
+
+	if(mgr.started) then
+		m_data.horrorManager.inited_time = utils.CTime_to_table(mgr.inited_time) or game.get_game_time()
+		m_data.horrorManager.effector_set = mgr.effector_set
+		m_data.horrorManager.game_time_factor = mgr.game_time_factor
+	end
+	m_data.horrorManager._delta = mgr._delta
+end 
+
+--' Загрузить данные из m_data
+function load_state(m_data)
+	if not (m_data.horrorManager) then 
+		return
+	end
+	local mgr = get_horror_manager()
+	mgr:initialize()
+	mgr.finished = m_data.horrorManager.finished
+	mgr.started = m_data.horrorManager.started
+	mgr.last_horror_time = m_data.horrorManager.last_horror_time and utils.CTime_from_table(m_data.horrorManager.last_horror_time) or game.get_game_time()
+	if (mgr.started == true and mgr.finished == false) then
+		mgr.inited_time = m_data.horrorManager.inited_time and utils.CTime_from_table(m_data.horrorManager.inited_time) or game.get_game_time()
+		mgr.effector_set = m_data.horrorManager.effector_set 
+		mgr.game_time_factor = m_data.horrorManager.game_time_factor or level.get_time_factor()
+		mgr.load_scheme = empty_table(mgr.load_scheme)
+	else 
+		mgr.started = false
+		mgr.finished = true
+	end
+	mgr._delta = m_data.horrorManager._delta
+	mgr._state_loaded = true
+	
+	m_data.horrorManager = nil
+
+end
+
+--' Важная функция
+function is_loaded() return get_horror_manager()._state_loaded == true end

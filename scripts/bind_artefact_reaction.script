@@ -1,0 +1,101 @@
+-- #######################################################################################################################
+--' Модуль накопления аномальной энергии на поясе
+--' OldSerpski Stalker, Back to the roots
+--' ...
+--' Заметки: Простенький скрипт (?), потом переделать
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' -----------------------------
+
+local function artefact_reaction(self)
+	local summ = level.GetArtefactReactionSumm()
+	local random = math.random(1,7)
+	local CTimerGlobal = time_global()
+	local debug = false
+	if summ >= 0.60 and CTimerGlobal>(self.CTimer or 0) then 
+		self.CTimer = CTimerGlobal + math.random(15000, 25000)
+		if random == 1 and summ >= 0.60 then
+			db.actor.power = -0.75
+			db.actor.health = -0.45
+			level.add_pp_effector ("nosferatu.ppe", 12500, false)
+			set_inactivate_input_time(5)
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 1")
+			end
+		elseif random == 2 and summ >= 0.60 then	
+			db.actor.power = -0.9
+			db.actor.health = -0.5
+			db.actor.radiation = 0.35
+			level.add_pp_effector ("duality_circle.ppe", 12500, false)
+			set_inactivate_input_time(5)
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 2")
+			end
+		elseif random == 3 and summ >= 0.60 then	
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 3")
+			end
+		elseif random == 4 and summ >= 0.60 then	
+			db.actor.power = -0.55
+			db.actor.health = -0.65
+			db.actor.radiation = 0.75
+			level.add_pp_effector ("sk_corpse.ppe", 12500, false)
+			set_inactivate_input_time(5)
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 4")
+			end
+		elseif random == 5 and summ >= 0.60 then	
+			db.actor.radiation = 0.75
+			level.add_pp_effector ("vibros_p_build.ppe", 12500, false)
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 5")
+			end
+		elseif random == 6 and summ >= 0.60 then	
+			db.actor.radiation = 1
+			db.actor.health = -0.55
+			level.add_pp_effector ("proba.ppe", 12500, false)
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 6")
+			end
+		elseif random == 7 and summ >= 0.60 then	
+			SetSound([[anomaly\bfuzz_hit]])
+			if debug then
+				log("[artefact_reaction]: random 7")
+			end
+		end
+	end	
+	if debug then	
+		printf("[artefact_reaction] | artefact_reaction: %s ", summ)
+	end
+end
+
+local function use_device(item)
+	local sec
+	sec = item:section()
+	local summ = level.GetArtefactReactionSumm()
+	if (sec == "device_artefact_reation") then 
+		if summ == 0 then 
+	        news_manager.send_tip(db.actor, game.translate_string("st_energ_none"))
+	    end
+	    if summ < 0.15 and summ > 0 then 
+	        news_manager.send_tip(db.actor, game.translate_string("st_energ_esy"))
+	    end
+		if summ < 0.30 and summ > 0.15 then 
+	        news_manager.send_tip(db.actor, game.translate_string("st_energ_normal"))
+	    end
+		if summ < 0.45 and summ > 0.30 then 
+	        news_manager.send_tip(db.actor, game.translate_string("st_energ_hard"))
+	    end
+		if summ < 0.60 and summ > 0.45 then 
+	        news_manager.send_tip(db.actor, game.translate_string("st_energ_extra"))
+	    end
+	end
+end
+
+function on_game_start() RegisterScriptCallback("actor_on_item_use", use_device) RegisterScriptCallback("actor_on_update", artefact_reaction) end

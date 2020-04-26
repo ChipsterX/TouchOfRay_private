@@ -1,0 +1,425 @@
+if not BOOL_MODE_MIXED then
+	--Уборщик трупов мутантов для Зова Припяти версия 0.1 (4.10.2009)
+	local old_ver_sms = false --' Старый вид сообщения
+	--схема удаления трупов монстров
+	local dist_to_corpses_motstr = 20 --расстояние от ГГ, свыше которого считаются трупы.
+	local tabl_monsters_dead={} --все мёртвые монстры
+	local summ_dead_monsters = 5 --общее допустимое число трупов монстров на всех локациях (не включая СИД)
+	local tabl_monsters_stat_total = {} --статистика по монстрам всего
+	local tabl_monsters_stat_live = {} --статистика по монстрам живым
+	local tabl_monsters_stat_dead = {} --статистика по монстрам мёртвым
+	local tabl_monsters_stat_dead_removed = {} --статистика по монстрам мёртвым убранным
+	local tabl_monsters_live_restrict = { --ограничения на количество живых монстров (-1 - без ограничений)
+		[clsid.boar_s] = -1,
+		[clsid.bear_s] = -1,
+		
+		[clsid.boar_vepr_s] = -1,
+		
+		[clsid.boar_mini_s] = -1,
+		
+		[clsid.boar_taran_s] = -1,
+		
+		[clsid.winger_s] = -1,
+		
+		[clsid.fly_s] = -1,
+		
+		[clsid.komar_s] = -1,
+		
+		[clsid.stinger_s] = -1,
+		
+		[clsid.bloodsucker_s] = -1,
+		
+		[clsid.deathclaw_black_s] = -1,
+		
+		[clsid.deathclaw_white_s] = -1,
+		
+		[clsid.venom_s] = -1,
+		
+		[clsid.krovosos_anomaly_s] 		= -1,
+		[clsid.krovosos_anomaly_marsh_s] = -1,
+		[clsid.krovosos_hell_s] 		= -1,
+		[clsid.krovosos_hell_little_s]  = -1,
+		[clsid.krovosos_albinos_s] 		= -1,
+		[clsid.krovosos_marsh_s] 		= -1,
+		[clsid.krovosos_zombie_s] 		= -1,
+		[clsid.krovosos_obt_s] 			= -1,
+		[clsid.krovosos_und_s] 			= -1,
+		
+		[clsid.dog_s] = -1,
+		
+		[clsid.dog_oso_s] = -1,
+		
+		[clsid.flesh_s] = -1,
+		[clsid.zanoza_s] = -1,
+		[clsid.pseudo_flesh_s] = -1,
+		
+		[clsid.marsh_flesh_s] = -1,
+		
+		[clsid.psy_dog_s] = -1,
+		[clsid.pseudodog_s] = -1,
+		[clsid.burcs_s] = -1,
+		
+		[clsid.controller_act_s] = -1,
+		
+		[clsid.controller_act_elector_s] = -1,
+		
+		[clsid.controller_act_fire_s] = -1,
+		
+		[clsid.burel_s] = -1,
+		[clsid.burfi_s] = -1,
+		[clsid.burbi_s] = -1,
+		
+		[clsid.poltergeist_bb_s] = -1,
+		[clsid.poltergeist_be_s] = -1,
+		[clsid.poltergeist_bx_s] = -1,
+		[clsid.poltergeist_bo_s] = -1,
+		[clsid.poltergeist_pp_s] = -1,
+		
+		[clsid.cat_s] = -1,
+		[clsid.controller_s] = -1,
+		
+		[clsid.controller_babka_s] = -1,
+		
+		[clsid.controller_arhi_s] = -1,
+		
+		[clsid.controller_marsh_s] = -1,
+		
+		[clsid.mogilshik_s] = -1,
+		[clsid.fracture_s] = -1,
+		
+		[clsid.morlok_s] = -1,
+		
+		[clsid.fracture_karlik_s] = -1,
+		
+		[clsid.karlik_s] = -1,
+		
+		[clsid.fracture_lab_s] = -1,
+		
+		[clsid.bibliotekar_s] = -1,
+		
+		[clsid.bibliotekar_black_s] = -1,
+		
+		[clsid.poltergeist_s] = -1,
+		[clsid.gigant_s] = -1,
+		
+		[clsid.gigant_marsh_s] = -1,
+		
+		[clsid.gigant_marsh_lapa_s] = -1,
+		
+		[clsid.gigant_lapa_s] = -1,
+		
+		[clsid.gigant_red_s] = -1,
+		
+		[clsid.gigant_big_s] = -1,
+		
+		[clsid.gigant_j_s] = -1,
+		
+		[clsid.zombie_s] = -1,
+		[clsid.tushkano_s] = -1,
+		
+		[clsid.tushkano_black_s] = -1,
+		
+		[clsid.tushkano_big_s] = -1,
+		
+		[clsid.tushkano_big_black_s] = -1,
+		
+		[clsid.snork_s] = -1,
+		
+		[clsid.snork_pseudo_s] = -1,
+		
+		[clsid.snork_marsh_s] = -1,
+		
+		[clsid.snork_fly_s] = -1,
+		[clsid.snork_nosach_s] = -1,
+		[clsid.snork_mozg_s] = -1,
+		
+		[clsid.vypolzen_s] = -1,
+		[clsid.vipolzen_s] = -1,
+		[clsid.chimecs_s] = -1,
+		[clsid.lican_s] = -1,
+		[clsid.bear_chimere_s] = -1,
+		[clsid.wolf_s] = -1,
+		[clsid.wolfw_s] = -1,
+		[clsid.chimefi_s] = -1,
+		[clsid.chimeel1_s] = -1,
+		[clsid.chimeel2_s] = -1,
+		[clsid.chimebl_s] = -1,
+		[clsid.chimerd_s] = -1,
+		[clsid.chimrad_s] = -1,
+		[clsid.chimray_s] = -1,
+		[clsid.chimraf_s] = -1,
+		[clsid.poltergeist_cs_s] = -1,
+		[clsid.rat_s] = -1, 
+		[clsid.lyguh_s] = -1, 
+		[clsid.rotan_s] = -1,
+		[clsid.tarakan_s] = -1,
+		[clsid.tarakan_black_s] = -1
+	}
+	for m,c in pairs(tabl_monsters_live_restrict) do
+		tabl_monsters_stat_total[m] = 0
+		tabl_monsters_stat_live[m] = 0
+		tabl_monsters_stat_dead[m] = 0
+		tabl_monsters_stat_dead_removed[m] = 0
+	end
+
+	local monsters_total_count = 0
+	local monsters_live_count = 0
+	local monsters_dead_count = 0
+	local monsters_dead_removed_count = 0
+	local tabl_monsters_dead_names
+		tabl_monsters_dead_names = 
+		{
+			[clsid.boar_s] 		= "Кабанов",
+			
+			[clsid.bear_s] 		= "Чернобыльских медведей",
+			
+			[clsid.boar_vepr_s] = "Кабанов-вепрей",
+			
+			[clsid.boar_taran_s] = "Кабанов-Припять",
+			
+			[clsid.winger_s] = "Крыланов",
+		
+			[clsid.fly_s] = "Мух",
+		
+			[clsid.komar_s] = "Гнусов",
+		
+			[clsid.stinger_s] = "Стрекоз",
+			
+			[clsid.boar_mini_s] = "Молодых кабанов",
+			
+			[clsid.bloodsucker_s] 	= "Кровососов",
+			
+			[clsid.deathclaw_black_s] 	= "Черных когтей смерти",
+			
+			[clsid.deathclaw_white_s] 	= "Белых когтей смерти",
+			
+			[clsid.venom_s] 	= "Веномов",
+			
+			[clsid.krovosos_anomaly_s] 		= "Аномальных кровососов",
+			[clsid.krovosos_anomaly_marsh_s] = "Аномальных болотных кровососов",
+			[clsid.krovosos_hell_s] 		= "Адский кровососов",
+			[clsid.krovosos_hell_little_s]  = "Молодых кровососов",
+			[clsid.krovosos_albinos_s] 		= "Туманных кровососов",
+			[clsid.krovosos_marsh_s] 		= "Болотных кровососов",
+			[clsid.krovosos_zombie_s] 		= "Лаборантов",
+			[clsid.krovosos_obt_s] 			= "Оборотней",
+			[clsid.krovosos_und_s] 			= "Подземных кровососов",
+			
+			[clsid.dog_s] 		= "Собак",
+			
+			[clsid.dog_oso_s] 	= "Собак О-Сознания",
+			
+			[clsid.flesh_s] 	= "Плотей",
+			
+			[clsid.zanoza_s] 	= "Заноз",
+			
+			[clsid.pseudo_flesh_s] 	= "Псевдоплотей",
+			
+			[clsid.marsh_flesh_s] 	= "Болотных плотей",
+			
+			[clsid.psy_dog_s] 	= "Пси-собак",
+			[clsid.pseudodog_s] 	= "Псевдособак",
+			[clsid.controller_act_s] 	= "Бегающих контролеров",
+			[clsid.controller_act_elector_s] 	= "Электро-бегающих контролеров",
+			[clsid.controller_act_fire_s] 	= "Огненных бегающих контролеров",
+			[clsid.burcs_s] 	= "Бюреров",
+			[clsid.burel_s] 	= "Электро-бюреров",
+			[clsid.burfi_s] 	= "Огненных бюреров",
+			[clsid.burbi_s] 	= "Желтых бюреров",
+			[clsid.poltergeist_bb_s] 	= "Огненных ползающих полтеров",
+			[clsid.poltergeist_be_s] 	= "Электрических ползающих полтеров",
+			[clsid.poltergeist_bx_s] 	= "Призрачных ползающих полтеров",
+			[clsid.poltergeist_bo_s] 	= "Старых ползающих полтеров",
+			[clsid.poltergeist_pp_s] 	= "Ползающих полтеров",
+			[clsid.chimecs_s] 	= "Химер",
+			[clsid.bear_chimere_s] 	= "Медведей-Шатунов",
+			[clsid.lican_s] 	= "Кикимор",
+			[clsid.wolf_s] 		= "Химера-вульфов",
+			[clsid.wolfw_s] 	= "Химера-вульфов (Белых)",
+			[clsid.chimefi_s] 	= "Огненных химер",
+			[clsid.chimeel1_s] 	= "Призрачных электро-химер",
+			[clsid.chimeel2_s] 	= "Электро-химер",
+			[clsid.chimebl_s] 	= "Черных химер",
+			[clsid.chimerd_s] 	= "Красных химер",
+			[clsid.chimrad_s] 	= "Радиоактивных химер",
+			[clsid.chimray_s] 	= "Призрачных химер",
+			[clsid.chimraf_s] 	= "Огненных призрачных химер",
+			[clsid.controller_s] 	= "Контролёров",
+			[clsid.controller_babka_s] 	= "Бабок контролёров",
+			[clsid.controller_arhi_s] 	= "Мутирующих контролёров",
+			[clsid.controller_marsh_s] 	= "Болотных контролёров",
+			[clsid.mogilshik_s] 	= "Контролёров-могильщиков",
+			[clsid.poltergeist_s] 	= "Полтергейстов",
+			[clsid.poltergeist_cs_s] 	= "Полтергейстов",
+			[clsid.gigant_s] 	= "Псевдогигантов",
+			[clsid.gigant_marsh_s] 	= "Болотных псевдогигантов",
+			[clsid.gigant_marsh_lapa_s] 	= "Испорченных болотных псевдогигантов",
+			[clsid.gigant_red_s] 	= "Красных псевдогигантов",
+			[clsid.gigant_lapa_s] 	= "Испорченных псевдогигантов",
+			[clsid.gigant_big_s] 	= "Огромных псевдогигантов",
+			[clsid.gigant_j_s] 	= "Прыгающих псевдогигантов",
+			[clsid.tushkano_s] 	= "Тушканов",
+			[clsid.tushkano_big_s] 	= "Вожаков тушканов",
+			[clsid.tushkano_big_black_s] 	= "Черных вожаков тушканов",
+			[clsid.tushkano_black_s] = "Черных тушканов",
+			[clsid.snork_s]		= "Снорков",
+			[clsid.snork_pseudo_s]	= "Псевдоснорков",
+			[clsid.snork_marsh_s] = "Болотных снорков",
+			[clsid.snork_fly_s] = "Кукарачей",
+			[clsid.snork_nosach_s] = "Носачей",
+			[clsid.snork_mozg_s] = "Мозгачей",
+			[clsid.vypolzen_s]	= "Болотных выползней",
+			[clsid.vipolzen_s]	= "Подземных выползней",
+			[clsid.cat_s]		= "Котов",
+			[clsid.fracture_s]	= "Изломов",
+			[clsid.morlok_s]	= "Морлоков",
+			[clsid.fracture_karlik_s]	= "Карликовых изломов",
+			[clsid.karlik_s]	= "Карликов",
+			[clsid.fracture_lab_s]	= "Лабораторных изломов",
+			[clsid.bibliotekar_s]	= "Библиотекарей",
+			[clsid.bibliotekar_black_s]	= "Подземных библиотекарей",
+			[clsid.zombie_s]	= "Зомби",
+			[clsid.rat_s]	= "Крыс",
+			[clsid.lyguh_s]	= "Лягушек",
+			[clsid.rotan_s] = "Ротанов",
+			[clsid.tarakan_s] = "Тараканов",
+			[clsid.tarakan_black_s] = "Матёрых тараканов"
+		}
+
+	function get_clsid(obj)
+		if obj == nil then return nil end
+
+	  return obj:clsid()
+	end
+
+
+	function off_corpses()
+		if (axr_main.config:r_value("mm_options","enable_corpse_rel",1,false) ~= true) then return end
+		for a=1,65534,1 do
+		local obj = alife():object(a)
+			if obj then
+				local posobj = obj.position
+				local actorpos = db.actor:position()
+				if IsMonster(obj) then
+					local id = get_clsid(obj)
+					if id then --оказывается, тут бывают вылеты - проверим на всякий пожарный, вдруг класса нет??
+						if tabl_monsters_stat_total[id] then
+							tabl_monsters_stat_total[id] = tabl_monsters_stat_total[id] + 1
+						end
+						monsters_total_count = monsters_total_count + 1				
+						if not obj:alive() and
+							posobj:distance_to(actorpos) > dist_to_corpses_motstr then 
+							table.insert(tabl_monsters_dead, obj)
+							tabl_monsters_stat_dead[id] = tabl_monsters_stat_dead[id] + 1
+							monsters_dead_count = monsters_dead_count + 1
+						end
+					else --если монстр, да еще и труп - все равно киляем нахер - чего ему делать в игре, мёртвому тем более без класса?
+						if not obj:alive() then
+							if bind_error_logs then 
+								log("[script: ss_off_corpse:function off_corpses(), p.15]")
+							end
+							alife():release(obj,true)
+						end
+					end
+				end
+			end
+
+		end
+	--Формат отсылки ньюсов: send_tip(actor, news_id, timeout, sender, showtime, sender_id)	
+		--зачистка мёртвых монстров
+		if table.getn(tabl_monsters_dead) > summ_dead_monsters then
+			table.sort(tabl_monsters_dead,max_comp)
+			if table.getn(tabl_monsters_dead) > summ_dead_monsters then
+				local  b = table.getn(tabl_monsters_dead)
+				local n = b
+				while b > summ_dead_monsters and n > 0 do
+					local corps = tabl_monsters_dead[n]
+					alife():release(corps,true)
+					table.remove(tabl_monsters_dead,n)
+					b=b-1
+					local id = get_clsid(corps)
+					tabl_monsters_stat_dead_removed[id] = tabl_monsters_stat_dead_removed[id] + 1
+					monsters_dead_removed_count = monsters_dead_removed_count + 1
+					n=n-1
+				end
+			end
+		end
+
+		-- вывод статистики
+		local monsters_total = "%c[255,0,255,0]Жили-были зверушки, всего "..monsters_total_count.." :%c[default]"
+		for m,c in pairs(tabl_monsters_stat_total) do
+			if c > 0 then
+				monsters_total = monsters_total.." "..tabl_monsters_dead_names[m].." - "..c..","
+			end
+		end
+		
+		if (axr_main.config:r_value("mm_options","enable_ns_stats",1,true) ~= false) then 
+			if old_ver_sms then
+				news_manager.send_tip(db.actor,string.sub(monsters_total, 1, string.len(monsters_total) - 1),nil,"Уборщик из Народной солянки",nil,nil)
+			else
+				db.actor:give_game_news("Уборщик из Народной солянки:", string.sub(monsters_total, 1, string.len(monsters_total) - 1), "ui_iconsTotal_NS", 0, 30000)
+			end
+		end
+		
+		local monsters_dead = "%c[255,0,255,0]Неживых-мёртвых валялось зверушек "..monsters_dead_count.." шт.:%c[default]"
+		for m,c in pairs(tabl_monsters_stat_dead) do
+			if c > 0 then
+				monsters_dead = monsters_dead.." "..tabl_monsters_dead_names[m].." - "..c..","
+			end
+		end
+		
+		if (axr_main.config:r_value("mm_options","enable_ns_stats",1,true) ~= false) then 	
+			if old_ver_sms then
+				news_manager.send_tip(db.actor,string.sub(monsters_dead, 1, string.len(monsters_dead) - 1),nil,"Уборщик из Народной солянки",nil,nil)
+			else
+				db.actor:give_game_news("Уборщик из Народной солянки:", string.sub(monsters_dead, 1, string.len(monsters_dead) - 1), "ui_iconsTotal_NS", 0, 30000)
+			end
+		end
+		
+		if monsters_dead_removed_count > 0 then
+			local monsters_dead_removed = "%c[255,0,255,0]Исчезло-пропало мёртвых зверушек "..monsters_dead_removed_count.." шт.:%c[default]"
+			for m,c in pairs(tabl_monsters_stat_dead_removed) do
+				if c > 0 then
+					monsters_dead_removed = monsters_dead_removed.." "..tabl_monsters_dead_names[m].." - "..c..","
+				end
+			end
+			if (axr_main.config:r_value("mm_options","enable_ns_stats",1,true) ~= false) then 
+				if old_ver_sms then
+					news_manager.send_tip(db.actor,string.sub(monsters_dead_removed, 1, string.len(monsters_dead_removed) - 1),nil,"Уборщик из Народной солянки",nil,nil)
+				else
+					db.actor:give_game_news("Уборщик из Народной солянки:", string.sub(monsters_dead_removed, 1, string.len(monsters_dead_removed) - 1), "ui_iconsTotal_NS", 0, 30000)
+				end
+			end
+		end
+	end 
+
+		
+	function get_dist_to_trup(wpn)
+		for i=1,table.getn(tabl_corpses),1 do
+			local poswpn = wpn.position
+			local npc = tabl_corpses[i]
+			local posnpc = npc.position
+			if (poswpn:distance_to(posnpc) < dist_from_weapons_to_trup) then 
+				return false
+			end
+		end
+		return true
+	end
+
+	function obj_protected(name,tabl)
+		local output=false
+			for i=1,table.getn(tabl) do
+				if string.find(name, tabl[i]) then
+					output=true
+					break
+				end
+			end
+		return output
+	end
+
+
+	function max_comp(i1,i2) -- возвращает true если i1 меньше i2
+		local actorpos = db.actor:position()
+		return i1.position:distance_to(actorpos) < i2.position:distance_to(actorpos)
+	end
+end

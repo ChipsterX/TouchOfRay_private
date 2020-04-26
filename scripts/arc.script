@@ -1,0 +1,82 @@
+function remove_obj(obj_id)
+	alife():release(alife():object(obj_id), true)
+end
+
+function remove_item(item_section)
+	local a = db.actor
+	local obj = db.actor:object(item_section)
+	remove_obj(obj:id())
+end
+
+function give_item(item_section)
+	local a = db.actor
+	return alife():create(item_section, a:position(), a:level_vertex_id(), a:game_vertex_id(), a:id())
+end
+
+function info(str, timeout)
+--	news_manager.send_tip(db.actor, "Debug Info:\\n"..tostring(str))
+end
+
+function warning(msg)
+--	news_manager.send_tip(db.actor, "Внимание:\\n"..tostring(msg))
+end
+
+function fault(msg)
+--	news_manager.send_tip(db.actor, "Ошибка:\\n"..tostring(msg))
+end
+
+function round(a)
+	b = math.floor(a)
+	if a-b<0.5 then
+		return b
+	end
+	return b+1
+end
+
+function to_interval(x, a, b)
+	local s = b-a+1
+	while x<a do
+		x=x+s
+	end
+	
+	while x>b do
+		x=x-s
+	end
+	
+	return x
+end
+
+function compare_part(a, b)
+	local l = math.min(string.len(a),string.len(b))
+	if string.sub(a, 1, l) == string.sub(b, 1, l) then
+		return true
+	end
+	return false
+end
+
+---------------------------------------------------------------
+-- added by naxac
+-- Борода даёт контейнер
+function get_art_box_basic(first_speaker, second_speaker)
+	dialogs.relocate_item_section(db.actor, "arc_art_box_basic", "in")
+end
+-- Борода забирает контейнер за то, что протерял арт
+function out_art_box_basic(first_speaker, second_speaker)
+	local npc = (first_speaker:id() == db.actor:id()) and second_speaker or first_speaker
+	dialogs.relocate_item_section(npc, "arc_art_box_basic", "out")
+end
+-- Дегтярёв отдал арт гопникам. Удаляем его из контейнера.
+-- Что-то из-за этого логика подглючивает... Похоже, дело в 'actot_has_item' в логиках.
+function remove_art_from_actor(first_speaker, second_speaker)
+	local cont = db.actor:object("arc_art_box_basic")
+	local art_sect = "af_quest_b14_twisted"
+	local art = db.actor:object(art_sect)
+	if cont and not art then
+		local npc = (first_speaker:id() == db.actor:id()) and second_speaker or first_speaker
+		alife():create(art_sect, npc:position(), npc:level_vertex_id(), npc:game_vertex_id(), npc:id())
+		arc_containers.remove_art(art_sect)
+		news_manager.relocate_item(db.actor, "out", art_sect)
+	else
+		dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, art_sect)
+	end
+end

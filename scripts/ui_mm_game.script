@@ -1,0 +1,52 @@
+class "game_opt" (CUIWindow)
+
+function game_opt:__init() super()
+end
+
+function game_opt:__finalize()
+
+end
+
+function game_opt:InitControls(x, y, xml, handler)
+
+	self:SetWndPos(vector2():set(x,y))
+	self:SetWndSize(vector2():set(738,416))
+	self:SetAutoDelete(true)
+	
+	--' Патроны на пояс
+	xml:InitStatic					("tab_video:cap_ammo_belt",		self)
+	xml:InitCheck					("tab_video:check_ammo_belt",		self)
+	
+	--' Замедление кустов и воды
+	xml:InitStatic					("tab_video:cap_gamemtl",		self)
+	xml:InitCheck					("tab_video:check_gamemtl",		self)
+	
+	--' Статус дискорда
+	xml:InitStatic					("tab_video:cap_discord",		self)
+	xml:InitCheck					("tab_video:check_discord",		self)
+	
+	--' Коллизия мертвых тел
+	xml:InitStatic					("tab_video:cap_collision",		self)
+	xml:InitCheck					("tab_video:check_collision",		self)
+	
+	--' Доступ к консоли
+	xml:InitStatic					("tab_video:cap_console",		self)
+	xml:InitCheck					("tab_video:check_console",		self)
+	
+	--' Опция разработчика
+	xml:InitStatic					("tab_video:cap_debug",		self)
+	xml:InitCheck					("tab_video:check_debug",		self)
+	
+	--' Ключ -noprefetch
+	xml:InitStatic					("tab_video:cap_noprefetch",		self)
+	xml:InitCheck					("tab_video:check_noprefetch",		self)
+	
+	--' Режим для youtube
+	xml:InitStatic					("tab_video:cap_youtube",		self)
+	xml:InitCheck					("tab_video:check_youtube",		self)
+
+	xml:InitStatic					("tab_video:info1",self)
+	xml:InitStatic					("tab_video:info2",self)
+	xml:InitStatic					("tab_video:info3",self)
+
+end

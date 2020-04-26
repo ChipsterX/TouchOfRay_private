@@ -1,0 +1,129 @@
+-- #######################################################################################################################
+-- 									МОДУЛЬ ОБНОВЛЕНИЯ ЧАС УЖАСА НА БАЗЕ ВЫБРОСА + ПСИ-ШТОРМА
+-- #######################################################################################################################
+--' Модуль обновления Часа ужаса. 
+--' OldSerpski Stalker, Back to the roots
+--' Исп. наработки и часть скрипта оригинального ЧУ за авторством Меченый(Стрелок)
+--' Заметки: [ bool_horror_manager_update, принимает true\false, получает значение из _G ]
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' -----------------------------
+local timer					
+local timer2
+local index_start = (axr_main.config:r_value("mm_options","horror_start_chance", 2) or 50)	
+local index_fail  = 0.5				   
+local index = math.random 			  
+local disable_info_portion = 10000     
+local horror_update = {h = 21, m = 55}
+local max1 = 100		
+local min1 = 1		
+local max2 = 1.0					
+local min2 = 0.1			
+local int1 = 1
+local int4 = 4
+--' -----------------------------
+--' Функции которые не используют local
+BOOL_SKIP_LOG2 = false				    --' Скипнуть лог
+--' -----------------------------
+
+local table_horro2_manager = {
+	k00_marsh = true,			
+	k01_darkscape = true,
+	k02_trucks_cemetery = true,
+	l01_escape = true,
+	l02_garbage = true,
+	l03_agroprom = true,
+	l04_darkvalley = true,
+	l06_rostok = true,
+	l07_military = true,
+	l08_yantar = true,
+	l09_deadcity = true,
+	l10_limansk = true,
+	l10_radar = true,
+	l10_red_forest = true,
+	l11_hospital = true,
+	l11_pripyat = true,
+	l12_stancia = true,
+	l12_stancia_2 = true,
+	l13_generators = true,
+	jupiter = true,
+	pripyat = true,
+	zaton = true	
+}
+
+local function update_horror()        
+	hours = level.get_time_hours()
+	if (hours >= 21) and (hours <= 22) then
+		preStartHorror()
+    end
+end
+
+function preStartHorror()
+	if (axr_main.config:r_value("mm_options","enable_horror_enable",1,false) ~= true) then 
+		return 
+	else 
+		if (table_horro2_manager[level.name()]) then 
+			time_global_update = time_global()						
+			time_global_hours = level.get_time_hours()				
+			time_global_minutes = level.get_time_minutes()			
+			timer_BOOL = true										
+			if (time_global_hours == horror_update.h) and (time_global_minutes == horror_update.m) then
+				if db.actor:dont_has_info("horror_time_begin") then		
+					db.actor:give_info_portion("horror_time_begin")
+					if index(min1, max1) < index_start and bool_horror_manager_update == true then 
+						horror_manager.start_horror()
+						if (BOOL_SKIP_LOG2) == false then 
+							log("index_start horror")
+						end
+					else 
+						if timer_BOOL == true and index(min2, max2) > index_fail and time_global_update>(timer or 0) then 
+							timer = time_global_update + disable_info_portion
+							horror_message_intFail = index(int1, int4)
+								
+							if horror_message_intFail == 1 then
+								horror_manager.message_int_fail()
+								if (BOOL_SKIP_LOG2) == false then 
+									log("horror_message_intFail type 1") 
+								end	
+							elseif horror_message_intFail == 2 then
+								if (BOOL_SKIP_LOG2) == false then 
+									log("horror_message_intFail type 2") 
+								end	
+							elseif horror_message_intFail == 3 then
+								horror_manager.message_int_fail()
+								if (BOOL_SKIP_LOG2) == false then 
+									log("horror_message_intFail type 3") 
+								end	
+							elseif horror_message_intFail == 4 then
+								if (BOOL_SKIP_LOG2) == false then 
+									log("horror_message_intFail type 4")
+								end	
+							end
+								db.actor:disable_info_portion("horror_time_begin")	
+								if (BOOL_SKIP_LOG2) == false then 
+									log("message int fail") 
+								end	
+						else 
+							if timer_BOOL == true and time_global_update>(timer2 or 0) then
+								timer2 = time_global_update + disable_info_portion 
+								if db.actor:has_info("horror_time_begin") then
+									db.actor:disable_info_portion("horror_time_begin")
+								end
+								if (BOOL_SKIP_LOG2) == false then 
+									log("return preStartHorror nil") 
+								end
+							end
+						    return
+						end
+					end
+				end
+			else 
+				return 
+			end
+		else 
+			return NULL
+		end
+	end
+end
+
+function on_game_start() if bool_horror_manager_update == false then return NULL else RegisterScriptCallback("actor_on_update", update_horror) end end

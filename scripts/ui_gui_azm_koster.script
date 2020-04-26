@@ -1,0 +1,245 @@
+class "form_cooking_gui" (CUIScriptWnd)
+
+function form_cooking_gui:__init(owner) super()
+	self.owner = owner
+	self:InitControls()
+	self:InitCallBacks()
+end
+
+function form_cooking_gui:__finalize()
+end
+
+function form_cooking_gui:InitControls()
+	self:SetWndRect			(Frect():set(0,0,1024,768))
+	local xml, ctrl			= CScriptXmlInit(), CUIWindow()
+	xml:ParseFile			("ui_gui_elements.xml")
+	self.form_cooking_menu_azm    = xml:InitStatic("form_cooking_menu_azm",self)     
+	
+	self.button_action_meat = xml:Init3tButton ("form_cooking_menu_azm:btn_action_meat",self.form_cooking_menu_azm)
+	self:Register (self.button_action_meat, "button_action_meat") 	
+	self.button_close = xml:Init3tButton ("form_cooking_menu_azm:btn_close",self.form_cooking_menu_azm)
+	self:Register (self.button_close, "button_close") 
+end
+
+function form_cooking_gui:InitCallBacks()    
+    self:AddCallback("button_action_meat", ui_events.BUTTON_CLICKED, self.OnButton_action_clicked, self)
+	self:AddCallback("button_close", ui_events.BUTTON_CLICKED, self.OnButton_close_clicked, self)
+end
+
+function form_cooking_gui:OnButton_close_clicked()         
+	self:HideDialog()	
+end
+
+function form_cooking_gui:OnButton_action_clicked()         
+	run_gui(ui_gui_azm_koster.form_cooking_action_gui())
+	self:HideDialog()
+end
+
+-----------------------------------------------------------
+
+class "form_cooking_action_gui" (CUIScriptWnd)
+
+function form_cooking_action_gui:__init(owner) super()
+	self.owner = owner
+	self:InitControls()
+	self:OnKeyboard()
+	self:InitCallBacks()
+end
+
+function form_cooking_action_gui:__finalize()
+end
+
+function form_cooking_action_gui:InitControls()
+	self:SetWndRect			(Frect():set(0,0,1024,768))
+	local xml, ctrl			= CScriptXmlInit(), CUIWindow()
+	xml:ParseFile			("ui_gui_elements.xml")
+	self.form_cooking_action_azm    = xml:InitStatic("form_cooking_action_azm",self)     
+	
+	self.button_krovosos_meat = xml:Init3tButton ("form_cooking_action_azm:btn_krovosos_meat",self.form_cooking_action_azm)
+	self:Register (self.button_krovosos_meat, "button_krovosos_meat") 
+	self.button_boar_meat = xml:Init3tButton ("form_cooking_action_azm:btn_boar_meat",self.form_cooking_action_azm)
+	self:Register (self.button_boar_meat, "button_boar_meat") 
+	self.button_himera_meat = xml:Init3tButton ("form_cooking_action_azm:btn_himera_meat",self.form_cooking_action_azm)
+	self:Register (self.button_himera_meat, "button_himera_meat") 
+	self.button_dog_meat = xml:Init3tButton ("form_cooking_action_azm:btn_dog_meat",self.form_cooking_action_azm)
+	self:Register (self.button_dog_meat, "button_dog_meat") 
+	self.button_flash_meat = xml:Init3tButton ("form_cooking_action_azm:btn_flash_meat",self.form_cooking_action_azm)
+	self:Register (self.button_flash_meat, "button_flash_meat")
+	self.button_psedodog_meat = xml:Init3tButton ("form_cooking_action_azm:btn_psedodog_meat",self.form_cooking_action_azm)
+	self:Register (self.button_psedodog_meat, "button_psedodog_meat")
+	self.button_tushkan_meat = xml:Init3tButton ("form_cooking_action_azm:btn_tushkan_meat",self.form_cooking_action_azm)
+	self:Register (self.button_tushkan_meat, "button_tushkan_meat")
+	self.button_cat_meat = xml:Init3tButton ("form_cooking_action_azm:btn_cat_meat",self.form_cooking_action_azm)
+	self:Register (self.button_cat_meat, "button_cat_meat")
+	self.button_gigant_meat = xml:Init3tButton ("form_cooking_action_azm:btn_gigant_meat",self.form_cooking_action_azm)
+	self:Register (self.button_gigant_meat, "button_gigant_meat")	
+	
+	self.button_close = xml:Init3tButton ("form_cooking_action_azm:btn_close",self.form_cooking_action_azm)
+	self:Register (self.button_close, "button_close") 
+end
+
+function form_cooking_action_gui:InitCallBacks()    
+    self:AddCallback("button_krovosos_meat", ui_events.BUTTON_CLICKED, self.OnButton_krovosos_clicked, self)
+	self:AddCallback("button_boar_meat", ui_events.BUTTON_CLICKED, self.OnButton_boar_clicked, self)
+	self:AddCallback("button_himera_meat", ui_events.BUTTON_CLICKED, self.OnButton_himera_clicked, self)
+	
+	self:AddCallback("button_dog_meat", ui_events.BUTTON_CLICKED, self.OnButton_dog_clicked, self)
+	self:AddCallback("button_flash_meat", ui_events.BUTTON_CLICKED, self.OnButton_flash_clicked, self)
+	self:AddCallback("button_psedodog_meat", ui_events.BUTTON_CLICKED, self.OnButton_psedodog_clicked, self)
+	
+	self:AddCallback("button_tushkan_meat", ui_events.BUTTON_CLICKED, self.OnButton_tushkan_clicked, self)
+	self:AddCallback("button_cat_meat", ui_events.BUTTON_CLICKED, self.OnButton_cat_clicked, self)
+	self:AddCallback("button_gigant_meat", ui_events.BUTTON_CLICKED, self.OnButton_gigant_clicked, self)
+	
+	self:AddCallback("button_close", ui_events.BUTTON_CLICKED, self.OnButton_close_clicked, self)
+end
+
+function form_cooking_action_gui:OnButton_close_clicked()  
+	run_gui(ui_gui_azm_koster.form_cooking_gui())
+	self:HideDialog()	
+end
+
+function form_cooking_action_gui:OnButton_krovosos_clicked()                
+	krovososMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_boar_clicked()                
+	boarMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_himera_clicked()                
+	himeraMeatCookingFull()
+end
+
+function form_cooking_action_gui:OnButton_dog_clicked()                
+	dogMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_flash_clicked()                
+	flashMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_psedodog_clicked()                
+	psedodogMeatCookingFull()
+end
+
+function form_cooking_action_gui:OnButton_tushkan_clicked()                
+	tushkanMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_cat_clicked()                
+	catMeatCookingFull()
+end
+function form_cooking_action_gui:OnButton_gigant_clicked()                
+	gigantMeatCookingFull()
+end
+
+function form_cooking_action_gui:OnKeyboard()
+	if db.actor:object("mutant_part_krovosos_meat") == nil then
+	    self.button_krovosos_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_boar_chop") == nil then
+	    self.button_boar_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_chimera_meat") == nil then
+	    self.button_himera_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_dog_meat") == nil then
+	    self.button_dog_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_flesh_meat") == nil then
+	    self.button_flash_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_psevdodog_meat") == nil then
+	    self.button_psedodog_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_tushkano_meat") == nil then
+	    self.button_tushkan_meat:Enable(false)
+	end
+	if db.actor:object("mutant_part_cat_meat") == nil then
+	    self.button_cat_meat:Enable(false)
+	end
+	if db.actor:object("mutant_pseudogigant_meat") == nil then
+	    self.button_gigant_meat:Enable(false)
+	end
+end 
+---------------------
+
+function krovososMeatCookingFull()
+	if db.actor:object("mutant_part_krovosos_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_krovosos_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_krovosos_meat_cook")
+	end
+	if db.actor:object("mutant_part_krovosos_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function boarMeatCookingFull()
+	if db.actor:object("mutant_part_boar_chop") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_boar_chop"})
+		xr_z_azm_config.spawn_item("mutant_part_boar_chop_cook")
+	end
+	if db.actor:object("mutant_part_boar_chop") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function himeraMeatCookingFull()
+	if db.actor:object("mutant_part_chimera_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_chimera_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_chimera_meat_cook")
+	end
+	if db.actor:object("mutant_part_chimera_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+
+function dogMeatCookingFull()
+	if db.actor:object("mutant_part_dog_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_dog_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_dog_meat_cook")
+	end
+	if db.actor:object("mutant_part_dog_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function flashMeatCookingFull()
+	if db.actor:object("mutant_part_flesh_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_flesh_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_flesh_meat_cook")
+	end
+	if db.actor:object("mutant_part_flesh_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function psedodogMeatCookingFull()
+	if db.actor:object("mutant_part_psevdodog_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_psevdodog_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_psevdodog_meat_cook")
+	end
+	if db.actor:object("mutant_part_psevdodog_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+
+function tushkanMeatCookingFull()
+	if db.actor:object("mutant_part_tushkano_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_tushkano_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_tushkano_meat_cook")
+	end
+	if db.actor:object("mutant_part_tushkano_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function catMeatCookingFull()
+	if db.actor:object("mutant_part_cat_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_part_cat_meat"})
+		xr_z_azm_config.spawn_item("mutant_part_cat_meat_cook")
+	end
+	if db.actor:object("mutant_part_cat_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end
+function gigantMeatCookingFull()
+	if db.actor:object("mutant_pseudogigant_meat") ~= nil then
+		xr_z_azm_config.remove_item(actor, npc, {"mutant_pseudogigant_meat"})
+		xr_z_azm_config.spawn_item("mutant_pseudogigant_meat_cook")
+	end
+	if db.actor:object("mutant_pseudogigant_meat") == nil then
+		done_item(db.actor, game.translate_string("Вы приготовили всё имеющееся мясо!"))	
+	end
+end

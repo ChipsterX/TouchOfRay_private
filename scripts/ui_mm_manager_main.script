@@ -1,0 +1,288 @@
+class "manager_dialog" (CUIScriptWnd)
+
+function manager_dialog:__init() super()
+	self.m_preconditions = {}
+	
+    self:InitControls()
+    self:InitCallBacks()
+	self.tab:SetActiveTab("video")
+end
+
+function manager_dialog:__finalize()
+end
+
+function manager_dialog:InitControls()
+	self:SetWndRect				(Frect():set(0,0,1024,768))
+	self:Enable					(true)
+
+	self.xml = CScriptXmlInit()
+	local xml = self.xml
+	xml:ParseFile				("ui_mm_manager.xml")
+
+	xml:InitStatic				("background", self)
+	self.dialog					= xml:InitStatic("main_dialog:dialog", self)
+
+	self.dlg_game				= ui_mm_game.game_opt()
+	self.dlg_game:InitControls	(0,0, xml, self)
+	self.dlg_game:Show			(false)
+	self.dialog:AttachChild		(self.dlg_game)
+	xml:InitWindow				("tab_size", 0, self.dlg_game)
+
+	local btn
+	btn = xml:Init3tButton		("main_dialog:btn_accept", self.dialog)
+	self:Register				(btn, "btn_accept")
+	btn = xml:Init3tButton		("main_dialog:btn_cancel", self.dialog)
+	self:Register				(btn, "btn_cancel")
+
+	self.tab					= xml:InitTab("main_dialog:tab", self.dialog)
+	self:Register				(self.tab, "tab")
+
+	self.message_box			= CUIMessageBoxEx()
+	self:Register				(self.message_box, "mb")
+
+	self.b_restart_system_shown	= false
+	self.timer					= nil
+
+end
+
+function manager_dialog:SetCurrentValues()
+	local opt = COptionsManager()
+	
+	opt:SetCurrentValues("mm_game")
+	opt:SaveBackupValues("mm_game")
+end
+
+function manager_dialog:InitDynamicOptions(tab)
+	local checks, lists, elements = {}, {}, {}
+	local _st
+	
+	local tab_name = "tab_"..tab
+	local tab_table = self[tab.."_options"]
+
+	for cap,t in pairs(tab_table) do
+		if not (t.disabled) then
+			_st = self.xml:InitStatic(tab_name..":templ_item", nil)
+			
+			local ctrl = self.xml:InitStatic(tab_name..":cap_check_axr",_st) 
+			
+			ctrl:TextControl():SetText(game.translate_string("ui_mm_"..cap))
+			
+			if (t.typ == "check") then
+				table.insert(checks,ctrl:TextControl():GetText())
+				elements[ctrl:TextControl():GetText()] = _st
+			
+				ctrl = self.xml:InitCheck(t.tag or tab_name..":check_axr",_st)
+				
+				if (t.default ~= nil) then 
+					self:Register(ctrl,"ck_"..cap)
+				end
+				
+			elseif(t.typ == "list") then 
+
+				table.insert(lists,ctrl:TextControl():GetText())
+				elements[ctrl:TextControl():GetText()] = _st
+			
+				ctrl = self.xml:InitComboBox(t.tag or tab_name..":list_axr",_st)
+				
+				if (t.list) then
+					for i,v in ipairs(t.list) do 
+						ctrl:AddItem(game.translate_string(v),i-1)
+					end
+				end
+		
+				if (t.default ~= nil) then 
+					self:Register(ctrl,"lst_"..cap)
+					if (t.on_list_item_select) then
+						local _wrapper = function(handler) 
+							t.on_list_item_select(handler,ctrl)
+						end
+						self:AddCallback("lst_"..cap,ui_events.LIST_ITEM_SELECT,_wrapper,self)
+					end
+				end
+			end
+			
+			t.ctrl = ctrl
+		end
+	end 
+	
+	table.sort(lists)
+	table.sort(checks)
+	
+	local dlg_name = "dlg_"..tab
+	for i=1,#lists do 
+		elements[lists[i]]:SetAutoDelete(false)
+	end
+
+	for i=1,#checks do 
+		elements[checks[i]]:SetAutoDelete(false)
+	end
+end
+
+function manager_dialog:InitCallBacks()
+	self:AddCallback("tab",					ui_events.TAB_CHANGED,		self.OnTabChange,			self)
+	self:AddCallback("btn_accept",			ui_events.BUTTON_CLICKED,	self.OnBtnAccept,			self)
+	self:AddCallback("btn_cancel",			ui_events.BUTTON_CLICKED,	self.OnBtnCancel,			self)
+	self:AddCallback("btn_default_graphic",	ui_events.BUTTON_CLICKED,	self.OnBtnDefGraph,			self)
+	self:AddCallback("combo_preset",		ui_events.LIST_ITEM_SELECT,	self.OnPresetChanged,		self)
+	self:AddCallback("btn_simply_graphic",	ui_events.BUTTON_CLICKED,	self.OnSimplyGraphic,		self)
+	self:AddCallback("btn_keyb_default",	ui_events.BUTTON_CLICKED,	self.OnBtnKeybDefault,		self)
+
+	self:AddCallback("mb",					ui_events.MESSAGE_BOX_YES_CLICKED, self.OnApplyChanges, self)
+	self:AddCallback("mb",					ui_events.MESSAGE_BOX_NO_CLICKED, self.OnDiscardChanges,self)
+end
+
+function manager_dialog:OnBtnCheckUpdates()
+	local console			= get_console()
+	console:execute			("check_for_updates 1")
+end
+
+function manager_dialog:OnBtnKeybDefault()
+end
+
+function manager_dialog:OnPresetChanged()
+end
+
+
+function manager_dialog:OnBtnDefGraph()
+	local opt = COptionsManager()
+	opt:SendMessage2Group("mm_game","set_default_value")
+end
+
+
+function manager_dialog:OnBtnAccept()
+
+	local opt		= COptionsManager()
+	
+	if not BOOL_MODE_MIXED then
+		if not bind_settings_save then
+			operator:execute("cfg_save game_settings_save")
+		end
+	end
+	
+	opt:SaveValues("mm_game")
+
+	if opt:NeedVidRestart() then
+		self.b_discard_settings_shown = true
+		self.message_box:InitMessageBox("message_box_yes_no")
+		self.message_box:SetText(string.format("%s %d% s", game.translate_string("ui_mm_confirm_changes"), 15, game.translate_string("mp_si_sec")))
+		self.message_box:ShowDialog(true)
+	else
+		self:OnApplyChanges()
+	end
+
+	opt:OptionsPostAccept()
+	
+	operator:execute("cfg_save")
+end
+
+function manager_dialog:OnBtnCancel()
+	local opt				= COptionsManager()
+	opt:UndoGroup			("mm_game")
+	opt:OptionsPostAccept	()
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)
+end
+
+function manager_dialog:OnTabChange()
+	self.dlg_game:Show(false)
+
+	local ids = self.tab:GetActiveId()
+	if ids == "video" then
+		self.dlg_game:Show(true)
+	end
+end
+
+
+function manager_dialog:OnBtnAdvGraphic()
+end
+
+function manager_dialog:OnSimplyGraphic()
+end
+
+function manager_dialog:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+
+	if res==false then
+
+		local bind = dik_to_bind(dik)
+
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+			if dik == DIK_keys.DIK_ESCAPE then
+					self.owner:ShowDialog(true)
+					self:HideDialog()
+					self.owner:Show(true)
+			end
+
+		end
+	end
+
+	return res
+end
+
+function manager_dialog:Update()
+	CUIScriptWnd.Update(self)
+
+	local mm = main_menu.get_main_menu()
+
+	if(self.b_discard_settings_shown) then
+		local tg = math.floor(time_global_async()/1000)
+		if(self.timer==nil) then
+			self.timer = tg
+		end
+		self.message_box:SetText(string.format("%s %d %s", game.translate_string("ui_mm_confirm_changes"), 15-(tg-self.timer), game.translate_string("mp_si_sec")))
+		if(tg-self.timer>=15) then
+			if (self.message_box:IsShown()) then
+				self.message_box:HideDialog()
+			end
+			self:OnDiscardChanges()
+		end
+	end
+end
+
+function manager_dialog:OnApplyChanges()
+    self.timer = nil
+    self.b_discard_settings_shown = false
+
+	self.owner:ShowDialog(true)
+	if (self:IsShown()) then
+		self:HideDialog()
+	end
+	self.owner:Show(true)
+	get_console():execute("vid_restart")
+
+	if not (self.b_restart_system_shown and self.message_box:IsShown()) then
+		local opt = COptionsManager()
+		if (opt:NeedSystemRestart() or self.b__require_restart == true) then
+			self.b__require_restart = false
+			self.b_restart_system_shown = true
+			self.message_box:InitMessageBox("message_box_restart_game")
+			self.message_box:ShowDialog(true)
+		end
+	end
+end
+
+function manager_dialog:OnDiscardChanges()
+    self.timer = nil
+    self.b_discard_settings_shown = false
+
+	if not BOOL_MODE_MIXED then
+		if not bind_settings_save then
+			operator:execute("cfg_save game_settings_save")
+		end
+	end
+	
+	self:SetCurrentValues()
+
+	operator:execute("vid_restart")
+   	operator:execute("cfg_save")
+end
+
+function manager_dialog:OnMenuReloaded()
+	if(self.b_discard_settings_shown) then
+	    self.message_box:InitMessageBox("message_box_yes_no")
+	    self.message_box:SetText(string.format("%s %d% s", game.translate_string("ui_mm_confirm_changes"), 15, game.translate_string("mp_si_sec")))
+	    self.message_box:ShowDialog(true)
+	end
+end

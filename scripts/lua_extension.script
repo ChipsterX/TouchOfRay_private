@@ -1,0 +1,961 @@
+--[[ ----------------------------------------------------------------------------------------------
+ File       : lua_extension.script (for SHoC/CS/CoP)
+ Description: "Расширитель функционала Lua" - it adds new functions to Lua standard library
+ Copyright  : 2013 © STALKER-community
+ Author     : (miscellany / сборник)
+ Editors    : Artos
+ Last edit  : 01.03.2016 (by Kirgudu)
+--]] ----------------------------------------------------------------------------------------------
+
+--[[ --/ Для активизации данного скрипта в файл _g.script необходимо добавить строку:
+prefetch("lua_extension") --/#+# инициализация модуля расширений Lua.
+--]]
+--/ -----------------------------------------------------------------
+--/ VARIABLEs
+--/ -----------------------------------------------------------------
+local sModule = script_name() --/ string name of the file module
+--/ -----------------------------------------------------------------
+--/ Process
+--/ -----------------------------------------------------------------
+--/ расширенный формат строки (для вывода в лог)
+local function fStringExtraFormat(fmt,...)
+	--/ локальная функция: перевод аргумента в стринг
+	local val2str = function(val,lua_type)
+		if lua_type == 'table' then
+			if tonumber(val.x) and tonumber(val.y) and tonumber(val.z) then
+				return string.format('tbl{x=%.3f:y=%.3f:z=%.3f}',val.x,val.y,val.z) --/>
+			end
+			local tbl,str,separator = {},'tbl{',""
+			for key,_ in pairs(val) do
+				table.insert(tbl, key == tonumber(key) and tostring(key) or key)
+			end
+			table.sort(tbl)
+			for _,key in ipairs(tbl) do
+				if (tonumber(key) or 0) > 0 then
+					str = str..separator..tostring(val[tonumber(key)])
+				else
+					str = str..separator..key.." = "..tostring(val[key])
+				end
+				separator = ", "
+			end
+			return str..'}' --/>
+		elseif lua_type == 'userdata' then --/#?# а нужно ли привязываться к движку?
+			if type(val.getP) == 'function' then
+				if type(val.x) == 'number' and type(val.y) == 'number' and type(val.z) == 'number' then
+					return string.format('vec(x=%.3f:y=%.3f:z=%.3f)',val.x,val.y,val.z) --/>
+				end
+				return '<vector>' --/>
+			elseif type(val.setHMSms) == 'function' then
+				return 'CTime('..val:dateToString(0).." "..val:timeToString(3)..")" --/> D/M/Y h:m:s:ms
+			end
+		elseif lua_type == 'string' then
+			return val --string.format("%q", val) --/>
+		elseif lua_type == 'boolean' then
+			return val and "true" or "false" --/>
+		elseif lua_type == 'number' then
+			return tostring(val) --/>
+		end
+		return "<"..lua_type..">" --/>
+	end
+	--/ основное тело функции: парсинг исходной строки
+	if type(fmt) == 'string' then
+		if fmt:match('%%[sdf]') then --/ есть патерн(ы)?
+			if next({...}) then --/ есть аргумент(ы)?
+				local arg,val,lua_type,i = {...},nil,nil,nil
+				for i=1,#arg do
+					val = arg[i] --/ значение текущего аргумента
+					lua_type = type(val) --/ тип текущего аргумента
+					if lua_type == 'number' then
+						fmt = fmt:gsub('%%[dsf]',val,1)
+					else
+						fmt = fmt:gsub('%%s',val2str(val,lua_type),1)
+					end
+				end
+			end
+			fmt = fmt:gsub('%%[sdf]',"<NOT_arg!>") --/ заглушка от отсутствия аргументов
+		end
+	else
+		fmt = val2str(fmt,type(fmt))
+	end
+	return fmt --/> string
+	--/ с заменой обычных пробелов (sym_space='\032') на печатные ('\160')
+	--return fmt:gsub('%s','\160') --/> string
+end
+
+--/
+local function fPrint_Table(tTab,sTitle,bMode) --/< bMode: key=true, value=false
+	if type(tTab) == 'table' then
+		local sMsg,sSub,sPref,sSuf = "Print_Table:","","",""
+		if type(sTitle) == 'string' then
+			sPref,sTitle = sTitle:match('^%s*([^:]*)%:*(.+)')
+			if sTitle then
+				sTitle,sSuf = sTitle:match('^%s*([^|]+)%|*(.*)')
+			else
+				sTitle = "Tbl:"
+			end
+			if sPref and sPref ~= "" then
+				sMsg = sMsg..sPref..":"..sTitle
+			else
+				sMsg = sMsg..sTitle
+			end
+			if sSuf and sSuf ~= "" then
+				sMsg = sMsg.."("..sSuf.."):"
+			else
+				sMsg = sMsg..":"
+			end
+		else
+			sTitle = "Tbl:"
+		end
+		if bMode then
+			sMsg = sMsg.."keys only"
+		elseif bMode == false then
+			sMsg = sMsg.."values only"
+		end
+		--/ -----------------------------------------
+		fToLog = function(tT,sSub)
+			if next(tT) then
+				for k,v in pairs(tT) do
+					local sKey = type(k)
+					if sKey == 'string' then
+						sKey = k
+					elseif sKey == 'number' then
+						sKey =  tostring(k)
+					else
+						sKey = "[<"..sKey..">]"
+					end
+					local lua_type = type(v)
+					if lua_type == 'table' then
+						if sKey == "_G" or (sKey == "loaded" and v["package"]) then
+							fToLog({}, sSub..'.'..sKey) --/> рекурсивный вызов
+						else
+							fToLog(v, sSub..'.'..sKey) --/> рекурсивный вызов
+						end
+					else
+						if lua_type == 'string' then
+							if v ~= '' then
+								if v:len() > 255 then
+									v = v:sub(1,255) --/ ограничиваем длину строки
+								end
+							else
+								v = '<<zero_string>>'
+							end
+						elseif lua_type == 'number' or lua_type == 'boolean' then
+							v = tostring(v)
+						elseif lua_type == 'userdata' then
+							if type(v.setHMSms) == 'function' then
+								v = '<<CTime>>'
+							elseif type(v.getP) == 'function' then --/ vector?
+								if type(v.x) == 'number' and type(v.y) == 'number' and type(v.z) == 'number' then
+									v = '<vector>:'..string.format("x=%.3f:y=%.3f:z=%.3f", v.x, v.y, v.z)
+								end
+								v = '<<vector>>'
+							else
+								v = '<<'..lua_type..'>>'
+							end
+						else
+							v = '<<'..lua_type..'>>'
+						end
+						if bMode == nil then
+							to_log(sSub.."."..sKey.." = ["..tostring(v).."]")
+						elseif bMode then
+							to_log("key = %s"..sKey)
+						else
+							to_log("value = %s"..tostring(v))
+						end
+					end
+				end
+			else --/ пустая таблица
+				to_log(sSub..". = <<zero_table>>")
+			end
+		end
+		--/ -----------------------------------------
+		to_log(sMsg.."~~~~~~~>")
+		fToLog(tTab,sTitle)
+		to_log(sMsg.."~~~~~~~<")
+	else
+		to_log("fPrint_Table:("..type(tTab)..")=["..tostring(sTitle).."]~wrong!:<Warning!>")
+	end
+end
+
+local function fGetSizeTable(tbl)
+	if type(tbl) == 'table' then --/ таблица?
+		if next(tbl) then --/ не пустая?
+			local cnt = 0
+			for _,_ in pairs(tbl) do
+				cnt = cnt +1
+			end
+			return cnt --/> 'number'
+		end
+	else
+		to_log("fGetSizeTable:type_arg=["..type(tab).."]~NOT_table:<Warning!>")
+	end
+	return 0 --/>
+end
+
+local function fCopyTable(tbl_src, tbl_trg)
+	local tbl_copy = tbl_trg or {}
+	if type(tbl_src) == 'table' then --/ таблица?
+		--/ локальная функция копирования
+		fCopy = function(tS,tC)
+			for k,v in pairs(tS) do
+				if type(v) == 'table' and next(v) then --/ не пустая субтаблица?
+					tC[k] = {} --/ копия субтаблицы
+					fCopy(v,tC[k]) --/> рекурсивный вызов
+				else
+					tC[k] = v
+				end
+			end
+		end
+		--/<
+		if next(tbl_src) then --/ таблица не пуста?
+			fCopy(tbl_src,tbl_copy)
+		end
+	else
+		abort("fCopyTable:=["..type(tbl_src).."]~?:<Warning!>")
+	end
+	return tbl_copy --/>
+end
+
+function fCloneTable(tbl)
+	local lookup_tbl = {}
+	--/ локальная функция копирования
+	fClone = function(tbl)
+		if type(tbl) ~= 'table' then
+			return tbl --/> не таблица
+		elseif lookup_tbl[tbl] then
+			return lookup_tbl[tbl] --/> уже имеется
+		end
+		local new_tbl = {}
+		lookup_tbl[tbl] = new_tbl
+		for key,value in pairs(tbl) do
+			new_tbl[fClone(key)] = fClone(value) --/> рекурсивные вызовы
+		end
+		return setmetatable(new_tbl, fClone( getmetatable(tbl)) ) --/>
+	end
+	--/<
+	return fClone(tbl) --/>
+end
+
+local function fFindInTable(tbl, value) --/ find element in table
+	if value ~= nil and type(tbl) == 'table' then
+		for _,v in pairs(tbl) do
+			if type(v) == type(value) and v == value then
+				return true --/>
+			end
+		end
+	end
+	return false --/>
+end
+
+local tTypeToMarker = { ['nil']=0,['boolean']=1,['number']=2,['string']=3,['table']=4 }
+
+function fTable_Serialize(x, recur)
+	--local lua_type = type(x)
+	local marker = tTypeToMarker[type(x)] --/ 0...4
+	if marker then
+		recur = recur or {}
+
+		if     marker == 3 then --/ lua_type == 'string'
+			return string.format('%q',x) --/>
+		elseif marker == 2 then --/ lua_type == 'number'
+			return tostring(x) --/>
+		elseif marker == 1 then --/ lua_type == 'boolean'
+			return x and "true" or "false" --/>
+		elseif marker == 0 then --/ lua_type == 'nil'
+			return "nil" --/>
+		elseif getmetatable(x) then --/ can not serialize a table that has a metatable associated with it.
+			return nil, true --/>
+		elseif marker == 4 then --/ lua_type == 'table'
+			if recur[x] then --/ can not serialize recursive tables.
+				return nil, true --/>
+			end
+			recur[x] = true
+
+			local str,key,val,err = "{",nil,nil,nil
+			for k,v in pairs(x) do
+				key,err = fTable_Serialize(k, recur) --/> recursive call
+				if err then --/ if something srong with table's keys
+					return nil, true --/>
+				end
+				val,err = fTable_Serialize(v, recur) --/> recursive call
+				if err then --/ if something srong with table's values
+					return nil, true --/>
+				end
+				str = str.."["..key.."]".."="..val..","
+			end
+
+			return str:sub(0, str:len() -1).."}" --/>
+		end
+	end
+	--/ can not serialize value of passed type
+	return nil, true --/>
+end
+
+--/ unserialize table from string
+local function fTable_unSerialize(str)
+	return loadstring("return " .. str)() or {} --/>
+end
+
+
+local tMarkers = { --/ служебная таблица маркеров упаковки
+	dec = {string.char(1), 1}, --/ 0x1 (SOH) - 'number' (dec)
+	str = {string.char(2), 2}, --/ 0x2 (STX) - 'string'
+	bln = {string.char(3), 3}, --/ 0x3 (ETX) - 'boolean'
+	tbl = {string.char(4), 4}, --/ 0x4 (EOT) - 'table'
+	tbe = {string.char(5), 5}, --/ 0x5 (ENQ) - table-end
+	tbi = {string.char(6), 6}, --/ 0x6 (ACK) - table-list
+	hex = {string.char(7), 7}, --/ 0x7 (BEL) - number-hex
+	vec = {string.char(8), 8}, --/ 0x8 (BS)  - 'vector'
+	ctm = {string.char(9), 9}  --/ 0x9 (...) - 'ctime'
+}
+--/--------------------------------------------------------
+--/ упаковка таблицы (списка) 'tTbl' в строку 'sStr'
+--/--------------------------------------------------------
+function fTbl_Compress(tTbl,recur) --/< table [,(nil|true|false)]
+	if type(tTbl) ~= 'table' then
+		if type(tTbl) == 'userdata' then --/ if 'vector' or 'ctime'?
+			if type(tTbl.getP) == 'function' and tonumber(tTbl.x) and tonumber(tTbl.y) and tonumber(tTbl.z) then --/ 'vector'
+				if db.is_dbg1 then log("fTbl_Compress:vec_marker(%d)=[%s]", tMarkers.vec[2], tMarkers.vec[1], "") end --/#~# 'vector'
+				return tMarkers.vec[1] .. fTbl_Compress({tTbl.x,tTbl.y,tTbl.z},recur or {}) .. tMarkers.tbe[1] --/> рекурсивный вызов
+			elseif type(tTbl.setHMSms) == 'function' then --/ 'ctime'
+				if db.is_dbg1 then log("fTbl_Compress:ctm_marker(%d)=[%s]", tMarkers.ctm[2], tMarkers.ctm[1], "") end --/#~# 'ctime'
+				local Y,M,D,h,m,s,ms = tTbl:get(0,0,0,0,0,0,0)
+				return tMarkers.ctm[1] .. fTbl_Compress({Y,M,D,h,m,s,ms},recur or {}) .. tMarkers.tbe[1] --/> рекурсивный вызов
+			end
+		end
+		to_log("fTbl_Compress:Not_Table=["..type(tTbl).."]:<Warning!>")
+		return "",true --/> zero-string & error (не таблица!)
+	elseif getmetatable(tTbl) then --/ can not serialize a table that has a metatable associated with it.
+		to_log("fTbl_Compress:metatable:<%s>", "Warning!")
+		return "",true --/> zero-string & error (не таблица!)
+	elseif not next(tTbl) then --/ --/>? (отсутствует 1-й элемент таблицы)
+		return "",false --/> zero-string (таблица пуста)
+	end
+	recur = recur or {}
+	--/-------------------
+	--/ локальная функция: проверка типа таблицы:'список' или нет?
+	--/-------------------
+	local fIs_List = function(tTbl)
+		local bList = false
+		local iCntIdx = #tTbl --/ длина индексированной части таблицы
+		if iCntIdx > 0 then --/ есть элементы списка?
+			--/ индексы начинаются с 1 и за 'списком' отсутствует хеш-элемент
+			if next(tTbl) == 1 and not next(tTbl,iCntIdx) then
+				for i=2,iCntIdx-1 do --/ цикл перепроверки: 'отсутствуют пустые элементы?'
+					if tTbl[i] == nil then --/ пустышка?
+						return false --/> не список
+					end
+				end
+				bList = true --/ флаг: это список!
+			end
+		end
+		return bList --/> флаг: список или ... (true|nil)
+	end
+	--/-------------------
+	--/ локальная функция: упаковка (+конвертер) числа (number) в 'dec' или 'hex' строку (string)
+	--/-------------------
+	local fPack_Num2Str = function(iNum)
+		if iNum == math.modf(iNum) then --/ целочисленное? (отсутствует дробная часть)
+			local iAbs = math.abs(iNum) --/ модуль числа
+			if iAbs > 9 then --/ число 2-x и более разрядное?
+				local iLv = math.floor(math.log10(iAbs+1)) --/ степень ближайшего к модулю бОльшего числа кратного 10-ти
+				if iAbs >= 10^iLv and iAbs < 2^(4*iLv) then --/ разрядность 'dec' > 'hex'?
+					if iNum >= 0 then --/ не отрицательное?
+						return tMarkers.hex[1] .. string.format('%X', iAbs) --/> 'hex'-строка
+					end
+					--/ отрицательное - упаковываем со знаком
+					return tMarkers.hex[1] .. "-" .. string.format('%X', iAbs) --/> 'hex'-строка со знаком
+				end
+			end
+		end
+		return tMarkers.dec[1] .. iNum --/> 'dec'-строка
+	end
+	--/-------------------
+	--/ локальная функция: упаковка ключа (индекса) элемента таблицы
+	--/-------------------
+	local fPack_Key = function(key)
+		local marker = tTypeToMarker[type(key)] or -1 --/ 0...4
+		if     marker == 2 then --/ 'number'
+			return fPack_Num2Str(key) --/> 'dec|hex'-строка
+		elseif marker == 3 then --/ 'string'
+			return tMarkers.str[1] .. key --/> строка
+		end
+		--table.print(tTbl,sModule..":PackTbl|Key")
+		--abort("fTbl_Compress:fPack_Key:Type(%s)=[%s]~UnSupported:<%s>", key, type(key), "Error!")
+		to_log("fTbl_Compress:fPack_Key:Type("..tostring(key)..")=["..type(key).."]~unsupported:<Warning!>")
+		return nil,true --/> nil & error
+	end
+	--/-------------------
+	--/ локальная функция: упаковка значения элемента таблицы
+	--/-------------------
+	local fPack_Value = function(value)
+		local marker = tTypeToMarker[type(value)] or -1 --/ 0...4
+		if     marker == 2 then --/ 'number'
+			return fPack_Num2Str(value) --/> 'dec|hex'-строка
+		elseif marker == 3 then --/ 'string'
+			return tMarkers.str[1] .. value --/> строка
+		elseif marker == 1 then --/ 'boolean'
+			return tMarkers.bln[1] .. ((value and "1") or "0") --/> 'bool'-строка ('0'|'1')
+		elseif getmetatable(value) then
+			--/ can not serialize a table
+		elseif marker == 4 then --/ 'table'
+			--[[
+			if recur[tTbl] then --/ can not serialize recursive tables
+				return nil, true --/> nil & error #???#
+			end
+			--]]
+			recur[tTbl] = true
+			return tMarkers.tbl[1] .. fTbl_Compress(value,recur) .. tMarkers.tbe[1] --/> рекурсивный вызов
+		end
+		--table.print(tTbl,sModule..":PackTbl|Value")
+		--abort("fTbl_Compress:fPack_Value:Type(%s)=[%s]~UnSupported:List=[%s]:<%s>", value, type(value), bList, "Error!")
+		to_log("fTbl_Compress:fPack_Value:Type=["..type(value).."]~unsupported:bList=["..tostring(bList).."]:<Warning!>")
+		return nil,true --/> nil & error
+	end
+	--/ -------------------------------------------
+	--/ тело основной функции: all pack
+	--/-------------------
+	local tPackStr = {} --/ временная таблица для частей общей строки
+	local key,val,err
+	if fIs_List(tTbl) then --/ упаковывается список?
+		table.insert( tPackStr, tMarkers.tbi[1] ) --/< маркер 'list' (список)
+		for i=1,#tTbl do
+			val,err = fPack_Value(tTbl[i],recur)
+			if err then  to_log(string.exformat("fTbl_Compress:val(%s)=[%s]=>[%s]~wrong_pack:list:<%s>", type(tTbl[i]), tTbl[i], val, "Warning!"))
+				return "",true --/> zero-string & error (can not serialize)
+			end
+			table.insert(tPackStr, val)
+		end
+	else --/ полная упаковка (ключ и значение)
+		for k,v in pairs(tTbl) do
+			key,err = fPack_Key(k,recur)
+			if err then  to_log(string.exformat("fTbl_Compress:key(%s)=[%s]=>[%s]~wrong_pack:<%s>", k, type(k), key, "Warning!"))
+				return "",true --/>  zero-string & error (can not serialize)
+			end
+			table.insert(tPackStr, key)
+			val,err = fPack_Value(v,recur)
+			if err then  to_log(string.exformat("fTbl_Compress:val(%s)=[%s]=>[%s]~wrong_pack:<%s>", v, type(v), val, "Warning!"))
+				return "",true --/>  zero-string & error (can not serialize)
+			end
+			table.insert(tPackStr, val)
+		end
+	end
+	return table.concat(tPackStr) --/> строка
+end
+--/--------------------------------------------------------
+--/ Pаспаковка строки 'sString' в таблицу
+--/--------------------------------------------------------
+function fTbl_deCompress(sString)
+	local iLen = sString:len() --/ длина строки
+	--/-------------------
+	--/ локальная функция: по-символьный парсер строки 'sString' от iSym-го до 1-го 'управляющего' символа
+	--/-------------------
+	local fGet_Str = function(iSym) --/< текущий индекс символа в строке
+		for i=iSym,iLen do
+			local iByte = string.byte(sString:sub(i,i)) --/ код i-го символа строки
+			if iByte < 32 then --/ 'управляющий' символ?
+				if iByte > 9 then --/ запрещенный 'управляющий' символ?
+					abort(sModule..":fTbl_deCompress:fGet_Str:Symbol("..tostring(i)..")=["..tostring(iByte).."] < 32:<Error!>")
+				elseif i == iSym then --/ текущий символ такой же как и начальный управляющий символ?
+					if i > 0 and iByte ~= tMarkers.str[2] and iByte == string.byte(sString:sub(i-1,i-1)) then --/ исключаем пустые строки
+						to_log("fTbl_deCompress:fGet_Str:string= "..tostring(sString))
+						abort(sModule..":fTbl_deCompress:fGet_Str:Symbol("..tostring(i)..")=["..tostring(iByte).."]:<Error!>")
+					else to_log("fTbl_deCompress:fGet_Str: symbol=["..tostring(i).."] <~ zero string") --/#~#
+					end
+				end
+				return sString:sub(iSym,i-1),i --/> sStr,iNext (субстрока и индекс начального упр.символа)
+			end
+		end
+		return sString:sub(iSym,iLen) --/> sStr (субстрока до конца строки)
+	end
+	--/-------------------
+	--/ локальная функция: конвертер субстроки (sStr) в десятичное число
+	--/-------------------
+	local fGet_Num = function(sStr,bHex) --/< bHex - флаг 'hex'-строки
+		local iNum = nil
+		if not bHex then --/ распаковки 'dec'-строки?
+			iNum = tonumber(sStr) --/ перевод 'dec'-строки в десятичное число
+		else --/ распаковка 'hex'-строки
+			if sStr:sub(1,1) ~= "-" then --/ отсутствует символ '-' (минус)?
+				iNum = tonumber(sStr,16) --/ перевод 'hex'-строки в десятичное число ('0x'..sStr)
+			else --/ для отрицательного - отрезаем 1-й символ
+				iNum = tonumber(sStr:sub(2,-1),16) *(-1) --/ перевод 'hex'-строки в отрицательное десятичное число
+			end
+		end
+		if not iNum then --/ ошибка распаковки числа?
+			abort(sModule..":fTbl_deCompress:fGet_Num:Str=["..tostring(sStr).."],Hex=["..tostring(bHex).."]:<Error!>")
+		end
+		return iNum --/> number
+	end
+	--/ -------------------------------------------
+	--/ тело основной функции: parse all
+	--/-------------------
+	fParse = function(iSym) --/< парсинг строки 'sString' с iSym-го символа
+--		log("fTbl_deCompress:fParse:at=[%s],Len=[%s],String=[%s]", iSym, iLen, sString, '') --/#~#
+		local bVector,bCTime = nil,nil --/ if 'vector' or 'CTime'
+		--/ проверка: упакована таблица типа 'список' (table-list)?
+		local iByte = string.byte(sString:sub(iSym,iSym)) --/ код iSym-го символа в строке
+		iSym = iSym+1 --/ переходим к следующему символу
+		local bList = iByte == tMarkers.tbi[2] --/ флаг: 'начало списка' (table-list)
+		if bList then --/ проверка: 'список'?
+			iByte,iSym = string.byte(sString:sub(iSym,iSym)), iSym+1--/ пропускаем маркер списка и переходим к следующему символу
+		else
+			bVector,bCTime = iByte == tMarkers.vec[2], iByte == tMarkers.ctm[2]
+			if bVector or bCTime then --/ if 'vector' or 'CTime'
+				bList = string.byte(sString:sub(iSym,iSym)) == tMarkers.tbi[2] --/ флаг: 'начало списка' (table-list)
+				if not bList then --/ проверка: 'список'?
+					abort("fTbl_deCompress:fParse:(%d)=[%s],at=(%d)=[%s],String=[%s]~wrong!:<%s>", iByte, string.char(iByte), iSym, string.char(iSym), sString, "Warning!")
+				end
+			end
+		end
+		local tTbl,key,value = {},nil,nil
+		--/ цикл парсинга строки с iSym-го символа
+		while iSym <= iLen do --/ (суб)строка не закончилась?
+			if iByte == tMarkers.tbe[2] then --/ проверка: маркер конца субтаблицы (table-end)?
+				return tTbl,iSym --/> субстрока субтаблицы закончилась - выход из функции
+			end
+			if not bList then --/ проверка: не 'список'? -> режим 'общей' таблицы
+				key,iSym = fGet_Str(iSym) --/ парсинг 'key'
+				if iByte == tMarkers.dec[2] then --/ 'number' (dec)?
+					key = fGet_Num(key, false) --/< распаковка 'dec'-строки
+				elseif iByte == tMarkers.hex[2] then --/ 'number-hex'?
+					key = fGet_Num(key, true) --/< 'true' - флаг распаковка 'hex'-строки
+				elseif iByte ~= tMarkers.str[2] then --/ не 'string'? -> ошибка формата упаковки
+					abort("fTbl_deCompress:fParse:at=(%d):UnSupported_TypeKey(%s)=[%d],String=[%s]", iSym, key, iByte, sString)
+				end
+				iByte,iSym = string.byte(sString:sub(iSym,iSym)), iSym+1 --/ код следующего символа строки
+			end
+			--/ проверка 'value'
+			if iByte == tMarkers.tbl[2] then --/ 'table'?
+				value,iSym = fParse(iSym) --/> рекурсивный вызов для 'табличных субстрок'
+			elseif bVector then --/ 'vector'?
+				value,iSym = fParse(iSym) --/> рекурсивный вызов для 'табличных субстрок'
+				if value[3] then
+					value = vector():set(unpack(value)) --/ 'vector'
+				else
+					to_log(string.exformat("fTbl_deCompress:fParse:(%d),at=(%d),key(%s):Wrong_DataVector=[%d],String=[%s]", iByte, iSym, #value or -1, sString))
+					value = vector():set(0,0,0) --/> 'zero_vector'
+				end
+			elseif bCTime then --/ 'ctime'?
+				value,iSym = fParse(iSym) --/> рекурсивный вызов для 'табличных субстрок'
+				local ctime = game.CTime()
+				if value[7] then
+					value = ctime:set(unpack(value)) --/> 'CTime'
+				else
+					to_log(string.exformat("fTbl_deCompress:fParse:(%d),at=(%d):Wrong_DataCTime=[%d],String=[%s]", iByte, iSym, #value or -1, sString))
+					value = ctime --/> 'zero_oCTime'
+				end
+			else --/ парсинг 'value'
+				value,iSym = fGet_Str(iSym) --/ парсинг 'value'
+				if     iByte == tMarkers.dec[2] then --/ 'number' (dec)?
+					value = fGet_Num(value, false) --/< распаковка 'dec'-строки
+				elseif iByte == tMarkers.hex[2] then --/ 'number-hex'?
+					value = fGet_Num(value, true) --/< 'true' - флаг распаковка 'hex'-строки
+				elseif iByte == tMarkers.bln[2] then --/ 'boolean'?
+					value = value == "1"
+				elseif iByte ~= tMarkers.str[2] then --/ не 'string'? - ошибка формата упаковки
+					abort("fTbl_deCompress:fParse:at=(%d):UnSupported_TypeValue(%s)=[%d],Key=[%s],List=[%s],String=[%s]", iSym, type(value), iByte, tostring(key), tostring(bList), sString)
+				end
+			end
+			--/ запоминаем элемент в таблицу
+--			log("fParse:key=[%s],value=[%s]:[%s]", key, value, "<") --/#~#
+			if bList then --/ элемент списка?
+				--if not iSym and (bVector or bCTime) then --/#?# конец строки и 'vector' or 'CTime'?
+					--return value --/#?#> выход из цикла
+				if bVector or bCTime then --/#?# конец строки и 'vector' or 'CTime'?
+					tTbl = value
+					return tTbl --/#?#> выход из цикла
+				end
+				table.insert(tTbl, value) --/ добавляем в таблицу типа 'список' (table-list)
+			else --/ элементы 'общей' таблицы
+				tTbl[key] = value
+			end
+			if not iSym then --/ конец строки?
+				return tTbl --/> выход из цикла
+			end
+			iByte,iSym = string.byte(sString:sub(iSym,iSym)), iSym+1 --/ код следующего символа строки
+		end
+		return tTbl,iSym --/> (sub)table or 'vector' or 'CTime'
+	end
+	--/----------------------------------------------------------------
+	--/ парсинг строки 'sString' (с 1-го символа)
+--	log("fTbl_deCompress:Len=[%s],String=[%s]", iLen, sString, '') --/#~#
+	return fParse(1) or {} --/> table
+end
+
+--/ строка без начального и заключительного пробелов
+local function fTrim_Line(str)
+	if str and str ~= '' then
+		return str:match('^%s*(.*%S)') or '' --/>
+	end
+	return str or '' --/>
+end
+--/ начальная часть строки (до первого пробела) без пробелов
+local function fTrim_Word(str)
+	if str and str ~= '' then
+--		if str:match('(.+)%s+(.+)') then log("fTrim_Word:str=[%s]:<%s>", str, "Info!") end --/#~#
+		return str:match('%S+') --/>
+	end
+	return str --/>
+end
+--/ перевод (части) строки 'str' в булево значение (true|false)
+local function fToBoolean(str)
+	return (str == "1" or string.lower(str:match('^%s*(%S*)') or '') == 'true') --/> true|false
+end
+
+--/ хэш-функция для строки (TODO: уточнить на предмет оптимизации)
+local function fStringToHash(str)
+	local iHash,iMpl,iSym = 0,1,nil
+	local iLen = str:len(str)
+	for i=1,iLen do
+		iSym = string.byte( str:sub(i,i) )
+		iHash = iHash + iSym *iMpl
+		iMpl = (iMpl < 256 and iMpl *2) or 1
+	end
+	return bit_and(iHash,65535) --/> number
+end
+
+local function fToShortStr(val,cnt) --/< значение и кол-во знаков в логе
+	local lua_type = type(val)
+	if type(cnt) ~= 'number' then cnt = 3 end
+	local pat = '%.'..cnt..'f'
+	if lua_type == 'number' then --/>
+		return string.format(pat,val)
+	elseif lua_type == 'table' then
+		if type(val.x) == 'number' and type(val.y) == 'number' and type(val.z) == 'number' then
+			return string.format("tbl{"..pat..":"..pat..":"..pat.."}", val.x, val.y, val.z) --/>
+		end
+		return "<table>" --/>
+	elseif lua_type == 'userdata' then
+		if type(val.setHMSms) == 'function' then
+			return '<CTime>' --/>
+		elseif type(val.getP) == 'function' then
+			if type(val.x) == 'number' and type(val.y) == 'number' and type(val.z) == 'number' then
+				return string.format("vec(x="..pat..":y="..pat..":z="..pat..")", val.x, val.y, val.z) --/>
+			end
+			return "<vector>" --/>
+		end
+	elseif lua_type == 'string' then --/>
+		return string.sub(val,1,cnt+1)
+	elseif lua_type == 'boolean' then --/>
+		return (val and "1") or "0" --/>
+	end
+	return "<"..lua_type..">" --/>
+end
+
+
+--/ Разделяем строку 'sStr'
+--/ опционально: [sDiv=='string'] - разделитель (при 'nil': по словам)
+--/ опционально: [Mode==...] - тип таблицы на выходе (nil:List|true:ToTrue|false:ToNum|'string':...)
+local function fSplitStrToTbl(sStr, sDiv, Mode)
+	local tRet, sPattern = {}, '[%w%_]+' --/ шаблон для разделения строки на слова
+	if sDiv and type(sDiv) == 'string' then --/ если divider задан:
+		sPattern = '%s*([^'..sDiv..']+)%s*' --/ разделяем по нему с фильтрацией примыкающих пробелов
+	end
+	if Mode == nil then --/ обычный массив
+		for sValue in sStr:gmatch(sPattern) do
+			table.insert(tRet, sValue)
+		end
+	elseif Mode == true then --/ таблица '[значение]=true'
+		for sValue in sStr:gmatch(sPattern) do
+			tRet[sValue] = true
+		end
+	elseif Mode == false then --/ таблица '[idx] = число или стринг'
+		local iIdx = 1
+		for sValue in sStr:gmatch(sPattern) do
+			--table.insert(tRet, tonumber(sValue) or sValue)
+			tRet[iIdx] = tonumber(sValue) or sValue
+			iIdx = iIdx +1
+		end
+	elseif type(Mode) == 'string' then --/ TODO: доделать или выкинуть!
+		local sKey
+		for sValue in sStr:gmatch(sPattern) do
+			if tRet[sValue] then
+				tRet[sValue] = tRet[sValue] +1
+			elseif sKey then
+				if type(sValue) == 'string' and sValue == sKey then
+					tRet[sKey] = 2
+				elseif tonumber(sValue) then
+					tRet[sKey] = tonumber(sValue) -1
+					sKey = nil
+				else --/#?#
+					to_log(string.exformat("fSplitStrToTbl:Value(%s)=[%s]~?,Key=[%s],Str=[%s]:<%s>", type(sStr), sValue, sKey, sStr, "Warning!"))
+				end
+			elseif type(sValue) == 'string' then
+				tRet[sValue] = 1
+				sKey = sValue --/ запоминаем ключ
+			else --/#?#
+				to_log(string.exformat("fSplitStrToTbl:Value(%s)=[%s]~?,Str=[%s]:<%s>", type(sStr), sValue, sStr, "Warning!"))
+			end
+		end
+	end
+	--table.print(tRet,sModule..":SplitStrToTbl") --/#~#
+	return tRet --/>
+end
+
+--/ Разделение строки 'sString' на строки заданной длины
+--/ опционально: [iLen] - макс.кол-во символов в строках (int)
+--/ опционально: [sDiv] - символ(ы) разделителя (дефолтно по пробелам)
+--/ опционально: [bNoClear] - не обрезать пробелы (boolean)
+local function fSplitOnLength(sString,iLen,sDiv,bNoClear)
+	if type(iLen) ~= 'number' then iLen = 64 end
+	if type(sDiv) ~= 'string' then sDiv = " " end
+	local iDivLen = sDiv:len() --/ длина разделителя (кол-во символов)
+	local sStr,tLines = sString or "", {}
+	--/ субцикл выделения одной строки заданной длины
+	local Get_SeparatePos = function(sStr)
+		local iDivPos = sStr:find(sDiv,1,true) --/ позиция 1-го разделителя в строке
+		if iDivPos and iDivPos < sStr:len()-iDivLen then --/ найден разделитель внутри строки
+			local iPos = iDivPos --/ позиция разделителя в строке
+			while iDivPos and iDivPos <= iLen+1 do --/ если разделитель внутри отделяемой строки
+				iPos = iDivPos --/ запоминаем позицию текущего разделителя
+				iDivPos = sStr:find(sDiv,iDivPos+iDivLen,true)
+			end
+			if iDivPos then
+				return iPos-1 --/> позиция последнего символа в отделяемой части строки (до разделителя)
+			end
+		end
+		return nil --/> нет разделителя или он за пределами отделяемой части строки
+	end
+	--/ позиция разделителя (iPos) в строке
+	local iPos = Get_SeparatePos(sStr)
+	--/ основной(общий) цикл разделения исходной строки на строки заданной длины
+	while iPos or sStr:len() > iLen do  --log("fSplitOnLength: pos=[%s] : str=[%s]", iPos, sStr:sub(1,iPos or iLen), "") --/#~#
+		if bNoClear then
+			table.insert( tLines, sStr:sub(1,iPos or iLen) )
+		else --/ с очисткой начального и завершающего пробелов
+			table.insert( tLines, sStr:sub(1,iPos or iLen):match('^%s*(.*%S)') ) --/ string.trim(sStr)
+		end
+		if iPos then
+			sStr = sStr:sub(1+iPos+iDivLen) --/ отрезаем начальную часть строки с разделителем
+		else
+			sStr = sStr:sub(1+iLen) --/ отрезаем начальную часть строки
+		end
+		iPos = Get_SeparatePos(sStr)
+	end
+	--/ остаток строки:
+	if sStr ~= "" and sStr ~= sDiv then  --log("fSplitOnLength: s=[%s]", sStr, "") --/#~#
+		table.insert(tLines, (bNoClear and sStr) or sStr:match('^%s*(.*%S)')) --/ string.trim(sStr)
+	end
+	--/ возвращаем таблицу со строками заданной длины
+	return tLines --/>
+end
+--/--------------------------------------------------------
+--/
+--/--------------------------------------------------------
+--/ Перепаковка одномерного массива (списка) двумерный (секция = кол-во)
+function fConvert_ListToNumArray(tList)
+	local tArray = {}
+	for _,v in ipairs(tList) do
+		if tArray[v] then
+			tArray[v] = tArray[v] +1
+		else
+			tArray[v] = 1
+		end
+	end
+	return tArray --/>
+end
+--/ Kolmogor: little optimizations: insert into empty table and insert normal priority commonly
+function fInsertSort_Table(tbl, compare, value, reverse)
+	if not value or type(tbl) ~= 'table' or type(compare) ~= 'function' then
+		to_log(string.exformat("fInsertSort_Table:value=[%s],tbl=[%s],func=[%s]:<%s>", type(value), type(tbl), type(compare), "Warning!"))
+		return --/>
+	end
+
+	if #tbl == 0 then --/ если пустая таблица
+		table.insert(tbl, value)
+	elseif not compare(value, tbl[#tbl]) then
+		table.insert(tbl, value) --/ + в конец таблицы
+	elseif not reverse then
+		for i=1,#tbl do
+			if compare(value, tbl[i]) then
+				table.insert(tbl, i, value) --/ + в место 'по ранжиру'
+				return --/>
+			end
+		end
+		table.insert(tbl, value) --/ + в конец таблицы
+	else --/ реверсивная итерация по таблице (с конца)
+		for i=#tbl, 1, -1 do
+			if not compare(value, tbl[i]) then
+				table.insert(tbl, i+1, value)
+				return --/>
+			end
+		end
+		table.insert(tbl, 1, value) --/ + в начало таблицы
+	end
+end
+--/ Gr1ph00n: sorting in o(nlogn)
+--/ field is required if predicate is given, it's the name of the variable used in compare
+--/ can be used only on indexed tables
+function fMergeSort_Table(tbl, predicate)
+	if tbl and type(tbl) == 'table' and #tbl > 1 then
+		if type(predicate) ~= 'function' then
+			predicate = function(a,b) return a <= b end
+		end
+		--/
+		fMergeSort = function(tbl)
+			local cnt = #tbl
+			if cnt > 1 then
+				local half_1, half_2, half_cnt = {}, {}, cnt / 2
+				--/ divide in half:
+				for i = 1, cnt do
+					if i <= half_cnt then
+						table.insert(half_1, table.remove(tbl, 1))
+					else
+						table.insert(half_2, table.remove(tbl, 1))
+					end
+				end
+
+				fMergeSort(half_1) --/ recursive call
+				fMergeSort(half_2) --/ recursive call
+
+				while #half_1 > 0 and #half_2 > 0 do
+					if predicate(half_1[1], half_2[1]) then
+						table.insert(tbl, table.remove(half_1, 1))
+					else
+						table.insert(tbl, table.remove(half_2, 1))
+					end
+				end
+				while #half_1 > 0 do
+					table.insert(tbl, table.remove(half_1, 1))
+				end
+				while #half_2 > 0 do
+					table.insert(tbl, table.remove(half_2, 1))
+				end
+			end
+		end
+		--/<
+		fMergeSort(tbl)
+	end
+end
+--/ ---------------------------------------------
+if not rawequal then
+	_G.rawequal = function(a,b) --/ compare_safe
+		local status,result = pcall(function(a,b) return a == b end, a, b) --/ a_eq_b
+		if status then return result end --/>
+		status,result = pcall(function(a,b) return a ~= b end, a, b) --/ a_neq_b
+		if status then return not result end --/>
+		abort(sModule..":rawequal: neither == nor ~= not working for compared objects")
+	end
+end
+--/----------------------------------------------
+--/ table expansion
+--/----------------------------------------------
+if not table.print then
+	table.print = fPrint_Table
+end
+if not table.size then
+	table.size = fGetSizeTable
+end
+if not table.copy then
+	table.copy = fCopyTable
+end
+if not table.clone then
+	table.clone = this.fCloneTable
+end
+if not table.find then
+	table.find = fFindInTable
+end
+if not table.serialize then
+	table.serialize = this.fTable_Serialize
+end
+if not table.unserialize then
+	table.unserialize = fTable_unSerialize
+end
+if not table.compress then --/clench|shrink
+	table.compress = this.fTbl_Compress
+end
+if not table.decompress then
+	table.decompress = this.fTbl_deCompress
+end
+if not table.insert_sort then
+	table.insert_sort = this.fInsertSort_Table
+end
+if not table.merge_sort then
+	table.merge_sort = this.fMergeSort_Table
+end
+if not table.list2array then
+	table.list2array = this.fConvert_ListToNumArray
+end
+--/----------------------------------------------
+--/ string expansion
+--/----------------------------------------------
+if not string.exformat then
+	string.exformat = fStringExtraFormat
+end
+if not string.trim then
+	string.trim = fTrim_Line
+end
+if not string.trim_w then
+	string.trim_w = fTrim_Word
+end
+if not string.short then
+	string.short = fToShortStr
+end
+if not string.split then --/ splitToTbl
+	string.split = fSplitStrToTbl
+end
+if not string.divide then
+	string.divide = fSplitOnLength
+end
+if not string.toboolean then
+	string.toboolean = fToBoolean
+end
+if not string.tohash then
+	string.tohash = fStringToHash
+end
+--/----------------------------------------------
+--/ math expansion
+--/----------------------------------------------
+math.nan = -(0/0) --/ not a number
+math.isnan = function(value) --/ the following assume type(value) == 'number':
+	return value ~= value --/>
+end
+math.inf = 1/0
+math.isinf = function(value)
+	if value == -(math.inf) then
+		return -1 --/>
+	elseif value == math.inf then
+		return 1 --/>
+	end
+	return 0 --/>
+end
+math.isfinite = function(value)
+	return value > -(math.inf) and value < math.inf --/>
+end
+math.round = function(value, count) --/ округление до заданного кол-ва знаков
+	--[[ в Сталкере не работает
+	local mul = math.pow(10,count) --/ 10^count
+	return math.floor(value*mul +0.5)/mul --/>
+	--]]
+	return tonumber(string.format("%."..(count or 0).."f", value))
+end
+math.odd = function(value) --/ проверяет целую часть числа на нечетность
+	return math.floor(value *0.5) *2 == math.floor(value) --/>
+end
+math.normalize = function(value,min,max)
+	return math.min( math.max(min or 0, value), max or 1) --/>
+end
+math.hex2dec = function(value)
+	return tonumber(tostring(value),16) --/>
+end
+math.dec2hex = function(value)
+	return string.format('%x', value) --/> 'hex'-строка
+end
+--/ ------------------------------------------------------------------
+--/ print-log (output of the debug information)
+--/ ------------------------------------------------------------------
+if not to_log then
+	--/ проверяем наличие соотв.функций в модифицированных библиотеках движка:
+	local to_log = log1 or logf or debug_print
+	if type(to_log) == 'function' then --/ for 'X-Ray Extensions' or 'xrLua Extensions' or 'LA'
+		_G.to_log = function(fmt) to_log("* DBG: "..tostring(fmt)) end
+	else --/ используем "штатные" средства:
+		local console --/ переменная, кеширующая функцию консоли
+		_G.to_log = function(fmt)
+			if not console then console = get_console() end
+			console:execute("load ~:" .. tostring(fmt))
+		end
+	end
+end
+--/ ------------------------------------------------------------------------------------------------

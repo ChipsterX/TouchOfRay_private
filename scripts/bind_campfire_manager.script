@@ -1,0 +1,67 @@
+local timer = time_global()
+local use_cooking = false
+local item = nil
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_item_use",item_use)
+end
+
+
+function item_use(obj)
+	if not (obj:section() == "matches") then 
+		return
+	else
+	if math.random(0, 100) < 45 then
+		fail()
+	else
+		campfire_on()
+    end
+end
+end
+
+function fail()
+	if math.random(0,1)<0 or 1 then
+		db.actor:give_game_news("Костёр", "Не удалось разжечь", "ui_iconsTotal_pda", 0, 10000)
+	end
+end
+
+function campfire_on()
+	for i=1,65534 do
+		local s = alife():object(i)
+		if s then
+			local o = level.object_by_id(s.id)
+			if o  then
+				local cf = o:get_campfire()
+				if cf and o:position():distance_to(db.actor:position()) < 1.9 then
+				
+					local flist = getFS():file_list_open_ex("$game_saves$",	bit_or(FS.FS_ListFiles,FS.FS_RootOnly),"*".. ui_load_dialog.saved_game_extension)
+					local f_cnt = flist and flist:Size() or 0
+   
+					local inc = 0
+					if (f_cnt > 0) then
+						flist:Sort(FS.FS_sort_by_modif_down)
+		
+						for it=0, f_cnt-1 do
+							local file_name = flist:GetAt(it):NameFull():sub(0,-6):lower()
+				
+							local d = tonumber( string.match(file_name,"campfire_autosave(%d+)") )
+							if (d) then
+								inc = d
+								break 
+							end
+						end
+					end
+					
+					inc = inc >= axr_main.config:r_value("mm_options","quicksave_cnt",2,5) and 1 or inc + 1
+					get_console():execute("save campfire_autosave"..inc)
+					
+					if not (cf:is_on()) then 
+						cf:turn_on()
+						break
+					
+					end
+				end
+			end
+		end
+	end
+end

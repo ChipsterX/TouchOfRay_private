@@ -1,0 +1,618 @@
+--' ######################################################################################
+--' oldSerpski Stalker
+--' Небольшой менеджер для исп. итемов
+--' ######################################################################################
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_item_use", item_isp)
+end
+
+-- Основное
+function item_isp(item)
+    local sec = item:section()
+
+    if (sec == "antizombin") then
+		if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+			db.actor.psy_health = 1.0 
+		else
+			SetSound([[interface\inv_eat_pills_effect]])
+		    bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			start_game_timer(7,"item_animations.antizombin")
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			set_inactivate_input_time(5)
+		end	
+	end	
+	
+    if (sec == "medkit") then
+		if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_medkit]])
+		else
+			SetSound([[interface\inv_medkit_z]])
+		    bind_stalker.use_weapon(0)
+			start_real_timer(6,"item_animations.medkit_use")
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			set_inactivate_input_time(5)
+		end	
+	end
+			
+	if (item:section() == "medkit_army") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_medkit]])
+		else
+			SetSound([[interface\inv_medkit_z]])
+			bind_stalker.use_weapon(0)
+			start_real_timer(6,"item_animations.medkit_use")
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			set_inactivate_input_time(5)
+		end
+	end	
+
+	if (item:section() == "medkit_scientic") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_medkit]])
+			db.actor.psy_health = 0.4
+		else
+			bind_stalker.use_weapon(0)
+			db.actor.psy_health = 0.4
+			start_real_timer(6,"item_animations.medkit_use")
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_medkit_z]])
+			set_inactivate_input_time(5)
+	    end			
+	end
+	
+	if (item:section() == "bandage") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_bandage]])
+		else
+			bind_stalker.use_weapon(0)
+			start_real_timer(6, "item_animations.restore_hud_items")
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_bandages_z]])
+			set_inactivate_input_time(5)
+	    end			
+	end	
+	
+	if (item:section() == "bread") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_food_z]])
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "kolbasa") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_food_z2]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "energy_drink") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_softdrink]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_energ_z]])
+			start_real_timer(7, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+	
+	if (item:section() == "water") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_softdrink]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_drink_can]])
+			start_real_timer(4, "item_animations.restore_hud_food")
+			set_inactivate_input_time(3)
+	    end			
+	end		
+	
+	if (item:section() == "vodka") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_vodka]])
+			db.actor.psy_health = 0.15
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_vodka_z]])
+			start_real_timer(5, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+			db.actor.psy_health = 0.15
+	    end			
+	end			
+	
+	if (sec == "battery") then
+		if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\battery_insert]])
+		else
+			SetSound([[interface\battery_insert]])
+		    bind_stalker.use_weapon(0)
+			start_real_timer(3, "item_animations.restore_hud_battery")
+			set_inactivate_input_time(3)
+		end	
+	end
+	
+	if (item:section() == "drug_booster") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_softdrink]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_softdrink_z]])
+			start_real_timer(3, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end				
+	
+	if (item:section() == "drug_antidot") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_pills]])
+			start_real_timer(4, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end					
+	
+	if (item:section() == "drug_coagulant") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_pills]])
+			start_real_timer(4, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+	
+	if (item:section() == "drug_psy_blockade") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+			db.actor.psy_health = 0.65
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_pills]])
+			start_real_timer(4, "item_animations.restore_hud_food")
+			db.actor.psy_health = 0.65
+			set_inactivate_input_time(5)
+	    end			
+	end				
+	
+	if (item:section() == "drug_radioprotector") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_pills]])
+			start_real_timer(4, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end				
+	
+	if (item:section() == "antirad") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_pills]])
+			db.actor.radiation = -1.0
+		else
+			bind_stalker.use_weapon(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_pills_z]])
+			start_real_timer(4, "item_animations.antirad_use")
+			set_inactivate_input_time(5)
+	    end			
+	end				
+	
+	if (item:section() == "marlboro") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.7
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.7
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end				
+	
+	if (item:section() == "lucky") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.6
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.6
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "cuban") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 1.0
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 1.0
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "cigarettes_russian") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.55
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.55
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "cigarettes_1") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.65
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.65
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "cigarettes_2") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.7
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.7
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "cigarettes_3") then
+	    if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+			SetSound([[interface\inv_smoke]])
+			db.actor.kurr = 0.7
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			db.actor.kurr = 0.7
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			start_real_timer(6, "item_animations.restore_hud_food")
+			SetSound([[interface\inv_smoke]])
+			set_inactivate_input_time(6)
+	    end			
+	end		
+	
+	if (item:section() == "mutant_part_krovosos_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "mutant_part_krovosos_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_boar_chop") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_boar_chop_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+	
+	if (item:section() == "mutant_part_chimera_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "mutant_part_chimera_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_dog_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_dog_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+
+	if (item:section() == "mutant_part_flesh_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "mutant_part_flesh_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_psevdodog_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_psevdodog_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+
+	if (item:section() == "mutant_part_tushkano_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+	
+	if (item:section() == "mutant_part_tushkano_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_pseudogigant_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+	
+	if (item:section() == "mutant_pseudogigant_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_cat_meat") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end		
+
+	if (item:section() == "mutant_part_cat_meat_cook") then
+	    if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then 
+			SetSound([[interface\inv_food]])
+		else
+			bind_stalker.use_weapon(0)
+			bind_stalker.use_helmet(0)
+			level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "")
+			SetSound([[interface\inv_eat_mutant_food]])
+			start_real_timer(9, "item_animations.restore_hud_food")
+			set_inactivate_input_time(5)
+	    end			
+	end			
+end
+
+
+function antirad_use()
+	SetSound([[interface\inv_antirad_1]])
+	start_real_timer(10, "item_animations.antirad_use_two_timer")
+	level.add_pp_effector("deadcity_wake.ppe",false)
+	db.actor.health = -0.30
+	db.actor.radiation = -0.75
+	bind_stalker.use_weapon(1)
+end
+
+function antirad_use_two_timer()
+	SetSound([[interface\zvuk_serdca]])
+end
+
+function medkit_use()
+	level.add_pp_effector("proba2.ppe",25, false)
+	SetSound([[interface\zvuk_serdca]])
+	restore_hud_medkits()
+end
+
+function antizombin()
+	db.actor.psy_health = 1.0 
+	restore_hud_food()
+	level.add_pp_effector("proba2.ppe",25, false)
+	SetSound([[interface\zvuk_serdca]])
+end
+
+function restore_hud_medkits()
+	bind_stalker.use_weapon(1)
+end
+
+function restore_hud_items()
+	bind_stalker.use_weapon(1)
+end
+
+function restore_hud_food()
+	bind_stalker.use_weapon(1)
+	bind_stalker.use_helmet(1)
+end
+
+function restore_hud_battery()
+	bind_stalker.use_weapon(1)
+end

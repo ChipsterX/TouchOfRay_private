@@ -1,0 +1,93 @@
+-- #######################################################################################################################
+-- 									ZOOMBIE SHOTER MOD
+-- #######################################################################################################################
+--' Zombie shoter mod, автор SkyLoader
+--' Адаптация, правки кода - OldSerpski Stalker, Back to the roots
+--' База скрипта:
+--' Заметки: [...]
+--' Другое: [...]
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' ----------------------------------------------------------------------------------------------------------------------
+
+local ZombieVictim, ZombieTime
+local ZombieFlag = false
+local zombie_particle2 = particles_object("anomaly2\\body_tear_02")
+local zombie_sound = sound_object([[anomaly\anomaly_body_tear_1]])
+local i = math.random
+local _i = 50
+
+local tabl_zombie = {
+	"zombie_sm1",
+	"zombie_sm2",
+	"zombie_sm3",
+	"zombie_sm4",
+	"zombie_sm5",
+	"zombie_sm6",
+	"zombie_sm7",
+	"zombie_sm8",
+	"zombie_sm9",
+	"zombie_sm10",
+	"zombie_sm11",
+	"zombie_sm12"
+}
+
+function zombie_timer(seconds, victim) 
+	if (axr_main.config:r_value("mm_options","enable_horror_zombie_mod",1,false) ~= true) then 
+		return
+	end
+	ZombieTime = time_global()+seconds*1000
+	ZombieVictim = victim
+end
+
+local function set_flags_nullptr() 
+	ZombieVictim = nil
+	ZombieTime  = nil
+	ZombieFlag = true
+end
+
+function life_zombie()
+    if (ZombieVictim and ZombieTime) then 
+		if  ZombieTime < time_global() then
+			if not ZombieFlag then
+				if ZombieVictim:character_community() == "zombied" or 
+					string.find(ZombieVictim:section(),"arena") or
+					ZombieVictim:character_community()=="arena_enemy" then
+					set_flags_nullptr()
+				else
+				--' Это игнор объекта в трупах
+					if ZombieVictim:object("potom_dobavlyu") then
+						set_flags_nullptr()
+					else 
+						Zombie_rank = ranks.get_obj_rank_name(ZombieVictim)
+						if Zombie_rank ~= nil then
+							if i(1, 100) < _i and Zombie_rank == "novice" or Zombie_rank == "trainee" or Zombie_rank == "experienced" or Zombie_rank == "professional" or Zombie_rank == "veteran" or Zombie_rank == "expert" or Zombie_rank == "master" or Zombie_rank == "legend" then
+								alife():release(alife():object(ZombieVictim:id()), true)
+								alife():create(tabl_zombie[math.random(table.getn(tabl_zombie))], ZombieVictim:position() , ZombieVictim:level_vertex_id() , ZombieVictim:game_vertex_id())
+								zombie_particle2:play_at_pos(ZombieVictim:position())
+								zombie_sound:play_at_pos(ZombieVictim, ZombieVictim:position(), 0)
+								set_flags_nullptr()
+							end
+						end
+					end
+				end
+			end
+		else		
+			ZombieFlag = false
+		end
+	end
+end
+
+function give_money(victim,who)
+	if who:id() == db.actor:id() then 
+		if victim and (victim:section() == "zombie_sm1" or victim:section() == "zombie_sm2"
+		or victim:section() == "zombie_sm3" or victim:section() == "zombie_sm4" 
+		or victim:section() == "zombie_sm5" or victim:section() == "zombie_sm6"
+		or victim:section() == "zombie_sm7" or victim:section() == "zombie_sm8"
+		or victim:section() == "zombie_sm9" or victim:section() == "zombie_sm10"
+		or victim:section() == "zombie_sm11" or victim:section() == "zombie_sm12") then 
+			n = i(1,950)
+			dialogs.relocate_money(db.actor, n, "in")
+		end
+	end
+end

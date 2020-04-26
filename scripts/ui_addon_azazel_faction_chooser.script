@@ -1,0 +1,164 @@
+class "addonAzazelFactionChooser" (CUIScriptWnd)
+ 
+
+function addonAzazelFactionChooser:__init(mainmenuReference) super()
+	self.mainmenuReference= mainmenuReference
+
+	if not(alife_storage_manager.get_state().addon_azazel_menu.factionsPool) then
+		alife_storage_manager.get_state().addon_azazel_menu.factionsPool={
+		["stalker"]=true,["bandit"]=false, ["csky"]=true,
+		["dolg"]=true,   ["freedom"]=true, ["killer"]=false,
+		["army"]=false, ["ecolog"]=true,["monolith"]=false
+		}
+	end
+	self.factionsPool = alife_storage_manager.get_state().addon_azazel_menu.factionsPool
+	 
+
+	self.factionsList = {"stalker","bandit","csky","dolg","freedom","killer","army","ecolog","monolith"}
+	self.checkBoxesList = {"doNotPlayAnimation", "findNearest"}
+
+	
+	self:InitControls()
+	self.mainmenuReference:Show(false)
+	self:InitCallBacks()
+	
+end
+ 
+function addonAzazelFactionChooser:__finalize()
+end
+ 
+function addonAzazelFactionChooser:InitControls()
+	
+	self:SetWndRect				(Frect():set(0,0,1920,1080))
+ 
+	-- файл-описатель наших элементов
+	local xml = CScriptXmlInit()
+	xml:ParseFile("ui_addon_azazel_faction_chooser.xml")
+	
+ 
+	-- рамка
+	xml:InitStatic("background", self)
+	xml:InitStatic("label_choseFaction", self)
+	xml:InitStatic("label_dead", self)
+	xml:InitStatic("label_doNotPlayAnimation", self)
+	xml:InitStatic("label_findNearest", self)
+	-- кнопки
+	self:Register(xml:Init3tButton("btn_ok", self),"btn_ok")
+	
+	
+	
+
+	for i=1,#self.factionsList do
+		self["btn_"..self.factionsList[i]] = xml:Init3tButton("faction_"..self.factionsList[i],self)
+		self["btn_"..self.factionsList[i].."_inactive"] = xml:Init3tButton("faction_"..self.factionsList[i].."_inactive", self)
+		self:Register(self["btn_"..self.factionsList[i].."_inactive"],"btn_"..self.factionsList[i].."_inactive_select")
+		self:Register(self["btn_"..self.factionsList[i]],"btn_"..self.factionsList[i].."_active_select")
+		self["btn_"..self.factionsList[i]]:Show(self.factionsPool[self.factionsList[i]])
+		self["btn_"..self.factionsList[i].."_inactive"]:Show(not self.factionsPool[self.factionsList[i]])
+	end
+	for i=1,#self.checkBoxesList do
+		self["checkbox_"..self.checkBoxesList[i].."_checked"] = xml:Init3tButton("checkbox_"..self.checkBoxesList[i].."_checked",self)
+		self["checkbox_"..self.checkBoxesList[i].."_unchecked"] = xml:Init3tButton("checkbox_"..self.checkBoxesList[i].."_unchecked", self)
+		self:Register(self["checkbox_"..self.checkBoxesList[i].."_unchecked"],"checkbox_"..self.checkBoxesList[i].."unchecked_select")
+		self:Register(self["checkbox_"..self.checkBoxesList[i].."_checked"],"checkbox_"..self.checkBoxesList[i].."checked_select")
+		if(alife_storage_manager.get_state().addon_azazel_menu[self.checkBoxesList[i]]) then
+			self["checkbox_"..self.checkBoxesList[i].."_unchecked"]:Show(false)
+		else
+			self["checkbox_"..self.checkBoxesList[i].."_checked"]:Show(false)
+		end
+	end
+end
+ 
+function addonAzazelFactionChooser:InitCallBacks()
+	self:AddCallback("btn_ok", ui_events.BUTTON_CLICKED, self["Ok"], self)
+	for i=1,#self.factionsList do
+		self:AddCallback("btn_"..self.factionsList[i].."_inactive_select", ui_events.BUTTON_CLICKED, self["OnFaction_"..self.factionsList[i]], self)
+		self:AddCallback("btn_"..self.factionsList[i].."_active_select", ui_events.BUTTON_CLICKED, self["OnFaction_"..self.factionsList[i]], self)
+	end
+
+
+	for i=1,#self.checkBoxesList do
+
+		self:AddCallback("checkbox_"..self.checkBoxesList[i].."checked_select", ui_events.BUTTON_CLICKED, self["OnCheckBox_"..self.checkBoxesList[i]], self)
+		self:AddCallback("checkbox_"..self.checkBoxesList[i].."unchecked_select", ui_events.BUTTON_CLICKED, self["OnCheckBox_"..self.checkBoxesList[i]], self)
+	end
+end
+
+function addonAzazelFactionChooser:Update()
+	CUIScriptWnd.Update(self)
+
+end 
+
+function addonAzazelFactionChooser:OnFaction_stalker()
+	self:OnFactionSelect("stalker")
+end
+function addonAzazelFactionChooser:OnFaction_bandit()
+	self:OnFactionSelect("bandit")
+end
+function addonAzazelFactionChooser:OnFaction_csky()
+	self:OnFactionSelect("csky")
+end
+function addonAzazelFactionChooser:OnFaction_dolg()
+	self:OnFactionSelect("dolg")
+end
+function addonAzazelFactionChooser:OnFaction_freedom()
+	self:OnFactionSelect("freedom")
+end
+function addonAzazelFactionChooser:OnFaction_killer()
+	self:OnFactionSelect("killer")
+end
+function addonAzazelFactionChooser:OnFaction_army()
+	self:OnFactionSelect("army")
+end
+function addonAzazelFactionChooser:OnFaction_ecolog()
+	self:OnFactionSelect("ecolog")
+end
+function addonAzazelFactionChooser:OnFaction_monolith()
+	self:OnFactionSelect("monolith")
+end
+function addonAzazelFactionChooser:OnFaction_random()
+	self:OnFactionSelect("random")
+end
+
+function addonAzazelFactionChooser:OnFactionSelect(faction)
+	self.factionsPool[faction]= not self.factionsPool[faction]
+	printf(self.factionsPool[faction])
+	for i=1,#self.factionsList do
+		self["btn_"..self.factionsList[i]]:Show(self.factionsPool[self.factionsList[i]])
+		self["btn_"..self.factionsList[i].."_inactive"]:Show(not self.factionsPool[self.factionsList[i]])
+	end
+end
+
+function addonAzazelFactionChooser:OnCheckBox_doNotPlayAnimation()
+
+	self:SwitchCheckbox("doNotPlayAnimation")
+end
+
+function addonAzazelFactionChooser:OnCheckBox_findNearest()
+
+	self:SwitchCheckbox("findNearest")
+end
+
+
+function addonAzazelFactionChooser:SwitchCheckbox(checkboxName)
+	if(alife_storage_manager.get_state().addon_azazel_menu[checkboxName]) then
+		self["checkbox_"..checkboxName.."_unchecked"]:Show(true)
+		self["checkbox_"..checkboxName.."_checked"]:Show(false)
+		alife_storage_manager.get_state().addon_azazel_menu[checkboxName]=false
+	else
+		self["checkbox_"..checkboxName.."_unchecked"]:Show(false)
+		self["checkbox_"..checkboxName.."_checked"]:Show(true)
+		alife_storage_manager.get_state().addon_azazel_menu[checkboxName]=true
+	end
+end
+
+
+function addonAzazelFactionChooser:Ok()
+	
+	if(azazel_mode.addonStep2(false)) then
+		self:HideDialog()
+		self:Show(false)
+		get_console():execute("main_menu off")
+		--device():pause(false)
+	end
+end 

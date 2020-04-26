@@ -1,0 +1,734 @@
+-- #######################################################################################################################
+-- 									МОДУЛЬ ОБРАБОТЧИК РЕНДЕРА КАПЕЛЬ НА ЭКРАН
+-- #######################################################################################################################
+--' Главный экспортер\обработчик важных функций мода Back to the roots
+--' Автор: OldSerpski Stalker
+--' Заметки: [...]
+--' Другое: [...]
+--' TODO: Классы объекта: 
+--'					     nil 
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' ----------------------------------------------------------------------------------------------------------------------
+
+--/------------------------------------------------------------------------------------
+--/#+# Броня и шлемы, которые имеют стекло и подходят для рендера капель\разбитой маски
+--/------------------------------------------------------------------------------------
+local return_true_sect_helm = {
+	["helm_respirator"] = true,
+	["helm_hardhat"] = true,
+	["helm_protective"] = true,
+	["helm_tactic"] = true,
+	["helm_battle"] = true,
+	["helm_m40"] = true,
+	["helm_tactic_2"] = true,
+	["helm_respirator_2"] = true,
+	["helm_facemask"] = true,
+	["helm_respirator_gp5"] = true,
+}
+
+local return_true_sect_outfit = {
+	["svoboda_exo_outfit"] = true,
+	["bandit_exo_outfit"] = true,
+	["exo_outfit"] = true,
+	["merc_exo_outfit"] = true,
+	["monolith_exo_outfit"] = true,
+	["dolg_exo_outfit"] = true,
+	["military_exo_outfit"] = true,
+	["radiation_outfit"] = true,
+	["dolg_radiation_outfit"] = true,
+	["svoboda_radiation_outfit"] = true,
+	["merc_radiation_outfit"] = true,
+	["monolith_radiation_outfit"] = true,
+	["cs_exo_outfit"] = true,
+	["scientific_outfit"] = true,
+	["monolith_scientific_outfit"] = true,
+	["dolg_scientific_outfit"] = true,
+	["merc_scientific_outfit"] = true,
+	["svoboda_scientific_outfit"] = true,
+	["ecolog_outfit_orange"] = true,
+	["ecolog_outfit_green"] = true,
+	["cs_scientific_outfit"] = true,
+	["isg_scientific_outfit"] = true,
+	["scientific_heavy_outfit"] = true,
+	["ecolog_outfit_white"] = true,
+	["ecolog_outfit_blue"] = true,
+	["nbc_outfit"] = true,
+	["cs_nbc_outfit"] = true,
+	["monolith_nbc_outfit"] = true,
+}
+
+-->--------------------------------------------------------------\>--
+--//' Блок локальных
+local aimEffect = false
+local time, time_c = 0, time_global() + 500
+--/#+# [render_rain_drops]: блок переменных
+local droplet_reset = false
+local droplet_last_pwr
+local droplet_last_speed
+local droplet_pwr = 0
+local droplet_speed = 0
+local droplet_time = 500 -- ms
+local droplet_update = time_global() or 0
+local uc = utils.clamp
+--local const_p = 0.35
+--local droplet_step = 0.005
+local sur_ini = ini_file("misc\\surge_manager.ltx")
+local SafeCover = alun_utils.collect_section(sur_ini,"list",true)
+local function force_sleep() if math.random(1,100) < 50 then ui_sleep_dialog.sleep_forced() end end	
+local eff = 0 
+local bloody_eff = 3900  
+local lite_treshold = 0.05 -- насколько должно уменьшиться здоровье с предыдущего обновления чтоб экран окрасился в красный
+local crit_treshold = 0.30 -- насколько должно уменьшиться здоровье с предыдущего обновления чтоб ГГ начало шатать
+local drop_item_on_crit_prob = 0.5 -- вероятность того что ГГ выронит оружие
+local effector_power_coeff = 0.7
+local prev_health = -1
+local chk_h_t = 0
+local isactcondset = false 
+local radeffect = false 
+local ble1 = 0 
+local ble2 = false 
+local seldom_upd_time 
+local sound_obj_right, sound_obj_left = sound_object([[actor\heartbeat]] ), sound_object( [[actor\heartbeat]])
+local kurr_misli_update = 15000
+
+local function bleedcondition() 
+	if db.actor.health < 0.31 and isactcondset ~= true then 
+		level.add_pp_effector("cherno.ppe",88889,true) 
+		isactcondset = true 
+		sound_obj_left:play_at_pos	( db.actor, vector():set(-1, 0, 1), 0, sound_object.s2d + sound_object.looped)
+		sound_obj_right:play_at_pos	( db.actor, vector():set( 1, 0, 1), 0, sound_object.s2d + sound_object.looped)
+	end 
+	
+	if db.actor.health > 0.30 and isactcondset ~= false then 
+		level.remove_pp_effector(88889) 
+		isactcondset = false 
+		
+		if sound_obj_right:playing () or sound_obj_left:playing () then
+			sound_obj_left:stop ()
+			sound_obj_right:stop ()
+		end
+	end 
+	
+	if db.actor.radiation > 0.3 and radeffect ~= true then 
+		level.add_pp_effector("cherno.ppe",88890,true) 
+		radeffect = true 
+	end 
+	
+	if db.actor.radiation == 0 and radeffect ~= false then 
+		level.remove_pp_effector(88890) 
+		radeffect = false 
+	end 
+	
+	if db.actor.bleeding > 0.5 and db.actor.health < 0.4 and ble1 < time_global() then 
+		level.add_pp_effector("deimos1.ppe",88891,false) 
+		ble1 = time_global()+math.random(4000,10000) 
+	end 
+	
+	if db.actor.bleeding > 0.4 and db.actor.power < 0.35 and ble2 ~= true then 
+		level.add_cam_effector("camera_effects\\pripyat_horror.anm",1001,false,"") 
+		level.add_pp_effector("snd_shock.ppe",88892,true) 
+		ble2 = true 
+	end 
+	
+	if db.actor.bleeding < 0.2 or db.actor.power > 0.7 and ble2 ~= false then 
+		level.remove_pp_effector(88892) 
+		ble2 = false 
+	end 
+end
+
+--/#+# [render_rain_drops] запрещаем рендер капель на уровнях:
+local indoor_levels = { 			
+	jupiter_underground 	= true,
+	l03u_agr_underground 	= true,
+	l04u_labx18 			= true,
+	l08u_brainlab 			= true,
+	l10u_bunker 			= true,
+	l12u_sarcofag 			= true,
+	l12u_control_monolith 	= true,
+	l13u_warlab 			= true
+}
+--<--------------------------------------------------------------\<--
+
+-->--------------------------------------------------------------\>--
+--//' Потребность в курении
+local function actor_on_update0(self)
+--	if (axr_main.config:r_value("mm_options","enable_kurr",1,false) ~= true) then 
+--		db.actor.kurr = const_for_actor
+--	else
+		--/#+# [Потребность в курении] ------------------------------------------------
+--		local var = math.random(math.abs(5), math.random(1, 2))
+--		local const = math.random(math.random(0.001, 0.002), math.random(0.002, 0.005)) * (math.sin(math.abs(1)) / math.cos(0.02)) 
+--		local formula = (((math.pi/math.pi*2) * (0.002*(math.pi/2*0.1))) * const * var)
+--		db.actor.kurr = - formula
+--		kurenie = db.actor.kurr
+		--' Снятие показания счетчика в лог:
+--		printf("Update kurenie | kurenie: %s ", kurenie)
+--		if db.actor.kurr < 0.98 and time_global()>(self.CTimerKurenie or 0) then 
+--			self.CTimerKurenie = time_global() + 500--kurr_misli_update
+--			if getIntMinMax(1, 2) == 2 then
+--				start_game_timer(1, "bind_back_to_the_roots.test")
+--			misli_gg(db.actor, st_kurr_descr, nil, nil, 15000)
+--			news_manager.misli_gg(db.actor, st_kurr_descr, nil, nil, 30000)
+--			end
+--		end
+		--/< ---------------------------------------------------------------------------
+--	end
+end
+--<--------------------------------------------------------------\<--
+
+-->--------------------------------------------------------------\>--
+--//' Дыхание актера
+local function actor_on_update1( delta )
+    local plyVelVec = db.actor:get_movement_speed()
+    local plyVel = math.sqrt( plyVelVec.x * plyVelVec.x + plyVelVec.y * plyVelVec.y + plyVelVec.z * plyVelVec.z )
+   
+    if plyVel > 0 then
+        if aimEffect then
+            level.remove_cam_effector( 42069 )
+            aimEffect = false
+        end
+    else
+        if not aimEffect then
+            level.add_cam_effector( "camera_effects\\idle.anm", 42069, true, "" )
+            aimEffect = true
+        end
+    end
+end
+--<--------------------------------------------------------------\<--
+
+-->--------------------------------------------------------------\>--
+--//' Смерть от первого лица
+function game_over_script()
+	local dir = device().cam_dir
+	db.actor:set_actor_direction(dir.x,dir.y,0)
+ 	level.add_cam_effector("camera_effects\\surge_02.anm", 2532, false, "")
+	level.add_pp_effector("surge_fade.ppe", 2011, false)
+	level.disable_input()
+	start_game_timer(2, "bind_back_to_the_roots.while_game_over1")
+end
+
+function while_game_over1()
+	time = time_global()
+	
+	if time_global()-time>3000 then
+		level.enable_input()
+		level.add_pp_effector("deadcity_wake.ppe", 4467, false)
+	end
+	
+	start_game_timer(2, "bind_back_to_the_roots.while_game_over2")
+end
+
+function while_game_over2()
+	if time_c<=time_global() then
+		level.remove_pp_effector(4467)
+		level.add_pp_effector("deadcity_wake.ppe", 4467, false)
+		time_c = time_global() + 500
+	end		
+end
+--<--------------------------------------------------------------\<--
+
+-->--------------------------------------------------------------\>--
+--//' Анимация открытия двери
+function animation_door_open()
+    bind_stalker.use_weapon(0)
+	set_inactivate_input_time(3)	
+    level.add_cam_effector("actor_move\\strafe_left.anm", 3049, false, --[["bind_back_to_the_roots.end_anim"--]]"")
+	start_real_timer(2, "bind_back_to_the_roots.end_anim")
+	--end_anim()
+end
+
+function end_anim()
+	bind_stalker.use_weapon(1)
+--[[
+	if db.actor and time_global()>(self.upd_time1 or 0) then
+		self.upd_time1 = time_global() + 1000
+			bind_stalker.use_weapon(1)
+			
+		if db.actor and time_global()>(self.upd_time2 or 0) then
+			self.upd_time2 = time_global() + 4000
+				bind_stalker.use_weapon(1)	
+		end
+	end
+--	start_real_timer(2, "bind_back_to_the_roots.end_anim_fix")
+--]]
+end
+
+--function end_anim_fix()
+--	bind_stalker.use_weapon(1)
+--end
+
+-->--------------------------------------------------------------\>--
+--//' Если актер умер -> коллбек
+--function callback_actor_death()
+	--' Вызывается в движке
+--end
+-->--------------------------------------------------------------\>--
+--//' Убор рук при открытом инвентаре
+function actor_v_inv_status_true()
+	bind_stalker.use_weapon(0)
+end
+
+function actor_v_inv_status_false()
+	bind_stalker.use_weapon(1)
+end
+--<--------------------------------------------------------------\<--
+
+local function render_gasmask()
+
+	--' Запретить обновление в режиме MIXED
+	if BOOL_MODE_MIXED then return end
+	
+	local slot_item_7 			= db.actor:item_in_slot(7)
+	local slot_item_12 			= db.actor:item_in_slot(12) 
+	local not_slot_item 		= (slot_item_7 == nil or slot_item_12 == nil)
+	
+	--' boolean
+	local armor
+	local helm
+	local its_outfit 			= db.actor:item_in_slot(7) ~= nil and return_true_sect_outfit[db.actor:item_in_slot(7):section()]
+	local its_helmet 			= db.actor:item_in_slot(12) ~= nil and return_true_sect_helm[db.actor:item_in_slot(12):section()]
+
+	--' int
+	local outfit_obj 			= db.actor:item_in_slot(7) 
+    local outfit 				= outfit_obj and return_true_sect_outfit[outfit_obj:section()]
+	
+	--' float
+	local helm_obj 				= db.actor:item_in_slot(12) 
+    local helmet 				= helm_obj and return_true_sect_helm[helm_obj:section()]
+	local cond_outfit 			= (outfit_obj and outfit_obj:condition()) 
+	local cond_helmet 			= (helm_obj and helm_obj:condition()) 
+
+	--' Operator
+	local str
+	
+	if (SHADERS_MASK) == 1 then
+		if its_helmet then 
+			helm = true	
+			str = strformat("r2_gasmask %s", cond_helmet)
+			operator:execute(str)
+		else 
+			helm = false	
+			str = strformat("r2_gasmask %s", 1.1)
+			operator:execute(str)
+		end	
+		
+		if its_outfit and not helm == true then 
+			armor = true	
+			str = strformat("r2_gasmask %s", cond_outfit)
+			operator:execute(str)
+		else 
+			if not helm == true then
+				armor = false
+				str = strformat("r2_gasmask %s", 1.1)
+				operator:execute(str)
+			end
+		end	
+	end
+--[[
+	if (axr_main.config:r_value("mm_options","enable_gasmask_broken_helms",1,false) ~= true) then 
+		if its_outfit or its_helmet then	
+			str = strformat("r2_gasmask %s", sum)
+			operator:execute(str)
+		else 
+			if not_slot_item then 
+				str = strformat("r2_gasmask %s", 1)
+				operator:execute(str)
+			end
+		end	
+	else
+		
+		str = strformat("r2_gasmask %s", sum)
+		operator:execute(str)
+ 
+		if not_slot_item then 
+			str = strformat("r2_gasmask %s", 1)
+			operator:execute(str)
+		end
+	end	
+--]]
+end
+
+---------------------------------------------------------------------
+--' Рендер капель на экране
+--' 
+---------------------------------------------------------------------
+--/ -----------------------------------------------------------------
+--/#+# [render_rain_drops]: Скриптовый обработчик рендера каплей
+--/#+# [Адаптация на 1.5]:  OldSerpski stalker
+--/#+# [Авторы]: 			Anomaly 1.5
+--/ -----------------------------------------------------------------
+
+function mask_reset()
+	bind_stalker.use_weapon(0)
+	bind_stalker.use_helmet(0)
+	level.add_cam_effector("camera_effects\\item_use.anm", 8010, false, "bind_back_to_the_roots.restore_hud")
+end 
+
+function restore_hud()
+	bind_stalker.use_weapon(1)
+	bind_stalker.use_helmet(1)
+	droplet_reset = true
+end
+
+local function render_rain_drops()
+
+	if bool_render_rain_drops == false or BOOL_MODE_MIXED then
+		return 
+	end
+
+	local rain_factor_wetness = level.rain_factor_wetness() 
+	local rain_factor = level.rain_factor()
+	local time_g = time_global()
+	local actor = db.actor
+    local slot_item_7 = actor:item_in_slot(7)
+	local slot_item_12 = actor:item_in_slot(12) 
+	local inside = false
+	local const = 0.35
+	
+	if (last_cover and db.actor_inside_zones[last_cover]) then
+		inside = true
+	else
+		for k,v in pairs(SafeCover) do
+			if (db.actor_inside_zones[k]) then
+				last_cover = k
+				inside = true
+				break
+			end
+		end
+	end
+				
+	local its_outfit = db.actor:item_in_slot(7) ~= nil and return_true_sect_outfit[db.actor:item_in_slot(7):section()]
+	local its_helmet = db.actor:item_in_slot(12) ~= nil and return_true_sect_helm[db.actor:item_in_slot(12):section()]
+	 
+	if (axr_main.config:r_value("mm_options","enable_rain_drops_render_helm",1,false) ~= true) then 
+		if rain_factor > 0.1 then
+			if (time_g > droplet_update) then
+				droplet_update = time_g + droplet_time
+				local step = rain_factor_wetness*const/rain_factor
+				droplet_pwr = (rain_factor_wetness*const)/rain_factor
+			
+				droplet_pwr = uc(droplet_pwr,0.01,0.45)
+			
+				--/#+# [render_rain_drops]: Сброс скорости
+				if (step > 0) then
+					droplet_speed = 0.7
+				else
+					droplet_speed = 0.1
+				end	
+			end
+		end
+--		log("rain helmet false")
+	else
+		--if return_true_sect_outfit[slot_item_7:section()] or return_true_sect_helm[slot_item_12:section()] then
+		if its_outfit or its_helmet then
+			if rain_factor > 0.1 then
+				if (time_g > droplet_update) then 
+					droplet_update = time_g + droplet_time
+					local step = rain_factor_wetness*const/rain_factor
+					droplet_pwr = (rain_factor_wetness*const)/rain_factor
+			
+					droplet_pwr = uc(droplet_pwr,0.01,0.45)
+			
+					--/#+# [render_rain_drops]: Сброс скорости
+					if (step > 0) then
+						droplet_speed = 0.7
+					else
+						droplet_speed = 0.1
+					end	
+				end
+			end
+			else 
+				if (slot_item_7 == nil or slot_item_12 == nil) then 
+					droplet_pwr = 0
+					droplet_speed = 0
+--					level.set_rain_timer(NULL, NULL, NULL)
+				end
+			end
+--		log("rain helmet true")
+	end
+	
+
+--	if not inside or not indoor_levels[level.name()] then
+--[[
+	if rain_factor > 0.1 then
+		if (time_g > droplet_update) then
+			droplet_update = time_g + droplet_time
+			if not inside then
+				local step = droplet_step --rain_factor_wetness*const_p
+				droplet_pwr = droplet_pwr + ((step > 0) and (step * uc(rain_factor,0.5,1)) or -droplet_step)--step_--rain_factor_wetness*const_p
+				--/#+# [render_rain_drops]: ошибка скорости
+			if (step > 0) then
+				droplet_speed = 1
+			else
+				droplet_speed = 0.1
+			end	
+			else
+				local step = droplet_step --rain_factor_wetness*const_p
+				droplet_pwr = droplet_pwr - ((step > 0) and (step * uc(rain_factor,0.5,1)) or -droplet_step)--step_--rain_factor_wetness*const_p
+				--/#+# [render_rain_drops]: ошибка скорости
+			if (step > 0) then
+				droplet_speed = 1
+			else
+				droplet_speed = 0.1
+			end	
+			end
+			
+			droplet_pwr = uc(droplet_pwr,0.01,0.65)
+			
+		end
+	end
+--]]	
+	--/#+# [render_rain_drops]: когда есть только какие-либо капли дождя, скорость падения будет сброшена
+	if (droplet_pwr < 0.1) then
+		droplet_speed = 0
+	end
+	
+	if (droplet_pwr ~= droplet_last_pwr) or (droplet_speed ~= droplet_last_speed) then
+		if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+	--Добавить лог
+			printf("-Rain droplets | power: %s - speed: %s", droplet_pwr, droplet_speed)
+		end
+		local str = strformat("r2_drops_control %s,0,%s", droplet_pwr, droplet_speed)
+		get_console():execute(str)
+		droplet_last_pwr = droplet_pwr
+		droplet_last_speed = droplet_speed
+		--/#+# [render_rain_drops]: сохранить данные (?)
+		alife_storage_manager.get_state().r2_drops_control = { droplet_pwr , droplet_speed } 
+	end
+	
+	if droplet_reset then
+		droplet_pwr = droplet_pwr - 0.1
+		droplet_pwr = uc(droplet_pwr,0,1)
+
+	if (droplet_pwr <= 0.01) then
+			droplet_reset = false
+		end
+	else
+		return
+	end 
+	
+end
+
+function quicksave_message()
+
+	if (axr_main.config:r_value("mm_options","enable_quick_save_manager",1,false) ~= true) then return end
+
+	rnd = math.random(1, 15)
+	
+	if rnd == 1 then 
+		SetSound([[quicksave_message\save_s0]])	
+	end
+	
+	if rnd == 2 then 
+		SetSound([[quicksave_message\save_s1]])
+	end
+	
+	if rnd == 3 then 
+		SetSound([[quicksave_message\save_s2]])	
+	end
+	
+	if rnd == 4 then 
+		SetSound([[quicksave_message\save_s3]])
+	end
+	
+	if rnd == 5 then 
+		SetSound([[quicksave_message\save_s4]])
+	end
+		
+	if rnd == 6 then 
+		SetSound([[quicksave_message\save_s5]])
+	end
+	
+	if rnd == 7 then 
+		SetSound([[quicksave_message\save_s6]])
+	end
+	
+	if rnd == 8 then 
+		SetSound([[quicksave_message\save_s7]])
+	end
+
+	if rnd == 9 then 
+		SetSound([[quicksave_message\save_s8]])
+	end
+
+	if rnd == 10 then 
+		SetSound([[quicksave_message\save_s9]])
+	end
+	
+	if rnd == 11 then 
+		SetSound([[quicksave_message\save_s10]])
+	end
+	
+	if rnd == 12 then 
+		SetSound([[quicksave_message\save_s11]])
+	end
+	
+	if rnd == 13 then end
+	if rnd == 14 then end
+	if rnd == 15 then end
+	
+end
+
+options = {
+	health = {
+		-- health level for heavy injuring sounds
+		level1 = 0.10,
+		-- health level for light injuring sounds
+		level2 = 0.30,
+		injury_snd = {
+			_1_0 = 2825,
+			_1_1 = 2612,
+			_1_2 = 2783,
+			_1_3 = 2821,
+			_1_4 = 3048,
+			_2_1 = 3331,
+			_2_2 = 3785,
+			_2_3 = 2989,
+			_2_4 = 4066,
+		},
+	},
+	speed = {
+		-- minimal speed for actor being treated as "running"
+		mini = 0.5,
+		-- speed time increase per update (when running)
+		inc = 0.11,
+		-- speed time decrease per update (when not running)
+		dec = 0.28,
+		-- minimal speed time for playing breath sounds (when no gasmask)
+		time_mini = 6,
+		-- play breath sounds (when no gasmask) when stamina is below this level
+		stamina = 0.4,
+		-- on actor hit, actor_speed_time += delta_health*k_health
+		k_health = 0.28,
+		-- actor_speed_time += bleeding*k_bleed
+		k_bleed = 1.33,
+	},
+}
+
+local function actor_on_update2(self)
+	
+	--' const, всегда может работать
+	--' u32_token_hud = 3, худ сборки стасона
+	if db.actor.bleeding > 0.01 and eff < time_global() and (IS_HUD_ST174) then      
+		eff = time_global() + bloody_eff                                
+		level.add_pp_effector("bloody.ppe", 12000, false)
+	end
+
+	--/#+# [Обновление эффектов] --------------------------------------------------------
+	if (bool_new_effects == false) then return end
+	if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then return end
+	
+	--' Получить int u32, чтобы не дублировать код
+	if db.actor.bleeding > 0.01 and eff < time_global() and not (IS_HUD_ST174) then      
+		eff = time_global() + bloody_eff                                
+		level.add_pp_effector("bloody.ppe", 12000, false)
+	end
+		
+	if db.actor then 
+		local tg = time_global() 
+		if tg > (seldom_upd_time or 100) then 
+			seldom_upd_time = tg+400 
+			bleedcondition() 
+		end 
+	end 
+		
+	if (chk_h_t or 0) < time_global() then
+		chk_h_t = time_global()+100
+		if prev_health > (db.actor.health + lite_treshold) then
+			level.add_pp_effector("fire_hit.ppe", 1256688, false)
+			level.add_pp_effector ("bloody.ppe", 12555, false)
+			local effector_power = (prev_health - db.actor.health)*100*effector_power_coeff
+			level.set_pp_effector_factor(1256688, effector_power)
+			if prev_health > db.actor.health + crit_treshold then
+				level.add_cam_effector("camera_effects\\fusker.anm", 999, false, "")     
+				local snd_obj = xr_sound.get_safe_sound_object([[actor\pain_3]])
+				snd_obj:play_no_feedback(db.actor, sound_object.s2d, 0, vector(), 1.0)
+				if math.random(0.1, 0.9) < drop_item_on_crit_prob then
+					local active_item = db.actor:active_item()
+					if active_item and active_item:section() ~= "bolt" and active_item:section()~= "wpn_knife" then
+						db.actor:drop_item(active_item)
+					end
+				end
+			end
+		end
+		prev_health = db.actor.health
+	end
+			
+	if db.actor.thirst < 0.35 and time_global()>(self.CTimerUpdThirst or 0) then 
+		self.CTimerUpdThirst = time_global() + 31000
+		level.add_pp_effector ("bloody.ppe", 12500, false)
+		if math.random(1, 100) < 65 then db.actor.health = -0.06 end
+	end
+			
+	if db.actor.satiety < 0.35 and time_global()>(self.CTimerUpdSatiety or 0) then 
+		self.CTimerUpdSatiety = time_global() + 32000
+		level.add_pp_effector ("bloody.ppe", 12500, false)
+		if math.random(1, 100) < 55 then db.actor.health = -0.06 end
+	end
+			
+	if db.actor.sleep < 0.35 and time_global()>(self.CTimerUpdSleep or 0) then 
+		self.CTimerUpdSleep = time_global() + 65000*(math.random(1, 2))
+		SetSound([[bildovskiy_cat\zevok]])
+		level.add_pp_effector ("alcohol1.ppe", 12500, false)
+		if math.random(1, 100) < 55 then force_sleep() end
+	end
+
+end
+
+--' Если псевдогигант бьет лапой, есть шанс выронить оружие
+function CPseudoGigant_on_threaten_execute()
+	local a = db.actor
+	local aitem = a:active_item()
+	
+	if aitem and math.random() < 0.55 and (a:active_slot() == 2 or a:active_slot() == 3) then
+		a:drop_item(aitem)
+	end
+end
+
+--' Снорк с прыжка выбивает оружие
+function CSnork_HitEntityInJump()
+	local a = db.actor
+	local aitem = a:active_item()
+	
+	if aitem and math.random() < 0.65 and (a:active_slot() == 2 or a:active_slot() == 3) then
+		a:drop_item(aitem)
+	end
+end
+
+--' Пси-атака контролера
+function CControllerPsyHit_deactivate()
+	this["CController_UpdateCL_"..math.random(4)]()
+end
+
+function CController_UpdateCL_1()
+	level.add_pp_effector("art_hit\\surge_shock_old.ppe", 2003, false)	--' Экран двоится и темнеет несколько раз
+end
+
+function CController_UpdateCL_2()
+	level.add_pp_effector("art_hit\\1.ppe", 2001, false)				--' Через промежуток двоение в глазах и белое блинкование
+end
+
+function CController_UpdateCL_3()
+	level.add_pp_effector("art_hit\\gar_ambush_hit.ppe", 2002, false)	--' Сначала двоится, потом полностью темнеет
+end
+
+function CController_UpdateCL_4()
+	return NULL
+end
+
+-->--------------------------------------------------------------\>--
+-->--Главный старт скрипта: //#+#
+function on_game_start()
+	--//' Потребность в курении
+    RegisterScriptCallback("actor_on_update", actor_on_update0)
+	--//' Дыхание актера
+    RegisterScriptCallback("actor_on_update", actor_on_update1)
+	--//' Обработчик эффектов
+	RegisterScriptCallback("actor_on_update", actor_on_update2)
+	--//' Рендер капель
+	RegisterScriptCallback("actor_on_update", render_rain_drops)
+	--//' Рендер разибтой маски
+	RegisterScriptCallback("actor_on_update", render_gasmask)
+end
+--<--------------------------------------------------------------\<--

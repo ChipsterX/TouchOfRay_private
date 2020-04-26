@@ -1,0 +1,277 @@
+---==================================================================================================---
+--------------------------------------------------------------------------------------------------------
+------------------------------------(Дополнительные функции)--------------------------------------------
+--------------------------------------------------------------------------------------------------------
+---==================================================================================================---
+------------------------------------------------------------------------------
+--                      Сохранение переменных                               --
+------------------------------------------------------------------------------
+-- 'Управление pstor параметрами.
+function edit_counter(counter_name,to_value,action)
+   if read_variable(counter_name)~=nil then
+      if (action==true or action=="true" or action=="+" or action=="plus" or action==nil) then
+         local counter=read_variable(counter_name)
+         write_variable(counter_name,counter+to_value)
+      elseif (action==false or action=="false" or action=="-" or action=="minus") then
+         local counter=read_variable(counter_name)
+         write_variable(counter_name,counter-to_value)
+      end
+   end
+end
+-- 'Прибавить к pstor-счетчику цифру.
+function inc_counter(counter_name,add_value)
+   if read_variable(counter_name)==nil then write_variable(counter_name,0) end
+   if add_value==nil then add_value=1 end
+   if read_variable(counter_name)~=nil then
+      local counter=read_variable(counter_name)
+      write_variable(counter_name,counter+add_value)
+   end
+end
+-- 'Отнять от pstor-счетчика цифру.
+function dec_counter(counter_name,add_value)
+   if read_variable(counter_name)==nil then write_variable(counter_name,0) end
+   if add_value==nil then add_value=1 end
+   if read_variable(counter_name)~=nil then
+      local counter=read_variable(counter_name)
+      write_variable(counter_name,counter-add_value)
+   end
+end
+-- 'Восстанавление pstor параметра.
+function set_safe_variable(variable_name,val)
+   if read_variable(variable_name)==nil then
+      if val==nil then
+         write_variable(variable_name,0)
+      else
+         write_variable(variable_name,val)
+      end
+   end
+end
+-- 'Безопасная проверка наличия записи в pstor реестре.
+function read_safe_variable(variable_name,type,equal_val)
+   if type=="equal" then
+      if read_variable(variable_name)~=nil and read_variable(variable_name)==equal_val then
+         return true
+      else
+         return false
+      end
+   else
+      if read_variable(variable_name)~=nil then
+         return read_variable(variable_name)
+      else
+         return 0
+      end
+   end
+end
+-- 'Удаление pstor параметра.
+function del_safe_variable(variable_name)
+   if read_variable(variable_name)~=nil then
+      clear_variable(variable_name)
+   end
+end
+-- 'Запись pstor переменной, для обьекта.
+function write_obj_variable(obj,params_name,value)
+   if value==nil then
+       clear_obj_variable(obj,params_name)
+   else
+       local opt=reload_params(params_name)
+       pstor_store(obj,opt,value)
+   end
+end
+-- 'Чтение pstor переменной, для обьекта.
+function read_obj_variable(obj,params_name)
+   local opt=reload_params(params_name)
+   return pstor_retrieve(obj,opt)
+end
+-- 'Удаление pstor переменной, для обьекта.
+function clear_obj_variable(obj,params_name,is_id)
+   local obj_id
+   if is_id==true then
+      obj_id=obj
+   else
+      obj_id=obj:id()
+   end
+   local opt=reload_params(params_name)
+   if db.storage[obj_id].pstor[opt] then
+       db.storage[obj_id].pstor[opt]=nil
+   end
+end
+-- 'Запись pstor переменной.
+function write_variable(params_name,value)
+   if value==nil then
+       clear_variable(params_name)
+   else
+       local opt=reload_params(params_name)
+       pstor_store(db.actor,opt,value)
+   end
+end
+-- 'Чтение pstor переменной.
+function read_variable(params_name)
+   local opt=reload_params(params_name)
+   return pstor_retrieve(db.actor,opt)
+end
+-- 'Удаление pstor переменной.
+function clear_variable(params_name)
+   local opt=reload_params(params_name)
+   if db.storage[db.actor:id()].pstor[opt] then
+      db.storage[db.actor:id()].pstor[opt]=nil
+   end
+end
+function pstor_store(obj,varname,val)
+   if obj==nil then return nil end
+   local sub_id=obj:id()
+   if db.storage[sub_id].pstor==nil then
+      db.storage[sub_id].pstor={}
+   end
+   db.storage[sub_id].pstor[varname]=val
+end
+function pstor_retrieve(obj,varname)
+   if obj==nil then return nil end
+   local sub_id=obj:id()
+   if db.storage[sub_id].pstor~=nil then
+      local val=db.storage[sub_id].pstor[varname]
+      if val~=nil then
+         return val
+      end
+   end
+   return nil
+end
+function reload_params(params)
+   return params
+end
+------------------------------------------------------------------------------
+--                          Для опций мода                                  --
+------------------------------------------------------------------------------
+function info_get_number(info,inversion)
+   if info~=nil then
+      if has_alife_info(info) then
+         if inversion==true then
+            result=0
+         else
+            result=1
+         end
+      else
+         if inversion==true then
+            result=1
+         else
+            result=0
+         end
+      end
+   end
+   return result
+end
+function info_get_boolean(info,inversion)
+   if info~=nil then
+      if has_alife_info(info) then
+         if inversion==true then
+            result=false
+         else
+            result=true
+         end
+      else
+         if inversion==true then
+            result=true
+         else
+            result=false
+         end
+      end
+   end
+   return result
+end
+function info_give_on_number(value,info,inversion)
+   if value~=nil and info~=nil then
+      if value==1 then
+         if inversion==true then
+            disable_info(info)
+         else
+            give_info(info)
+         end
+      else
+         if inversion==true then
+            give_info(info)
+         else
+            disable_info(info)
+         end
+      end
+   end
+end
+function info_give_on_boolean(value,info,inversion)
+   if value~=nil and info~=nil then
+      if value==true then
+         if inversion==true then
+            disable_info(info)
+         else
+            give_info(info)
+         end
+      else
+         if inversion==true then
+            give_info(info)
+         else
+            disable_info(info)
+         end
+      end
+   end
+end
+
+
+-- 'Радиус детекции артефактов на КПК. Относится к детекторам.
+function ReadRadarArea(section)
+   local ltx = system_ini()
+   if ltx:line_exist(section,"radar_area") then
+      return ltx:r_float(section,"radar_area")
+   else
+      return -1
+   end
+end
+-- 'Точность идентификации артефактов. Относится к детекторам.
+function ReadRadarAccuracy(section)
+   local ltx = system_ini()
+   if ltx:line_exist(section,"radar_accuracy") then
+      return ltx:r_bool(section,"radar_accuracy")
+   else
+      return false
+   end
+end
+
+-- 'Установка метки на обьект.
+function ReadSpot(section)
+   local ltx = system_ini()
+   if ltx:line_exist(section,"spot") then
+      return ltx:r_string(section,"spot")
+   else
+      return nil
+   end
+end
+
+-- 'Возвращение значений разделённых между собой чёрточкой. Например "значение 1|значение 2".
+function check_section_stick(ini,section,line,def_val)
+   local d_value=""
+   if def_val==nil then d_value=nil else d_value=def_val end
+   if ini==nil then
+      return get_side_stick_value(section)
+   end
+   return get_side_stick_value(sgm_functions.cfg_get_string(ini,section,line,d_value))
+end
+
+-- 'Условие онлайн режима для НПС.
+function ReadOnlineCond(section)
+   local ltx = system_ini()
+   if ltx:line_exist(section,"online_cond") then
+      return ltx:r_string(section,"online_cond")
+   else
+      return nil
+   end
+end
+
+function check_string_condlist(target_value,npc)
+   if npc==nil then npc=db.actor end
+   return xr_logic.pick_section_from_condlist(db.actor,npc,xr_logic.parse_condlist(nil,"check_section","condlist",target_value))
+end
+
+-- 'Название предмета.
+function ReadCaption(section)
+   local ltx = system_ini()
+   local value = ltx:r_string(section,"inv_name")
+   return value
+end
+
+-------------------------------------//Copyright GeJorge//-------------------------------------------------

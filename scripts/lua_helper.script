@@ -1,0 +1,3257 @@
+--[[ ----------------------------------------------------------------------------------------------
+ File       : lua_helper.script
+ Description: "HELPERs" - различные автономные 'общие' функции (for SHoC/CS/CoP)
+ Copyright  : 2007-2013 © STALKER-community
+ Author     : Artos (использованы материалы других авторов)
+ Last edit  : 09.05.2017 (by Kirgudu)
+--]] ----------------------------------------------------------------------------------------------
+
+--[[
+Для активизации данного скрипта в конец файла _g.script добавьте строку:
+prefetch("lua_helper") --/#+# подключение модуля общих help-функций
+--
+Внимание! Скрипт ориентирован на работу в в системе "Мод конструктор 'SIGMA'",
+поэтому отдельные функции требуют подключенного к игре скрипта "lua_extension".
+Для автономного использования скрипта возможно вам будет достаточно выполнить
+его инициализацию из биндера актора (bind_stalker.script), добавив в него строку:
+function actor_binder:reinit()
+	--/ ... все предыдущие строки
+	--/#+# -------------------------------------------------------------
+	if lua_helper.Init_ActorPStor then lua_helper.Init_ActorPStor() end
+	--/< ---------------------------------------------------------------
+end
+--]]
+--/ -----------------------------------------------------------------
+--/ VARIABLEs
+--/ -----------------------------------------------------------------
+local iSSVer          = script_server_object_version() or -1 --/ 'Script-Server' версия
+local tMaxVertexIds   = {} --/ массив Tab[IdMap] = {[1]=idGvMin,[2]=idGvMax,[3]=idLvMax}
+local tLevelIdByName  = {} --/ массив ID и имен локаций (Tbl[Name]=ID)
+local tIdsByLevelName = {} --/ массив IDs по имени локации (Tbl[Name]={idMap,idGv,idLv})
+local tInvNames       = {} --/ массив инвентарных имен объектов
+local tSenders        = {} --/ массив имен спамеров
+local tBoxSizes       = {} --/ массив объемов пачек патронов (количество - шт.)
+local tWeights        = {} --/ массив веса предметов
+local tCosts          = {} --/ массив стоимости предметов
+local tClasses        = {} --/ массив классов предметов
+local tLowUp          = nil --/ массив 'кириллицы'
+local oCTime_Start    = nil --/ объект счетчика времени в Зоне с момента 'даты старта'
+local tPStorA         = nil --/ массив 'pstor' актора
+local oPkF            = net_packet() --/ объект функции для STATE_packet
+local fs              = getFS() --/ переменная, кеширующая функцию getFS()
+local sini            = system_ini() --/ переменная, кеширующая функцию system_ini()
+local gmg             = nil --/ переменная, кеширующая функцию game_graph()
+local sim             = nil --/ переменная, кеширующая функцию alife()
+local sMapNow,idMapNow --/ текущий уровень
+local idGvMinNow,idGvMaxNow,idLvMaxNow --/ мин&макс Id-вертексов для текущего уровня
+local tPStorTypeValue = {
+	['nil']     = true,
+	['boolean'] = true,
+	['number']  = true,
+	['string']  = true
+}
+--/ --------------------------
+local sModule = script_name() --/ string name of the file module
+--/------------------------------------------------------------------
+--/ for output of the debug information
+local log = function(fmt,...)
+	_G.log(sModule..":"..tostring(fmt),...)
+end
+if to_log and type(string.exformat) == 'function' then
+	log = function(fmt,...) to_log(sModule..":"..string.exformat(fmt,...)) end
+end
+local printf = function(...) log(...) end
+--/ ------------------------------------------------------------------------------------------------
+--/ Process (функции)
+--/ ------------------------------------------------------------------------------------------------
+--/ Attach module to SIGMA
+--/ -----------------------------------------------------------------
+auto_attach = true --/ flag of attach of the module
+--/ --------------------------
+function attach()
+	if auto_attach and event then
+		--event("init_tasks"):register(init_maps)
+		--event("load_storehouse"):register(init_maps)
+		event("actor_stor"):register(Init_ActorPStor)
+	end
+	auto_attach = false
+end
+function init_maps() --/< from m_1st.script (Game_Init or Game_Loaded)
+	if bool_lua_functions_off == true then return else -- oldserpskistalker
+	if idMapNow then return end --/>
+	if not gmg then gmg = game_graph() end
+	if not sim then sim = alife() end
+	idMapNow = sim:level_id() --/ ID текущего уровня/карты
+	sMapNow  = sim:level_name(idMapNow) --/ имя текущего уровня/карты (level.name())
+	db.idMapNow,db.sMapNow = idMapNow,sMapNow
+	db.tKnowMapId,db.tKnowMapName = {},{} --/ preset: массивы ID и имен 'разведанных' уровней
+	local ltx = ini_file("mods\\common.ltx")
+	db.tLevels       = Get_IniSection(ltx, "levels", "table", "val2num", ",")
+	db.tUndergrounds = Get_IniSection(ltx, "levels_underground", "true")
+	this.Choice_MinMax_Vertexes()
+	this.Correct_Max_IdLevelVertex()
+	if not oCTime_Start then Set_Game_StartTime() end
+--	log("init_maps: map(%s)=[%s]", idMapNow, sMapNow, "") --/#~#
+	end
+end
+--/ -----------------------------------------------------------------
+--/ Версия 'Game-Server' (6/7) & game-path ("1.0004/5/6/7")
+--/ -----------------------------------------------------------------
+_G.Get_GSVersion = function()
+	local sGSVer, iGSVer = "", -1
+	local mm = _G.main_menu and _G.main_menu.get_main_menu()
+	if mm and mm.GetGSVer then
+		sGSVer = mm:GetGSVer() --/ string ("1.0000" ... "1.6.0X")
+	end
+	if sGSVer:match('^(1%.5).+') then --/ STCS
+		iGSVer = 8
+	elseif sGSVer:match('^(1%.6).+') then --/ SCoP
+		iGSVer = 12
+	elseif sGSVer:match('^1%.1000') or sGSVer:match('^(7)%.02') then
+		iGSVer = 7
+	else
+		local iVer = tonumber(sGSVer:match('^1%.000([4567]).*') ) or -1
+		if iVer > 3 then --/ SHoC
+			if iVer >= 5 then
+				iGSVer = 7
+			elseif iVer == 4 then
+				iGSVer = 6
+			end
+		end
+	end
+--	log("Get_GSVersion:sGSVer=[%s],iGSVer=[%s]", sGSVer, iGSVer, "") --/#~#
+	return iGSVer,sGSVer --/> версия сервера (6/7/8/12) и ее метка ("1.0004/5/6...1.6.0x")
+end
+--/ -----------------------------------------------------------------
+--/ Версия мода (23.06.2012 => 120623 => b4888)
+--/ -----------------------------------------------------------------
+function Get_BuildByDate(str_date)
+	if not (str_date and str_date ~= "") then return 0 end --/>
+	--/ используем формулу для игры от SGC (без високосных годов)
+	local days = {0,31,59,90,120,151,181,212,243,273,303,334,365}
+	local y = tonumber( str_date:sub(1,2) or 0 ) + 2000
+	local m = tonumber( str_date:sub(3,4) or 0 ) --/ 0 <= m <= 11
+	local d = tonumber( str_date:sub(5,6) or 0 )
+	local v = 0 --/ кол-во високосных годов (quantity of leap-years)
+	--[[ --/#x# exluded 'v' - setup under 'XRay' by GSC
+	v = (y - 2000)/4
+	v = math.floor(v) + (((v ~= math.floor(v) or m > 2) and 1) or 0)
+	--]]
+	return (365*(y - 1999) - 31 + days[m] + d + v) --/> 'number'
+end
+--/ -----------------------------------------------------------------------------------------------
+--/ CTime: Game-Time
+--/ -----------------------------------------------------------------------------------------------
+--/ Установка 'базового' счетчика игрового времени на дату из 'alife.ltx'
+function Set_Game_StartTime() --/< from 'bind_actor:reinit'
+	local ParseStr = function(tbl,str,divider)
+		local pattern = '[^%s*%'..(divider or ',')..']+'
+		for s in str:gmatch(pattern) do
+			table.insert(tbl, tonumber(s) or 0)
+		end
+	end
+	local t = {}
+	ParseStr(t, sini:r_string("alife", "start_date"), ".") --/ 01.05.2012
+	ParseStr(t, sini:r_string("alife", "start_time"), ":") --/ 05:30:00
+	--/ Установка игрового времени. Формат установки: (Y,M,D, h,m,s, ms)
+	oCTime_Start = game.CTime() --/ 'нулевое' игровое время (объект класса 'CTime')
+	oCTime_Start:set(t[3],t[2],t[1], t[6],t[5],t[4], 0) --/< (2012,05,01, 05,30,00, 0)
+end
+--/------------------------------------------------------------------
+--/ установка счетчика игрового времени на iSeconds
+function set_seconds2ctime(iSeconds, oCTime)
+	if not oCTime then oCTime = game.CTime() end --/ если счетчик не задан - берем 'нулевой'
+	local s,ms = math.modf(iSeconds or 0)
+	if ms < 0.001 then
+		oCTime:setHMS(0,0,s)
+	else
+		oCTime:setHMSms(0,0,s, math.floor(ms*1000))
+	end
+	return oCTime --/>
+end
+--/ установка счетчика текущего игрового времени на +iSeconds (на оставшееся)
+function Set_Rest_GameSeconds(iSeconds, oCTime)
+	if iSeconds >= 0 then
+		oCTime = this.set_seconds2ctime(iSeconds, oCTime)
+		oCTime:add(game.get_game_time())
+	else
+		oCTime = this.set_seconds2ctime(-iSeconds, oCTime)
+		oCTime:sub(game.get_game_time())
+	end
+	return oCTime --/>
+end
+--/ установка счетчика текущего игрового времени на -iSeconds (в прошлое)
+function Set_Past_GameSeconds(iSeconds, oCTime)
+	return this.Set_Rest_GameSeconds(-iSeconds, oCTime) --/>
+end
+--/ доустановка счетчика игрового времени на iSeconds
+function Add_Rest_GameSeconds(iSeconds, oCTime)
+	if oCTime then
+		if iSeconds >= 0 then
+			local oCTime_Add = this.set_seconds2ctime(iSeconds)
+			oCTime:add(oCTime_Add)
+		else
+			local oCTime_Sub = this.set_seconds2ctime(-iSeconds)
+			oCTime:sub(oCTime_Sub)
+		end
+	else
+		oCTime = this.Set_Rest_GameSeconds(iSeconds)
+	end
+	return oCTime --/>
+end
+
+--/ оставшееся время в игровых секундах от заданного 'oCTime' (или от момента начала игры)
+function Get_Rest_GameSeconds(oCTime)
+	return (oCTime or oCTime_Start):diffSec( game.get_game_time() ) --/> game-seconds (float)
+end
+
+--/ прошедшее время в игровых секундах (с момента начала игры или от заданного)
+function Get_Past_GameSeconds(oCTime)
+	return game.get_game_time():diffSec(oCTime or oCTime_Start) --/> game-seconds (float)
+end
+--/ прошедшее время в игровых минутах (с момента начала игры или от заданного)
+function Get_Past_GameMinutes(oCTime)
+	return math.floor(this.Get_Past_GameSeconds(oCTime)/60) --/> game-minutes
+end
+--/ прошедшее время в игровых часах (с момента начала игры или от заданного)
+function Get_Past_GameHours(oCTime)
+	return math.floor(this.Get_Past_GameSeconds(oCTime)/3600) --/> game-hours
+end
+--/ -------------------------
+--/ получение модуля/скрипта и функции (из строки)
+function fGet_CheckedFunc(Action)
+	local lua_type = type(Action)
+	if lua_type == 'function' then
+		return Action, nil --/> func
+	elseif lua_type == 'string' then
+		local f1,f2,sFunc = Action:match('([%w|_]+)%.*([%w|_]*)%.*([%w|_]*)')
+		if sFunc and sFunc ~= "" then --/ script.class.method
+			local Script, oClass = _G[f1], f2 ~= "" and _G[f1][f2] --/ Script[f2]
+			if type(Script) == 'table' and type(oClass) == 'userdata' and type(oClass.__init) == 'function' and type(oClass[sFunc]) == 'function' then
+				return oClass[sFunc], oClass --/> method,obj_class
+			end
+		elseif f2 and f2 ~= "" then --/ script.function or (_G.)class.method
+			local Script = _G[f1]
+			if type(Script) == 'table' and type(Script[f2]) == 'function' then --/ script.function
+				return Script[f2], nil --/> func
+			elseif type(Script) == 'userdata' and type(Script[f2]) == 'function' then --/ (_G.)class.method
+				return Script[f2], Script --/> method,obj_class
+			elseif type(Script) == 'table' and type(Script[f2]) == 'userdata' then --/ script.class
+				printf("fChecked_Func: found class=["..f2.."] in string=["..Action.."] :<Info!>")
+			end
+		elseif f1 and f1 ~= "" then --/ (_G.)function
+			if type(_G[f1]) == 'function' then
+				return _G[f1], nil --/> func
+			end
+		end
+		printf("fChecked_Func: function in string=[%s] not exists! :<%s>", Action, "Warning!")
+	--/ call: Get_CheckedFunc( {obj = obj_class, func = method} )
+	elseif lua_type == 'table' and type(Action.func) == 'function' then
+		if type(Action.obj) == 'userdata' and type(Action.obj.__init) == 'function' then
+			return Action.func, Action.obj --/> method,obj_class
+		end
+		return Action.func, nil --/> method
+	end
+	if callstack then
+		callstack("fChecked_Func:=["..lua_type.."]~?:<Warning!>")
+	else
+		printf("fChecked_Func:=["..lua_type.."]~?:<Warning!>")
+	end
+	return nil,nil --/>
+end
+--/ -------------------------
+--/ проверка запущена ли игра
+function Check_GameRun()
+	if level.present() and db.actor and db.actor:alive() then
+		return true --/>
+	end
+	return false --/>
+end
+--/------------------------------------------------------------------
+--/ Функции по работе с переменными (включая табличные!)
+--/------------------------------------------------------------------
+--/ инициализация и кеширование 'pstor' актора
+function Init_ActorPStor(e) --/< from 'bind_actor:reinit'
+	if tPStorA then return end --/>
+	if not sim then this.init_maps() end
+	if not idActor then
+		idActor = alife():actor().id
+	end
+	if not db.storage[idActor].pstor then
+		db.storage[idActor].pstor = {}
+	end
+	tPStorA = db.storage[idActor].pstor
+end
+--/ --------------------------
+function fHasInPStorActor(sVarName)
+	return HasVarA(sVarName) ~= nil --/>
+end
+--/ чтение (загрузка)
+function fLoadPStorActor(sVarName, DefValue)
+	--if not tPStorA then tPStorA = db.storage[idActor].pstor end
+	if tPStorA and sVarName then
+		local Value = tPStorA[sVarName]
+		if Value ~= nil then
+			if DefValue and type(DefValue) == 'table' and type(Value) == 'string' then
+				return table.decompress(Value) --/>
+			end
+			return Value --/>
+		end
+	end
+	return DefValue or nil --/>
+end
+--/ запись
+function fSavePStorActor(sVarName, Value)
+	--if not tPStorA then tPStorA = db.storage[idActor].pstor end
+	if tPStorA and sVarName then
+		local lua_type = type(Value)
+		if lua_type == 'table' then
+			Value = table.compress(Value) --/ пакуем таблицу в строку
+			lua_type = type(Value)
+		end
+		if tPStorTypeValue[lua_type] then
+			tPStorA[sVarName] = Value
+			return true --/>
+		end
+		printf("fSavePStorActor:VarName=[%s]<~Not_Registered_TypeValue=[%s]:<%s>", sVarName, lua_type, "Warning!")
+	end
+	printf("fSavePStorActor:PStorA=[%s],VarName=[%s]:<%s>", tPStorA, sVarName, "Warning!")
+end
+--/ удаление
+function fDelPStorActor(sVarName)
+	if sVarName and tPStorA and tPStorA[sVarName] then
+		tPStorA[sVarName] = nil
+	end
+end
+--/ чтение/изменение таблицы
+function fLoadPStorActor_Table(sVarName, DefTable)
+	local Value = GetVarA(sVarName, nil)
+	if Value and type(Value) == 'string' then
+		return table.decompress(Value) --/>
+	end
+	return DefTable or {} --/>
+end
+function fUpdatePStorActor_Table(sName, sKey, Value) --/ reserve
+	local tT = GetVarA_Table(sName)
+	tT[sKey] = Value
+	SetVar(sName,tT)
+	return tT --/>
+end
+--/ ---------------------------------------------
+--/ Pstor game object
+--/ ---------------------------------------------
+function fLoadPStorObj(oObj, sVarName, DefValue)
+	if oObj then
+		local idObj = oObj.id and oObj:id()
+		if idObj then
+			local pstor = db.storage[idObj] and db.storage[idObj].pstor
+			if pstor and sVarName then
+				local Value = pstor[sVarName]
+				if Value ~= nil then
+					if type(DefValue) == 'table' and type(Value) == 'string' then
+						return table.decompress(Value) --/>
+					end
+					return Value --/>
+				end
+			end
+		else
+			printf("fLoadPStorObj:obj_type=[%s],VarName=[%s]:<%s>", type(oObj), sVarName, "Warning!")
+		end
+	end
+	return DefValue --/>
+end
+function fSavePStorObj(oObj, sVarName, Value)
+	if oObj then
+		local idObj = oObj.id and oObj:id()
+		if idObj then
+			local stor = db.storage[idObj]
+			if stor and sVarName then
+				if not stor.pstor then
+					stor.pstor = {}
+				end
+				local lua_type = type(Value)
+				if lua_type == 'table' then
+					Value = table.compress(Value)
+					lua_type = type(Value)
+				end
+				if tPStorTypeValue[lua_type] then
+					stor.pstor[sVarName] = Value
+					return true --/>
+				end
+				printf("fSavePStorObj:=[%s],VarName=[%s]<~Not_Registered_TypeValue=[%s]:<%s>", oObj:name(), sVarName, lua_type, "Warning!")
+			end
+		else
+			printf("fSavePStorObj:obj_type=[%s],VarName=[%s]:<%s>", type(oObj), sVarName, "Warning!")
+		end
+	end
+	printf("fSavePStorObj:=[%s],Stor=[%s],VarName=[%s]:<%s>", oObj and oObj.name and oObj:name(), stor, sVarName, "Warning!")
+end
+function fDelPStorObj(oObj, sVarName)
+	local idObj = oObj and oObj.id and oObj:id()
+	local pstor = idObj and db.storage[idObj] and db.storage[idObj].pstor
+	if pstor and sVarName and pstor[sVarName] then
+		pstor[sVarName] = nil
+	end
+end
+function fLoadPStorObj_Table(oObj, sVarName, DefTable)
+	local Value = this.fLoadPStorObj(oObj, sVarName, nil)
+	if Value and type(Value) == 'string' then
+		return table.decompress(Value) --/>
+	end
+	return DefTable or {} --/>
+end
+--/ ---------------------------------------------
+
+function fGetSizeVariable(sVarName, oObj, idObj)
+	if sVarName then
+		if not idObj then idObj = oObj and oObj:id() end
+		local pstor = idObj and db.storage[idObj] and db.storage[idObj].pstor
+		local Value = (pstor and pstor[sVarName]) or GetVar(sVarName) --db.storehouse[sVarName]
+		if Value then
+			local iLenName = sVarName:len()
+			local type_lua = type(Value)
+			if     type_lua == 'string' then
+				return iLenName + Value:len() --/>
+			elseif type_lua == 'number' then
+				return iLenName + tostring(Value):len() --/>
+			elseif type_lua == 'table' then
+				return iLenName + table.compress(Value):len() --/>
+			end
+			log("fGetSizeVariable:VarName=[%s],value_type=[%s]~?:<%s>", sVarName, type_lua, "Warning!")
+			return iLenName --/>
+		end
+	end
+	log("fGetSizeVariable:VarName=[%s]~?:<%s>", sVarName, "Warning!")
+	return 0 --/>
+end
+
+--/ ---------------------------------------------
+--/ проверка: таблица типа 'список'?
+function fIsList(tTbl)
+	if type(tTbl) == 'table' and #tTbl > 0 and next(tTbl) == 1 and not next(tTbl,#tTbl) then --/ список?
+		for i=2,#tTbl-1 do --/ цикл перепроверки: 'нет пустых элементов'
+			if tTbl[i] == nil then --/ пустышка?
+				return false --/> не список
+			end
+		end
+		return true --/> список!
+	end
+	return false --/> не таблица/список или пустая таблица
+end
+--/ -----------------------------------------------------------------
+--/ Время (игровое час:мин:сек)
+--/ -----------------------------------------------------------------
+function fGet_StringTime(oCTime,show_ms)
+	if not oCTime then oCTime = game.get_game_time() end
+	if show_ms then
+		return oCTime:timeToString(3) --/> игровое время (23:59:59:999)
+	end
+	return oCTime:timeToString(2) --/> игровое время (23:59:59)
+end
+
+function fGet_StringDateTime(oCTime)
+	if not oCTime then oCTime = game.get_game_time() end
+	return oCTime:dateToString(0) .." ".. oCTime:timeToString(2) --/>
+end
+function fGet_StringTimeDate(oCTime)
+	if not oCTime then oCTime = game.get_game_time() end
+	return oCTime:timeToString(2) .." ".. oCTime:dateToString(0) --/>
+end
+
+function fGet_StringByTimeOrDate(sType,oCTime) --/ на входе "Y"/"M"/.../"ms" or nil
+	if not oCTime then oCTime = game.get_game_time() end
+	if sType and type(sType) == 'string' then
+		local tTime = {
+			["Y"]  = game.CTime.DateToYear,    --/[2] 2012
+			["M"]  = game.CTime.DateToMonth,   --/[1] 01/2012
+			["D"]  = game.CTime.DateToDay,     --/[0] 01/01/2012
+			["h"]  = game.CTime.TimeToHours,   --/[0] 23
+			["m"]  = game.CTime.TimeToMinutes, --/[1] 23:59
+			["s"]  = game.CTime.TimeToSeconds, --/[2] 23:59:59
+			["ms"] = game.CTime.TimeToMilisecs --/[3] 23:59:59:999
+		}
+		if  sType == "D" or sType == "M" or sType == "Y" then --/ аргумент в верхнем регистре (sType ~= string.lower(sType))
+			return oCTime:dateToString(tTime[sType] or 0) --/> дата
+		end
+		return oCTime:timeToString(tTime[sType] or 0) --/> время
+	end
+	return oCTime:timeToString(game.CTime.TimeToSeconds) --/> по дефолту 23:59:59
+end
+--/ ---------------------------------------------
+function ms2string(ms) --/< mseconds (number)
+	local s,f = math.modf(ms / 1000)
+	local h = math.floor(s / (60*60))
+	s = s - h*60*60
+	local m = math.floor(s / 60)
+	s = s - m*60
+	if f > 0.5 then
+		s = s + 1
+		if s >= 60 then
+			s = s % 60
+			m = m + 1
+			if m >= 60 then
+				m = m % 60
+				h = h + 1
+			end
+		end
+	end
+	if h > 0 then
+		return string.format("%02d:%02d:%02d", h, m, s)
+	end
+	return string.format("%02d:%02d", m, s)
+end
+function sec2string(s) --/< seconds (number)
+	local h = math.floor(s / (60*60))
+	s = s - h*60*60
+	local m = math.floor(s / 60)
+	s = s - m*60
+	if h > 0 then
+		return string.format("%02d:%02d:%02d", h, m, s)
+	end
+	return string.format("%02d:%02d", m, s)
+end
+--/ ---------------------------------------------
+function Start_ProfileTimer()
+	local oPTimer = profile_timer() --/ создаем объект таймера
+	oPTimer:start()
+	return oPTimer --/>
+end
+function GetTime_ProfileTimer(oPTimer)
+	if oPTimer then
+		oPTimer:stop()
+		local iPTime = oPTimer:time()
+		oPTimer:start()
+--		log(string.format("Stop_ProfileTimer:=[%.3f]ms", iPTime*0.001) --/#~#
+		return iPTime --/> (micro-seconds)
+	end
+	return -0 --/> stub
+end
+function Stop_ProfileTimer(oPTimer)
+	if oPTimer then
+		oPTimer:stop()
+--		log(string.format("Stop_ProfileTimer:=[%.3f]ms", oPTimer:time()*0.001) --/#~#
+		return oPTimer:time() --/> (micro-seconds)
+	end
+	return -0 --/> stub
+end
+--/ -----------------------------------------------------------------
+--/ Конвертер ID-фраз диалогов (для совместимости с патчами игры SHoC v1.0004/5/6)
+--/ -----------------------------------------------------------------
+fDlg_AddPhrase = function (oDlg, sPhase, idPhase, idParent, ...)
+	--[[ --/ for debug
+	if type(idPhase) ~= 'string' or type(idParent) ~= 'string' then
+		printf("fDlg_AddPhrase:idPhase=[%s/%s],idParent=[%s/%s],Phase=[%s]:<%s>", idPhase, type(idPhase), idParent, type(idParent), sPhase, "Error!")
+	elseif idParent == "-1" then
+		printf("fDlg_AddPhrase:idPhase=[%s],idParent=[%s],Phase=[%s]:<%s>", idPhase, idParent, sPhase, "Error!")
+	end
+	--]]
+	return oDlg:AddPhrase(sPhase, idPhase, idParent, ...)
+end
+--/ for SHoC v1.0004
+if iSSVer < 7 then
+	fDlg_AddPhrase = function (oDlg, sPhase, idPhase, idParent, ...)
+		return oDlg:AddPhrase(sPhase, tonumber(idPhase), tonumber(idParent) or -1, ...)
+	end
+end
+--/ -----------------------------------------------------------------
+function fGet_Actor(oSpeaker1, oSpeaker2)
+	if oSpeaker1:id() == (idActor or db.actor:id()) then
+		return oSpeaker1 --/>
+	end
+	return oSpeaker2 --/>
+end
+function fGet_NPC(oSpeaker1, oSpeaker2)
+	if oSpeaker2:id() == (idActor or db.actor:id()) then
+		return oSpeaker1 --/>
+	end
+	return oSpeaker2 --/>
+end
+function fGet_Actor_NPC(oSpeaker1, oSpeaker2)
+	if oSpeaker1:id() == (idActor or db.actor:id()) then
+		return oSpeaker1,oSpeaker2
+	end
+	return oSpeaker2,oSpeaker1 --/>
+end
+--/ ------------------------------------------------------------------
+--/ Показ сообщения (типса) на основном игровом экране
+--/ ------------------------------------------------------------------
+function fSendTip(sText, sHeader, iTimeOut, iTimeShow, sender, sSound)
+--	printf("fSendTip:Header=[%s],Text=[%s],sender=[%s]:(%s)", sHeader, sText, sender, ">") --/#~#
+	if not (type(sText) == 'string' and db.actor) then return false end --/>
+	if type(sHeader)   ~= 'string' then sHeader = "st_tip" end
+	if type(iTimeOut)  ~= 'number' then iTimeOut  = 0 end
+	if type(iTimeShow) ~= 'number' then iTimeShow = 5 end
+
+	if iSSVer < 8 then --/SHOC
+		local oSnd = (sSound and news_manager.sounds[sSound]) or news_manager.pda_tips
+		if oSnd then
+			oSnd:play_no_feedback(db.actor, sound_object.s2d, iTimeOut, vector(), 2.5)
+		end
+
+		if sHeader == "" then
+			sText = game.translate_string(sText)
+		else
+			sHeader = game.translate_string(sHeader)
+			if not sHeader:match('^%%c%[(.+)') then
+				sHeader = "%c[255,160,160,160]"..sHeader
+			end
+			if sText ~= "" then
+				sText = sHeader..string.char(160).."\\n"..game.translate_string(sText)
+			else
+				sText = sHeader
+			end
+		end
+--		log("%s:fSendTip:Text=[%s]%s", sModule, sText, "") --/#~#
+		local sTexFile,uTexRect
+		if not (sender and type(sender) == 'string') then sender = "default" end
+		if tSenders[sender] then
+			sTexFile = tSenders[sender].file
+			uTexRect = tSenders[sender].rect
+		elseif not news_manager.tips_icons[sender] then
+			sTexFile,uTexRect = get_texture_info(sender, "ui_iconsTotal_Warning")
+		end
+		if not (sTexFile and uTexRect) then
+			local x,y = news_manager.tips_icons[sender][1], news_manager.tips_icons[sender][2]
+			uTexRect = Frect():set(x,y,83,47)
+			sTexFile = "ui\\ui_iconsTotal" --/ общая текстура
+		end
+		tSenders[sender] = {file=sTexFile, rect=uTexRect} --/ запоминаем
+		if db.actor:is_talking() then
+			db.actor:give_talk_message(sText, sTexFile, uTexRect, "iconed_answer_item")
+		else
+			--/ give_game_news( LPCSTR news, LPCSTR texture_name, Frect, int time_out, int show_time )
+			db.actor:give_game_news(sText, sTexFile, uTexRect, iTimeOut*1000, iTimeShow*1000)
+		end
+	else --/STCS&SCOP
+		xr_sound.set_sound_play(db.actor:id(), "pda_tips") --/ Играем дефолтный звук
+		local sTexture = "ui_iconsTotal_grouping"
+		if sender then
+			if type(sender) == 'string' and news_manager.tips_icons[sender] then
+				sTexture = news_manager.tips_icons[sender]
+			elseif type(sender) == 'userdata' and news_manager.is_npc_stalker(sender:clsid()) then
+				sTexture = sender:character_icon()
+			end
+		end
+		if not sTexture then
+			sTexture = "ui_iconsTotal_grouping"
+		end
+		sHeader = game.translate_string(sHeader)
+		if not sText:match('^%%c%[(.+)') then
+			sText = "%c[default]"..game.translate_string(sText)
+		end
+		if db.actor:is_talking() then
+			db.actor:give_talk_message(sText, sTexFile, uTexRect, "iconed_answer_item")
+		else
+			--/ give_game_news( LPCSTR caption, LPCSTR news, LPCSTR texture_name, int time_out, int show_time, [int sound?] )
+			db.actor:give_game_news(sHeader, sText, sTexture, iTimeOut*1000, iTimeShow*1000)
+		end
+	end
+	return true --/>
+end
+
+function fSend_ReceivedInfo(sMsg)
+	if not (sMsg and type(sMsg) == 'string' and sMsg ~= "") then
+		sMsg = "st_found_new_pda"
+	end
+	if (sMsg == sSpamMsg or "") and (iSpamTmr or 0) < time_global() then
+		iSpamTmr = time_global() + 1000
+		this.fSendTip("%c[255,128,255,128]"..game.translate_string(sMsg).."%c[default]", "", 0, 10, "gen_info")
+	end
+	sSpamMsg = sMsg
+--	log("fSend_ReceivedInfo:msg=[%s]:[%s]", sMsg, "<") --/#~#
+end
+
+function SendTip_Warning(sMsg)
+	local sHeader = game.translate_string("st_ui_warning")
+	if not (sMsg and type(sMsg) == 'string' and sMsg ~= "") then
+		sMsg = sHeader
+	end
+	fSendTip("%c[255,255,255,0]"..sMsg.."%c[default]", "%c[255,255,128,128]"..sHeader, 0, 10, "warning")
+end
+--/ ------------------------------------------------------------------
+--/ Метки на карте (возможные типы/type см. в ui\map_spots.xml)
+--/ ------------------------------------------------------------------
+--/ Метка ставится на серверный объект (что не требует ее обновлять)
+function fAdd_MapSpot(idObj,sLocation,sHint)
+	if idObj and sLocation then
+		this.fDel_MapSpot(idObj,sLocation) --/ удаляем (если есть) прежние метки
+		level.map_add_object_spot_ser(idObj, sLocation, sHint or "no_text")
+	end
+end
+function fDel_MapSpot(idObj,sLocation)
+	if idObj and sLocation then
+		while level.map_has_object_spot(idObj, sLocation) ~= 0 do
+			level.map_remove_object_spot(idObj, sLocation)
+		end
+	end
+end
+
+--/-------------------------------------------------------------------
+--/ Функции работы с патронами
+--/-------------------------------------------------------------------
+local tAmmoLists      = {} --/ массив секций патронов по секциям оружия
+local tAmmoMagSize    = {} --/ массив 'штатных' количеств патронов в магазинах по секциям оружия
+local tGrenadeLists   = {} --/ массив секций подствольных зарядов по секциям оружия
+
+--/ определяем массив секций патронов по секции оружия (sSection)
+function fGet_AmmoList(sSection)
+	if sSection and tAmmoLists[sSection] == nil then
+		local tList = {}  --sini = system_ini()
+		if sini:section_exist(sSection) and sini:line_exist(sSection, "ammo_class") then
+			local sList = sini:r_string(sSection, "ammo_class")
+			for sect in sList:gmatch('[^%s*%,]+') do
+				if sect and sect ~= "" then table.insert(tList, sect) end
+			end
+		end
+		tAmmoLists[sSection] = tList --/< {sect1,sect2,...,sectN}
+	end
+	return tAmmoLists[sSection] or {} --/> list-table or zero-table
+end
+
+--/ определяем массив секций гранат по секции оружия (sSection)
+function fGet_GrenadeList(sSection)
+	if sSection and tGrenadeLists[sSection] == nil then
+		local tList = {}  --sini = system_ini()
+		if sini:section_exist(sSection) and sini:line_exist(sSection, "grenade_class") then
+			local sList = sini:r_string(sSection, "grenade_class")
+			for sect in sList:gmatch('[^%s*%,]+') do
+				if sect and sect ~= "" then table.insert(tList, sect) end
+			end
+		end
+		tGrenadeLists[sSection] = tList --/< {sect1,sect2,...,sectN}
+	end
+	return tGrenadeLists[sSection] or {} --/> list-table or zero-table
+end
+
+--/ определяем название секции патронов/заряда в активном (под)стволе NPC
+function Get_ActiveAmmoSection(oNPC) --/< (npc or nil)
+	if not oNPC then oNPC = db.actor end
+	local oItem = oNPC and oNPC:active_item()
+	if oItem and isWeapon(oItem) then
+		return this.Get_ActiveAmmo_FromWeapon(oItem,oItem:id()) --/> "ammo_section"|"grenade_section"
+	end
+	return nil --/>
+end
+--/ определяем название секции патронов/заряда в проверяемом оружии
+function Get_ActiveAmmo_FromWeapon(Wpn,idWpn) --/< object [,ID-weapon]
+	local id = idWpn or (Wpn and (type(Wpn.id) and Wpn:id()) or Wpn.id)
+	local soWeapon = id and sim:object(id)
+	if soWeapon and isWeapon(soWeapon) then
+		local iAmmoType,iGrenadeMode = this.Get_AmmoType(soWeapon)
+		return this.Get_AmmoSection(soWeapon:section_name(), iAmmoType, iGrenadeMode) --/> "ammo_section"|"grenade_section"
+	end
+	return nil --/>
+end
+--/ определяем имя секции патронов (ammo_name) по типу (ammo_type)
+function Get_AmmoSection(sWpnSection, iAmmoType, iGrenadeMode) --/< ammo_type (0|1|2|...)
+	if iGrenadeMode and iGrenadeMode == 1 then
+		return this.fGet_GrenadeList(sWpnSection)[(iAmmoType or 0) +1] --/> "grenade_section"
+	end
+	return this.fGet_AmmoList(sWpnSection)[(iAmmoType or 0) +1] --/> "ammo_section"
+end
+
+--/ определяем текущий тип патронов (ammo_type) в стволе (weapon) и режим (не)стрельбы из подствольника
+function Get_AmmoType(soWeapon) --/< weapon (server_object)
+	local data = get_netpk(soWeapon):get() --/ читаем параметры из нет-пакета объекта ('full')
+	if data then
+		return data.ammo_type, data.upd.grenade_mode --/> index: 0|1|2|... и index: 0|1
+	end
+	if not oPkF then oPkF = net_packet() end
+	local oPk = oPkF
+	oPk:w_begin(0)
+	cse_alife_item_weapon.STATE_Write(soWeapon,oPk)
+	if iSSVer < 8 then --/ for SHOC
+		oPk:r_seek(oPk:w_tell() -1)
+	else --/ for STCS/SCOP
+		oPk:r_seek(oPk:w_tell() -2)
+	end
+	return oPk:r_u8() --/> "ammo_type" (index: 0|1|2|...)
+end
+
+--/ определяем текущее кол-во патрон (ammo_left) в пачке
+function Get_AmmoLeft(oAmmo,idAmmo) --/< ammo (server|game object)
+	local id = idAmmo or ((type(oAmmo.id) == 'function' and oAmmo:id()) or oAmmo.id)
+	local soAmmo = id and sim:object(id)
+	if not soAmmo then return 0 end --/>
+	local iAmmoLeft = get_netpk(soAmmo,1):get().ammo_left --/ читаем параметр из нет-пакета объекта ('state')
+	if iAmmoLeft then
+		return iAmmoLeft --/> (number: 0...)
+	end
+	if not oPkF then oPkF = net_packet() end
+	local oPk = oPkF
+	oPk:w_begin(0) --/ ставим запись в начало (пишутся 'начальные' 2 байта)
+	cse_alife_item_ammo.STATE_Write(soAmmo,oPk) --/ пишем 'state'-параметры из объекта в нет-пакет
+	oPk:r_seek(oPk:w_tell() -2) --/ ставим чтение в конец записи (-2 байта)
+	return oPk:r_u16() --/> "ammo_left" (number: 0...)
+end
+
+--/ определение текущего кол-ва патронов патронов в магазине&стволе оружия (weapon)
+function Get_AmmoElapsed(soWeapon) --/< server_object (weapon)
+	local data = get_netpk(soWeapon):get() --/ читаем параметры из нет-пакета объекта ('full')
+	if data then
+		return data.ammo_elapsed, data.upd.ammo_elapsed --/> (number: 0...)
+	end
+	if not oPkF then oPkF = net_packet() end
+	local oPk = oPkF
+	oPk:w_begin(0)
+	cse_alife_item_weapon.STATE_Write(soWeapon,oPk)
+	if iSSVer < 8 then --/ for SHOC
+		oPk:r_seek(oPk:w_tell() -5)
+	else --/ for STCS/SCOP
+		oPk:r_seek(oPk:w_tell() -6)
+	end
+	return oPk:r_u16() --/> "ammo_elapsed" (number: 0...)
+end
+--/ установка текущего кол-ва патронов патронов в магазине&стволе оружия (weapon)
+function Set_AmmoElapsed(soWeapon,iAmmoCount) --/< server_object (weapon,count_ammo)
+	local pk = get_netpk(soWeapon,1) --/ запрос нет-пакета ('state')
+	if pk:isOk() then --/ получен доступ к нет-пакету объекта?
+		local data = pk:get() --/ читаем данные из нет-пакета
+		data.ammo_elapsed = iAmmoCount or 0 --/ изменяем параметр
+		pk:set(data) --/< запись в нет-пакет
+	end
+end
+
+--/ определяем кол-во патронов в активном стволе NPC
+function Get_Count_ActiveAmmo(oNPC) --/< (game-object or nil)
+	if not oNPC then oNPC = db.actor end
+	local oItem = oNPC:active_item()
+	if oItem and isWpn(oItem) then --printf("Get_Count_ActiveAmmo:weapon=[%s],clsid=[%s]",oItem:section(), oItem:clsid() ) --/#~#
+		return oItem:get_ammo_in_magazine() --/> "ammo_count"
+	end
+end
+
+--/ определяем штатное кол-во патронов в магазине (ammo_mag_size) оружия (weapon)
+function Get_AmmoMagSize(sSection) --/< weapon_section
+	if not tAmmoMagSize[sSection] then
+		if sini:section_exist(sSection) and sini:line_exist(sSection, "ammo_mag_size") then
+			tAmmoMagSize[sSection] = sini:r_u32(sSection, "ammo_mag_size") or 0
+		else
+			printf("Get_AmmoMagSize:Wrong~>:Section=[%s]:<%s>", sSection, "Warning!")
+			tAmmoMagSize[sSection] = 0
+		end
+	end
+	return tAmmoMagSize[sSection] or 0 --/> "ammo_mag_size"
+end
+
+--/ определяем полон ли магазин оружия
+function Is_FullMagasine(idWeapon) --/< Id weapon
+	local soWeapon = idWeapon and sim:object(idWeapon)
+	if soWeapon and isWpn(soWeapon) then
+		local iAmmoMagSize = this.Get_AmmoMagSize( soWeapon:section_name() )
+		local oWeapon = level.object_by_id(idWeapon)
+		if oWeapon and oWeapon.get_ammo_in_magazine then
+			return (oWeapon:get_ammo_in_magazine() or 0) == iAmmoMagSize --/> (не)полон
+		end
+		return (this.Get_AmmoElapsed(soWeapon) or 0) == iAmmoMagSize --/> (не)полон
+	end
+	return false --/>
+end
+
+function Get_GrenadeMode(idWeapon) --/< Id weapon
+	local soWeapon = idWeapon and alife():object(idWeapon) --/< server_object
+	local iClassId = soWeapon and soWeapon:clsid()
+	if iClassId and (iClassId == clsid.wpn_ak74_s or iClassId == clsid.wpn_groza_s) then
+		local data = get_netpk(soWeapon,2):get() --/ читаем параметр из нет-пакета объекта ('update')
+		if data and data.upd then
+			return data.upd.grenade_mode --/> number (0 or 1)
+		end
+	end
+	return nil --/>
+end
+--/-------------------------------------------------------------------
+--/ ...
+--/-------------------------------------------------------------------
+--/ спавн НПС (mob&hum) на карту
+function fSpawn_NPC(...)
+	if db.m_respawn then
+		return m_respawn.Spawn_FreeNPC(...) --/> soNPC
+	end
+	return this.fSpawn_Obj(...) --/> soNPC
+end
+
+--/ спавн объекта на карту
+--/ для спавна NPC см. в config\creatures\spawn_sections.ltx (имена секций для разных типов NPC)
+function fSpawn_Obj(sSection, vPos, idLv, idGv)
+--	log("fSpawn_Obj:Wrong~>:Section=[%s],[%s][%s][%s]:<%s>", sSection, vPos, idLv, idGv, ">")
+	if type(sSection) == 'string' and sini:section_exist(sSection) then
+		if type(idGv) ~= 'number' then idGv = db.actor:game_vertex_id() end
+		if type(idLv) ~= 'number' then idLv = db.actor:level_vertex_id() end
+		if not vPos then vPos = vector():set(level.vertex_position(idLv)) end
+		if idLv >= 0 and idGv >= 0 and game_graph():valid_vertex_id(idGv) then
+			return sim:create(sSection, vPos, idLv, idGv, 65535) --/>
+		end
+	end
+	printf("fSpawn_Obj:Wrong~>:Section=[%s],[%s][%s][%s]:<%s>", sSection, vPos, idLv, idGv, "Warning!")
+	return nil --/>
+end
+
+--/ спавн патронов
+function fSpawn_Ammo(sSection, vPos, idLv, idGv, idObj, iCount) --/#+#
+	local idBox = idObj or 65535
+	local tRet = {}
+	if sim and sSection and ammo_section[sSection] then
+		local iBoxSize = tBoxSizes[sSection]
+		if iBoxSize == nil then
+			if sini:section_exist(sSection) and sini:line_exist(sSection, "box_size") then
+				iBoxSize = sini:r_u32(sSection, "box_size") or 1
+			else
+				printf("fSpawn_Ammo:=[%s]~Not_box_size:<%s>", sSection, "Warning!")
+				iBoxSize = 0
+			end
+			tBoxSizes[sSection] = iBoxSize
+		end
+		while iCount > 0 do
+			local soAmmo = sim:create_ammo(sSection, vPos, idLv, idGv, idBox, math.min(iBoxSize,iCount) )
+			table.insert(tRet, soAmmo)
+			iCount = iCount - iBoxSize
+		end
+	else
+		printf("fSpawn_Ammo:Section=[%s]~Not_in_table,Count=[%s]:<%s>", sSection, iCount, "Warning!")
+	end
+	return tRet --/>
+end
+
+--/ спавн предмета в ящик или в рюкзак ГГ/NPC
+function fSpawn_ItemInv(sSection, Box, idBox)
+	if not idBox then
+		if not Box then Box = db.actor end
+		idBox = (type(Box.id) == 'number' and Box.id) or Box:id()
+	end
+	if type(sSection) == 'string' and sini:section_exist(sSection) then
+		return sim:create(sSection, vector(), 0, 0, idBox) --/>
+	end
+end
+
+--/ спавн n-предметов в рюкзак ГГ/NPC или в ящик (включая патроны)
+function fSpawn_ItemsInv(sSection, iNum, Box)
+	if not Box then Box = db.actor end
+	local idBox = (type(Box.id) == 'number' and Box.id) or Box:id()
+	if type(sSection) == 'string' and idBox then --/ and sini:section_exist(sSection)
+		local soObj,iCnt = nil, iNum or 1
+		if ammo_section[sSection] then --/ патроны спавним иначе ...
+			return this.fSpawn_Ammo(sSection, vector(), 0, 0, idBox, iCnt) --/>
+		else
+			for i=1, iCnt do
+				soObj = this.fSpawn_ItemInv(sSection, Box, idBox)
+			end
+			return soObj --/>
+		end
+	end
+end
+
+--/ спавн патронов в инвентори
+function Spawn_AmmoInInv(sSection, iNum, Box)
+	if type(sSection) == 'string' and sSection ~= "" and Box then
+		if not Box then Box = db.actor end
+		local idBox = (type(Box.id) == 'number' and Box.id) or Box:id()
+		return this.fSpawn_Ammo(sSection, vector(), 0, 0, idBox, iNum or 1)
+	end
+end
+
+--/ спавн пачек патронов в ящик или в рюкзак ГГ/NPC
+function fSpawn_AmmoBoxInInv(sSection, iNum, Box)
+	if type(sSection) == 'string' and ammo_section[sSection] then
+		local iBoxSize = tBoxSizes[sSection]
+		if iBoxSize == nil then
+			if sini:section_exist(sSection) and sini:line_exist(sSection, "box_size") then
+				iBoxSize = sini:r_u32(sSection, "box_size") or 1
+			else printf("AmmoBoxInInv:=[%s]~Not_box_size:<%s>", sSection, "Warning!")
+				iBoxSize = 0
+			end
+			tBoxSizes[sSection] = iBoxSize
+		end
+		this.fSpawn_ItemsInv(sSection, iNum*iBoxSize, Box)
+	else printf("AmmoBoxInInv:=[%s]~Not_ammo:<%s>", sSection, "Warning!")
+	end
+end
+--/ удаляем объект из игры
+function fRelease_Object(Obj,idObj,iStoryId,sNameObj)
+	local soObj
+	if idObj and type(idObj) == 'number' then
+		soObj = sim:object(idObj)
+	elseif iStoryId and type(iStoryId) == 'number' then
+		soObj = sim:story_object(iStoryId)
+	elseif sNameObj and type(sNameObj) == 'string' and iSSVer < 8 then --/ for SHoC
+		soObj = sim:object(sNameObj)
+	elseif Obj then
+		if Obj.fov then --/ isGameObject
+			soObj = sim:object(Obj:id())
+		else
+			soObj = sim:object(Obj.id)
+		end
+	end
+	if soObj then
+		sim:release(soObj, true)
+		return true --/>
+	end
+	printf("fRelease_Object:[%s],Id=[%s]:<%s>", Obj and Obj:name(), idObj, "Info!")
+	return false --/>
+end
+--/ отложенное удаление объекта из игры
+function Postponed_Release_Obj(Obj,idObj,iTimeOut)
+	local id = idObj or (Obj and ( (type(Obj.id) == 'number' and Obj.id) or Obj:id() ))
+	if id then
+		start_quick_timer(iTimeOut or 0.75,Timer_Postponed_Release,{id=idObj}) --/ (time(sec),func,params) <~ real-timer
+	end
+end
+function Timer_Postponed_Release(t)
+	local soObj = t.id and sim:object(t.id)
+	if soObj then --log("Timer_Postponed_Release:[%s],Id=[%s]", soObj:name(), soObj.id, "") --/#~#
+		sim:release(soObj, true) --/ удаление
+	end
+end
+
+--/ выбрасываем объект из инвентаря и удаляем (применимо к ГГ)
+function DropAndRemove_Item(oItem,oNPC)
+--	printf("DropAndRemove_Item:[>]") --/#~#
+	if oItem then
+		if not oNPC then oNPC = db.actor end
+		if oNPC and oNPC:id() == (idActor or db.actor:id()) then
+			oNPC:drop_item(oItem)
+		end
+		local soObj = sim:object(oItem:id())
+		if soObj then
+			sim:release(soObj, true)
+			return true --/>
+		end
+	end
+	return false
+end
+
+--/ удаляем предмет из инвентаря
+function Remove_Item_FromInventory(oDelItem,oNPC)
+	if not oNPC then oNPC = db.actor end
+	if oNPC and oDelItem then
+		local idDelItem = oDelItem:id()
+		local bRemoved = false
+		oNPC:iterate_inventory(
+			function (dummy, oItem)
+				if not bRemoved and oItem:id() == idDelItem then
+					bRemoved = true
+				end
+			end
+		,nil)
+		local soItem = bRemoved and sim:object(idDelItem)
+		if soItem then
+			sim:release(soItem, true)
+			return true --/>
+		end
+	end
+	return false
+end
+
+--/ проверка наличия предмета
+function fHas_Item(sSection,oNPC)
+--	printf("fHas_Item:Section=[%s]:[%s]", sSection, ">") --/#~#
+	if not oNPC then oNPC = db.actor end
+	if oNPC and sSection and sSection ~= "" then
+		return (oNPC:object(sSection) ~= nil) --/>
+	end
+	return false
+end
+
+--/ Проверка на наличие у непися/актора предмета
+--/ Примеры вызова:
+--/ bHas,iCount = fHas_Num_Item("section")
+--/ bHas,iCount = fHas_Num_Item("section", [3], [oNPC])
+--/   [iNum]: number (опционален), при отсутствии - кол-во = 1, при '0' - полный подсчет кол-ва
+--/   [oNPC]: game_object (опционален), при отсутствии -> проверка по актору
+function fHas_Num_Item(sSection,iNum,oNPC)
+	if not oNPC then
+		if not iNum then
+			oNPC = db.actor
+			iNum = 1
+		elseif type(iNum) == 'number' then
+			oNPC = db.actor
+		elseif type(iNum) == 'userdata' and iNum.fov then
+			oNPC = iNum
+			iNum = 1
+		else
+			abort("%s:fHas_Num_Item:Section=[%s],Num=[%s/%s]~Wrong_Arg:<%s>", sModule, sSection, iNum, type(iNum), "Error!")
+		end
+	elseif type(iNum) ~= 'number' then
+		iNum = 1
+		oNPC = db.actor
+	end
+	local iCnt = 0
+	if oNPC and sSection then
+		if iNum == 1 then
+			local bHas = oNPC:object(sSection) ~= nil
+--			log("fHas_Num_Item:=[%s],Has1=[%s]:[%s]", sSection, bHas, "<") --/#~#
+			return bHas, (bHas and 1) or 0 --/>
+		else
+			oNPC:iterate_inventory(
+				function (dummy, oItem)
+					if oItem:section() == sSection then
+						iCnt = iCnt + 1
+						if iNum ~= 0 and iCnt >= iNum then --/ при iNum == 0 => подсчет всего кол-ва
+							return true, iCnt --/> NPC имеет N предметов
+						end
+--						log("fHas_Num_Item:=[%s],Cnt=[%s]%s", sSection, iCnt, "") --/#~#
+					end
+				end
+			,nil)
+		end
+	end
+	return (iCnt > 0 and iCnt >= iNum), iCnt --/> имеет ли NPC N предметов, и сколько
+end
+
+--/ Проверка на наличие у непися/актора кол-ва предметов разного типа (например разных аптечек)
+--/ Параметры вызова:
+--/ список секций предметов: tList = {"section_1","section_2",...,"section_N"}
+--/ опционально: [iNum] - при 'nil' - проверка одиночного (какого-либо) предмета из списка, [oNPC] - при 'nil' проверяем у актора
+function fHas_Num_AnyItems(tList,iNum,oNPC)
+	if type(tList) == 'table' and next(tList) then
+		local tItems = {} --/ заготовка таблицы с булевыми значениями
+		for _,v in ipairs(tList) do
+			tItems[v] = true
+		end
+		if not oNPC then oNPC = db.actor end
+		if iNum and iNum > 1 then --/ проверка наличия нескольких (iNum) предметов из списка (каких-либо)
+			local iCntAll,iCnt = oNPC:object_count(),0
+			for i=0,iCntAll-1 do
+				local oItem = oNPC:object(i)
+				if oItem and tItems[oItem:section()] then
+					iCnt = iCnt +1
+					if iCnt >= iNum then --log("%s:fHas_Num_AnyItems:NPC=[%s],Cnt(%s)=[%s]~>:[%s]", sModule, oNPC:name(), iNum, iCnt, "<") --/#~#
+						return true --/> NPC имеет iNum (или более) предметов из списка
+					end
+				end
+			end
+		else --/ проверка наличия одиночного (какого-либо) предмета из списка
+			for k,v in pairs(tItems) do
+				if oNPC:object(k) then
+					return (iNum == nil or iNum ~= 0) --/> NPC (не)имеет какой-либо предмет из списка
+				end
+			end
+		end
+	end --log("%s:fHas_Num_AnyItems:NPC=[%s],Num=[%s]~not_has:[%s]", sModule, oNPC:name(), iNum, "<") --/#~#
+	return false --/>
+end
+
+--/ Примеры вызова:
+--/ bHas = Has_ManyItems("section1", "section2", "section3", [oNPC])
+--/ bHas = Has_ManyItems("section1", 3, "section2", 5, "section3", 2)
+--/ bHas = Has_ManyItems("section1", "section2", 5, "section3")
+--/ bHas = Has_ManyItems({"section1", "section2", "section3"})
+--/ bHas = Has_ManyItems({["section1"]=3, ["section2"]=5, ["section3"]=2}, [oNPC])
+--/ bHas = Has_ManyItems( и др. )
+function Has_ManyItems(...)
+	local arg = {...}
+	local iCnt = arg and #arg --/ кол-во проверяемых элементов в массиве входных аргументов
+	if iCnt and iCnt ~= 0 then
+		local bHas = false --/ флаг наличия хотя бы одного предмета
+		local oNPC = nil --/ для проверки наличия заданного oNPC/oActor в массиве аргументов
+		if type(arg[iCnt]) == 'userdata' then --/ задан NPC, иначе работаем с актором
+			oNPC = arg[iCnt] --/ запоминаем/присваиваем ...
+			iCnt = iCnt - 1 --/ уменьшаем кол-во проверяемых элементов из массива аргументов
+		end
+		for i=1, iCnt do --/ проверяем массив
+			if type(arg[i]) == 'string' then --/ список
+				local iNum = 1
+				if type(arg[i+1]) == 'number' then
+					iNum = arg[i+1]
+				end
+				if not this.fHas_Num_Item(arg[i], iNum, oNPC) then
+					return false --/> у NPC нет i-предмета(ов)
+				end
+				bHas = true
+			elseif type(arg[i]) == 'table' then --/ таблица
+				for k,v in pairs(tTable) do
+					if type(k) == 'string' and type(v) == "number" then --/ двумерный массив (с кол-вами)
+						if not this.fHas_Num_Item(k, v, oNPC) then
+							return false --/> у NPC нет k-предмета(ов)
+						end
+					elseif type(k) == "number" and type(v) == 'string' then --/ одномерный массив
+						if not this.fHas_Num_Item(v, 1, oNPC) then
+							return false --/> у NPC нет k-предмета
+						end
+					else
+						abort("%s:Has_ManyItems:key=[%s/%s],value=[%s/%s]~Wrong_Arg:<%s>", sModule, k, type(k), v, type(v), "Error!")
+						return false --/> ошибка в таблице
+					end
+					bHas = true
+				end
+			end
+		end
+		return bHas --/> NPC (не)имеет массив/набор предметов
+	end
+	return false
+end
+
+--/ Примеры вызова:
+--/ bHas = Has_ListItems("section1", "section2", "section3", [oNPC])
+--/ bHas = Has_ListItems("section1", 3, "section2", 5, "section3", 2)
+--/ bHas = Has_ListItems("section1", "section2", 5, "section3")
+function Has_ListItems(...)
+	local arg = {...}
+	if next(arg) then
+		local iCnt = #arg
+		local oNPC,iNum = nil,nil --/ для проверки: не задан ли 'не актор'
+		if type(arg[iCnt]) == 'userdata' then --/ задан NPC, иначе работаем с актором
+			oNPC = arg[iCnt] --/ присваиваем ...
+			table.remove(arg, iCnt) --/ удаляем из массива аргументов
+		end
+		for i=1, #arg do
+			if type(arg[i]) == 'string' then
+				iNum = 1
+				if type(arg[i+1]) == 'number' then
+					iNum = arg[i+1]
+				end
+				if not this.fHas_Num_Item(arg[i], iNum, oNPC) then
+					return false --/> у NPC нет i-предмета(ов)
+				end
+			end
+		end
+		return true --/> NPC имеет полный набор предметов
+	end
+	return false
+end
+
+--/ Примеры вызова:
+--/ bHas = Has_TableItems({"section1", "section2", "section3"})
+--/ bHas = Has_TableItems({["section1"]=3, ["section2"]=5, ["section3"]=2}, [oNPC])
+function Has_TableItems(tTable, oNPC)
+	if type(tTable) == 'table' and (oNPC == nil or type(oNPC) == 'userdata') then
+		for k,v in pairs(tTable) do
+			if type(k) == 'string' and type(v) == 'number' then --/ массив с кол-вами
+				if not this.fHas_Num_Item(k, v, oNPC) then
+					return false --/> у NPC нет k-предмета(ов)
+				end
+			elseif type(k) == 'number' and type(v) == 'string' then --/ одномерный массив
+				if not this.fHas_Num_Item(v, 1, oNPC) then
+					return false --/> у NPC нет k-предмета
+				end
+			else
+				return false --/> ошибка в таблице
+			end
+		end
+		return true --/> NPC имеет полный набор предметов
+	end
+	return false
+end
+
+function fGive_Actor_Money(iAmount)
+	db.actor:give_money(iAmount) --/ добавляем деньги ГГ
+	--game_stats.money_quest_update(iAmount,"in") --/#?# статистика ~> в 'news_manager'
+	news_manager.relocate_money(db.actor, "in", iAmount)
+end
+function fLost_Actor_Money(iAmount)
+	db.actor:give_money(-iAmount) --/ забираем деньги у ГГ
+	--game_stats.money_quest_update(iAmount,"out") --/#?# статистика ~> в 'news_manager'
+	news_manager.relocate_money(db.actor, "out", iAmount)
+end
+
+--/ Передача денег ГГ (oActor) <~> НПС (oVictim)  [sType]: "out" - ГГ отдает (дефолтно), "in" - ГГ получает)
+--/ Пример1: fRelocate_Money(nil, 200) - актор отдает (теряет) 200 ruz.
+--/ Пример2: fRelocate_Money(oNPC, 500, "in") - актор получает от НПС 500 ruz.
+function fRelocate_Money(oVictim, iAmount, sType)
+--	log("fRelocate_Money:Victim=[%s],Amount=[%s],Type=[%s]:[%s]", oVictim and oVictim:name(), iAmount, sType, ">") --/#~#
+	local oActor = db.actor
+	if oActor and iAmount and iAmount > 0 then
+		if not sType or sType == "out" then --/ по умолчанию:  ГГ отдает деньги
+			if oVictim and oVictim:id() ~= (idActor or db.actor:id()) then
+				oActor:transfer_money(iAmount, oVictim) --/ ГГ передает деньги НПС
+			else
+				log("fRelocate_Money:Victim=NIL,Amount=[%s],Type=[%s]:<%s>", iAmount, sType, "Warning!") --/#~#
+				oActor:give_money(-iAmount) --/ забираем деньги у ГГ
+			end
+		else --/ sType == "in": ГГ получает деньги
+			if oVictim and oVictim:id() ~= (idActor or db.actor:id()) then
+				local iMoney = oVictim:money()
+				if iMoney >= iAmount + 250 then
+					oVictim:transfer_money(iAmount, oActor) --/ НПС передает деньги ГГ
+				else
+					local iCanMoney = iMoney - 250
+					oVictim:transfer_money(iCanMoney, oActor) --/ НПС передает ГГ часть денег
+					oActor:give_money(iAmount - iCanMoney) --/ добавляем ГГ остаток денег
+				end
+			else
+--				log("fRelocate_Money:Victim=NIL,Amount=[%s],Type=[%s]:<%s>", iAmount, sType, "Info!") --/#~#
+				oActor:give_money(iAmount) --/ добавляем деньги ГГ
+			end
+		end
+		--game_stats.money_quest_update(iAmount,sType) --/#?# статистика ~> в 'news_manager'
+		news_manager.relocate_money(oActor, sType, iAmount)
+	end
+end
+
+--/ передача ГГ<->NPC n-предметов одного типа (iNum - опционально, [sType]: "out" - ГГ отдает (дефолтно), "in" - ГГ получает)
+--/ Пример1: fRelocate_N_Items(oNPC, sSection) - актор отдает НПС один предмет.
+--/ Пример2: fRelocate_N_Items(oNPC, sSection, 5, "in") - актор получает от НПС 5 предметов.
+function fRelocate_N_Items(oNPC, sSection, iNum, sType)
+--	printf("fRelocate_N_Items:NPC=[%s],Section=[%s],Num=[%s],Type=[%s]:[%s]", oNPC and oNPC:name(), sSection, iNum, sType, ">") --/#~#
+	local oActor = db.actor
+	if oActor and sSection and sini:section_exist(sSection) then
+		if not idActor then idActor = db.actor:id() end
+		if not sType then sType = "out" end --/ по умолчанию: ГГ отдает
+		if not iNum then iNum = 1 end --/ по умолчанию: один предмет
+		local iCnt = iNum
+		local idNPC = oNPC and oNPC:id()
+		local bQuestItem = quest_section[sSection] == true
+		local bAmmo = ammo_section[sSection] == true
+		local bTransfer = (idNPC and idNPC ~= idActor and not bAmmo) --/ режим 'передача' (патроны НЕ передаются, а спавнятся/удаляются)
+		if sType == "in" then --/ ГГ получает предмет(ы) (от НПС)
+--			printf("fRelocate_N_Items:NPC=[%s]~>Section=[%s]%s", oNPC and oNPC:name(), sSection, "") --/#~#
+			if bTransfer then
+				oNPC:iterate_inventory(
+					function (dummy,oItem)
+						if iCnt > 0 and oItem:section() == sSection and not oNPC:marked_dropped(oItem) then
+--							printf("fRelocate_N_Items:NPC=[%s]~>Section=[%s],ID=[%s]%s", oNPC and oNPC:name(), sSection, oItem:id(), "") --/#~#
+							oNPC:mark_item_dropped(oItem) --/ пометка предмета (режим передачи ассинхронен!)
+							oNPC:transfer_item(oItem, oActor)
+							iCnt = iCnt -1
+						end
+					end
+				,oNPC)
+			end
+			if iCnt > 0 then
+				if bAmmo then --/ патроны спавним коробками
+					local iBoxSize = tBoxSizes[sSection]
+					if iBoxSize == nil then
+						if sini:line_exist(sSection, "box_size") then
+							iBoxSize = sini:r_u32(sSection, "box_size") or 1
+						else printf("fRelocate_N_Items:=[%s]~Not_box_size:<%s>", sSection, "Warning!")
+							iBoxSize = 0
+						end
+						tBoxSizes[sSection] = iBoxSize
+					end
+					this.fSpawn_Ammo(sSection, vector(), 0, 0, idActor, iBoxSize*iCnt)
+				else
+					local vPos,idLv,idGv = vector(),0,0
+					for i=1,iCnt do
+						if bQuestItem then --/#?# ГГ получает предмет (квестовый)
+							printf("fRelocate_N_Items:NPC=[%s],Section=[%s]<~QuestItem:<%s>", oNPC and oNPC:name(), sSection, "Info!") --/#~#
+						end
+						sim:create(sSection, vPos, idLv, idGv, idActor)
+					end
+				end
+			end
+		else --/ ГГ отдает предмет(ы) (НПС)
+			oActor:iterate_inventory(
+				function (dummy,oItem)
+					if iCnt > 0 and oItem:section() == sSection then
+						local soItem = sim:object(oItem:id())
+						if soItem and not oActor:marked_dropped(oItem) and oItem:parent() and oItem:parent():id() == idActor then
+							oActor:mark_item_dropped(oItem) --/ пометка предмета
+							if bTransfer then --/ ГГ передает предмет НПС
+--								log("%s:fRelocate_N_Items:NPC=[%s]<=Section=[%s]%s", sModule, oNPC and oNPC:name(), sSection, "") --/#~#
+								oActor:transfer_item(oItem, oNPC)
+							elseif not bQuestItem then --/ у ГГ забирается/удаляется предмет (НЕ квестовый!)
+								sim:release(soItem,true)
+							end
+						else
+							printf("fRelocate_N_Items:NPC=[%s],Section=[%s]<~Wrong_Item:<%s>", oNPC and oNPC:name(), sSection, "Warning!")
+						end
+						iCnt = iCnt -1
+					end
+				end
+			,nil)
+		end
+		news_manager.relocate_item(oActor, sType, sSection, iNum)
+	end
+end
+
+--/ передача ГГ<->NPC n-предметов разного типа
+--/ Параметры вызова: oVictim - клиентский объект сталкера/актора (кому отдавать)
+--/ список секций предметов: tList = {"section_1","section_2",...,"section_N"}
+--/ опционально: [iNum] - при 'nil' - отдается один предмет из списка, при '0' - отдаются все из списка
+--/ опционально: [oWho] - при 'nil' - отдает актор
+function fRelocate_N_AnyItems(oVictim,tList,iNum,oWho)
+	if oVictim and type(tList) == 'table' and next(tList) then
+		local oNPC,sType = nil,"out" --/ по умолчанию актор отдает
+		if oWho then --/ задано кому отдавать
+			if oWho:id() == (idActor or db.actor:id()) then
+				oNPC = oVictim
+			else
+				oNPC = oWho
+				sType = "in" --/ НПС отдает актору
+			end
+		else --/ задаем кто отдает
+			if oVictim:id() ~= (idActor or db.actor:id()) then
+				oNPC = oVictim
+				oWho = db.actor --/ отдает актор
+			else
+				return false --/> неизвестно кто отдает
+			end
+		end
+		local tItems,iCntTypes = {},0 --/ таблица и кол-во типов предметов
+		for idx,v in ipairs(tList) do
+			tItems[idx] = v --/ 'idx' задает приоритет передачи типов предметов
+			tItems[v] = 0 --/ счетчики по типам предметов
+			iCntTypes = iCntTypes +1
+		end
+		if iNum and iNum ~= 1 then
+			local iCntAll,iCnt = 0,0
+			--/ подсчитываем кол-ва предметов (по типам) у актора:
+			oWho:iterate_inventory(
+				function (dummy, oItem)
+					iCnt = tItems[oItem:section()]
+					if type(iCnt) == 'number' then
+						tItems[oItem:section()] = iCnt +1
+						iCntAll = iCntAll +1
+					end
+				end
+			,nil)
+--			log("%s:fRelocate_N_AnyItems:NPC=[%s]:CntAll=[%s]:(%s):[%s]", sModule, oWho:name(), iCntAll, iNum, "i") --/#~#
+			--/ если у актора есть предметы: отдаем их
+			if iNum == 0 then iNum = iCntAll end --/ отдаем все предметы из списка
+			if iCntAll > 0 then
+				iCntAll,iCnt = 0,0
+				for i=1,iCntTypes do
+					iCnt = tItems[ tItems[i] ]
+					if iCnt and iCnt > 0 then
+						iCnt = math.min(iCnt,iNum-iCntAll)
+						iCntAll = iCntAll + iCnt
+--						log("%s:fRelocate_N_AnyItems:NPC=[%s]:[%s]=>Cnt=[%s/%s]:(%s):[%s]", sModule, oWho:name(), tItems[i], iCnt, iCntAll, iNum, "i") --/#~#
+						this.fRelocate_N_Items(oNPC, tItems[i], iCnt, sType)
+						if iCntAll >= iNum then
+--							log("%s:fRelocate_N_AnyItems:NPC=[%s]:Num=[%s]=>Cnt=[%s]:[%s]", sModule, oWho:name(), iNum, iCntAll, "<") --/#~#
+							return true --/> (or iCntAll ?)
+						end
+					end
+--					log("%s:fRelocate_N_AnyItems:NPC=[%s]:[%s/%s]=>Cnt=[%s/%s]:(%s):[%s]", sModule, oWho:name(), k, v, iCnt, iCntAll, iNum, "i") --/#~#
+				end
+			end
+		else
+			for i=1,iCntTypes do
+				local oItem = oWho:object(tItems[i])
+				if oItem then
+					this.fRelocate_N_Items(oNPC, tItems[i], 1, sType)
+					return true --/>
+				end
+			end
+		end
+	end
+	return false --/>
+end
+
+--/ забираем у актора N-предметов (iNum,oNPC - опционально)
+function fLost_Actor_Items(sSection, iNum, oNPC)
+	local oActor = db.actor
+	if sim and oActor then
+		if not iNum then iNum = 1 end
+		local bTransfer = oNPC and level.object_by_id(oNPC:id())
+		oActor:iterate_inventory(
+			function (dummy,oItem)
+				if iNum >= 1 and oItem:section() == sSection then
+					local soItem = sim:object(oItem:id())
+					if soItem then
+						oActor:mark_item_dropped(oItem) --/ пометка предмета
+						if bTransfer then
+							oActor:transfer_item(oItem, oNPC)
+						else
+							sim:release(soItem, true)
+						end
+					else
+						printf("fLost_Actor_Items:Num=[%s],Item=[%s]~Not_soItem:<%s>", iNum, oItem:name(), "Error!")
+					end
+					iNum = iNum -1
+				end
+			end
+		,nil)
+		news_manager.relocate_item(oActor, "out", sSection, iNum)
+	end
+end
+
+local oFakeBox = nil --/ объект фейкового (технологического) 'ящика'
+
+function fReload_Item(oItem, oNPC)
+	if not oNPC then oNPC = db.actor end
+	if not oFakeBox and db.idFakeBox then
+		oFakeBox = level.object_by_id(db.idFakeBox)
+	end
+	if oFakeBox then
+		oNPC:transfer_item(oItem, oFakeBox)
+		oFakeBox:transfer_item(oItem, oNPC)
+	else
+		oNPC:drop_item(oItem)
+		oNPC:transfer_item(oItem, oNPC)
+	end
+end
+
+--/ перекладываем (shift) предметы в слотах/рюкзаке ГГ или NPC (НЕ патронов!)
+function Shift_Items(idRemoveItem, idReloadItem, oNPC, bPostponed)
+--	printf("Shift_Items:Id=[%s]~>[%s]:(%s):[%s]", idReloadItem, idRemoveItem, bPostponed, ">") --/#~#
+	if not oNPC then oNPC = db.actor end
+	local soRemoveItem = idRemoveItem and sim:object(idRemoveItem)
+	local soReloadItem = idReloadItem and sim:object(idReloadItem)
+	if soRemoveItem and soReloadItem and oNPC then --/ оба предмета в игре
+		local oRemoveItem = level.object_by_id(idRemoveItem)
+		local oReloadItem = level.object_by_id(idReloadItem)
+		if oRemoveItem and oReloadItem then --/ оба предмета в онлайне
+			if db.m_backpack and m_backpack.Set_TimerLoss then m_backpack.Set_TimerLoss(8000) end
+			oNPC:drop_item(oRemoveItem)
+			oNPC:drop_item(oReloadItem)
+			oNPC:transfer_item(oReloadItem, oNPC)
+			oNPC:transfer_item(oRemoveItem, oNPC)
+--			printf("Shift_Items:NPC=[%s/%s],Reload=[%s/%s]=>Remove=[%s/%s]:[%s]", oNPC:name(), oNPC:id(), oReloadItem:name(), idReloadItem, oRemoveItem:name(), idRemoveItem, "i") --/#~#
+		elseif bPostponed then --/ отложенное 'перекладывание'
+			local sRemSection = soRemoveItem:section_name()
+			local sRelSection = soReloadItem:section_name()
+			if oRemoveItem then oNPC:mark_item_dropped(oRemoveItem) end --/ пометка предмета
+			if oReloadItem then oNPC:mark_item_dropped(oReloadItem) end --/ пометка предмета
+			sim:release(soReloadItem, true)
+			sim:release(soRemoveItem, true)
+			this.fSpawn_ItemInv(sRelSection,oNPC)
+			this.fSpawn_ItemInv(sRemSection,oNPC)
+--			printf("Shift_Items:NPC=[%s/%s],Reload=[%s](%s)~>Remove=[%s](%s):[%s]", oNPC:name(), oNPC:id(), sRelSection, idReloadItem, sRemSection, idRemoveItem, "<x>") --/#~#
+		else --/ откладываем (пауза)
+			start_quick_timer(0.2,Shift_Postponed,{id=oNPC:id(),id1=idRemoveItem,id2=idReloadItem}) --/ (time,func,params) <~ real-timer = ~0.1 sec
+--			printf("Shift_Items:NPC=[%s/%s],Reload=[%s/%s],Remove=[%s/%s]~>Postponed:[%s]", oNPC:name(), oNPC:id(), soReloadItem:section_name(), idReloadItem, soRemoveItem:section_name(), idRemoveItem, "i") --/#~#
+		end
+	else
+		printf("Shift_Items:[%s]~>[%s]:(%s):<%s>", soReloadItem ~= nil, soRemoveItem ~= nil, oNPC ~= nil, "Warning!") --/#~#
+	end
+end
+
+--/ перекладываем предмет из/в слота/рюкзак ГГ или NPC (НЕ патронов!)
+function Shift_Item(idItem, oNPC, bPostponed)
+--	printf("Shift_Item:NPC=[%s],Id=[%s]:[%s]", oNPC and oNPC:name(), idItem, ">") --/#~#
+	if not oNPC then oNPC = db.actor end
+	local soItem = idItem and sim:object(idItem)
+	if soItem and oNPC then
+		local oItem = level.object_by_id(idItem)
+		if oItem then --/ предмет в онлайне
+			this.fReload_Item(oItem, oNPC)
+		elseif bPostponed then --/ отложенное 'перекладывание'
+			local sSection = soItem:section_name()
+			sim:release(soItem, true)
+			this.fSpawn_ItemInv(sSection,oNPC)
+--			printf("Shift_Item:=[%s],NPC=[%s/%s]:[%s]", sSection, oNPC:name(), oNPC:id(), "<x>") --/#~#
+		else --/ откладываем (пауза)
+			start_quick_timer(0.2,Shift_Postponed,{id=oNPC:id(),id1=idItem}) --/ (time,func,params) <~ real-timer = ~0.1 sec
+--			printf("Shift_Item:NPC=[%s/%s],idItem=[%s]~>Postponed:[%s]", oNPC:name(), oNPC:id(), idItem, "i") --/#~#
+		end
+	end
+end
+
+function Shift_Postponed(t)
+	local oNPC = t.id and level.object_by_id(t.id)
+	if oNPC then
+--		log("%s:Shift_Postponed:ID=[%s],id1=[%s],id2=[%s]:[%s]", sModule, t.id, t.id1, t.id2, "i") --/#~#
+		if t.id2 then
+			Shift_Items(t.id1, t.id2, oNPC, true)
+		elseif t.id then
+			Shift_Item(t.id1, oNPC, true)
+		end
+	end
+end
+
+--/ очищаем инвентарь НПС/ГГ
+function fClear_Inventory(oNPC)
+	oNPC:iterate_inventory(
+		function (dummy, oItem)
+			local sSection = oItem:section()
+			if sSection ~= "bolt" and (sSection ~= "device_torch" or sSection ~= "device_torch_plus" or sSection ~= "device_torch_unik") then
+				local soItem = sim:object(oItem:id())
+				if soItem then
+					sim:release(soItem, true)
+				end
+			end
+		end
+	,nil)
+end
+
+--/ NPC "подбирает/вынимает" предмет (применимо к офф-лайну) --/ TODO: сделать сохранение свойств предмета
+function fTake_Item(idItem,idNPC)
+	local soNPC = idNPC and sim:object(idNPC)
+	local soItem = idItem and sim:object(idItem)
+	if soNPC and soItem then
+		local sSection = soItem.section_name and soItem:section_name()
+		if not this.is_sobject_object(soItem) then
+			sim:release(soItem, true) --/ удаляем 'старый' предмет
+			soItem = sim:create(sSection, soNPC.position, soNPC.m_level_vertex_id, soNPC.m_game_vertex_id, idNPC)
+			if soItem then
+				return soItem --/> возвращаем 'новый' предмет
+			end
+		end
+	end
+	return nil --/>
+end
+
+--/ узнаем отношение одного непися к другому
+function Get_Relation_NPC(oNPC,oTarget)
+	local iRelation = oNPC:relation(oTarget)
+	if     iRelation == game_object.neutral then
+		return "neutral" --/>
+	elseif iRelation == game_object.friend then
+		return "friend" --/>
+	elseif iRelation == game_object.enemy then
+		return "enemy" --/>
+	end
+	return "" --/>
+end
+
+--/ узнаем соответствует ли отношение одного непися к другому
+function Chk_Relation_NPC(oNPC,oTarget,sRelation)
+	local sRelTarget = Get_Relation_NPC(oNPC,oTarget)
+	if sRelation == sRelTarget then
+		return true --/>
+	end
+	return false --/>
+end
+
+--/ задаем отношение одного непися к другому
+function Set_Relation_NPC(oNPC,oTarget,sRelation)
+	local iRelation
+	if     sRelation == "neutral" then
+		iRelation = game_object.neutral
+	elseif sRelation == "friend" then
+		iRelation = game_object.friend
+	elseif sRelation == "enemy" then
+		iRelation = game_object.enemy
+	else
+		return false --/>
+	end
+	oNPC:set_relation(iRelation,oTarget)
+--	log("%s:Set_Relation_NPC:NPC=[%s]=>(%s)=>Target=[%s]:[%s]", sModule, oNPC:name(), sRelation, oTarget:name(), "i") --/#~#
+	return true --/>
+end
+
+--/ перевод объекта в офф-лайн
+function DoSwitch_OffLine(id)
+	if not (type(id) == 'number' and id >= 0) then return end --/>
+	if sim and sim:object(id) then
+		if level.object_by_id(id) then
+--			printf("DoSwitch_OffLine:Obj=[%s],id=[%s]:[%s]", level.object_by_id(id):name(), id, "i") --/#~#
+			sim:set_switch_online(id, false)
+			sim:set_switch_offline(id, true)
+			sim:set_interactive(id, false) --/#?#
+		end
+	end
+end
+--/ перевод объекта в он-лайн
+function DoSwitch_OnLine(id)
+	if not (type(id) == 'number' and id >= 0) then return end --/>
+	if sim and sim:object(id) then
+		local oObj = level.object_by_id(id)
+		if not level.object_by_id(id) then
+--			printf("DoSwitch_OnLine:Obj=[%s],id=[%s]:[%s]", sim:object(id):name(), id, "i") --/#~#
+			sim:set_switch_offline(id, false)
+			sim:set_switch_online(id, true)
+			sim:set_interactive(id, true) --/#?#
+		end
+	end
+end
+--/ ---------------------------------------------
+--/ класс объекта (из его секции)
+function fGet_ClassSection(sSection)
+	if not sSection then return nil end --/>
+	if not tClasses[sSection] then
+		local iClassId = sini:line_exist(sSection,"class") and sini:r_clsid(sSection,"class")
+		if not iClassId then
+			printf("fGet_ClassSection:=[%s]~NOT_class:<%s>", sSection, "Warning!") --/#~#
+			iClassId = -1
+		end
+		tClasses[sSection] = iClassId
+	end
+	return tClasses[sSection] --/>
+end
+--/ вес предмета (из его секции)
+function fGet_WeightSection(sSection)
+	if not sSection then return 0 end --/>
+	if not tWeights[sSection] then
+		local iWeight = sini:line_exist(sSection,"inv_weight") and sini:r_float(sSection,"inv_weight")
+		if not iWeight or iWeight < 0 then
+			if db.is_dbg1 then printf("fGet_WeightSection:item=[%s],Weight=[%s]:<%s>", sSection, iWeight, "Info!") end --/#~#
+			iWeight = 0
+		end
+--		log("fGet_WeightSection:=[%s],item=[%s]:<%s>", math.floor(iWeight*100)/100, sSection, "i") --/#~#
+		tWeights[sSection] = iWeight --/0.01*math.ceil(iWeight*100)
+	end
+	return tWeights[sSection] --/>
+end
+--/ стоимость предмета (из его секции)
+function fGet_CostSection(sSection)
+	if not sSection then return 0 end --/>
+	if not tCosts[sSection] then
+		local iCost = sini:line_exist(sSection,"cost") and sini:r_s32(sSection,"cost") --/r_s32|r_u32|r_float
+		if not iCost or iCost < 0 then
+			if db.is_dbg1 then printf("fGet_CostSection:=[%s],Cost=[%s]:<%s>", sSection, iCost, "Info!") end --/#~#
+			iCost = 0
+		end
+		tCosts[sSection] = iCost
+	end
+	return tCosts[sSection] --/>
+end
+
+--/ инвентарное название объекта
+--/ опционально: [bShort] - короткое имя)
+function fGet_InvName(sSection,bShort)
+	if not sSection then return "" end --/>
+	local sInvSection,sShort = sSection,""
+	if bShort then sInvSection,sShort = sInvSection.."_short","_short" end
+	if not tInvNames[sInvSection] then
+		local sInvName = ""
+		if sini:line_exist(sSection,"inv_name"..sShort) then
+			sInvName = sini:r_string(sSection,"inv_name"..sShort) or ""
+		end
+		if sInvName == "" and sini:line_exist(sSection,"inv_name") then
+			sInvName = sini:r_string(sSection,"inv_name") or ""
+		end
+		tInvNames[sInvSection] = sInvName
+	end
+	return tInvNames[sInvSection] or ""
+end
+
+--/ имя непися
+function fGet_CharName(obj)
+	if obj and IsHuman(obj) then --/ только 'люди'
+		if obj.character_name then
+			return obj:character_name() or "" --/>
+		end
+		local sCharName = db.tCharName[obj:name()]
+		if not sCharName then
+			sCharName = get_netpk(obj,1):get().checked_characters --/ читаем из нет-пакета ('state')
+			db.tCharName[obj:name()] = sCharName
+		end
+		return sCharName or "NoName" --/>
+	end
+	return "NoHuman" --/>
+end
+
+--/ принадлежность к группировке
+function fGet_Object_Community(Obj, iClassId)
+	local id = iClassId or (Obj and Obj:clsid())
+	if type(Obj.id) == 'function' then
+		return this.fGet_CharacterCommunity(Obj, id) --/>
+	else
+		return this.fGet_Alife_CharacterCommunity(Obj, id) --/>
+	end
+end
+
+function fGet_Alife_CharacterCommunity(soObj, iClassId)
+	if IsHuman(soObj, iClassId) then
+		if soObj.community then
+			return soObj:community() --/>
+		elseif soObj.id == (idActor or db.actor:id()) then
+			return this.fGet_CharacterCommunity(db.actor, iClassId) --/>
+		else
+			printf("fGet_Alife_CharacterCommunity:Obj=[%s],ClassId=[%s]:<%s>", soObj.name and soObj:name(), iClassId or soObj:clsid(), "Warning!")
+		end
+	end
+	return this.fGet_MobClass(soObj, iClassId) --/>
+end
+
+function fGet_CharacterCommunity(oObj, iClassId)
+	if IsHuman(oObj, iClassId) then
+		if oObj.character_community then
+			return oObj:character_community() --/>
+		end
+		printf("fGet_CharacterCommunity:Obj=[%s],ClassId=[%s]:<%s>", oObj.name and oObj:name(), iClassId or oObj:clsid(), "Warning!")
+	end
+	return this.fGet_MobClass(oObj, iClassId) --/>
+end
+
+function fGet_MobClass(Obj, iClassId)
+	local id = iClassId or (Obj and Obj:clsid())
+	local sClass = id and xr_statistic.monster_classes[id]
+	if sClass and sClass ~= "NIL" then
+		--if id == clsid.tushkano_s and Obj and string.match(Obj:name(),'^rat') then return "rat" end --/>
+		return sClass --/>
+	elseif id == clsid.psy_dog_phantom_s then
+		return "phantom" --/>
+	end
+	printf("Get_Class:Obj=[%s],ClassId=[%s]:(%s)", Obj.name and Obj:name(), id, "Info!") --/#~#
+	return "monster" --/>
+end
+
+--/ далеко ли объект от ГГ
+function IsFar_Object(Obj, iDistance)
+	if Obj and iDistance then
+		if isGameObject(Obj) then
+			--vPos = level.vertex_position(Obj:level_vertex_id())
+			vPos = Obj:position()
+		else
+			--vPos = level.vertex_position(Obj.m_level_vertex_id)
+			vPos = Obj.position
+		end
+		local idMap = Get_MapIdObj(Obj) --/this.fGet_LevelId
+		local soActor = alife():actor() --/ серверный объект актора
+		if vPos and idMap == db.idMapNow and soActor then
+			if soActor.position:distance_to(vPos) < iDistance then --/ достаточно ли далеко?
+				return false --/>
+			end
+		end
+	end
+	return true
+end
+
+--/ проверка: сюжетный ли объект
+function is_sobject_object(Obj)
+	if Obj then
+		if Obj.m_story_id then
+			return Obj.m_story_id < 4294967295 or get_object_story_id(Obj.id) ~= nil --/>
+		elseif Obj.story_id then
+			return Obj:story_id() < 4294967295 or get_object_story_id(Obj:id()) ~= nil --/>
+		end
+	end
+	return false --/>
+end
+
+function Get_Server_Object(Obj)
+	if isGameObject(Obj) then
+		local id = Obj:id()
+		if id == (idActor or sim:actor().id) then
+			return sim:actor() --/>
+		end
+		return sim:object(id) --/>
+	else --/ is server object
+		if Obj and Obj.id == (idActor or sim:actor().id) then
+			return sim:actor() --/>
+		end
+		return Obj --/>
+	end
+end
+
+function isGameObject(Obj)
+	if Obj and Obj.fov then
+		return true
+	end
+	return false
+end
+--/ получаем Id владельца(родителя)
+function get_parent_id(Obj,idObj)
+	local id = idObj or (Obj and ( (type(Obj.id) == 'number' and Obj.id) or Obj:id() ))
+	if id then
+		local soObj = sim:object(id)
+		if soObj then
+			return soObj.parent_id
+		end
+	end
+	return nil --/>
+end
+
+function Get_LevelId(idGv)
+	if not gmg then gmg = game_graph() end
+	if idGv and gmg:valid_vertex_id(idGv) then
+		local oVertex = gmg:vertex(idGv)
+		if oVertex then
+			return oVertex:level_id() --/> idLevel | idMap
+		elseif db.is_dbg1 then
+			if callstack then
+				callstack("Get_LevelId: idGv=["..tostring(idGv).."]~>wrong vertex:<Warning!>")
+			else
+				printf("Get_LevelId: idGv=["..tostring(idGv).."]~>wrong vertex:<Warning!>")
+			end
+		end
+	elseif db.is_dbg1 and callstack then
+		callstack("Get_LevelId: idGv=["..tostring(idGv).."]<~NOT_valid:<Warning!>")
+	else
+		printf("Get_LevelId: idGv=[%s]<~NOT_valid:<%s>", idGv, "Warning!")
+	end
+	return nil --/>
+end
+
+function fGet_LevelId(Obj,idGv)
+	if not idGv and Obj then
+		idGv = Obj.m_game_vertex_id
+		if not idGv then
+			idGv = Obj.game_vertex_id and Obj:game_vertex_id()
+		end
+	end
+	if idGv then
+		return this.Get_LevelId(idGv) --/> idLevel | idMap
+	end
+	printf("fGet_LevelId:Obj=[%s/%s]:<%s>", type(Obj), type(Obj) == 'userdata' and Obj:name(), "Warning!")
+	return nil --/>
+end
+
+function Get_LevelName(idGv)
+	local idLevel = this.Get_LevelId(idGv)
+	if idLevel then
+		return sim:level_name(idLevel) --/> sLevelName
+	end
+	return nil --/>
+end
+
+function fGet_LevelName_Object(Obj)
+	local idLevel = this.fGet_LevelId(Obj)
+	if idLevel then
+		return sim:level_name(idLevel) --/> sLevelName
+	end
+	return nil --/>
+end
+
+function Get_LevelIdByName(sLevelName)
+	if not tLevelIdByName[sLevelName] then
+--		log("Get_LevelIdByName:Level=[%s]:(%s)", sLevelName, ">") --/ #~#
+		local idLevel,sLevel = 0,""
+		--/ 'глобальное' сканирование всех game_vertex'ов
+		local id,idLevelSav,sLevelSav = 0,0,""
+		if not gmg then gmg = game_graph() end
+		while gmg:valid_vertex_id(id) do
+			idLevel = gmg:vertex(id):level_id() --/ ID уровня по game_vertex'у
+			if idLevel ~= idLevelSav then --/ сменился ID-уровня?
+				sLevel = sim:level_name(idLevel) --/ имя уровня по его ID
+				if sLevel ~= sLevelSav then --/ сменилось имя уровня?
+					sLevelSav = idLevel
+					sLevelSav = sLevel
+					tLevelIdByName[sLevel] = idLevel --/ запоминаем
+--				log("Get_LevelIdByName:Level=[%s]=>[%s],idGvMin=[%s]:[%s]", sLevel, idLevel, id, "+") --/ #~#
+				end
+			end
+			id = id +1
+		end
+--		log("Get_LevelIdByName:Level=[%s]=>[%s]:<%s>", sLevelName, tLevelIdByName[sLevelName], "Info!") --/ #~#
+	end
+	return tLevelIdByName[sLevelName] --/> idLevel
+end
+
+function Get_IdsByLevelName(sLevelName)
+	if not tIdsByLevelName[sLevelName] then
+		local idMap = this.Get_LevelIdByName(sLevelName)
+		if idMap then
+--			log("Get_IdsByLevelName:Level=[%s]:(%s)", sLevelName, ">") --/ #~#
+			local idGv = 0
+			if not gmg then gmg = game_graph() end
+			while gmg:valid_vertex_id(idGv) do
+				if gmg:vertex(idGv):level_id() == idMap then
+					local idLv = gmg:vertex(idGv):level_vertex_id()
+					tIdsByLevelName[sLevelName] = {idMap,idGv,idLv}
+--					log("Get_IdsByLevelName:Level=[%s]=>[%s/%s/%s]:(%s)", sLevelName, idMap, idGv, idLv, "<<") --/ #~#
+					return idMap, idGv, idLv --/>
+				end
+				idGv = idGv +1
+			end
+		end
+		tIdsByLevelName[sLevelName] = {idMap,nil,nil}
+	end
+--	log("Get_IdsByLevelName:Map=[%s]=>[%s/%s/%s]:(%s)", sLevelName, tIdsByLevelName[sLevelName][1],tIdsByLevelName[sLevelName][2],tIdsByLevelName[sLevelName][3], "<") --/ #~#
+	return tIdsByLevelName[sLevelName][1],tIdsByLevelName[sLevelName][2],tIdsByLevelName[sLevelName][3] --/>
+end
+
+function Get_MinMax_IdVertexes(idMap)
+	if not idMap then idMap = sim:level_id() end --/ берем текущий уровень
+	if not tMaxVertexIds[idMap] then
+--		log("Get_MinMax_IdVertexes:idMap=[%s]:[%s]", idMap, ">") --/ #~#
+		if not gmg then gmg = game_graph() end
+		local id,idGvMin,idGvMax = 0,nil,nil
+		while id < 65536 do
+			if gmg:valid_vertex_id(id) and gmg:vertex(id):level_id() == idMap then --/ ID искомой локации?
+				if not idGvMin then
+					idGvMin = id --/ 1-й индекс искомой локации
+				end
+				idGvMax = id --/ текущий (он же последний) искомой локации
+			elseif idGvMin then --id = 65536
+				break
+			end
+			id = id +1
+		end
+		local idLvMax = this.Get_Max_IdLevelVertex(idMap,idGvMin,idGvMax)
+		tMaxVertexIds[idMap] = {idGvMin,idGvMax,idLvMax}
+	end
+	return tMaxVertexIds[idMap][1], tMaxVertexIds[idMap][2], tMaxVertexIds[idMap][3] --/> idGvMin и idGvMax и idLvMax
+end
+
+function Get_Max_IdLevelVertex(idMap,idGvMin,idGvMax)
+	local idLvMax = idMap and tMaxVertexIds[idMap] and tMaxVertexIds[idMap][3]
+	if idLvMax then
+		return idLvMax --/>
+	elseif not (idGvMin and idGvMax) then
+		if not idMap then
+			idMap = this.Get_LevelId(idGvMin or idGvMax or sim:level_id())  --/ ... или сканируем текущий уровень
+		end
+		idGvMin,idGvMax,idLvMax = this.Get_MinMax_IdVertexes(idMap)
+	end
+	if not idLvMax and idGvMin and idGvMax then
+		if not gmg then gmg = game_graph() end
+		local id,idLv = 0,nil
+		for id=idGvMin, idGvMax do
+			idLv = gmg:vertex(id):level_vertex_id()
+			if not idLvMax or idLvMax < idLv  then
+				idLvMax = idLv
+			end
+		end
+		if idMap then tMaxVertexIds[idMap][3] = idLvMax end
+	end
+--	log("%s:Get_LevelVertexIds: idMap==[%s], idGv=[%s/%s], idLvMax=[%s]", sModule, idMap, idGvMin, idGvMax, idLvMax, "") --/#~#
+	return idLvMax --/>
+end
+
+function Get_MapNameById()
+	local tMapNames = {}
+	for k,v in pairs(db.tLevels) do
+		tMapNames[ v[2] ] = k
+	end
+	return tMapNames --/>
+end
+
+function Get_MapNameByNumber()
+	local tMapNames = {}
+	for k,v in pairs(db.tLevels) do
+		tMapNames[ v[1] ] = k
+	end
+	return tMapNames --/>
+end
+
+function Get_idLvMax(idMap)
+	--table.print(db.tLevels,sModule..":Levels|")
+	if not idMap then idMap = alife():level_id() end
+	local tMap = db.tLevels[ alife():level_name(idMap) ] or {}
+	--table.print(tMap,sModule..":Map|"..tostring(alife():level_name(idMap)))
+	return tMap[5] or tMap[6] --/>
+end
+
+--/ вычисление Min & Max game- и level- вертексов для всех локаций
+function Choice_MinMax_Vertexes()
+--	to_log("Choice_MinMax_Vertexes:>") --/ #~#
+	local id,idMap,idPreMap = 0,nil,-1
+	if not gmg then gmg = game_graph() end
+	while id < 65536 do
+		if gmg:valid_vertex_id(id) then
+			idMap = gmg:vertex(id):level_id() --/ ID локации
+			if idMap ~= idPreMap then --/ не сканировалась?
+				tMaxVertexIds[idMap] = {}
+				tMaxVertexIds[idMap][1] = id --/ min idGv
+				if tMaxVertexIds[idPreMap] then --/ предыдущая просканированная локация
+					tMaxVertexIds[idPreMap][2] = id-1 --/ max idGv
+				end
+				idPreMap = idMap
+			end
+		else
+			tMaxVertexIds[idPreMap][2] = id-1 --/ last max idGv
+			db.idGvNoUsed = id
+			break
+		end
+		id = id +1
+	end
+	for idx,v in pairs(tMaxVertexIds) do
+		v[3] = this.Get_Max_IdLevelVertex(idx,v[1],v[2]) --/ добавляем max idLv
+	end
+	idGvMinNow,idGvMaxNow,idLvMaxNow = tMaxVertexIds[idMapNow][1],tMaxVertexIds[idMapNow][2],tMaxVertexIds[idMapNow][3]
+	--table.print(tMaxVertexIds,"MaxVertexIds") --/#~#
+--	log("Choice_MinMax_Vertexes: Map(%s)=[%s], idGv=[%s/%s], idLvMax=[%s]", idMapNow, sMapNow, idGvMinNow, idGvMaxNow, idLvMaxNow, "") --/#~#
+end
+--/ -----------------------------------------------------------------
+--/ минимизация погрешности ранее вычисленного 'idLvMax' для текущего уровня:
+--/ -----------------------------------------------------------------
+function Correct_Max_IdLevelVertex()
+--	to_log("Correct_Max_IdLevelVertex: dbg0="..tostring(db.is_dbg0)) --/ #~#
+	--local idLvMax = level.name() and tMaxVertexIds[idMapNow] and tMaxVertexIds[idMapNow][3] --/< idLvMaxNow
+	local idLvMax = idMapNow and idMapNow > 0 and tMaxVertexIds[idMapNow] and tMaxVertexIds[idMapNow][3] --/< idLvMaxNow
+	if not idLvMax then return end --/> еще рано ...
+	--/ последовательная итерация увеличения максимального индекса левел-вертекса до НЕ валидного:
+	local idLv,iLimit = idLvMax, 32768 --/ 512, 1024, 8192, 16384, 32768, 65535<~X
+	if type(level.valid_vertex_id) == 'function' then --/ for LA
+		for i=1, iLimit do
+			idLv = idLvMax + i
+			if not level.valid_vertex_id(idLv) then
+				idLv = idLv -1 --/ откат к предыдущему валидному значению
+				break --/ прерываем итерацию
+			end
+		end
+	elseif db.is_dbg0 then --/ for mixed-mode (используем заданное табличное или ранее полученное значение)
+		idLv = this.Get_idLvMax(idMapNow) or idLvMax
+		log("Correct_Max_idLevelVertex:=[%s]<?>[%s], Map(%s)=[%s] :(%s)", idLvMax, idLv, idMapNow, sMapNow, "?") --/#~#
+	elseif type(level.vertex_id) == 'function' then --/ for release versions of the engine CS|CoP
+		for i=1, iLimit do
+			idLv = idLvMax + i
+			if level.vertex_id(level.vertex_position(idLv)) >= 4294967295 then
+				idLv = idLv -1 --/ откат к предыдущему валидному значению
+				break --/ прерываем итерацию
+			end
+		end
+	else --/ for release versions of the engine SHoC:
+--		log("Correct_Max_IdLevelVertex:idLvMax=[%s]:(+%s):(%s)", idLvMax, iLimit, ">") --/ #~#
+		local vPosCur,vPos = level.vertex_position(idLvMax),nil
+		for i=1, iLimit do
+			idLv = idLvMax + i
+			vPos = level.vertex_position(idLv)
+			if type(vPos) ~= 'userdata' or type(vPos.getP) ~= 'function' --/ вектор?
+				 or type(vPos.x) ~= 'number' or type(vPos.y) ~= 'number' or type(vPos.z) ~= 'number' --/ имеются осевые координаты?
+				 or (vPos.x == 0 and vPos.y == 0 and vPos.z == 0) --/ валидна хотя бы одна из осевых координат?
+				 or (vPos.x == vPosCur.x and vPos.y == vPosCur.y and vPos.z == vPosCur.z) --/ координаты идентичны предыдущим?
+				then --/ не валиден
+				idLv = idLv -1 --/ откат к предыдущему валидному значению
+--				log("Correct_Max_IdLevelVertex:idLv(%s)=[%s], Pos=[%s] :(%s)", i, idLv, level.vertex_position(idLv), "X") --/#~#
+				break --/ прерываем итерацию
+			else  --log("Correct_Max_IdLevelVertex:idLv(%s)=[%s],Pos=[%s]:(%s)", i, idLv, vPos, "+") --/#~#
+				if math.abs(vPos.x - vPosCur.x) < 10 or math.abs(vPos.z - vPosCur.z) < 10 then
+--					log("idLv(%s)=[%s], pos=[%s]%s", i, idLv, vPos, "")
+					bWarning = nil
+				elseif not bWarning then --log("idLv(%s)=[%s], pos=[%s]<?>[%s] :(%s)", i, idLv, vPos, vPosCur, "?") --/#~#
+					bWarning = true --/...
+				else log("idLv(%s)=[%s], pos=[%s] :<%s>", i, idLv, vPos, "x") --/#~#
+					idLv = idLv -2 --/ откат к валидному значению
+					break --/ прерываем итерацию
+				end --/ #~#
+				vPosCur = vPos --/ запоминаем вектор координат валидного вертекса
+			end
+		end
+	end
+	--/ сравниваем новый и прежний:
+	if idLv > idLvMax then --/ 'новый' индекс вертекса больше прежнего?
+		log("Correct_Max_idLevelVertex:=[%s]=>[%s](+%s), Map(%s)=[%s] :<%s>", idLvMax, idLv, idLv - idLvMax, idMapNow, sMapNow, "Info!") --/#~#
+		idLvMaxNow,tMaxVertexIds[idMapNow][3] = idLv,idLv --/ обновляем новым значением!
+		--[[
+		if bTest then --/ для теста(!) пробуем заспавнить предмет (маячок) по позиции нового максимума
+			local vPos,idGv = level.vertex_position(idLv), idGvMaxNow --/tMaxVertexIds[idMapNow][2]
+			this.Get_GpsMetka(vPos,idLv,idGv,"Max_idLv:"..idLv)
+		end
+		--]]
+		return idLvMaxNow --/>
+	end
+end
+--/ -----------------------------------------------------------------
+--/ определение ближайшего левел вертекса к заданной координате (position) с погрешностью ...
+--/ -----------------------------------------------------------------
+function Get_Never_idLv_by_Pos(vPos,iErr,Obj)
+	if not iErr then iErr = 0.5 end --/ если не задана погрешность по дистанции (0 => макс.точность)
+	if not vPos and Obj then --/ если не задана позиция ...
+		if type(Obj.position) == 'function' then
+			vPos = Obj:position()
+		else
+			vPos = Obj.position
+		end
+	end
+	local idLv,iDistMin,iDist
+	for id=0,idLvMaxNow do
+		iDist = level.vertex_position(id):distance_to_sqr(vPos)
+		if not iDistMin or iDist < iDistMin then
+			idLv = id
+			iDistMin = iDist
+			if iDistMin < iErr then break end --/ прерываем цикл
+		end
+	end
+--	log("Get_Never_idLv_by_Pos:idLv=[%s/%s],Pos=[%s]:(%s)", idLv, idLvMaxNow, idLv and level.vertex_position(idLv), string.short(iDistMin), "") --/#~#
+	return idLv,iDistMin --/>
+end
+--/ var2
+function Get_idLv_by_Pos(vPos)
+	local idLv,idLvCur = 0,0
+	local vPosCur = level.vertex_position(idLv)
+	local iDist = vPos.x - vPosCur.x
+	local iOffset = (vPos.z > vPosCur.z and 1) or -1
+	local vDir = vector():set(1,0,0)
+	while iDist > 0.35 do
+		idLv = level.vertex_in_direction(idLv, vDir, iDist)
+		if idLv == idLvCur then
+			if idLv <= 0 or idLv >= idLvMaxNow then return idLv end --/> #?#
+			idLv = idLv + iOffset
+		else
+			vPosCur = level.vertex_position(idLv)
+			iDist = vPos.x - vPosCur.x
+		end
+		idLvCur = idLv
+	end
+	iOffset = (vPos.z > vPosCur.z and 1) or -1
+	iDist = math.abs(vPos.z - vPosCur.z)
+	local iHight = math.abs(vPos.y - vPosCur.y)
+	while iDist > 0.35 or iHight > 1 do
+		if idLv <= 0 or idLv >= idLvMaxNow then return idLv end --/> #?#
+		idLv = idLv + iOffset
+		vPosCur = level.vertex_position(idLv)
+		iDist = math.abs(vPos.z - vPosCur.z)
+		iHight = math.abs(vPos.y - vPosCur.y)
+	end
+	return idLv --/>
+end
+--[[
+function Get_idGv_by_Pos(vPos)
+	local idGv,idGvCur = 0,0
+	local gmg = game_graph()
+	local vPosCur = gmg:vertex(idGvCur):level_point() --/gmg:game_point()
+	local iDist = vPos.x - vPosCur.x
+	local iOffset = (vPos.z > vPosCur.z and 1) or -1
+	local vDir = vector():set(1,0,0)
+	while iDist > 0.35 do
+		idGv = --level.vertex_in_direction(idLv, vDir, iDist)
+		if idGv == idGvCur then
+			idGv = idGv + iOffset
+		else
+			vPosCur = gmg:vertex(idGv):level_point()
+			iDist = vPos.x - vPosCur.x
+		end
+		idGvCur = idGv
+	end
+	iOffset = (vPos.z > vPosCur.z and 1) or -1
+	iDist = math.abs(vPos.z - vPosCur.z)
+	local iHight = math.abs(vPos.y - vPosCur.y)
+	while iDist > 0.35 or iHight > 1 do
+		idGv = idGv + iOffset
+		vPosCur = gmg:vertex(idGv):level_point()
+		iDist = math.abs(vPos.z - vPosCur.z)
+		iHight = math.abs(vPos.y - vPosCur.y)
+	end
+	return idLv --/>
+end
+--]]
+--/------------------------------------------------------------------
+--/ Проверки звуковых файлов
+--/------------------------------------------------------------------
+function Validate_TableSnd(tTbl,sPath) --/ [sPath] - путь к файлам (опционален)
+	local sSndPath = sPath or ""
+	for k,v in pairs(tTbl) do
+		local sFullFileName = sSndPath..v
+		if not fs:exist("$game_sounds$", sFullFileName..".ogg") then
+			tTbl[k] = nil --/ файл отсутствует, удаляем из таблицы
+			printf("Validate_TableSnd:FileSound=[%s]~NOT_found:<%s>", sFullFileName..".ogg", "Warning!") --/#~#
+		end
+	end
+--	log("Validate_TableSnd:SizeTbl=[%s]", #tTbl, "") --/#~#
+	return tTbl --/>
+end
+--/------------------------------------------------------------------
+--/ Проверкa файлов
+--/------------------------------------------------------------------
+function validate_cam_effector(name)
+	local fileName = "camera_effects\\" .. tostring(name)
+	if not fileName:match('[%w|_]*(%.anm)') then
+		fileName = fileName .. ".anm"
+	end
+	if fs:exist("$game_anims$", fileName) then
+		return fileName --/>
+	end
+	return nil --/>
+end
+function validate_pp_effector(name)
+	local fileName = tostring(name)
+	if not fileName:match('[%w|_]*(%.ppe)') then
+		fileName = fileName .. ".ppe"
+	end
+	if fs:exist("$game_anims$", fileName) then
+		return fileName --/>
+	end
+	return nil --/>
+end
+--/------------------------------------------------------------------------------------------------
+--/ Чтение параметров из cfg|ltx-файлов
+--/------------------------------------------------------------------------------------------------
+--/ Параметры:
+--/ char_ini     - указатель на customdata (обычно object:spawn_ini())
+--/ sSection     - имя секции в customdata
+--/ sField       - имя поля в customdata
+--/ [DefValue]   - значение возвращаемое при отсутствии запрашиваемого параметра (опционально)
+--/ [mandatory]  - для сообщения об ошибке (опционально)
+--/ [sGulagName] - имя гулага объекта (опционально)
+--/ ---------------------------------------------
+function fGet_Cfg_String(char_ini, sSection, sField, DefValue, mandatory, sGulagName)
+--	printf("fGet_Cfg_String:Section=[%s],Field=[%s],DefVal=[%s],Gulag=[%s],Mandatory=[%s]:(%s)", sSection, sField, DefValue, mandatory, sGulagName, ">") --/#~#
+	if sSection and char_ini and char_ini:section_exist(sSection) and char_ini:line_exist(sSection, sField) then
+		if sGulagName and sGulagName ~= "" then
+			return sGulagName.."_"..char_ini:r_string(sSection, sField) --/>
+		end
+		return char_ini:r_string(sSection, sField) --/>
+	elseif not mandatory then
+		return DefValue --/>
+	end
+	abort("%s:fGet_Cfg_String:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant string", sModule, mandatory, sField, sSection, "Error!")
+end
+--/ ---------------------------------------------
+function fGet_Cfg_Bool(char_ini, sSection, sField, DefValue, mandatory)
+--	printf("fGet_Cfg_Bool:Section=[%s],Field=[%s]:(%s)", sSection, sField, ">") --/#~#
+	if sSection and char_ini and char_ini:section_exist(sSection) and char_ini:line_exist(sSection, sField) then
+		return char_ini:r_bool(sSection, sField) --/>
+	elseif not mandatory then
+		if DefValue ~= nil then
+			if type(DefValue) == 'boolean' then
+				return DefValue --/>
+			elseif type(DefValue) == 'string' and DefValue == "<<Nil>>" then
+				return nil --/>
+			end
+			abort("%s:fGet_Cfg_Bool:Section=[%s],Field=[%s]~default value is not boolean:<%s>", sModule, sSection, sField, "Error!")
+		end
+		printf("fGet_Cfg_Bool:Section=[%s],Field=[%s]~not default value:<%s>", sSection, sField, DefValue, "Info!")
+		return false --/>
+	end
+	abort("%s:fGet_Cfg_Bool:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant boolean:<%s>", sModule, mandatory, sField, sSection, "Error!")
+end
+--/ ---------------------------------------------
+function fGet_Cfg_Number(char_ini, sSection, sField, DefValue, mandatory)
+--	printf("fGet_Cfg_Number:Section=[%s],Field=[%s]:(%s)", sSection, sField, ">") --/#~#
+	if sSection and char_ini and char_ini:section_exist(sSection) and char_ini:line_exist(sSection, sField) then
+		return char_ini:r_float(sSection, sField) --/>
+	elseif not mandatory then
+		return DefValue --/>
+	end
+	printf("fGet_Cfg_Number:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant numeric:<%s>", mandatory, sField, sSection, "Warning!")
+	--abortf("%s:fGet_Cfg_Number:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant numeric:<%s>", sModule, mandatory, sField, sSection, "Error!")
+end
+--/ ---------------------------------------------
+function fGet_Cfg_Num32(char_ini, sSection, sField, DefValue, mandatory)
+--	printf("fGet_Cfg_Num32:Section=[%s],Field=[%s]:(%s)", sSection, sField, ">") --/#~#
+	if sSection and char_ini and char_ini:section_exist(sSection) and char_ini:line_exist(sSection, sField) then
+		return char_ini:r_s32(sSection, sField) --/>
+	elseif not mandatory then
+		return DefValue --/>
+	end
+	printf("fGet_Cfg_Num32:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant numeric:<%s>", mandatory, sField, sSection, "Warning!")
+	--abort("%s:fGet_Cfg_Num32:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant numeric:<%s>", sModule, mandatory, sField, sSection, "Error!")
+end
+--/ ---------------------------------------------
+function fGet_Cfg_2Params(char_ini, sSection, sField, DefValue1, DefValue2, mandatory)
+--	printf("fGet_Cfg_2Params:Section=[%s],Field=[%s]:(%s)", sSection, sField, ">") --/#~#
+	if sSection and char_ini and char_ini:section_exist(sSection) and char_ini:line_exist(sSection, sField) then
+		local tT = this.fParse_Names(char_ini:r_string(sSection, sField))
+		local iCnt = #tT
+		if iCnt == 2 then
+			return tT[1], tT[2] --/>
+		elseif iCnt == 1 then
+			return tT[1], DefValue2 --/>
+		end
+		return DefValue1, DefValue2 --/>
+	elseif not mandatory then
+		return DefValue1, DefValue2 --/>
+	end
+	printf("fGet_Cfg_2Params:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant numeric:<%s>", mandatory, sField, sSection, "Warning!")
+	--abort("%s:fGet_Cfg_2Params:Reason=[%s],Section=[%s],Field=[%s]~attempt to read a non-existant:<%s>", sModule, mandatory, sField, sSection, "Error!")
+end
+
+--/-------------------------------------------------------------------
+--/ Чтение строки из секции ltx-файла
+--/-------------------------------------------------------------------
+--/ чтение строки из секции файла
+--/ [sMode] - режим создания (тип) таблицы (nil - числа)
+--/ [Flag] - false - перевод в числа, true -> {val = true}
+function fReadFromIni(ini, sSection, sField, DefValue, sMode, sDiv, Flag)
+	local ltx,bLtx = ini,nil
+	if ltx and type(ltx) == 'string' then
+		if ltx:match('(.+)%.(%w+)') then
+			ltx = ini_file(ltx)
+		else
+			ltx = ini_file("mods\\"..ltx..".ltx")
+			if not ltx:section_exist(sSection) then
+				log("fReadFromIni:Section=[%s],Field=[%s],ini=[%s]:<%s>", sSection, sField, ltx, "Info!") --/#~#
+			end
+		end
+		bLtx = true
+	end
+	if not ltx then
+		ltx = sini
+		bLtx = true
+	end
+	if not sMode then
+		sMode = DefValue and type(DefValue)
+		if sMode == "boolean" then sMode = "bool" end
+--		log("fReadFromIni:Section=[%s],Field=[%s],DefVal=[%s],Mode=[%s]", sSection, sField, DefValue, sMode, "") --/#~#
+	end
+	local bFlag = Flag
+	if bFlag and type(bFlag) == 'string' then
+		if bFlag == "true" then
+			bFlag = true
+		elseif bFlag == "val2num" or bFlag == "all2num" then
+			bFlag = false
+		end
+	end
+	local ret
+	if ltx:section_exist(sSection) then
+		if ltx:line_exist(sSection,sField) then
+			if      not sMode or sMode == "number"    then ret = ltx:r_float    (sSection,sField) --/ number
+			elseif sMode == 0 or sMode == "bool"      then ret = ltx:r_bool     (sSection,sField) --/ bool
+			elseif sMode == 1 or sMode == 'string'    then ret = ltx:r_string   (sSection,sField) --/ string
+			elseif sMode == 2 or sMode == "string_wq" then ret = ltx:r_string_wq(sSection,sField) --/ full string (string1\\string2)
+			elseif sMode == 3 or sMode == 'table' or sMode == "table_wq" or sDiv then --/ table
+				if sMode == "table_wq" then
+					ret = ltx:r_string_wq(sSection,sField) --/ full string
+				else
+					ret = ltx:r_string(sSection,sField) --/ string
+				end
+				if ret and ret ~= "" then
+					--/ разделяем 'ret' по маске 'sDiv' и 'чистим' от пробелов [и переводим в числа]
+					if not sDiv or sDiv == "," then --/ если не задана - задаем маску разделителя => ","
+						--/ [k1]={v11,v12,...,v1n}, [k2]={v21,v22,...,v2n}, ..., [kn]={vn1,vn2,...,vnn}
+						--/ "true" ~> [k1]={v11=true,v12=true,...,v1n=true},
+						--/ "number" ~> [k1]={v11,v12,...,v1n}, [k2]={v21,v22,...,v2n}, ..., [kn]={vn1,vn2,...,vnn}
+						ret = string.split(ret,",",bFlag)
+					elseif sDiv and sDiv ~= "," then --/> {[k1][v11]=v12, [k2][v21]=v22, ..., [kn][vn1]=vn2}
+						local tValue = string.split(ret,",")
+						ret = {}
+						ret[sField] = {}
+						--local sPattern = '(.-)'..sDiv..'(.*)' --/ '%s*(.-)%s*'..sDiv..'%s*(%S*)'
+						local sPattern = '%s*(.-)%s*'..sDiv..'%s*(.*)'
+						local Key,Val,v
+						for _,v in pairs(tValue) do
+							Key,Val = v:match(sPattern)
+							if not (Key and Val) then
+								printf("fReadFromIni:Sec=[%s],Fld=[%s],DefVal=[%s],Mode=[%s],Div=[%s],ToNum=[%s],KeyVal=[%s/%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, Key, Val, "Warning!") --/#~#
+							end
+							if bFlag == false then Val = tonumber(Val) end
+							ret[sField][Key] = Val
+						end --/> ret[sField] = {v11=v12, v21=v22, ..., vn1=vn2}
+					else
+						abort("%s:fReadFromIni:ini=[%s],Section=[%s],Field=[%s],DefVal=[%s],Mode=[%s]~Wrong_mode:<%s>", sModule, ini, sSection, sField, DefValue, sMode, sDiv, "Error!")
+						return --/>
+					end
+				else
+					if type(DefValue) == 'string' then
+						if DefValue == "<<Err!>>" then
+							abort("%s:fReadFromIni:ini=[%s],Section=[%s],Field=[%s]<~NoFound!,DefVal=[%s],Mode=[%s],Flg=[%s]:<%s>", sModule, ini, sSection, sField, DefValue, sMode, bFlag, "Error!")
+							return --/>
+						elseif DefValue == "<<Log!>>" then
+							printf("fReadFromIni:Section=[%s],Field=[%s]<~NoFound!,DefVal=[%s],Mode=[%s]:<%s>", sSection, sField, DefValue, sMode, "LogInfo")
+							DefValue = (sMode == 'table' and {}) or (sDiv and "") or nil
+						elseif DefValue == "<<Nil!>>" then
+							DefValue = (sMode == 'table' and {}) or (sDiv and "") or nil
+						else
+							printf("fReadFromIni:Sec=[%s],Field=[%s]~?,DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, "?") --/#~#
+						end
+					elseif type(DefValue) ~= 'table' then
+						printf("fReadFromIni:ini=[%s],Sec=[%s],Field=[%s]~?,DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", ini, sSection, sField, DefValue, sMode, sDiv, bFlag, "???") --/#~#
+					end
+					ret = DefValue
+				end
+			else
+				abort("%s:fReadFromIni:ini=[%s],Section=[%s],Field=[%s],Mode=[%s],Div=[%s]~Wrong_div,Flg=[%s]:<%s>", sModule, ini, sSection, sField, sMode, bFlag, "Error!")
+				return --/>
+			end
+		else
+			if DefValue then
+				if type(DefValue) == 'string' then
+					if DefValue == "<<Err!>>" then
+						abort("%s:fReadFromIni:ini=[%s],Section=[%s],Field=[%s]<~NoFound!,Mode=[%s]:<%s>", sModule, ini, sSection, sField, sMode, "Error!")
+						return --/>
+					elseif DefValue == "<<Log!>>" then
+						printf("fReadFromIni:Section=[%s],Field=[%s]<~NoFound!,Mode=[%s]:<%s>", sSection, sField, sMode, "LogInfo")
+						DefValue = (sMode == "bool" and nil) or (sMode == 'table' and {}) or (sDiv and "") or nil
+					elseif DefValue == "<<Nil!>>" then
+						DefValue = (sMode == "bool" and nil) or (sMode == 'table' and {}) or (sDiv and "") or nil
+					else
+						printf("fReadFromIni:Sec=[%s],Field=[%s]~?,DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, "?") --/#~#
+					end
+				elseif not (type(DefValue) == "number" or type(DefValue) == "boolean" or type(DefValue) == 'table') then
+					printf("fReadFromIni:ini=[%s],Sec=[%s],Field=[%s]~?,DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", ini, sSection, sField, DefValue, sMode, sDiv, bFlag, "???") --/#~#
+				end
+			end
+			ret = DefValue
+		end
+	else
+		if DefValue and type(DefValue) == 'string' then
+			if DefValue == "<<Err!>>" then
+				abort("%s:fReadFromIni:NotValue_in_Section=[%s],Field=[%s],Mode=[%s]:<%s>", sModule, sSection, sField, sMode, "Error!")
+				return --/>
+			elseif DefValue == "<<Log!>>" then
+				printf("fReadFromIni:Section=[%s]<~NoFound!,Field=[%s],Mode=[%s]:<%s>", sSection, sField, sMode, "LogInfo") --/#~#
+				DefValue = (sMode == 'table' and {}) or (sDiv and "") or nil
+			elseif DefValue == "<<Nil!>>" then
+				DefValue = (sMode == 'table' and {}) or (sDiv and "") or nil
+			else
+				printf("fReadFromIni:Section=[%s]~?,Fld=[%s],DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, "?") --/#~#
+			end
+		else
+			printf("fReadFromIni:Section=[%s]~?,Fld=[%s],DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, "???") --/#~#
+		end
+		ret = DefValue
+	end
+	if sDiv and type(ret) == 'string' and ret ~= "" then
+		if DefValue ~= "<<Nil!>>" then
+			printf("fReadFromIni:Section=[%s]~?,Fld=[%s],DefVal=[%s],Mode=[%s],Div=[%s],Flg=[%s],ret=[%s]:<%s>", sSection, sField, DefValue, sMode, sDiv, bFlag, ret, "Info!") --/#~#
+		end
+		ret = string.split(ret,sDiv,bFlag) --/> разделяем по маске
+	end
+	if bLtx then ltx = nil end
+	return ret --/>
+end
+
+--/-------------------------------------------------------------------
+--/ Чтение секции из ltx-файла
+--/-------------------------------------------------------------------
+--/ [sMode] - режим создания (тип) таблицы (nil - tList)
+--/ [sType] - тип значений в таблице (nil - строки, "all2num"|"key2num"|"val2num" - перевод в число)
+--/ [sDiv]  - разделитель (nil - ',')
+--/ [sDiv2] - разделитель (не ',')
+function fGet_IniSection(ini,sSection,sMode,sType,sDiv,sDiv2)
+	local ltx,bLtx = ini,nil
+	if ltx and type(ltx) == 'string' then
+		if ltx:match('(.+)%.(%w+)') then
+			ltx = ini_file(ltx)
+		else
+			ltx = ini_file("mods\\"..ltx..".ltx")
+			if not ltx:section_exist(sSection) then
+				log("fGet_IniSection:Section=[%s],ini=[%s]:<%s>", sSection, ltx, "Info!") --/#~#
+			end
+		end
+		bLtx = true
+	end
+	if not ltx then
+		ltx = sini
+		bLtx = true
+	end
+	local bType = nil
+	if type(sType) == 'string' then
+		if sType == "all2num" or sType == "val2num" then
+			bType = false --/ дополнительно перевод значений в числа
+		elseif sType == "key2num" and (sMode == nil or sMode == "list") then
+			bType = false --/ дополнительно перевод значений в числа
+		elseif sType == "true" or sType == "bool" then
+			bType = true  --/ дополнительно значения формируются в пары (val = true)
+		end
+	end
+	local tRet,iCnt = {},0
+	if ltx:section_exist(sSection) then
+		local result,idx,value,key
+		local n = ltx:line_count(sSection)
+		if n > 0 then
+			for i=0, n-1 do
+				result,idx,value = ltx:r_line(sSection,i,"","")
+				key = result and string.trim(idx)
+				if key and key ~= "" and value then
+					if sMode and sMode ~= "list" and type(sType) == 'string' and (sType == "key2num" or sType == "all2num") then
+						key = tonumber(key) --/ переводим ключ в число
+					end
+					if sMode == nil or sMode == "list" then --/ простая таблица-список: (из одиночных значений или таблиц с ними)
+						if sDiv and type(key) == 'string' then
+							table.insert(tRet, string.split(key,sDiv,bType)) --/> {{a11,a12,...,a1n}, {a21,a22,...,a2n}, ..., {an1,an2,...,ann}}
+						else
+							if bType == false then
+								key = tonumber(key) --/ переводим ключ в число
+							end
+							if key ~= nil then
+								table.insert(tRet, key) --/> {arg1, arg2, ..., argn}
+							end
+						end
+					elseif sMode == 'string' then --/ простая таблица:
+						tRet[key] = string.trim(value) --/> {[k1]=v1, [k2]=v2, ..., [kn]=vn} (key,val - строки)
+					elseif sMode == "number" then --/ таблица (val=>число):
+						tRet[key] = tonumber(string.trim(value)) --/> {[k1]=num1, [k2]=num2, ..., [kn]=numn}
+					elseif sMode == "bool" then --/ таблица с bool: {[k1]=boolean, [k2]=boollean, ..., [kn]=boollean}}
+						local val = string.trim(value)
+						if     (val == "true" or val == "1") and not (type(sType) == 'string' and sType == "false") then
+							tRet[key] = true
+						elseif val == "false" or val == "0" and not (type(sType) == 'string' and sType == "true") then
+							tRet[key] = false
+						end
+					elseif sMode == "true" then --/ таблица с 'true' (исключаем значения == false/0)
+						local val = string.trim(value)
+						if val == "true" or val ~= "1" then
+							tRet[key] = true --/> {[k1]=true, [k2]=true, ..., [kn]=true}} (val=>true)
+						end
+					elseif sMode == "matrix" then --/ матрица:
+						if not sDiv then --/ субтаблицы - простые таблицы-списки
+							if bType == false then value = tonumber(string.trim(value)) end
+							table.insert(tRet,{key, string.trim(value)}) --/> { {k1,v1}, {k2,v2}, ..., {kn,vn} }
+						elseif not (sDiv2 and sDiv2 ~= sDiv) then --/ разделяем 'value' по маске 'sDiv' и 'чистим' от пробелов [и переводим в числа]
+							local tValue = string.split(value,sDiv,bType)
+							tRet[key] = {}
+							table.insert( tRet[key], tValue ) --/> {k1={v11,v12,...,v1n}, k2={v21,v22,...,v2n}, ..., kn={vn1,vn2,...,vnn}}
+						else
+							local tValue = string.split(value,sDiv)
+							tRet[key] = {}
+							local sPattern = '%s*(.-)%s*'..sDiv2..'%s*(.*)'
+							local Key,Val,v
+							for _,v in pairs(tValue) do
+								Key,Val = v:match(sPattern)
+								if Key and Val then
+									if bType == false then Val = tonumber(Val) end
+									table.insert( tRet[key], {Key, Val} ) --/> {k1={k11,v11,...,kn,v1n}, k2={k21,v21,...,v2n}, ..., kn={kn1,vn1,...,knn,vnn}}
+								end
+							end
+						end
+					elseif sMode == 'table' then --/ таблица с субтаблицами:
+						if not sDiv then sDiv = "," end --/ если не задана - задаем маску разделителя
+						--/ разделяем 'value' по маске 'sDiv' и 'чистим' от пробелов [и переводим в числа]
+						if not (sDiv2 and sDiv2 ~= sDiv) then
+							local tValue = string.split(value,sDiv,bType)
+							tRet[key] = tValue --/> {[k1]={v11,v12,...,v1n}, [k2]={v21,v22,...,v2n}, ..., [kn]={vn1,vn2,...,vnn}}
+						else --/> {[k1][v11]=v12, [k2][v21]=v22, ..., [kn][vn1]=vn2}
+							local tValue = string.split(value,sDiv)
+							tRet[key] = {}
+							local sPattern = '%s*(.-)%s*'..sDiv2..'%s*(.*)'
+							local Key,Val,v
+							for _,v in pairs(tValue) do
+								Key,Val = v:match(sPattern)
+								if Key and Val then
+									if bType == false then Val = tonumber(Val) end
+									tRet[key][Key] = Val
+								end
+							end
+						end
+					end
+					iCnt = iCnt +1
+				end
+			end
+--			printf("fGet_IniSection:fname=[%s],Section=[%s],Type=[%s],Size=[%s]", ini, sSection, sMode, iCnt ) --/#~#
+		elseif (sType and sType == "<<Err!>>") or db.is_dbg2 then
+			printf("fGet_IniSection:=[%s],ini=[%s],Mode=[%s],Type=[%s]~NOT_found_Lines:<%s>", sSection, ini, sMode, sType, "Warning!")
+		end
+		if bLtx then ltx = nil end
+	elseif db.is_dbg1 and callstack then
+		callstack("fGet_IniSection:ini=["..type(ini).."],NOT_found_Section=["..tostring(sSection).."],Type=["..tostring(sMode).."]:<Error!>")
+	else
+		printf("fGet_IniSection:ini=[%s],NOT_found_Section=[%s],Type=[%s]:<%s>", ini, sSection, sMode, "Error!")
+	end
+	return tRet,iCnt --/>
+end
+--/-------------------------------------------------------------------
+--/ Чтение нескольких секций из ltx-файла
+--/-------------------------------------------------------------------
+function fGet_IniSections(ini,tSections,sType)
+	local ltx,bLtx = ini,nil
+	if ltx and type(ltx) == 'string' then
+		if ltx:match('(.+)%.(%w+)') then
+			ltx = ini_file(ltx)
+		else
+			ltx = ini_file("mods\\"..ltx..".ltx")
+			if not ltx:section_exist(sSection) then
+				log("fGet_IniSections:Section=[%s],ini=[%s]:<%s>", sSection, ltx, "Info!") --/#~#
+			end
+		end
+		bLtx = true
+	end
+	if not ltx then
+		ltx = sini
+		bLtx = true
+	end
+	local tRet,tCnt = {},{}
+	local n,result,idx,value
+	for k,v in ipairs(tSections) do
+		if ltx:section_exist(v) then
+			n = ltx:line_count(v)
+			if n > 0 then
+				for i=0,n-1 do
+					result,idx,value = ltx:r_line(v,i,"","")
+					if result and string.trim_w(idx) ~= "" and string.trim(value) then
+						idx = string.trim_w(idx)
+						if sType == nil and tRet[idx] == nil then
+							tRet[idx] = string.trim(value)
+						elseif sType == "number" and tRet[idx] == nil then
+							tRet[idx] = tonumber(value)
+						elseif sType == "numbers" and tRet[tonumber(idx)] == nil then
+							tRet[tonumber(idx)] = tonumber(value)
+						end
+					end
+				end
+			end
+			tCnt[k] = n
+		else
+			tCnt[k] = 0
+		end
+	end
+	if bLtx then ltx = nil end
+	return tRet,tCnt --/>
+end
+
+--/-------------------------------------------------------------------
+--/ Строковые функции
+--/-------------------------------------------------------------------
+function fParse_Names(sStr)
+	local tT,sName = {},nil
+	for sName in sStr:gmatch("([%w_%-.\\]+)%p*") do
+		table.insert(tT,sName)
+	end
+	return tT --/>
+end
+
+function fParse_CustomData(str)
+	if type(str) == 'string' then
+		--if str ~= "" then log("fParse_CustomData:Str=[%s]:[%s]", str, ">") end --/#~#
+		local tCD,sSection,sDataSection,sStr,sLine = {}
+		for sSection,sDataSection in str:gmatch('%s*%[([^%]]*)%]%s*([^%[%z]*)%s*') do
+			sSection     = string.trim_w(sSection)
+			sDataSection = string.trim(sDataSection)
+			tCD[sSection] = {}
+			for sLine in sDataSection:gmatch('([^\n]*)\n*') do --/ парсим по переносам строк
+				if sLine:match('=') then --/ строка параметра?
+					for k,v in sLine:gmatch('([^=]-)%s*=%s*(.*)') do --/ парсим параметры
+						k = string.trim(k)
+						if k and k ~= '' and v then
+							tCD[sSection][k] = string.trim(v)
+						end
+					end
+				else
+					for k,v in sLine:gmatch('(.*)') do
+						k = string.trim(k)
+						if k and k ~= '' then
+							tCD[sSection][k] = "<<no_value>>"
+						end
+					end
+				end
+			end
+		end
+--		table.print(tCD,sModule..":Parse_CustomData|") --/#~#
+		return tCD,true --/>
+	end
+	return {},false --/>
+end
+
+function fFill_CustomData(tCD)
+	local sStr,key,value = ""
+	for key,value in pairs(tCD) do
+		sStr = sStr.."\n["..key.."]\n"
+		for k,v in pairs(value) do
+			k = tostring(k)
+			if v ~= "<<no_value>>" then
+				sStr = sStr..k.." = "..v.."\n"
+			else
+				sStr = sStr..k.."\n"
+			end
+		end
+	end
+	--[[
+	log("%s:Fill_CustomData:=[%s]:[%s]", sModule, sStr, "<") --/#~#
+	table.print(tCD,sModule..":CustomData|") --/#~#
+	--]]
+	return sStr --/>
+end
+
+--/ Разделяем строку 'sStr' по маске 'sDiv'
+--/ опционально: [bNoClear==true] - НЕ очищаем от пробелов
+--/ опционально: [bMode==true|false] - создание дву-мерного массива или перевод в числа (если возможно)
+function fParse_StrToTbl(sString, sDiv, bNoClear, bMode, bNoErrLog)
+	local tRet,sStr = {},""
+	if not (type(sStr) == 'string' and (sDiv == nil or type(sDiv) == 'string')) then
+		printf("fParse_StrToTbl:String(%s)=[%s],Divider(%s)=[%s]~?:<%s>", type(sStr), sStr, type(sDiv), sDiv, "Warning!")
+		return tRet --/>
+	end
+	local sPattern = '([^'..(sDiv or ',')..']+)'
+	for sStr in sString:gmatch(sPattern) do
+		table.insert(tRet, (bNoClear and sStr) or sStr:match('^%s*(%S*)')) --/ без или с очисткой пробелов
+	end
+	if bMode ~= nil then
+		if bMode == true then
+			for _,v in ipairs(tRet) do
+				tRet[_] = nil
+				tRet[v] = true --/ таблица '[значение]=true'
+			end
+		elseif bMode == false then
+			local iNum,bStr
+			for _,v in ipairs(tRet) do
+				iNum = tonumber(v)
+				if type(iNum) == "number" then
+					tRet[_] = iNum
+				elseif not (bStr and bNoErrLog) then
+					bStr = true --/ флаг НЕ числа
+					sStr = v
+				end
+			end
+			if bStr and not bNoErrLog then
+				printf("fParse_StrToTbl:String=[%s],Value=[%s]~NoNumber,SizeTbl=[%s]:<%s>", sString, sStr, #tRet, "Info!")
+			end
+		end
+	end
+	return tRet --/>
+end
+
+function quotemeta(sStr) --/#?#
+	return (string.gsub(sStr, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%1"))
+end
+
+--/------------------------------------------------------------------
+function fSpellingBeginning(sText)
+	local sStr = sText and sText:match('^%s*(.*)')
+	if not (sStr and sStr ~= "") then return sText end --/>
+	local sFirst = sStr:sub(1,1) --/ 1-ый символ строки
+	if sFirst:match('%l') then --/ если буква в малом регистре
+		sStr = sStr:upper(sFirst)..(sStr:sub(2) or "") --/ меняем на заглавную
+	elseif not sFirst:match('%p') then --/ для кириллицы
+		if not tLowUp then
+			tLowUp = this.fGet_IniSection(ini_file("mods\\common.ltx"), "low_up", 'string')
+			if not tLowUp then tLowUp = {} end
+		end
+		for k,v in pairs(tLowUp) do
+			if sFirst == k then
+				sStr = v..(sStr:sub(2) or "") --/ меняем на заглавную
+				break
+			end
+		end
+	end
+	return sStr --/>
+end
+function fSpellingTermination(sText)
+	local sStr = sText and sText:match('(.-%s*%S)')
+	local iLen = sStr and sStr:len()
+	if not (sStr and sStr ~= "" and iLen > 2) then return sText end --/>
+	if not sStr:match('.+(%p)%s*$') then --/'.+([,|.|?|!])%s*$'
+		log("fSpellingTermination:Last:[%s]/[%s]", sLast, sStr:sub(iLen-16), "") --/#~#
+		sStr = sStr.."." --/ добавляем завершающую точку
+	end
+	return sStr --/>
+end
+function fSpelling(sText) --/ проверка 'правописания'
+	sText = this.fSpellingBeginning(sText)
+	sText = this.fSpellingTermination(sText)
+	return sText --/>
+end
+
+--/-------------------------------------------------------------------
+--/ проверка: находится ли NPC в определенной зоне
+function Check_NPC_In_Box(oNPC,p1,p2,p3)
+	return this.Check_Pos_In_Box(oNPC:position(),p1,p2,p3) --/>
+end
+
+function Check_Pos_In_Box(vPos,p1,p2,p3)
+	local bRet = false
+	if vPos and p1 and p2 then
+		if not p3 then
+			if this.Is_PointInsideInterval(vPos.x,p1.x,p2.x) and
+				 this.Is_PointInsideInterval(vPos.y,p1.y,p2.y) and
+				 this.Is_PointInsideInterval(vPos.z,p1.z,p2.z)
+				then
+				bRet = true
+			end
+		else
+			local fSub = function(v1,v2)
+				local v = vector()
+				v.x = v1.x - v2.x
+				v.y = v1.y - v2.y
+				v.z = v1.z - v2.z
+				return v --/>
+			end
+			--
+			local vVec1 = fSub(p2,p1)
+			local vVec2 = fSub(p3,p2)
+			vVec1.y = 0
+			vVec2.y = 0
+			local iVec1 = vVec1:magnitude()
+			local iVec2 = vVec2:magnitude()
+			vVec1:normalize()
+			vVec2:normalize()
+			local r = fSub(vPos,p1)
+			local v1p = vector():set(vVec1.z,0,-vVec1.x)
+			local proj2 = v1p:dotproduct(r) / v1p:dotproduct(vVec2)
+			local proj1 = vVec1:dotproduct(r) - vVec1:dotproduct(vVec2)*proj2
+			if proj1 > 0 and proj1 < iVec1 and proj2 > 0 and proj2 < iVec2 and vPos.y > p1.y and vPos.y < p3.y then
+				bRet = true
+			end
+		end
+	else
+		printf("Check_Pos_In_Box:pos=[%s],p1=[%s],p2=[%s],p3=[%s]:[%s]", vPos, p1, p2, "Warning!")
+	end
+	return bRet --/>
+end
+
+function Is_PointInsideInterval(x,p1,p2)
+	if p1 > p2 then
+		p1,p2 = p2,p1
+	end
+	if x > p1 and x < p2 then
+		return true --/>
+	end
+	return false --/>
+end
+
+function point_in_poly(tPts, x, y) --/#?#
+	local bRet = false
+	local iCnt = #tPts
+	local j = iCnt
+	for i=1,iCnt do
+		local tP,tJ = tPts[i],tPts[j]
+		if (tP.y <= y and y < tJ.y) or (tJ.y <= y and y < tP.y) then
+			if (x < (tJ.x - tP.x) * (y - tP.y) / (tJ.y - tP.y) + tP.x) then
+				bRet = not bRet
+			end
+			j = i
+		end
+	end
+	return bRet --/>
+end
+
+--/------------------------------------------------------------------
+--/ Угловые функции
+--/------------------------------------------------------------------
+--/ Angle: Degree to Radian (угол: градус => радиан)
+function fDegreeToRadian(iAngle)
+	return iAngle*math.pi/180 --/*0.017453292519943295769236907684886
+end
+--/ Angle: Radian to Degree (угол: радиан => градус)
+function fRadianToDegree(iAngle)
+	return iAngle*180/math.pi --/*57.2957795
+end
+--/ угол между двумя векторами (в радианах)
+function fAngleDiffRad(vVec1,vVec2)
+	local vVecN1 = vVec1:normalize()
+	local vVecN2 = vVec2:normalize()
+	local iDotp = vVecN1:dotproduct(vVecN2)
+	return math.acos(math.abs(iDotp))
+end
+--/ угол между двумя векторами (в градусах)
+function fAngleDiffDeg(v1,v2)
+	return fAngleDiffRad(vVec1,vVec2)*180/math.pi
+end
+--/ перевод вектора из град в рад
+function fVec_DegToRad(vVec)
+	if not vVec then vVec = db.actor:direction() end
+	local vVecN = vector():set(vVec.x, 0, vVec.z):normalize()
+	local x = vVec.y * 90
+	local y = math.deg(math.acos(vVecN.z))
+	if vVecN.x < 0 then
+		y = 360 - y
+	end
+	local c = math.pi/180 --/ константа для перевода в радианы
+	vVecN = vector():set(x*c, -(y*c), 0)
+	--
+	log("fVec_DegToRad:Vec(%s)=[%s]:[%s]", vVec, vVecN, "<") --/#~#
+	vVec = device().cam_pos
+	local vVecN = vector() --/
+	vVecN.x = math.atan2(-vVec.y,vVec.z)
+	vVecN.y = math.atan2(-vVec.x,vVec.z)
+	vVecN.z = math.atan2(-vVec.y,vVec.x)
+	log("fVec_DegToRad:Vec(%s)=[%s]:[%s]", vVec, vVecN, "<2") --/#~#
+	--
+	return vVecN --/>
+end
+--/ Возвращает угол между проекциями векторов v1 и v2 на горизонтальную плоскость
+--/ положительный угол - доворот v1 до v2 по часовой.
+function fHorzAngle(v1,v2)
+	local x = v1.x * v2.x   + v1.z * v2.z
+	local y = v1.x *(-v2.z) + v1.z * v2.x --/ повернули систему координат
+	return math.atan2(y,x) --/> угол доворота от -pi до pi
+end
+--/----------------------------------------------
+--/ переводит вектор направления (direction) в таблицу (в градусах).
+function fDirToTab_Radian(vDir)
+	return {x=math.pi/2-vDir.x, y=math.pi/2-vDir.y, z=math.pi/2-vDir.z} --/>
+end
+--/ переводит вектор направления (direction) в таблицу (в радианах).
+function fDirToTab_Degree(vDir)
+	return {x=90-vDir.x/math.pi, y=90-vDir.y/math.pi, z=90-vDir.z/math.pi} --/>
+end
+--/----------------------------------------------
+--/ перевод вектора(таблицы) в 'по-координатную' строку вида: x:y:z
+--/----------------------------------------------
+function fVecToStr(vec)
+	local lua_type = type(vec)
+	if lua_type == 'table' or (lua_type == 'userdata' and type(vec.getP) == 'function') then
+		if tonumber(vec.x) and tonumber(vec.y) and tonumber(vec.z) then
+			return vec.x..":"..vec.y..":"..vec.z --/>
+		end
+	end
+	return "<"..lua_type..">" --/>
+end
+--/------------------------------------------------------------------
+--/ Поворот актора (камеры) по направлению к позиции (vPos). [iTime] - опционален
+--/------------------------------------------------------------------
+local tTurnA = {} --/ массив Turn_Actor
+local bTurn_Actived = false
+
+function Turn_Actor(vPos,iErr,iTime)
+	local oActor = db.actor
+	if not (oActor and vPos) or bTurn_Actived then return end --/>
+	if not iErr then iErr = 0.05 end --/ погрешность поворота (дефолтно 0.05)
+	local vPosCam = device().cam_pos --/ вектор направления взгляда актора
+	tTurnA = {as=0,ar=0,ts=0,tp=0,te=0,vr=0} --/ angle-start,angle-rotate,time-start,time-period,time-end,velocity-rotate
+--	log("Turn_Actor:PosTrg=[%s],PosCam=[%s]:[%s]", vPos, vPosCam, ">") --/#~#
+	tTurnA.as = vPosCam:getH() --/ начальный 'угол' (angle-start)
+	local iAngleEnd = vPos:sub(vPosCam):getH() --/ конечный 'угол'
+	tTurnA.ar = iAngleEnd - tTurnA.as --/ угол поворота (angle-rotate)
+--	log("Turn_Actor:[%s]+[%s]=>[%s]:[%s]", string.short(Rad2Deg(tTurnA.as)), string.short(Rad2Deg(tTurnA.ar)), string.short(Rad2Deg(iAngleEnd)), ">>") --/#~#
+	if math.abs(tTurnA.ar) <= iErr then
+--		log("Turn_Actor:Not_Rotate:[%s]", "<x") --/#~#
+		return --/> поворот не требуется
+	end
+	local iPi = math.pi
+	if tTurnA.as > iPi then --/ угол > 180 град?
+		if tTurnA.ar < 0 and tTurnA.ar > iPi then
+			tTurnA.as = tTurnA.as - iPi*2 --/ реверс угла
+			tTurnA.ar = iAngleEnd - tTurnA.as
+--			log("Turn_Actor:[%s]+[%s]=>[%s]:[%s]", string.short(tTurnA.as), string.short(tTurnA.ar), string.short(iAngleEnd), "<R>") --/#~#
+		else
+--			log("Turn_Actor:[%s]+[%s]=>[%s]:[%s]", string.short(tTurnA.as), string.short(tTurnA.ar), string.short(iAngleEnd), "<=>") --/#~#
+		end
+	elseif math.abs(tTurnA.ar) > iPi then --/ поворот > 180 град?
+		if iAngleEnd > iPi then
+			iAngleEnd = iAngleEnd - iPi*2 --/ реверс угла
+			tTurnA.ar = iAngleEnd - tTurnA.as
+--			log("Turn_Actor:[%s]+[%s]=>[%s]:[%s]", string.short(tTurnA.as), string.short(tTurnA.ar), string.short(iAngleEnd), "<E>") --/#~#
+		else
+--			log("Turn_Actor:[%s]+[%s]=?[%s]:[%s]", string.short(tTurnA.as), string.short(tTurnA.ar), string.short(iAngleEnd), "<?>") --/#~#
+		end
+	end
+	--/ определяем продолжительность поворота ('плавность')
+	if math.abs(tTurnA.ar) <= iErr then
+		return --> поворот не требуется
+	elseif iTime then --/ задана 'плавность'
+		tTurnA.tp = iTime --/ продолжительность поворота (time-period)
+	else
+		--tTurnA.tp = iPi*1000 --/ постоянный период (~3 сек)
+		tTurnA.tp = math.abs(tTurnA.ar *1000) --/ вращаем с пост.скоростью (~180град/3сек)
+	end
+	tTurnA.ts = time_global() --/ time-start
+	--/ вспомогательные параметры (для оптимизации вычислений)
+	tTurnA.te = tTurnA.ts + tTurnA.tp --/ время окончания (time-end)
+	tTurnA.vr = tTurnA.ar/tTurnA.tp --/ скорость вращения (velocity-rotate)
+	--/ поворот актора
+	local fTurn = function()
+		local iTime = time_global()
+		if iTime >= tTurnA.te then --/ time-end
+--			log("Turn:EndTime:Angle=[%s]:[%s]", string.short(Rad2Deg(tTurnA.as+tTurnA.ar)), "x") --/#~#
+			return true --/> довернули (end call)
+		end
+		local iAngle = tTurnA.as + tTurnA.vr *(iTime - tTurnA.ts) --/ текущий угол доворота
+		oActor:set_actor_direction(-iAngle) --/ задаем угол поворота (рад)
+--		log("Turn:TimeDo=[%s/%s],Angle=[%s]", iTime - tTurnA.ts, tTurnA.te - iTime, string.short(Rad2Deg(iAngle)), "") --/#~#
+		return false --/> продолжаем попорот
+	end
+--	log("Turn_Actor:[%s]+[%s]=>[%s]:[%s]", string.short(Rad2Deg(tTurnA.as)), string.short(Rad2Deg(tTurnA.ar)), string.short(Rad2Deg(iAngleEnd)), "<<") --/#~#
+	--/ запуск call-функции поворота камеры актора
+	bTurn_Actived = true
+	level.add_call(fTurn, function() bTurn_Actived = false end)
+end
+--/ -----------------------------------------------------------------
+class "converter_custom_data" --/ class for storing and manipulating ini-style custom data
+--/ -----------------------------------------------------------------
+function converter_custom_data:__init(input) --/< 'string'|'table'|nil
+	self:set(input)
+end
+
+function converter_custom_data:set(input) --/< 'string'|'table'|nil
+	if type(input) == 'string' then
+		self:setString(input)
+	end
+	self:setTable(input)
+end
+--/ self.data is generated from string on the fly
+--/  in: string
+--/  out: boolean (succes flag)
+--/  call: converter_custom_data([string])
+function converter_custom_data:setString(str)
+	local status = false
+	self.data,status = this.fParse_CustomData(str) --/ parse_ini(str)
+	return status --/>
+end
+--/ table is passed by REFERENCE!!! Changes in it applied to self.data immediately
+--/  in: [table]
+--/  call: converter_custom_data([string]):setTable([tbl])
+function converter_custom_data:setTable(new_tbl)
+	self.data = new_tbl or {}
+	--self.data = ( type(new_tbl) == 'table' and new_tbl ) or {}
+end
+--/ string is generated from self.data on the fly
+--/  out: string
+function converter_custom_data:getString()
+	return this.fFill_CustomData(self.data) --/> generate_ini(self.data)
+end
+--/ table is returned by REFERENCE!!! Changes in it applied to self.data immediately
+--/  out: table
+function converter_custom_data:getTable()
+	return self.data --/>
+end
+--/ -----------------------------------------------------------------------------------------------
+--/ for Debug Info
+--/ -----------------------------------------------------------------------------------------------
+function fGet_MemUsage(get_str)
+	if db.is_mixed_mode then return get_str and "" or 0 end --/> (запрещаем из-за проблем с миксед бинарниками)
+	collectgarbage('collect') --/ performs a full garbage-collection cycle
+	collectgarbage('collect')
+	if not get_str then
+		return collectgarbage('count') or -0 --/> returns the total memory in use by Lua (in kBytes)
+	end
+	return "MemUsage=[".. string.format("%5.3f",collectgarbage('count') or -0) .."]kB"
+end
+--/ -----------------------------------------------------------------
+--/ Infoportions:
+--/ -----------------------------------------------------------------
+function has_info(info_id)
+	if db.actor then
+		return db.actor:has_info(info_id) --/>
+	end
+	return has_alife_info(info_id) --/>
+end
+function has_info_portions(tbl_info)
+	if type(tbl_info) == 'table' then
+		for _,info_id in pairs(tbl_info) do
+			if not has_info(info_id) then
+				return false --/>
+			end
+		end
+		return true --/>
+	end
+	abort("has_info_portions: type_table="..type(tbl_info))
+end
+function has_any_info_portions(tbl_info)
+	if type(tbl_info) == 'table' then
+		for _,info_id in pairs(tbl_info) do
+			if has_info(info_id) then
+				return true --/>
+			end
+		end
+		return false --/>
+	end
+	abort("has_any_info_portions: type_table="..type(tbl_info))
+end
+function check_info_portions(tbl_info)
+	if type(tbl_info) ~= 'table' then return nil end --/>
+	for info_id,status in pairs(tbl_info) do
+		if has_info(info_id) ~= status then
+			return false --/>
+		end
+	end
+	return true --/>
+end
+--/
+function give_info(info_id)
+	if type(info_id) == 'string' and db.actor then
+		if db.actor:dont_has_info(info_id) then
+			db.actor:give_info_portion(info_id)
+		end
+	else
+		abort("give_info: db.actor=["..type(db.actor).."], type_info="..type(info_id))
+	end
+end
+function give_info_portions(tbl_info)
+	if type(tbl_info) == 'table' and db.actor then
+		for _,info_id in pairs(tbl_info) do
+			if db.actor:dont_has_info(info_id) then
+				db.actor:give_info_portion(info_id)
+			end
+		end
+	else
+		abort("give_info_portions: db.actor=["..type(db.actor).."], type_table="..type(tbl_info))
+	end
+end
+--/
+function disable_info(info_id)
+	if type(info_id) == 'string' and db.actor then
+		if db.actor:has_info(info_id) then
+			db.actor:disable_info_portion(info_id)
+		end
+	else
+		abort("disable_info: db.actor=["..type(db.actor).."], type_info="..type(info_id),true)
+	end
+end
+function disable_info_portions(tbl_info)
+	if type(tbl_info) == 'table' and db.actor then
+		for _,info_id in pairs(tbl_info) do
+			if db.actor:has_info(info_id) then
+				db.actor:disable_info_portion(info_id)
+			end
+		end
+	else
+		abort("disable_info_portions: db.actor=["..type(db.actor).."], type_table="..type(tbl_info))
+	end
+end
+--/ -----------------------------------------------------------------
+isVector = function(obj)
+	return type(obj) == 'userdata' and type(obj.getP) == 'function' and tonumber(obj.x) and tonumber(obj.y) and tonumber(obj.z) --/>
+end
+isCTime = function(obj)
+	return type(obj) == 'userdata' and type(obj.setHMSms) == 'function' --/>
+end
+isChunk = function(obj)
+	return type(obj) == 'userdata' and type(obj.r_eof) == 'function' --/>
+end
+--/------------------------------------------------------------------------------------------------
+--/ Translate (change) function/class/tables to global scope
+--/------------------------------------------------------------------------------------------------
+local FuncByName = {
+	["has_info"]              = has_info,
+	["has_info_portions"]     = has_info_portions,
+	["has_any_info_portions"] = has_any_info_portions,
+	["check_info_portions"]   = check_info_portions,
+	["give_info"]             = give_info,
+	["give_info_portions"]    = give_info_portions,
+	["disable_info"]          = disable_info,
+	["disable_info_portions"] = disable_info_portions,
+
+	["HasVar"]               = fHasInPStorActor,
+	["DelVar"]               = fDelPStorActor,
+	["SetVar"]               = fSavePStorActor,
+	["GetVar"]               = fLoadPStorActor,
+
+	["HasVarA"]              = fHasInPStorActor,
+	["DelVarA"]              = fDelPStorActor,
+	["SetVarA"]              = fSavePStorActor,
+	["GetVarA"]              = fLoadPStorActor,
+	["GetVarA_Table"]        = fLoadPStorActor_Table,
+
+	["GetVarObj"]            = fLoadPStorObj,
+	["GetVarObj_Table"]      = fLoadPStorObj_Table,
+	["SetVarObj"]            = fSavePStorObj,
+	["DelVarObj"]            = fDelPStorObj,
+
+	["GetSizeVar"]           = fGetSizeVariable,
+	["Get_CheckedFunc"]      = fGet_CheckedFunc,
+	["Get_MobClass"]         = fGet_MobClass,
+	["Dlg_AddPhrase"]        = fDlg_AddPhrase,
+	["Get_Actor_NPC"]        = fGet_Actor_NPC,
+	["Get_Actor"]            = fGet_Actor,
+	["Get_NPC"]              = fGet_NPC,
+
+	["ReadFromIni"]          = fReadFromIni,
+	["Get_AmmoList"]         = fGet_AmmoList,
+	["Get_GrenadeList"]      = fGet_GrenadeList,
+	["Get_IniSection"]       = fGet_IniSection,
+	["Get_IniSections"]      = fGet_IniSections,
+	["Get_Cfg_String"]       = fGet_Cfg_String,
+	["Get_Cfg_Bool"]         = fGet_Cfg_Bool,
+	["Get_Cfg_Number"]       = fGet_Cfg_Number,
+	["Get_Cfg_Num32"]        = fGet_Cfg_Num32,
+	["Get_Cfg_2Prm"]         = fGet_Cfg_2Params,
+	["Get_InvName"]          = fGet_InvName,
+	["Get_InvShortName"]     = fGet_InvShortName,
+	["Get_WeightSection"]    = fGet_WeightSection,
+	["Get_CostSection"]      = fGet_CostSection,
+	["Get_ClassSection"]     = fGet_ClassSection,
+	["Get_CharName"]         = fGet_CharName,
+	["Get_Community"]        = fGet_Object_Community,
+	["get_object_community"] = fGet_Object_Community,
+	["IsSobjObj"]            = is_sobject_object,
+	["Release_Obj"]          = fRelease_Object,
+	["Spawn_Obj"]            = fSpawn_Obj,
+	["Spawn_NPC"]            = fSpawn_NPC,
+	["create_ammo"]          = fSpawn_Ammo,
+	["SendTip"]              = fSendTip,
+	["Send_ReceivedInfo"]    = fSend_ReceivedInfo,
+	["SpellingBeginning"]    = fSpellingBeginning,
+	["SpellingTermination"]  = fSpellingTermination,
+	["Spelling"]             = fSpelling,
+	["Has_Item"]             = fHas_Item,
+	["Has_Items"]            = fHas_Num_Item,
+	["Has_AnyItems"]         = fHas_Num_AnyItems,
+	["SwitchToOffLine"]      = DoSwitch_OffLine,
+	["SwitchToOnLine"]       = DoSwitch_OnLine,
+	["Clear_Inventory"]      = fClear_Inventory,
+	["Spawn_AmmoInInv"]      = fSpawn_AmmoBoxInInv,
+	["Spawn_ItemInInv"]      = fSpawn_ItemInv,
+	["Spawn_ItemsInInv"]     = fSpawn_ItemsInv,
+	["Give_Money"]           = fGive_Actor_Money,
+	["Lost_Money"]           = fLost_Actor_Money,
+	["Relocate_Money"]       = fRelocate_Money,
+	["Relocate_Items"]       = fRelocate_N_Items,
+	["Relocate_AnyItems"]    = fRelocate_N_AnyItems,
+	["Reload_Item"]          = fReload_Item,
+	["Take_Item"]            = fTake_Item,
+	["Lost_Items"]           = fLost_Actor_Items,
+	["Add_MapSpot"]          = fAdd_MapSpot,
+	["Del_MapSpot"]          = fDel_MapSpot,
+	["Get_MapIdObj"]         = fGet_LevelId,
+	["Get_MapNameObj"]       = fGet_LevelName_Object,
+	["VecToStr"]             = fVecToStr,
+	["Parse_Names"]          = fParse_Names,
+	["Parse_StrToTbl"]       = fParse_StrToTbl,
+	["Parse_CustomData"]     = fParse_CustomData,
+	["Fill_CustomData"]      = fFill_CustomData,
+	["Dir2TabRad"]           = fDirToTab_Radian,
+	["Dir2TabDeg"]           = fDirToTab_Degree,
+	["Deg2Rad"]              = fDegreeToRadian,
+	["Rad2Deg"]              = fRadianToDegree,
+	["AngleDiffRad"]         = fAngleDiffRad,
+	["AngleDiffDeg"]         = fAngleDiffDeg,
+
+	["Get_StrTime"]          = fGet_StringTime,
+	["Get_StrTimeOrDate"]    = fGet_StringByTimeOrDate,
+	["set_seconds2ctime"]    = set_seconds2ctime,
+	["Get_RestSeconds"]      = Get_Rest_GameSeconds,
+	["Set_RestSeconds"]      = Set_Rest_GameSeconds,
+	["Add_RestSeconds"]      = Add_Rest_GameSeconds,
+	["Get_PastSeconds"]      = Get_Past_GameSeconds,
+	["Get_PastMinutes"]      = Get_Past_GameMinutes,
+	["Get_PastHours"]        = Get_Past_GameHours,
+	["ms2string"]            = ms2string,
+	["sec2string"]           = sec2string,
+
+	["isVector"]             = isVector,
+	["isCTime"]              = isCTime,
+	["isChunk"]              = isChunk,
+
+	["converter_cd"]         = this.converter_custom_data, --/#!# class-constructor
+	["Start_PT"]             = Start_ProfileTimer,
+	["Stop_PT"]              = Stop_ProfileTimer,
+	["Get_PT"]               = GetTime_ProfileTimer,
+	["Get_MemUsage"]         = fGet_MemUsage,
+}
+if FuncByName then
+	setfenv(1,_G)
+	for name,func in pairs(FuncByName) do
+		_G[name] = func
+		if type(func) == 'number' then --/ if not class-constructor ('userdata')
+			setfenv(_G[name],_G)
+		end
+	end
+	FuncByName = nil
+	--prefetch("lua_helper_ai") --/#!# common AI functions helper
+	--prefetch("lua_helper_ui") --/#!# common UI functions helper
+end
+--/------------------------------------------------------------------------------------------------

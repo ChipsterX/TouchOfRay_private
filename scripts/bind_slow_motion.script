@@ -1,0 +1,37 @@
+--' Режим замедление времени
+--' OldSerpski stalker
+--' АМК - наше всё
+
+local SlowMo       = false
+local ppe_id       = 562962
+local POWER_SPEED  = 0.0009
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_update", slow_motion_effect)
+end	
+
+function onSlowMoStart()
+	level.add_pp_effector("psi.ppe", ppe_id, true)
+end
+
+function onSlowMoEnd()
+	level.remove_pp_effector(ppe_id)
+end
+
+function slow_motion_effect()
+	if db.actor and SlowMo == false then
+		level.remove_pp_effector(ppe_id)
+		return
+	else
+		level.add_pp_effector("psi.ppe", ppe_id, true)
+		db.actor.power = - POWER_SPEED
+	end
+end
+
+function slowmo_on()
+	SlowMo = true
+end
+
+function slowmo_off()
+	SlowMo = false
+end

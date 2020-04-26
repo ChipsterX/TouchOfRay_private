@@ -1,0 +1,808 @@
+--[[ ----------------------------------------------------------------------------------------------
+ File       : m_timers.script
+ Description: Timers Manager
+ Copyright  : 2013 © "STALKER" community & LA-team
+ Author     : Artos & Gr1ph00n
+ Last edit  : 23.10.2015 (by Kirgudu)
+--]] ----------------------------------------------------------------------------------------------
+
+--/ ƒл€ работы требуютс€ подключенные к игре скрипты "lua_extension" и "lua_helper".
+--/ -----------------------------------------------------------------
+--/ VARIABLEs
+--/ -----------------------------------------------------------------
+local REAL_TIMER  = 1
+local GAME_TIMER  = 2
+local QUICK_TIMER = 3
+local HUD_TIMER   = 4
+local MULTI_TIMER = 5
+local iSSVer          = script_server_object_version() or -1 --/ 'Script-Server' версия
+local tbl_TimerById   = {} --/ array of working timers: Tab[id] = object
+local tbl_IdByName    = {} --/ array of association: Tab[name] = id timer
+local tbl_RealTimers  = {} --/ indexed array of operating R-timers: Tab[idx] = object
+local tbl_GameTimers  = {} --/ indexed array of operating G-timers: Tab[idx] = object
+local tbl_QuickTimers = {} --/ indexed array of operating Q-timers: Tab[idx] = object
+local tbl_Process     = {} --/ таблица 'запущенных событий' - triggered events debug
+local hud_timer_name  = "ХHUD_TIMERХ" --/ exclusive name!
+local mqh_timer_name  = "ХMQH_TIMERХ" --/ multi-quick-timer for update hud_timer (exclusive name!)
+--/ --------------------------
+local __DEBUG__ = false --/ for debug
+local bInit = false --/ flag of initialization of the module
+--/ --------------------------
+local sModule = script_name()
+--/ --------------------------
+local log = function(fmt,...)
+	_G.log(sModule..":"..tostring(fmt),...)
+end
+if to_log and type(string.exformat) == 'function' then
+	log = function(fmt,...) to_log(sModule..":"..string.exformat(fmt,...)) end
+end
+local printf = function(...) log(...) end
+--/ -----------------------------------------------------------------
+--/ Initialize
+--/ -----------------------------------------------------------------
+function init()
+	if bInit then return end --/>
+	if event then
+		event("actor_load"):register(this.load)
+		event("actor_save"):register(this.save)
+		event("actor_bind"):register(this.start)
+	end
+	bInit = true
+end
+--/ -----------------------------------------------------------------
+--/ Process
+--/ -----------------------------------------------------------------
+function save(e) --/ from framework or actor_binder:save(...)
+	local tbl_sav = {}
+	for _, tbl_ready_timers in ipairs({tbl_RealTimers,tbl_GameTimers}) do
+		for _, timer in pairs(tbl_ready_timers) do
+			if timer:is_ready() and not (timer:must_remove() or timer:is_executed()) then
+				local t = timer:save() --/< table settings to be saved
+				if t and type(t.a) == 'string' then
+					table.insert(tbl_sav, t)
+				else
+					log("save: timer: [%s] invalid 'action' type=(%s):<%s>", tostring(timer), type(t.a), "Warning!")
+				end
+			end
+		end
+	end
+	if next(tbl_sav) then
+		if se_stor then
+			SetVar("sav_timers", tbl_sav)
+		else
+			SetVarA("sav_timers", tbl_sav)
+		end
+		if __DEBUG__ then log("save: timers=["..#tbl_sav.."]") end --/#~#
+	end
+end
+
+function load(e) --/ from framework or actor_binder:load(...)
+	local tbl = se_stor and GetVar("sav_timers",{}) or GetVarA("sav_timers",{})
+	if next(tbl) then
+		for _,t in pairs(tbl) do
+			local timer = this.get_timer_by_type(t.type,t.name)
+			if timer and type(t.a) == 'string' then
+				timer:load(t):start()
+			else --log("load: sav_timers: "..db.storehouse["sav_timers"]) --/#~#
+				table.print(t, sModule..":load| Error!")
+				abort("%s:load: wrong timer: [%s] unknown type=(%s)", sModule, tostring(t.name), tostring(t.type))
+			end
+		end
+		DelVar("sav_timers") --/ clear
+		DelVarA("sav_timers")
+		if __DEBUG__ then log("load: timers=[%d]", #tbl) end --/#~#
+	end
+end
+
+function start(e) --/ from framework or actor_binder:__init(...)
+	local _precondition = function() --/< 'update' from 'level.add_call'
+		for _,tbl_ready_timers in ipairs( {tbl_QuickTimers,tbl_RealTimers,tbl_GameTimers} ) do
+			local idx,timer = next(tbl_ready_timers) --/ take the first position of the table
+			while idx ~= nil do
+				if timer:is_ready() and not timer:must_remove() then
+					if timer:get_time_rest() > 0 then
+						break --/ all the rest have not expired
+					else --/ expired!
+						table.remove(tbl_ready_timers,idx)
+						idx = nil --/ index shift back
+						timer:trigger() --/ to execute!
+					end
+				end
+				idx,timer = next(tbl_ready_timers,idx)
+			end
+		end
+		--/ check for no broken timers:
+		return tbl_Process[1] ~= nil --/> for 'level.add_call' (watchdog)
+	end
+	local _action = function() --/ for reports of 'hung' call timers
+		to_log( "Timer`s Error! "..string.rep("~",64) ) --/#~#
+		for idx,timer in pairs(tbl_Process) do
+			to_log("Error! Broken timer:["..tostring(idx).."] "..tostring(timer))
+		end
+		abort(sModule..":Broken timers: ["..#tbl_Process.."]")
+	end
+	level.add_call(_precondition, _action)
+end
+
+--/ Handler calls the standard
+local function TimerHelper(t)
+	if type(t) ~= 'userdata' and type(t) ~= 'table' then
+		if __DEBUG__ then log("TimerHelper: wrong 't' type=("..type(t).."):<?>") end --/#~#
+		return --/>
+	end
+	if t.log and type(t.log) == 'string' then
+		log("TimerHelper: " .. t.log ) --/ for debug
+	end
+	if t.info_id and type(t.info_id) == 'string' then
+		give_info(t.info_id)
+	end
+	if t.info_tbl and type(t.info_tbl) == 'table' then
+		give_info_portions(t.info_tbl)
+	end
+	if t.tip and type(t.tip) == 'table' then
+		if SendTip and type(t.tip[1]) == 'string' then
+			SendTip( unpack(t.tip) )
+		else
+			news_manager.send_tip( unpack(t.tip) )
+		end
+	end
+	if t.snd and type(t.snd) == 'string' then
+		local snd_obj = xr_sound.get_safe_sound_object(t.snd)
+		if snd_obj and not snd_obj:playing() and db.actor then
+			snd_obj:play(db.actor, 0, sound_object.s2d)
+		end
+	end
+	if t.func then
+		if type(t.func) == 'function' then --/ note: only from quick_timers
+			if t.obj and type(t.obj) == 'userdata' and type(t.obj.__init) == 'function' then
+				t.func(t.obj,t) --/ method call of an object class
+			else
+				t.func(t) --/ function call
+			end
+		elseif type(t.func) == 'table' and t.func["func"] then
+			local func,obj_class = Get_CheckedFunc(t.func)
+			if func then
+				if obj_class then
+					func(obj_class,t) --/ method call of an object class
+				else
+					func(t) --/ function call
+				end
+			end
+		end
+	end
+	if t.err and type(t.err) == 'string' then
+		abort(sModule..":TimerHelper: "..tostring(t.err)) --/ for debug
+	end
+end
+--/ ------------------------------------------------------------------------------------------------
+--/ CLASS CONSTRUCTOR
+--/ ------------------------------------------------------------------------------------------------
+class "BaseTimer"
+--/ ---------------------------------------------------------------------
+function BaseTimer:__init(timer_type, timer_name, prefix_name, time_mode)
+	local id = 1
+	local timer = tbl_TimerById[id] --/ selecting a first timer
+	while (timer and timer._id) ~= nil do
+		id = id +1
+		timer = tbl_TimerById[id] --/ selection of the next timer
+	end
+	self._id = id --/ free nearest index
+	self._type = timer_type
+	--
+	if timer_type == GAME_TIMER then
+		self.is_game_time =  true
+	elseif timer_type == QUICK_TIMER then
+		self.is_game_time =  false
+	elseif timer_type == MULTI_TIMER then
+		self.is_game_time = (time_mode and type(time_mode) == 'boolean' and time_mode == true)
+		prefix_name = (self.is_game_time == nil and "MR") or (self.is_game_time and "MG") or "MQ" --/ Note:: nil: real- | true: game- | false: quick-
+		self._multiple = true
+	end
+	--
+	if self.is_game_time ~= true then
+		if self.is_game_time == false then
+			self._ready_timers = tbl_QuickTimers --/ create an association (ready quick-timers)
+		else
+			self._ready_timers = tbl_RealTimers --/ create an association (ready real-timers)
+		end
+		self._timeEnd = -0 --/ number (float)
+	else
+		self._ready_timers = tbl_GameTimers --/ create an association (ready game-timers)
+		self._timeEnd = game.CTime() --/ userdata (CTime)
+	end
+	self:set_name(timer_name, prefix_name)
+	if self._name and self._type then
+		tbl_TimerById[id] = self --/ memorize the new timer
+	end
+--	if __DEBUG__ then log("BaseTimer:__init: '%s'=>'%s' id=[%s] type[%s]", tostring(timer_name), tostring(self._name), tostring(id), tostring(timer_type)) end --/#~#
+end
+
+function BaseTimer:set_name(timer_name, prefix_name)
+	if not timer_name or type(timer_name) ~= 'string' or timer_name == '@' then --/ created fake name
+		if prefix_name and type(prefix_name) == 'string' then
+			self._name = prefix_name.."@"..self._id
+		else
+			self._name = "x@"..self._id
+			log("set_name: '%s' id[%s] type_prefix=[%s]~wrong!:<%s>", tostring(timer_name), tostring(self._type), type(prefix_name), "Warning!")
+		end
+	elseif not timer_exists(timer_name) then --/ timer with the same name already not exists?
+		if self._name then --/ timer already has a name
+			tbl_IdByName[self._name] = nil --/ remove the old association 'Name'<X>'ID'
+			if __DEBUG__ then log( "change_name: '%s' => '%s', action=[%s]", self._name, timer_name, self._action or type(self._callback)) end --/#~#
+		end
+		self._name = timer_name --/< is replaced by the specified name
+	else --/ timer with the same name already exists!
+		if timer_name:match('^x@') then --/ это уже фейковый таймер!
+			self._name = "x@"..self._id --/ fake name
+			self._remove = true --/ mast remove!
+			callstack("BaseTimer:set_name: '%s' already exists! :<%s>", tostring(timer_name), "Warning!")
+			abort("%s:set_name: '%s' already exists! %s :<%s>", sModule, tostring(timer_name), tostring(self), "Warning!") --/#!# name conflict!
+		else --/ замена/перезапуск существующего таймера
+			local old_timer = get_timer(timer_name) --/ old timer
+			if old_timer then
+				if old_timer._id == self._id then
+					return self --/>
+				end
+				old_timer:remove()
+			end
+			self._name = timer_name --/< for new timer
+		end
+	end
+	tbl_IdByName[self._name] = self._id --/ (re)create an association
+	return self --/>
+end
+
+function BaseTimer:set_timeout(sec_to_elapse)
+	if type(sec_to_elapse) ~= 'number' then
+		abort("set_timeout: Invalid time(%s) to elapse: %s", type(sec_to_elapse), tostring(self))
+	end
+	if self.is_game_time then
+		if game.convert_time then --/#!# only LA
+			self._timeEnd = game.get_game_time() + game.convert_time((sec_to_elapse or 0)*1000) --/ game mseconds: 'number' => 'userdata'(CTime)
+		else
+			self._timeEnd = Set_RestSeconds(sec_to_elapse or 0) --/ game seconds: 'number' => 'userdata'(CTime)
+		end
+		if __DEBUG__ then log("set_timeout: "..tostring(self)) end --/#~#
+	else
+		self._timeEnd = time_global() + (sec_to_elapse or 0)*1000 --/ real mseconds
+	end
+	return self --/>
+end
+
+function BaseTimer:set_callback(action, properties)
+	if not action then
+		self._callback = TimerHelper
+		self._action = "TimerHelper"
+	else
+		lua_type = type(action)
+		if lua_type == 'string' then
+			if action == "TimerHelper" then
+				self._callback = TimerHelper
+			else --/ if the string of the file name and function or class and method
+				self._callback,self._obj_class = Get_CheckedFunc(action)
+			end
+		elseif self.is_game_time == false and (lua_type == 'function' or lua_type == 'table') then
+			--/ for quick-: function (method) or class(userdata) and method(function) - is given directly
+			self._callback,self._obj_class = Get_CheckedFunc(action)
+		else
+			abort(sModule..":set_callback: Wrong action type=(%s) for ", type(action), tostring(self))
+		end
+	end
+	if self._callback then
+		if type(action) == 'string' then
+			self._action = action --/ for save
+		end
+		if properties ~= nil then
+			if type(properties) == 'table' then
+				if next(properties) then
+					self._properties = properties --/ for save
+				end
+			else
+				log("set_callback: %s, args=[%s]~not_table!:<%s>", tostring(self), type(properties), "Warning!")
+			end
+		end
+	else --/ error -> clear
+		log("set_callback: %s, wrong callback function! :<%s>", tostring(self), "Warning!")
+		self._remove = true --/#+?#
+		self._action = nil
+		self._properties = nil
+	end
+	--if __DEBUG__ then log( "set_callback: "..tostring(self)) end --/#~#
+	return self --/>
+end
+
+function BaseTimer:add_ready_timer()
+	if self._ready_timers[1] then --/ table is not empty
+		local timeEnd = self:get_time_end()
+		for idx,timer in ipairs(self._ready_timers) do
+			--/ Note: comparison number`s (ms) for RealTimer`s, overloaded < operator for CTime (GameTimer`s)!
+			if timer:get_time_end() >= timeEnd then
+				table.insert(self._ready_timers, idx, self) --/ inserted at the current position of the table
+				if __DEBUG__ then log("add_ready_timer: '%s' inserted to idx=[%d]/(%d) timeEnd[%s] <= [%s]", self._name, idx, #self._ready_timers, self:get_time_end(true), timer:get_time_end(true)) end --/#~#
+				return --/>
+			end
+		end
+	end
+	table.insert(self._ready_timers, self) --/ at the end of the table
+	if __DEBUG__ then log("add_ready_timer: '%s' add to idx=[%d] timeEnd[%s] :(+)", self._name, #self._ready_timers, self:get_time_end(true)) end --/#~#
+end
+
+function BaseTimer:start()
+	self._ready = not self._remove --/ set sign
+	if self._ready then
+		self:add_ready_timer()
+		if __DEBUG__ then log("start: %s%s", tostring(self), (self._properties and " props("..type(self._properties)..")") or "") end --/#~#
+	end
+	return self --/>
+end
+
+function BaseTimer:restart(time_sec, action, properties, timer_name)
+	if __DEBUG__ then log("restart: '%s' id[%d]", self._name, self._id) end --/#~#
+	self:remove()
+	self._call = false --/ set sign 'restart'
+	self._remove = nil
+	self._ready = nil
+	if timer_name and type(timer_name) == 'string' and timer_name ~= self._name then
+		if not timer_exists(timer_name) then
+			self._name = timer_name
+		else
+			log("BaseTimer:restart: '%s', new name '%s' already exists! :<%s>", self._name, timer_name, "Warning!") --/#~#
+		end
+	end
+	if self._properties then
+		for k,_ in pairs(self._properties) do
+			self[k] = nil --/ clear
+		end
+	end
+	tbl_TimerById[self._id] = self
+	tbl_IdByName[self._name] = self._id --/ (re)create an association
+	self:set_timeout(time_sec):set_callback(action, properties):start()
+	return self --/>
+end
+
+function BaseTimer:trigger()
+	--ASSERT(type(self._callback) == 'function', "trigger: %s, callback=(%s) <~must be 'function'!", tostring(self), type(self._callback))
+	if type(self._callback) == 'function' then
+		if self._properties then
+			for k,v in pairs(self._properties) do
+				self[k] = v
+			end
+		end
+		self._call = true
+		if __DEBUG__ then log( "trigger: >> "..tostring(self) ) end --/#~#
+		--/>--------------------->
+		table.insert(tbl_Process, self) --/ add the last entry in the table for hang debug
+		if self._obj_class then
+			self._callback(self._obj_class, self)
+		else
+			self._callback(self) --/ function call (execute)!
+		end
+		table.remove(tbl_Process) --/ remove from the last position of the table for hang debug
+		--/<---------------------<
+		if self._call ~= false and not self._multiple then --/ is a sign of restarting
+			self:remove()
+		end
+	else
+		log("trigger: %s, callback=(%s) <~must be 'function'!:<%s>", tostring(self), type(self._callback), "Warning!")
+		self:remove()
+	end
+	self._call = nil
+	return true --/>
+end
+
+function BaseTimer:remove()
+	self._remove = true --/#?#
+	tbl_TimerById[self._id] = nil
+	tbl_IdByName[self._name] = nil
+	if not self._call then --/ discontinued?
+		for idx,timer in ipairs(self._ready_timers) do
+			if timer._id == self._id then
+				table.remove(self._ready_timers, idx)
+				if __DEBUG__ then log("discontinued: %s idx=[%d] left_timers=[%d]", tostring(self), idx, #self._ready_timers) end --/#~#
+				break
+			end
+		end
+	end
+	--if __DEBUG__ then log( "remove: "..tostring(self) ) end --/#~#
+end
+
+function BaseTimer:get_time_rest()
+	--callstack("BaseTimer:get_time_rest: "..tostring(self._name)) --/#~# for debug
+	if isCTime(self._timeEnd) then
+		return self._timeEnd:diffSec(game.get_game_time()) --/> game seconds (CTime => number)
+	end
+	return (self._timeEnd or 0) - time_global() --/> real mseconds (number)
+end
+
+function BaseTimer:get_time_end(string_mode)
+	if string_mode then
+		if isCTime(self._timeEnd) then
+			return self._timeEnd:timeToString(game.CTime.TimeToMilisecs) --/> game mseconds
+		end
+		return ms2string(self._timeEnd) --/> real mseconds
+	end
+	return self._timeEnd --/> mseconds (number or CTime)
+end
+
+function BaseTimer:get_property(prop)
+	if self._properties and type(prop) == 'string' then
+		for k,v in pairs(self._properties) do
+			if k == prop then
+				return v --/>
+			end
+		end
+	end
+	return nil --/>
+end
+
+function BaseTimer:set_property(prop,value)
+	if type(prop) == 'string' and prop ~= "" then
+		if not self._properties then self._properties = {} end
+		self._properties[prop] = value
+	elseif type(prop) == 'table' and next(prop) then
+		if not self._properties then self._properties = {} end
+		for k,v in pairs(prop) do
+			self._properties[k] = v
+		end
+	end
+end
+
+function BaseTimer:name()
+	return self._name --/>
+end
+function BaseTimer:id()
+	return self._id --/>
+end
+
+function BaseTimer:is_ready()
+	return self._ready == true --/>
+end
+
+function BaseTimer:is_executed()
+	return self._call --/>
+end
+
+function BaseTimer:must_remove()
+	return self._remove == true --/>
+end
+
+function BaseTimer:save()
+	--ASSERT(type(self._action) == 'string', "Timer='"..self._name.."' can't be saved, callback must be a string!") --/#-#
+	local tbl = {}
+	if type(self._action) == 'string' then
+		tbl.type = self._type
+		tbl.name = self._name
+		tbl.a    = self._action
+		tbl.p    = self._properties
+	end
+	return tbl --/>
+end
+
+function BaseTimer:load(tbl)
+	self:set_callback(tbl.a, tbl.p)
+	return self --/>
+end
+
+--/ Helpers ------------------
+function BaseTimer:get_name()
+	return self._name --/>
+end
+function BaseTimer:is_quick_timer()
+	return self._type == QUICK_TIMER --/>
+end
+function BaseTimer:is_real_timer()
+	return self._type == REAL_TIMER --/>
+end
+function BaseTimer:is_game_timer()
+	return self._type == GAME_TIMER --/>
+end
+function BaseTimer:is_hud_timer()
+	return self._type == HUD_TIMER --/>
+end
+
+function BaseTimer:__tostring()
+	return string.format("Timer'%s' id[%d] action(%s)", tostring(self._name), self._id,
+	       self._action or type(self._callback), (self._call and " call("..tostring(self._call)..")") or "") --/>
+end
+--/ --------------------------
+--/ CLASS CONSTRUCTOR: Real-mode Timers (rt) (real-time seconds)
+--/ ------------------------------------------------------------------
+class "RealTimer" (BaseTimer)
+--/ ------------------------------------------------------------------
+function RealTimer:__init(timer_name) super(REAL_TIMER, timer_name, "R")
+end
+
+function RealTimer:save()
+	local tbl = BaseTimer.save(self)
+	tbl.t = self._timeEnd - time_global()
+	return tbl --/>
+end
+function RealTimer:load(tbl)
+	BaseTimer.load(self, tbl)
+	self._timeEnd = tbl.t + time_global()
+	return self --/>
+end
+
+function RealTimer:__tostring()
+	return string.format("Real%s timeRest[%s] timeEnd[%s]", BaseTimer.__tostring(self),
+	       ms2string( self:get_time_rest() ), self:get_time_end(true)) --/>
+end
+--/ --------------------------
+--/ CLASS CONSTRUCTOR: Quick-mode Timers (qt) (real-time seconds, without storing in saves)
+--/ -----------------------------------------------------------------
+class "QuickTimer" (BaseTimer)
+--/ -----------------------------------------------------------------
+function QuickTimer:__init(timer_name) super(QUICK_TIMER, timer_name, "Q")
+end
+
+function QuickTimer:save()
+	return {} --/> stub!
+end
+function QuickTimer:load()
+	return self --/> stub!
+end
+
+function QuickTimer:__tostring()
+	return string.format("Quick%s timeRest[%s] timeEnd[%s]", BaseTimer.__tostring(self),
+	       ms2string( self:get_time_rest() ), self:get_time_end(true)) --/>
+end
+--/ --------------------------
+--/ CLASS CONSTRUCTOR: Hud-mode Timers (ht) (real-time seconds, with HUDs)
+--/ -----------------------------------------------------------------
+class "HudTimer" (BaseTimer)
+--/ -----------------------------------------------------------------
+function HudTimer:__init(hud_mode) super(HUD_TIMER, hud_timer_name, "H")
+	self:set_hud_mode(hud_mode)
+end
+
+function HudTimer:set_hud_mode(hud_mode) --/ hud_mode: false|string|nil|other
+	if type(hud_mode) == 'boolean' and hud_mode == false then
+		self._hud_name = "hud_timer_text" --/ only text-time
+	else
+		self._hud_name = "hud_timer" --/ full hud_timer
+		if type(hud_mode) == 'string' then --/ is text caption
+			self._hud_caption = hud_mode --/ text caption (for save)
+		end
+	end
+end
+
+function HudTimer:set_hud() --/ caption: false|string|nil|other
+	if self._hud_name then
+		local hud = get_hud()
+		hud:AddCustomStatic(self._hud_name, true)
+		self._hud_cs_wnd = hud:GetCustomStatic(self._hud_name):wnd() --/ the main window
+		if self._hud_caption then --/ and self._hud_name == "hud_timer" --/#?# а нужно ли показывать текст заголовка только на текстовом худе?
+			hud:AddCustomStatic("timer_hud_caption", true)
+			local wnd = hud:GetCustomStatic("timer_hud_caption"):wnd() --/ window frame caption
+			if iSSVer < 12 then --/ is CS
+				wnd:SetTextST(self._hud_caption) --/ set text caption
+			else --/ is CoP
+				wnd:TextControl():SetTextST(self._hud_caption) --/ set text caption
+			end
+		end
+	else
+		log("set_hud: %s, set hud_name is not set! :<%s>", tostring(self), "Warning!")
+	end
+	return self --/>
+end
+
+function HudTimer:update_hud(t)
+	if self._hud_cs_wnd then
+		local str = "--:--:--"
+		local time_rest = self:get_time_rest() --/< real mseconds (number)
+		if time_rest >= 0 then
+			str = ms2string(time_rest)
+		end
+		if iSSVer < 12 then --/ is CS
+			self._hud_cs_wnd:SetText(str) --/ reset text-time
+		else --/ is CoP
+			self._hud_cs_wnd:TextControl():SetText(str) --/ reset text-time
+		end
+	elseif t then
+		t:remove() --/ clear mqh_timer
+	end
+end
+
+function HudTimer:remove_hud()
+	if self._hud_cs_wnd or self._hud_name then
+		local hud = get_hud()
+		if hud:GetCustomStatic("hud_timer") then
+			hud:RemoveCustomStatic("hud_timer")
+		end
+		if hud:GetCustomStatic("hud_timer_text") then
+			hud:RemoveCustomStatic("hud_timer_text")
+		end
+		if hud:GetCustomStatic("timer_hud_caption") then --/ if self._hud_caption and...
+			hud:RemoveCustomStatic("timer_hud_caption")
+		end
+		self._hud_cs_wnd = nil
+		self._hud_name = nil
+	end
+	if timer_exists(mqh_timer_name) then
+		local timer = get_timer(mqh_timer_name)
+		timer:remove()
+	end
+end
+
+function HudTimer:start()
+	BaseTimer.start(self)
+	self:set_hud()
+	if self._hud_cs_wnd and not timer_exists(mqh_timer_name) then
+		start_multi_timer(0.5, {obj=self,func=self.update_hud}, nil, false):set_name(mqh_timer_name) --/#!# 0.5 quick- real-seconds + cyclical
+	end
+	return self --/>
+end
+
+function HudTimer:remove()
+	BaseTimer.remove(self)
+	self:remove_hud()
+end
+
+function HudTimer:save()
+	local tbl = RealTimer.save(self)
+	tbl.h = self._hud_caption or self._hud_name == "hud_timer"
+	return tbl --/>
+end
+function HudTimer:load(tbl)
+	RealTimer.load(self, tbl)
+	self:set_hud_mode(tbl.h)
+	return self --/> stub!
+end
+
+function HudTimer:__tostring()
+	return string.format("Hud%s timeRest[%s] timeEnd[%s] hud(%s)", BaseTimer.__tostring(self),
+	       ms2string( self:get_time_rest() ), self:get_time_end(true), tostring(self._hud_name)) --/>
+end
+--/ --------------------------
+--/ CLASS CONSTRUCTOR: Game-mode Timers (gt) (game-time seconds)
+--/ ------------------------------------------------------------------
+class "GameTimer" (BaseTimer)
+--/ ------------------------------------------------------------------
+function GameTimer:__init(timer_name) super(GAME_TIMER, timer_name, "G")
+end
+
+function GameTimer:save()
+	local tbl = BaseTimer.save(self)
+	tbl.t = math.ceil( self:get_time_rest() ) --/ reserve the remaining time (game-seconds)!
+	return tbl --/>
+end
+function GameTimer:load(tbl)
+	BaseTimer.load(self, tbl)
+	self:set_timeout(tbl.t) --/ rebuilding on the remaining time (game-seconds) (number => CTime)!
+	return self --/>
+end
+
+function GameTimer:__tostring()
+	return string.format("Game%s timeRest[%s] timeEnd[%s]", BaseTimer.__tostring(self),
+	       sec2string( self:get_time_rest() ), self:get_time_end(true) ) --/>
+end
+--/ --------------------------
+--/ CLASS CONSTRUCTOR: Multitle-mode Timers (mt) (cyclical|многократный)
+--/ ------------------------------------------------------------------
+class "MultiTimer" (BaseTimer)
+--/ ------------------------------------------------------------------
+function MultiTimer:__init(time_mode) super(MULTI_TIMER, nil, nil, time_mode)
+end
+
+function MultiTimer:set_timeout(sec_to_elapse)
+	if not self._timeOut then
+		self._timeOut = sec_to_elapse
+	end
+	--/#?# а нужно убирать погрешность из-за дискретности 'actor_update'? (self._timeOut + self:get_time_rest())
+	BaseTimer.set_timeout(self, self._timeOut)
+	--if __DEBUG__ then log("set_timeout: "..tostring(self)) end --/#~#
+	return self --/>
+end
+
+function MultiTimer:trigger()
+	BaseTimer.trigger(self)
+	if self._remove then
+		self:remove()
+	else
+		self:set_timeout(self._timeOut) --/ reset time
+		BaseTimer.start(self) --/ restart
+	end
+end
+
+function MultiTimer:save()
+	local tbl = BaseTimer.save(self)
+	tbl.tO = self._timeOut
+	return tbl --/>
+end
+function MultiTimer:load(tbl)
+	BaseTimer.load(self, tbl)
+	self._timeOut = tbl.tO
+	return self --/>
+end
+
+function MultiTimer:__tostring()
+	return string.format("Multi%s timeOut[%d]s timeRest[%d] timeEnd[%s]", BaseTimer.__tostring(self),
+	       self._timeOut, self:get_time_rest(), self:get_time_end(true)) --/>
+end
+--/ ------------------------------------------------------------------------------------------------
+--/ HELPERs
+--/ ------------------------------------------------------------------------------------------------
+function get_timer_by_type(timer_type,timer_name)
+	if timer_type then
+		if timer_exists(timer_name) then
+			return nil --get_timer(timer_name) --/> #?#
+		elseif timer_type == REAL_TIMER then
+			return this.get_timer_rt(timer_name) --/>
+		elseif timer_type == GAME_TIMER then
+			return this.get_timer_gt(timer_name) --/>
+		elseif timer_type == QUICK_TIMER then
+			return this.get_timer_qt(timer_name) --/>
+		elseif timer_type == HUD_TIMER then
+			return this.get_timer_ht(timer_name) --/>
+		elseif timer_type == MULTI_TIMER then
+			return this.get_timer_mt(timer_name) --/>
+		end
+	end
+	return nil --/>
+end
+--/ TIMERs CONSTRUCTORs
+function get_timer_rt(timer_name) return this.RealTimer (timer_name) end --/ real-timer
+function get_timer_gt(timer_name) return this.GameTimer (timer_name) end --/ game-timer
+function get_timer_qt(timer_name) return this.QuickTimer(timer_name) end --/ quick-timer (real-time and no saved)
+function get_timer_mt(time_mode)  return this.MultiTimer(time_mode)  end --/ multi-timer (cyclical)
+function get_timer_ht(hud_mode)   return this.HudTimer  (hud_mode)   end --/ hud-timer (real-time and HUD)
+
+function start_timer(timer, time, action, properties)
+	return timer:set_timeout(time):set_callback(action, properties):start() --/>
+end
+--/ Translate functions to global scope ---------------------------
+_G.start_real_timer = function(time_sec, action, properties, timer_name)
+	return this.start_timer(this.get_timer_rt(timer_name), time_sec, action, properties) --/>
+end
+_G.start_game_timer = function(time_sec, action, properties, timer_name)
+	return this.start_timer(this.get_timer_gt(timer_name), time_sec, action, properties) --/>
+end
+_G.start_quick_timer = function(time_sec, action, properties, timer_name)
+	return this.start_timer(this.get_timer_qt(timer_name), time_sec, action, properties) --/>
+end
+_G.start_multi_timer = function(time_sec, action, properties, time_mode)
+	return this.start_timer(this.get_timer_mt(time_mode), time_sec, action, properties) --/>
+end
+_G.start_hud_timer = function(time_sec, action, properties, hud_mode)
+	return this.start_timer(this.get_timer_ht(hud_mode), time_sec, action, properties) --/>
+end
+
+_G.timer_exists = function(timer_name)
+	return (timer_name and tbl_IdByName[timer_name]) ~= nil --/>
+end
+_G.get_timer = function(timer_name)
+	return timer_name and tbl_TimerById[tbl_IdByName[timer_name] or -1] --/>
+end
+_G.get_hud_timer = function()
+	return tbl_TimerById[tbl_IdByName[hud_timer_name] or -1] --/>
+end
+--/ ------------------------------------------------------------------------------------------------
+--[[
+	EXAMPLEs of use:
+	start_real_timer(6, "my_file.my_func") --/ 6 real-seconds
+	start_real_timer(5*60, nil, {tip = {"st_tip", "Text test_RT"}}, "RT_test") --/ 5 real-minutes + set name
+	start_real_timer(0.5, "my_file.my_func"):set_name("my_timer_name") --/ 0.5 real-seconds + (re)set name
+	start_game_timer(3*60, nil, {info_id = "my_infoportion"}) --/ 3 game-minutes
+	start_hud_timer (10*60, nil, {log = "test_HT"}) --/ 10 real-minutes
+	start_hud_timer (45, nil, {log = "caption_HT"}, "blowout") --/ 45 real-seconds + text caption
+	start_hud_timer (45, nil, {log = "only_text_HT"}, false) --/ 45 real-seconds + only text-time
+	start_quick_timer(4, my_file.my_func) --/ 4 real-seconds + call function
+	start_quick_timer(8, nil, {info_id = "my_infoportion"}, log = "tip QT8"}) --/ 8 real-minutes + log
+	start_multi_timer(2*60, nil, {log = "tip_MR"}) --/ 120 real-seconds + log + cyclical
+	start_multi_timer(3*60, nil, {tip = {nil, "tip_MG"}, log = "tip_MG"},true) --/ 120 game-minutes + tip + log + cyclical
+	timer_exists("my_timer_name") --/ boolean
+	get_timer("my_timer_name") --/ object from class 'RealTimer|GameTimer'
+	get_hud_timer() --/ object 'HUD-Timer' from class 'RealTimer'
+	--/ дл€ объекта таймера доступны:
+	timer:id() --/ чтение(получение) идентификатора запущенного таймера (не путать с игровыми идентификаторами объектов!)
+	timer:name() --/ чтение(получение) имени запущенного таймера
+	timer:set_name(timer_name) --/ установка/изменение имени таймера
+	timer:restart(time_sec, action, properties, timer_name) --/ перезапуск работающего таймера (аргументы аналогичгы запуску)
+	timer:get_time_rest() --/ получение оставшегос€ времени работающего таймера (real mseconds or game seconds)
+	timer:get_time_end() --/ получение времени (число mseconds), когда таймер сработает
+	timer:get_time_end(true) --/ получение времени (строка), когда таймер сработает
+	timer:get_property(property) --/ чтение значени€ параметра заданного таймеру
+	timer:set_property(property,value) --/ установка/замена параметра заданного таймеру
+	timer:remove() --/ удаление таймера
+--]]
+--/ -----------------------------------------------------------------------------------------------

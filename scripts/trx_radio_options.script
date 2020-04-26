@@ -1,0 +1,179 @@
+--[[
+==================================== Created by Tronex =======================================
+Last edit: 2018/5/22
+Radio menu options
+==============================================================================================
+--]]
+--printf(">>>> TRX Zone FM: trx_radio_options Loaded <<<<")
+
+
+
+local options_btn = 15 -- Tab
+
+-- table of buttons and their codes, used for option lists
+local btn_tbl = {
+	["-None-"] = 9999,
+	
+	["Page_Up"] = 201,
+	["Tab"] = 15,
+	["Caps_Lock"] = 58,
+	["Left_Control"] = 29,
+	["Left_Shift"] = 42,
+	["Left_Alt"] = 56,
+	["Left_Win"] = 219,
+	["Application"] = 221,
+	["Num1"] = 79,
+	["Num2"] = 80,
+	["Num3"] = 81,
+	["Num4"] = 75,
+	["Num5"] = 76,
+	["Num6"] = 77,
+	["Num7"] = 71,
+	["Num8"] = 72,
+	["Num9"] = 73,
+	["Num/"] = 181,
+	["Num*"] = 55,
+	["Num-"] = 74,
+	["Num+"] = 78,
+	["Num_Del"] = 83,
+	["NumEnter"] = 156,
+	["F1"] = 59,
+	["F2"] = 60,
+	["F3"] = 61,
+	["F4"] = 62,
+	["F5"] = 63,
+	["F6"] = 64,
+	["F7"] = 65,
+	["F8"] = 66,
+	["F9"] = 67,
+	["F10"] = 68,
+	["F11"] = 87,
+	["F12"] = 88
+}
+
+-- table of radio options, their values are stored in (axr_option.ltx)
+local options = {
+	["radio_plyr_options"] = {
+		typ = "list",
+		list = {"Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "Tab",
+		txt = game.translate_string("ui_mm_radio_access"),
+		on_accept = function(handler,optMgr,ctrl)
+			options_btn = btn_tbl[ctrl:GetText()]
+			--[[local file = io.open(game.translate_string("ui_mm_radio_access_call"), "w")
+				if io.type(file) == "file" then
+					file:write(ctrl:GetText(), "\n")
+					file:flush()
+					file:close()
+				end]]--
+		end,
+		num = 0.1
+	},
+	["radio_plyr_space_1"] 			= {typ = "text", default = game.translate_string("ui_mm_radio_spacing_1"), cap = "tab_gameplay:cap_text_axr", num = 0.2},
+	["radio_plyr_1_on"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_1_play"),
+		num = 0.3
+	},
+	["radio_plyr_2_on"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_2_play"),
+		num = 0.4
+	},
+	["radio_plyr_vol_up"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_vol_up"),
+		num = 0.5
+	},
+	["radio_plyr_vol_down"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_vol_down"),
+		num = 0.6
+	},
+	["radio_plyr_next"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_next"),
+		num = 0.7
+	},
+	["radio_plyr_previous"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_previous"),
+		num = 0.8
+	},
+	["radio_plyr_playlist"] = {
+		typ = "list",
+		list = {"-None-","Tab", "Caps_Lock", "Left_Control", "Left_Shift", "Left_Alt", "Left_Win", "Num1", "Num2", "Num3", "Num4", "Num5", "Num6", "Num7", "Num8", "Num9", "Num/", "Num*", "Num-", "Num+", "Num_Del", "NumEnter","Page_Up","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"},
+		default = "-None-",
+		txt = game.translate_string("ui_mm_radio_playlist"),
+		num = 0.9
+	},
+	["radio_plyr_space_2"] 			= {typ = "text", default = game.translate_string("ui_mm_radio_spacing_2"), cap = "tab_gameplay:cap_text_axr", num = 1.0},
+	["radio_plyr_lost_emission"] 	= {typ = "check", default = true, txt = game.translate_string("ui_mm_radio_lost_emission"), num = 1.1},
+	["radio_plyr_lost_lab"] 		= {typ = "check", default = true, txt = game.translate_string("ui_mm_radio_lost_lab"), num = 1.2},
+	["radio_plyr_display_names"] 	= {typ = "check", default = false, txt = game.translate_string("ui_mm_radio_display_names"), num = 1.3},
+	["radio_plyr_space_3"] 			= {typ = "text", default = game.translate_string("ui_mm_radio_spacing_3"), cap = "tab_gameplay:cap_text_axr", num = 1.4}
+}
+
+for i=1,trx_radio.trx_get_num_of_plyr() do
+	local default_name
+	if (i == 1) then default_name = "OST"
+	elseif (i == 2) then default_name = "TRX_Special"
+	else default_name = "Playlist_" .. tostring(i)
+	end
+	
+	options["radio_plyr_playlist_name_" .. tostring(i)] = {typ = "edit", default = default_name, txt = (game.translate_string("ui_mm_radio_playlist_name") .. " " .. tostring(i)), num = (1.4 + (i/10))}
+end
+
+function get_key_number(key) -- called/used by (trx_radio.script)
+	return btn_tbl[key]
+end
+
+
+
+-- ==============================================================================================
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+--											Callbacks
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+-- ==============================================================================================
+
+local function options_default_config() -- called upon loading a game
+	options_btn = btn_tbl[axr_main.config:r_value("mm_radio_plyr_options","radio_plyr_options",0,"Tab")] or 15
+	local need_save
+	for k,v in pairs(options) do
+		local key = ((v.typ=="check" and "enable_") or "") .. k
+		if not axr_main.config:line_exist("mm_radio_plyr_options", key) and v.typ~="text" then
+			axr_main.config:w_value("mm_radio_plyr_options", key, v.default)
+			need_save = true
+		end
+	end
+	if (need_save) then
+		axr_main.config:save()
+	end
+	trx_radio.update_options()
+end
+
+local function main_menu_on_keyboard(dik,keyboard_action,main_menu,level_present) -- called upon pressing key on main menu
+	if keyboard_action ~= ui_events.WINDOW_KEY_RELEASED then
+		return
+	end
+	if dik == options_btn then
+		ui_mm_opt_radio.start_ui(main_menu,level_present,options)
+	end
+end
+
+function on_game_start()
+	RegisterScriptCallback("on_game_load",options_default_config)
+	RegisterScriptCallback("main_menu_on_keyboard",main_menu_on_keyboard)
+end

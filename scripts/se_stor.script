@@ -1,0 +1,517 @@
+--[[-----------------------------------------------------------------------------------------------
+ File       : se_stor.script
+ Description: System of the universal storage
+ Copyright  : 2012 © STALKER-community
+ Author     : Artos (materials are used: by Malandrinus & xStream)
+ Last edit  : 10.11.2015 (by Kirgudu)
+--]]-----------------------------------------------------------------------------------------------
+
+--/ ------------------------------------------------------------------
+--/ VARIABLEs
+--/ ------------------------------------------------------------------
+local tMarkerToType = { [1]='boolean',[2]='number',[3]='string',[4]='table',[5]='u16',[6]='s16',[7]='chunk' } --/ [0]=nil - exluded!
+local tTypeToMarker = { ['nil']=0,['boolean']=1,['number']=2,['string']=3,['table']=4,['u16']=5,['s16']=6,['chunk']=7 }
+local iSSVer = script_server_object_version()
+--/#!# лимит (bytes) на один stor-объект (мах.длина строк)
+local MAX_PACKET_LENGHT = (iSSVer < 8 and 8000) or 16200 --/ для CS&CoP увеличен!
+local iCntBites     = 0 --/ счетчик (bytes) - текущее кол-во считанных байт в хранилище (for statistic)
+local tStorIDs      = {} --/ таблица ID создаваемых stor-объектов ( Tab[ID] = boolean )
+local tPkChunks     = {} --/ таблица нет-пакетов с чанками внешних модулей (option for SIMBION mod)
+--/            chunk_name   |   script_name              | custom save func   | custom load func    | net_packet with chunk
+if iSSVer < 8 then --/ for SHoC
+	tPkChunks["psy_antenna" ] = { file = "sr_psy_antenna"                                             } --/ зоны пси-излучения
+	tPkChunks["treasure_mgr"] = { file = "treasure_manager"                                           } --/ тайники-нычки
+	tPkChunks["task_mgr"    ] = { file = "task_manager"                                               } --/ квесты-задания
+	tPkChunks["bind_actor"  ] = { file = "bind_stalker"                                               } --/ погода и пр... (модули без публичных save/load)
+elseif iSSVer < 12 then --/ for CS
+	tPkChunks["surge_hide"  ] = { file = "xr_surge_hide"                                              } --/ выброс
+	tPkChunks["psy_antenna" ] = { file = "sr_psy_antenna"                                             } --/ зоны пси-излучения
+	tPkChunks["sound"       ] = { file = "xr_sound"        , save = "actor_save", load = "actor_load" } --/ звуки
+	tPkChunks["statistic"   ] = { file = "xr_statistic"                                               } --/ статистика
+	tPkChunks["guide"       ] = { file = "guiders"                                                    } --/ проводники
+	tPkChunks["treasure_mgr"] = { file = "treasure_manager"                                           } --/ тайники-нычки
+	tPkChunks["bind_actor"  ] = { file = "bind_stalker"                                               } --/ ... (модули без публичных save/load)
+else --/ for CoP
+	tPkChunks["psy_antenna" ] = { file = "sr_psy_antenna"                                             } --/ зоны пси-излучения
+	tPkChunks["sound"       ] = { file = "xr_sound"        , save = "actor_save", load = "actor_load" } --/ звуки
+	tPkChunks["statistic"   ] = { file = "xr_statistic"                                               } --/ статистика
+	tPkChunks["bind_actor"  ] = { file = "bind_stalker"                                               } --/ ... (модули без публичных save/load)
+end
+--/ the table of the general storage (it is placed in db.script)
+if not db.storehouse then db.storehouse = {} end
+--/ --------------------------
+local bInit = false --/ flag of initialization of the module
+local sModule = script_name() --/ string name of the file module
+--/ -----------------------------------------------------------------------------------------------
+--/ PROCESs: Local Functions
+--/ -----------------------------------------------------------------------------------------------
+local log = function() end --/ stub
+if to_log then --/ for debug
+	log = function(fmt,...) to_log(sModule..":"..string.exformat(fmt,...)) end --/ можно закомментировать!
+end
+--/ ---------------------------------------------
+--/ create: создание нового stor-объекта для сохранения данных
+--/ ---------------------------------------------
+local function create_storage_element()
+	--/ подготовка нет-пакета с меткой в кастомдате
+	local pk = net_packet()
+	pk:w_begin  (0) --/ установка: начальная позиция записи данных (+2)
+	pk:w_u16    (0) --/ game_vertex_id
+	pk:w_float  (0.0) --/ distance
+	pk:w_u32    (0) --/ direct_control
+	pk:w_u32    (0) --/ level_vertex_id
+	pk:w_s32    (-3260) --/ object_flags
+	pk:w_stringZ( "[storehouse]\n") --/#!# custom_data
+	pk:w_s32    (-1) --/ story_id
+	pk:w_s32    (-1) --/ spawn_story_id
+	pk:r_seek(2) --/ установка: читать 'с начальной позиции записи данных'
+	--/ create new stor-element
+	local sobj = alife():create("custom_storage", vector(), 0, 0)
+	--/ mark in the custom_data in stor-element
+	sobj:STATE_Read( pk, pk:w_tell() ) --/ считываем параметры из пакета в объект
+	--log("create_storage_element:ID=[%s]:cnt=[%s]", sobj.id, table.size(tStorIDs), "") --/#~#
+	return sobj --/> stor-объект
+end
+--/ ---------------------------------------------
+--/ clear: удаление stor-объектов из игры
+--/ ---------------------------------------------
+local function clearing()
+	if db.actor then --/ синхронизируем по наличию актора в игре
+		local sim = alife()
+		for id,v in pairs(tStorIDs) do
+			local sobj = sim:object(id)
+			if sobj then --log("clearing:ID=[%s]:(%s)", id, table.size(tStorIDs), "") --/#~#
+				sim:release(sobj,true)
+			end
+		end
+		tStorIDs = {} --/ clear
+		return true --/>
+	end
+	return false --/>
+end
+--/ устанавливаем коллбэк на чистку (при появлении актора в игре и при продолженной игре после сэйва)
+local function set_clear_callback()
+	level.add_call(clearing, function() end)
+end
+--/ -----------------------------------------------------------------
+--/ saving: сохранение данных в stor-объект(ы) хранилища
+--/ -----------------------------------------------------------------
+--/ сохранения данных из внешних модулей:
+local function save_chunks()
+	local ch_pk,size = nil,nil
+	for name,v in pairs(tPkChunks) do
+		local func = _G[v.file] and (v.save and _G[v.file][v.save] or _G[v.file].save)
+		if type(func) == 'function' then
+			ch_pk = net_packet() --/ технологический (chunk) нет-пакет
+			ch_pk:w_begin(0) --/ установка: позиции записи в начало нет-пакета (+2)
+			ch_pk:r_seek(0) --/ установка: позиции чтения 'с начала' нет-пакета
+			size = func(ch_pk) --/ save chunk to net_packet
+			if ch_pk:r_elapsed() > 2 then
+				ch_pk:r_seek(2) --/ установка: позиции чтения 'с начала +2' нет-пакета
+				v.ch_pk = ch_pk --/ storage in the table
+			end
+--			log("save_chunks:=[%s],file=[%s],size=[%s/%s]", name, v.file, ch_pk:w_tell() -2, size, "") --/#~#
+		else
+			abort("%s:save_chunks:=[%s],file=[%s]~not_exist:<%s>", sModule, name, v.file, "Error!")
+		end
+	end
+end
+
+local function save_storehouse()
+	log("save_storehouse:size=[%s/%s]:(%s)", table.size(db.storehouse), next(db.storehouse), ">") --/#~#
+	--/ clear:
+	clearing() --/ clear: remove stor-elements after previous save (подстраховка)
+	db.storehouse["BuildSav"] = nil --/ clear: удаляем метки
+	db.storehouse["CStorages"] = nil
+	--/ сохранение в технологические нет-пакеты:
+	save_chunks()
+
+	local stor_elm = create_storage_element() --/ new stor-объект
+	local pk,ch_pk = stor_elm.tail_pk, nil
+	local cnt_len = 0 --/ счетчик limit'а (текущее кол-во байт для записи в stor-объект)
+	local cnt_elm,cnt_bytes = 1,0 --/ счетчики кол-ва элементов хранилища и записанных в них байт (for statistic)
+	local err,len = nil,0
+	--/ local function for check room to save
+	local check_free_space = function()
+		cnt_len = cnt_len + len
+		if cnt_len > MAX_PACKET_LENGHT then --/ element is full of data -> change element
+			cnt_len = len --/ начинаем отсчет заново
+			if pk then cnt_bytes = cnt_bytes + pk:w_tell() -2 end --/ for statistic
+			--/ create new element to store variables
+			local stor_elm = create_storage_element() --/ new stor-объект
+			pk = stor_elm.tail_pk
+			cnt_elm = cnt_elm +1
+		end
+	end
+	--/ stor chank-tables
+	local marker = tTypeToMarker['chunk'] --/< 7
+	for key,v in pairs(tPkChunks) do
+		ch_pk = v.ch_pk
+		if type(key) == 'string' and key ~= "" and type(ch_pk) == 'userdata' and type(ch_pk.r_eof) == 'function' then
+			local size = ch_pk:w_tell() -2
+			if size < MAX_PACKET_LENGHT then --/ проверка: возможно переполнение?
+				len = key:len() + size +5 --/ +marker +NULL +count
+				check_free_space() --/ check room to save
+				--/ write variable to stor-packet
+				pk:w_stringZ(key) --/< name variable
+				pk:w_u8(marker)   --/< type variable (7 - chunk!)
+				pk:w_u16(size)    --/< write count
+				while not ch_pk:r_eof() do --/ цикл (до конца читаемого пакета)
+					pk:w_u8( ch_pk:r_u8() )
+				end
+				v.ch_pk = nil --/#?# clear
+				log("save_storehouse:chunk_name=[%s],chunk_size=[%s],len=[%s]=>[%s]", key, size, len, cnt_len, "") --/#~#
+			else
+				log("OVERFLOW! save_storehouse:chunk=[%s],size=[%s]<%s>", key, size, "Warning!")
+				db.iErrIdx = 22 --/ критич.переполнение сэйва --/#?# TODO: подумать что делать ???
+			end
+		else
+			log("save_storehouse:key[%s],type_key[%s],type_chunk[%s]~not saved:<%s>", key, type(key), type(ch_pk), "Warning!") --/#~#
+		end
+	end
+	--/ iterate variables:
+	for key,val in pairs(db.storehouse) do
+		--lua_type = type(val)
+		marker = tTypeToMarker[type(val)] --/ маркировочный индекс (1...4, 0 - исключен)
+		err = not (marker and marker ~= 0 and type(key) == 'string') --/ валидны типы ключа и значения?
+		if not err then --/ опускаем все, что не годится для сохранения
+			--/ calculate variable 'cnt_len' for saving
+			len = key:len() +2 --/ +marker +NULL
+			if marker == 1 then --/ lua_type == 'boolean'
+				len = len +1
+			elseif marker == 2 then --/ lua_type == 'number'
+				--/ проверим: достаточно ли 2-х байт (16 бит)?
+				if val == math.modf(val) and val < 65536 and val > -32768 then --/ целочисленное? (без дробной части)
+					if val >= 0 then --/ не отрицательное?
+						marker = 5 --/ u16
+					else --/ сохранять со знаком
+						marker = 6 --/ s16
+					end
+					len = len +2 --/ u16|s16
+				else
+					len = len +4 --/ float
+				end
+			else --/ lua_type == 'string'|'table'
+				if marker == 4 then --/ lua_type == 'table'
+					val,err = table.compress(val) --/ переводим в строку + сжимаем
+					if err then --/ тип табличных данных недопустим для сохранения
+						val = "" --abort("save_storehouse:var_name=[%s]:table_not_serialize:<%s>", tostring(key), "Error!")
+						log("save_storehouse:var_name=[%s]:table~not_serialize:<%s>", key, "Warning!")
+					end
+				end
+				if val:len() <= MAX_PACKET_LENGHT then --/ проверка длины строки
+					len = len + val:len() +1
+				else --/ длина строки превышает лимит
+					err = true --abort("save_storehouse:var_name=[%s],val_len(%s)=[%s]:<%s>", tostring(key), marker, val:len(), "Error!")
+					log("save_storehouse:marker=[%s],var_name=[%s],val_len=[%s]:<%s>", marker, key, val:len(), "Warning!")
+				end
+			end
+			if not err then --/ опускаем все, что не годится для сохранения
+				--/ check room to save
+				check_free_space()
+				--/ write variable to stor-packet
+				pk:w_stringZ(key) --/< name variable
+				pk:w_u8(marker)   --/< type variable
+				if     marker == 1 then --/ lua_type == 'boolean'
+					pk:w_bool(val) --pk:w_u8(val)
+				elseif marker == 2 then --/ lua_type == 'number'
+					pk:w_float(val)
+				elseif marker == 5 then --/ 'u16'
+					pk:w_u16(val) --log("save_storehouse:[%s]=[%s]:[%s]", key, val, "u16") --/#~#
+				elseif marker == 6 then --/ 's16'
+					pk:w_s16(val) --log("save_storehouse:[%s]=[%s]:[%s]", key, val, "s16") --/#~#
+				else --/ lua_type == 'string'|'table'
+					pk:w_stringZ(val)
+				end
+			end
+		else
+			log("save_storehouse:key[%s],type_key[%s],type_val[%s]~not_saved:<%s>", key, type(key), type(val), "Info!") --/#~#
+		end
+	end
+	--/ finalize:
+	if pk then
+		pk:w_stringZ("CStorages") --/ записываем метку кол-ва элементов хранения
+		pk:w_u8(5)
+		pk:w_u16(cnt_elm)
+		cnt_bytes = cnt_bytes + pk:w_tell() -2 --/ for statistic
+	end
+	db.storehouse["BuildSav"] = db.iBuildMod or -1 --/ restore
+	--/ on after saving... (опционально):
+	set_clear_callback() --/ set callback if game continie
+	log( string.rep("~",64) ) --/#~#
+	log("Save Storehouse: size(%d)=[%d], keys=[%s] : BuildSav=[%d]", cnt_elm, cnt_bytes, table.size and table.size(db.storehouse), db.storehouse["BuildSav"], "") --/#~#
+	log( string.rep("~",64) ) --/#~#
+end
+--/ -----------------------------------------------------------------
+--/ read: чтение данных из нет-пакета в хранилище (from 'se_custom_storage')
+--/ -----------------------------------------------------------------
+local tPkByMarker = {} --/ the temporal: for compatibility with saving game (later to delete!)
+
+--/#+# загрузка (чтение) данных внешними модулями
+local function read_chunks() --/ все данные читаем из хранилища
+	local ch_pk,size = nil,nil
+	for name,v in pairs(tPkChunks) do
+		local func = _G[v.file] and (v.load and _G[v.file][v.load] or _G[v.file].load)
+		if type(func) == 'function' then
+			ch_pk = v.ch_pk
+			if ch_pk and not ch_pk:r_eof() then
+--				log("read_chunks:[%s],file=[%s],size=[%s]", name, v.file, ch_pk:w_tell() -2, "") --/#~#
+				--ch_pk:r_seek(2) --/ установка: позиции чтения 'с начала +2' нет-пакета
+				size = func(ch_pk) --/ read chunk from net_packet
+--				log("read_chunks:load:[%s],file=[%s],size=[%s/%s]", name, v.file, ch_pk:w_tell() -2, size, "") --/#~#
+				v.ch_pk = false --/#?# set flag 'it is read'
+			elseif ch_pk == nil then
+				db.iErrIdx = 10 --/ ошибка загрузки сэйва
+				abort("%s:SAVE_FILE_IS_CORRUPT! read_chunks:file=[%s]:chunk=[%s]~not_exist:<%s>", sModule, v.file, name, "Error!")
+			end
+		else
+			log("read_chunks:[%s],file=[%s]~not_exist:<%s>", name, v.file, "Error!")
+		end
+	end
+end
+--/ чтение данных из нет-пакета в хранилище (from 'se_custom_storage')
+local function read_tail_packet(pk)
+--	log("read_tail_packet:r/w=[%s/%s],size=[%s]", pk:r_tell(), pk:w_tell(), pk:r_elapsed(), "") --/#~#
+	--/ read variables ----------------------------
+	local key,val,marker,ch_pk,size = nil,nil,nil,nil
+	while not pk:r_eof() do --/ цикл (до конца пакета)
+		key,val = pk:r_stringZ(),nil --/< name variable & value
+		marker  = pk:r_u8() --/< маркировочный индекс (1...6)
+		if tMarkerToType[marker] then --/ принимаем только валидные значения (1...6), 0 - исключен!
+			if     marker == 1 then --/ lua_type == 'boolean'
+				db.storehouse[key] = pk:r_bool() --not (not pk:r_u8())
+			elseif marker == 2 then --/ lua_type == 'number'
+				db.storehouse[key] = pk:r_float()
+			elseif marker == 5 then --/ 'u16'
+				db.storehouse[key] = pk:r_u16()
+			elseif marker == 6 then --/ 's16'
+				db.storehouse[key] = pk:r_s16()
+			elseif marker == 7 then --/ 'chunk'
+				size = pk:r_u16()
+				ch_pk = net_packet() --/ технологический нет-пакет
+				ch_pk:w_begin(0) --/ установка: позиции записи в начало нет-пакета (+2)
+				ch_pk:r_seek(0) --/ установка: позиции чтения 'в начало нет-пакета'
+				while size > 0 and not pk:r_eof() do --/ цикл (до конца читаемого пакета)
+					ch_pk:w_u8( pk:r_u8() )
+					size = size -1
+				end
+				if ch_pk:r_elapsed() > 2 then
+					ch_pk:r_seek(2) --/ установка: позиции чтения 'в начало данных' (+2)
+				end
+				log("read_tail_packet:chunk_key=[%s],chunk_size=[%s]:(%s)", key, ch_pk:r_elapsed(), ch_pk:w_tell(), "") --/#~#
+				if not tPkChunks[key] then tPkChunks[key] = { file = "_dbg" } end --/ stub
+				tPkChunks[key].ch_pk = ch_pk --/ net_packet
+			elseif marker ~= 0 then --/ lua_type == 'string'|'table'
+				val = pk:r_stringZ()
+				if marker == 4 then --/ lua_type == 'table'
+					val = table.decompress(val)
+				end
+				db.storehouse[key] = val
+			end
+		else
+			abort("%s:read_tail_packet: left=[%s] :key=[%s],marker=[%s]~? :<%s>", sModule, pk:r_elapsed(), key, marker, "Error!")
+		end
+	end
+	iCntBites = iCntBites + pk:r_tell() -2 --/ текущее кол-во считанных байт в хранилище
+	if db.storehouse["CStorages"] ~= nil then --/ загружен заключительный stor-элемент?
+		log( string.rep("~",64) ) --/#~#
+		log("Load Storehouse: size(%d)=[%d], keys=[%d] :BuildSav=[%d]", db.storehouse["CStorages"], iCntBites, table.size and table.size(db.storehouse), db.storehouse["BuildSav"] or -1, "") --/#~#
+		log( string.rep("~",64) ) --/#~#
+		db.storehouse["CStorages"] = nil --/ clear: удаляем метку
+		set_clear_callback() --/ устанавливаем коллбэк на очистку (при появлении актора в игре)
+		if event then --/#+# опционально: генерируем сигнал события: 'разрешено чтение из хранилища'
+			event("storage_present"):trigger() --/ для чтения данных из общей таблицы db.storehouse
+		end
+	end
+end
+--/ -----------------------------------------------------------------------------------------------
+--/ PROCESs: внешние обращения к модулю
+--/ -----------------------------------------------------------------------------------------------
+--/ -----------------------------------------------------------------
+--/ Initialize Module
+--/ -----------------------------------------------------------------
+function init()
+	if not bInit and event then --/ если доступна 'сигнальная система событий':
+		event("actor_loaded"):register(load) --/ подписка на событие для чтения данных из сэйва
+		event("actor_saved"):register(save) --/ подписка на событие для сохранения данных в сэйв
+	end
+	bInit = true --/ флаг выполненной инициализации модуля
+end
+--/ -----------------------------------------------------------------
+--/ SAVE: вызов сохранения хранилища (from 'actor_binder:save')
+--/ -----------------------------------------------------------------
+function save(e) --/< from 'actor_saved'
+	if event then --/#+# опционально: для сохранения локальных данных внешних модулей в общую таблицу db.storehouse
+		event("storage_save"):trigger() --/#!#> генерируем сигнал события: 'запись в хранилище'
+	end
+	save_storehouse() --/ saving db.storehouse
+end
+--/ -----------------------------------------------------------------
+--/ LOAD: вызов чтения хранилища внешними модулями (from 'actor_binder:load')
+--/ -----------------------------------------------------------------
+function load(e) --/< from 'actor_loaded'
+	read_chunks()--/ чтение данных внешними модулями
+	if event then --/#+# опционально: для чтения локальных данных внешних модулей из общей таблицы db.storehouse
+		event("storage_load"):trigger() --/#!#> генерируем сигнал события: 'чтение из хранилища'
+	end
+end
+--/ -----------------------------------------------------------------
+--/ STORE: запись в хранилище (с доп. проверкой):
+--/ in: string, any [,boolean(succes)]| out: boolean(succes)
+--/ -----------------------------------------------------------------
+function set(var_name, value, f_check) --/< имя переменной, ее значение и флаг необходимости проверки размера
+	local marker = tTypeToMarker[type(value)] --/ маркировочный индекс (0...4)
+	if marker and type(var_name) == 'string' then
+		if marker == 4 then --/ lua_type == 'table'
+			if f_check then --/ доп.проверка валидности данных и объема таблицы
+				local val,err = table.serialize(value) --/ проверка сериализацией (переводом в строку)
+				if err or val:len() > MAX_PACKET_LENGHT then
+					log("set:var_name=[%s],val_len=[%s],err=[%s]:<%s>", key, val and val:len(), err, "Warning!")
+					return false --/> тип данных или объем таблицы недопустимы
+				end
+			end
+			db.storehouse[var_name] = table.clone(value)
+		else --/ lua_type == 'nil'|'boolean'|'number'|'string'
+			if f_check and marker == 3 and value:len() > MAX_PACKET_LENGHT then --/ lua_type == 'string'
+				log("set:var_name=[%s],val_len=[%s]:<%s>", key, val and val:len(), "Warning!")
+				return false --/> длина строки превышает лимит
+			end
+			db.storehouse[var_name] = value
+		end
+		return true --/> записано
+	else
+		log("set:var_name=[%s],value_type=[%s]:<%s>", tostring(var_name), type(value), "Warning!")
+	end
+	return false --/>
+end
+--/ -----------------------------------------------------------------
+--/ RETRIEVE: чтение из хранилища: in: string, any | out: any
+--/ -----------------------------------------------------------------
+function get(var_name, default)
+	if type(var_name) == 'string' then
+		if type(db.storehouse[var_name]) == 'table' then
+			return table.clone(db.storehouse[var_name]) or default --/> table
+		end
+		return db.storehouse[var_name] or default --/>
+	end
+	return default --/>
+end
+
+--/ -------------------------
+--/ класс серверных объектов: элементы для хранения данных хранилища 'storehouse'
+--/ -----------------------------------------------------------------------------------------------
+class "se_custom_storage" (cse_alife_dynamic_object)
+--/ -----------------------------------------------------------------------------------------------
+--/ CLASS CONSTRUCTOR
+--/ ---------------------------------------------
+function se_custom_storage:__init(section) super(section)
+	self.tail_pk = net_packet() --/ технологический tail-пакет для перезаписи данных
+	self.tail_pk:w_begin(0) --/ установка: начальная позиция записи 'наших' данных (+2)
+	self.tail_pk:r_seek(0) --/#!# установка: читать 'с начальной позиции записи данных'
+end
+
+function se_custom_storage:on_register()
+	cse_alife_dynamic_object.on_register(self)
+--	log("se_custom_storage:on_register: ID=[%s]", self.id, "") --/#~#
+	tStorIDs[self.id] = true --/ storage in the table IDs (for the postponed deleting)
+	local ini = self:spawn_ini()
+	if ini:section_exist("storehouse") then --/ stor-элемент хранилища? (загружен из сэйва)
+		--/ загрузка: чтение tail-пакета в хранилище из объекта (элемента) хранения загруженного из сэйва
+		if self.tail_pk:r_elapsed() > 2 then
+			self.tail_pk:r_seek(2) --/ (подстраховка) установка: читать 'с начальной позиции данных' (+2)
+			read_tail_packet(self.tail_pk) --/ data reading from a packet in the general table db.storehouse
+		else
+			log("se_custom_storage:on_register: ID=[%s] ~wrong:(%s):<%s>", self.id, self.tail_pk:r_elapsed(), "Warning!") --/#~#
+		end
+	else --/ new stor-element
+		--/ установки: всегда быть в оффлайне
+		self:can_switch_online(false)
+		self:can_switch_offline(true)
+	end
+end
+function se_custom_storage:can_switch_online()
+	return false --/> никогда не выходить в онлайн
+end
+function se_custom_storage:can_switch_offline()
+	return true --/> всегда быть в оффлайне
+end
+
+function se_custom_storage:STATE_Read(packet, size)
+	cse_alife_dynamic_object.STATE_Read(self, packet, size)
+	--/#+# перезапись данных из нет-пакета объекта в tail-пакет
+	if self.id ~= 65535 and packet:r_elapsed() > 2 then
+--		log("se_custom_storage:STATE_Read: ID=[%s] :r/w=(%s/%s) :size=[%s+%s]", self.id, packet:r_tell(), packet:w_tell(), size, packet:r_elapsed(), "") --/#~#
+		while not packet:r_eof() do --/ цикл (до конца читаемого пакета)
+			self.tail_pk:w_u8(packet:r_u8())
+		end
+		self.tail_pk:r_seek(2) --/ установка: позиции чтения 'в начало прочитанных данных' (+2)
+	end
+end
+
+function se_custom_storage:STATE_Write(packet)
+	cse_alife_dynamic_object.STATE_Write(self, packet)
+	--/#+# перезапись данных из tail-пакета в нет-пакет объекта
+	if self.id ~= 65535 and self.tail_pk:r_elapsed() > 2 then
+--		log("se_custom_storage:STATE_Write: ID=[%s] :r/w=(%s/%s) :left=[%s]", self.id, packet:r_tell(), packet:w_tell(), self.tail_pk:r_elapsed(), "") --/#~#
+		self.tail_pk:r_seek(2) --/ установка: читать 'с начальной позиции записываемых данных' (+2)
+		while not self.tail_pk:r_eof() do --/ цикл (до конца читаемого пакета)
+			packet:w_u8(self.tail_pk:r_u8())
+		end
+	end
+end
+--/ -----------------------------------------------------------------------------------------------
+
+--/ ------------------------------------------------------------------
+--/#+# for StoreHouse: функции для работы с общим хранилищем
+--/ ------------------------------------------------------------------
+function fHasVar(variable_name)
+	if type(variable_name) ~= 'string' then abort("HasVar: wrong type_key=("..type(variable_name)..")") end --/ for debug
+	return db.storehouse[variable_name] ~= nil --/>
+end
+
+function fDelVar(variable_name)
+	if type(variable_name) ~= 'string' then abort("DelVar: wrong type_key=("..type(variable_name)..")") end --/ for debug
+	db.storehouse[variable_name] = nil
+end
+
+function fSetVar(variable_name, value)
+	if type(variable_name) ~= 'string' then abort("SetVar: wrong type_key=("..type(variable_name)..")") end --/ for debug
+	if type(value) == 'table' then
+		db.storehouse[variable_name] = table.clone(value) --/ запись табличного значения
+	else
+		db.storehouse[variable_name] = value
+	end
+end
+
+function fGetVar(variable_name, def_value)
+	if type(variable_name) ~= 'string' then abort("GetVar: wrong type_key=("..type(variable_name)..")") end --/ for debug
+	if type(db.storehouse[variable_name]) == 'table' then
+		return table.clone(db.storehouse[variable_name]) or def_value or {} --/> table
+	elseif db.storehouse[variable_name] ~= nil then
+		return db.storehouse[variable_name] --/>
+	end
+	return def_value or nil --/>
+end
+
+--/ -----------------------------------------------------------------
+--/ Attach module
+--/ -----------------------------------------------------------------
+local FuncByName = {
+	["HasVar"] = fHasVar,
+	["DelVar"] = fDelVar,
+	["SetVar"] = fSetVar,
+	["GetVar"] = fGetVar
+}
+function attach()
+	if FuncByName then
+		--/ translate (change) function/class/tables to global scope
+		setfenv(1,_G)
+		for name,func in pairs(FuncByName) do
+			_G[name] = func
+			if type(func) == 'number' then --/ if not class-constructor ('userdata') or table
+				setfenv(_G[name],_G)
+			end
+		end
+		FuncByName = nil
+	end
+end

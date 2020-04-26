@@ -1,0 +1,232 @@
+-- #######################################################################################################################
+-- 									УРОН ПРИ ВЗЯТИИ УРОНА
+-- #######################################################################################################################
+--' Модуль: Урон при взятии артефакта, автор Vergas
+--' Перенос: OldSerpski Stalker, Back to the roots
+--' Заметки: [ Имеет таблицу которая вызывается каждый раз при загрузке сейва ]
+--' Другое: [...]
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' ----------------------------------------------------------------------------------------------------------------------
+
+local ver_art = {} --' actor_binder:net_spawn(data)
+bool_debug = false --' Показать лог при вызове функций в скрипте
+
+--' Вызываем при:
+--' Выбросе, при загрузке сейва, при спавне динамических артов, при пси-шторме
+function spawn_art()
+	if (axr_main.config:r_value("mm_options","enable_more_realistic",1,false) ~= true) then return end
+	ver_art = {}
+	local sim = alife()
+	for i = 1, 65534 do
+		local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"^af_") then
+			ver_art[i] = true
+			if bool_debug == true then
+				log("net_spawn(spawn_art())")
+			end
+		end
+	end
+end
+
+--' Взяли арт = nil
+function on_item_take(item) 
+	if ver_art[item:id()] then
+		ver_art[item:id()] = nil
+		var1 = actor:has_info("perchatki_1") or actor:has_info("perchatki_2")
+		var2 = actor:has_info("perchatki_3") or actor:has_info("perchatki_4")
+		if var1 or var2 then			
+							
+			if actor:has_info("perchatki_4") then 
+				if bool_debug == true then
+					log("eto perchatki_4")
+				end
+				return
+				
+			elseif actor:has_info("perchatki_3") then 
+			
+				db.actor.power = math.random(-0.25, -0.45)
+				local h = hit()
+				h.draftsman = db.actor
+				h:bone("bip01_spine")
+				h.type = math.random(5)
+				h.power = math.random(0.15, 0.35)
+				db.actor:hit(h)
+				this["scheme_unik_"..math.random(4)]()
+				
+				local actor_active_slot = db.actor:active_slot()
+				if (actor_active_slot == 2 or actor_active_slot == 3) and math.random() > 0.35 then
+					db.actor:drop_item(db.actor:active_item())
+				end		
+				if bool_debug == true then
+					log("eto perchatki_3")	
+				end
+		
+			elseif actor:has_info("perchatki_2") then 
+			
+				db.actor.power = math.random(-0.75, -1)
+				local h = hit()
+				h.draftsman = db.actor
+				h:bone("bip01_spine")
+				h.type = math.random(7)
+				h.power = math.random(0.29, 0.41)
+				db.actor:hit(h)
+				this["scheme_"..math.random(4)]()
+				
+				local actor_active_slot = db.actor:active_slot()
+				if (actor_active_slot == 2 or actor_active_slot == 3) and math.random() > 0.55 then
+					db.actor:drop_item(db.actor:active_item())
+				end		
+				if bool_debug == true then
+					log("eto perchatki_2")
+				end
+				
+			elseif actor:has_info("perchatki_1") then
+			
+				db.actor.power = math.random(-0.85, -1)
+				local h = hit()
+				h.draftsman = db.actor
+				h:bone("bip01_spine")
+				h.type = math.random(8)
+				h.power = math.random(0.3, 0.49)
+				db.actor:hit(h)
+				this["scheme_"..math.random(4)]()
+
+				local actor_active_slot = db.actor:active_slot()
+				if (actor_active_slot == 2 or actor_active_slot == 3) and math.random() > 0.65 then
+					db.actor:drop_item(db.actor:active_item())
+				end		
+				if bool_debug == true then
+					log("eto perchatki_1")	
+				end
+			end
+		else
+		
+			db.actor.power = -1
+			local h = hit()
+			h.draftsman = db.actor
+			h:bone("bip01_spine")
+			h.type = math.random(8)
+			h.power = math.random(0.2, 0.5)
+			db.actor:hit(h)
+			this["scheme_"..math.random(4)]()
+			
+			local actor_active_slot = db.actor:active_slot()
+			if (actor_active_slot == 2 or actor_active_slot == 3) and math.random() > 0.80 then
+				db.actor:drop_item(db.actor:active_item())
+			end	
+			if bool_debug == true then
+				log("net perchatok")
+			end
+		end
+	end
+end
+
+-- #################################################################################
+
+function scheme_unik_1() end	
+function scheme_unik_2() end
+function scheme_unik_3() 
+	level.add_cam_effector("art_hit\\surge_01.anm", 25, false, "")	    --' Резкий рывок вправо
+end
+
+function scheme_unik_4()
+	level.add_cam_effector("art_hit\\surge_01.anm", 25, false, "")		--' Резкий рывок вправо
+	level.add_pp_effector("art_hit\\blink.ppe", 2004, false)			--' Белая вспышка
+end
+
+function scheme_1()
+	level.add_cam_effector("art_hit\\surge_01.anm", 25, false, "")		--' Резкий рывок вправо
+	level.add_pp_effector("art_hit\\1.ppe", 2001, false)				--' Через промежуток двоение в глазах и белое блинкование
+end	
+
+function scheme_2()
+	level.add_cam_effector("art_hit\\head_shot.anm", 26, false, "")		--' Резко болтануло. 
+	level.add_pp_effector("art_hit\\gar_ambush_hit.ppe", 2002, false)	--' Сначала двоится, потом полностью темнеет
+end
+
+function scheme_3()
+	level.add_cam_effector("art_hit\\surge_02.anm", 27, false, "")		--' Хорошо мотонуло
+	level.add_pp_effector("art_hit\\surge_shock_old.ppe", 2003, false)	--' Экран двоится и темнеет несколько раз
+end
+
+function scheme_4()
+	level.add_pp_effector("art_hit\\blink.ppe", 2004, false)			--' Белая вспышка
+	level.add_cam_effector("art_hit\\dream_1.anm", 28, false, "")		--' Отбрасывает назад и укладывает
+	level.add_cam_effector("art_hit\\prison_1.anm", 29, false, "")		--' Пробуждение ото сна
+end
+
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' ----------------------------------------------------------------------------------------------------------------------
+
+--' Приватные функции, вызвать откуда-либо нельзя
+
+local function ItemPerchatkaUpdate(obj)
+	obj = obj:section()
+	actor = db.actor
+	
+	if (obj == "item_perchatki_1") then
+		actor:give_info_portion("perchatki_1")
+		if bool_debug == true then
+			log("na poyase 1")
+		end
+	end
+	
+	if (obj == "item_perchatki_2") then
+		actor:give_info_portion("perchatki_2")
+		if bool_debug == true then
+			log("na poyase 2")
+		end
+	end
+
+	if (obj == "item_perchatki_3") then
+		actor:give_info_portion("perchatki_3")
+		if bool_debug == true then
+			log("na poyase 3")
+		end
+	end
+	
+	if (obj == "item_perchatki_4") then
+		actor:give_info_portion("perchatki_4")
+		if bool_debug == true then
+			log("na poyase 4")
+		end
+	end
+end
+
+local function PerchatkiVRuksak(item)
+	item = item:section()
+	actor = db.actor
+	
+	if (item == "item_perchatki_1") then 
+		actor:disable_info_portion("perchatki_1")
+		if bool_debug == true then
+			log("v rukzak 1")
+		end
+	end
+	
+	if (item == "item_perchatki_2") then 
+		actor:disable_info_portion("perchatki_2")
+		if bool_debug == true then
+			log("v rukzak 2")
+		end
+	end
+	
+	if (item == "item_perchatki_3") then 
+		actor:disable_info_portion("perchatki_3")
+		if bool_debug == true then
+			log("v rukzak 3")
+		end
+	end
+	
+	if (item == "item_perchatki_4") then 
+		actor:disable_info_portion("perchatki_4")
+		if bool_debug == true then
+			log("v rukzak 4")
+		end
+	end
+end
+
+function on_game_start() RegisterScriptCallback("actor_item_to_ruck", PerchatkiVRuksak)
+RegisterScriptCallback("actor_item_to_belt", ItemPerchatkaUpdate) end 

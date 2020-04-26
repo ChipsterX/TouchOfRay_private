@@ -1,0 +1,50 @@
+-- #######################################################################################################################
+--' Собака о-сознания
+--' OldSerpski Stalker, Back to the roots
+--' ...
+--' Заметки: Разделен на 2 скрипта,основная часть кода в bind_monster, все на приватных функциях
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' -----------------------------
+local particle_mutant_1 = particles_object("anomaly2\\plasma_generator_death")
+local particle_mutant_2 = particles_object("anomaly2\\psi_antenna")
+local particle_mutant_6_sound = sound_object([[anomaly\electra_blast1]])
+
+local UniqueMutants	= true					--' Нужна для опции Уникальные мутанты
+
+local function destroy_object(sobj)
+	if sobj:name() == "gar_zone_mine_field_no_damage" then
+		local obj = level.object_by_id(sobj.id)
+		if obj then
+			obj:disable_anomaly()
+		else
+			alife():release(sobj, true)
+		end
+	else
+		alife():release(sobj, true)
+	end
+end
+
+local function bind_dog_oso_dead(obj,self)
+	sobj = alife():object(obj:id())
+
+	if (axr_main.config:r_value("mm_options","enable_unik_mutants",1,false) ~= true) then 
+		UniqueMutants = false
+	else
+		UniqueMutants = true
+	end  
+
+    if obj:section()=="dog_green_copy" and not obj:alive() and UniqueMutants == true then
+        particle_mutant_1:play_at_pos(obj:position())
+        particle_mutant_2:play_at_pos(obj:position())
+        particle_mutant_6_sound:play_at_pos(obj, obj:position(), 0)
+		
+		if sobj.squad_id == nil then
+			destroy_object(sobj)
+		else
+			sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+		end	
+    end
+end
+
+function on_game_start() RegisterScriptCallback("monster_on_update", bind_dog_oso_dead) end	

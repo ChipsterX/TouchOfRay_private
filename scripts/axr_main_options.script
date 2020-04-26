@@ -1,0 +1,645 @@
+function opt_menu_on_init(menu)
+
+	-- Худ разработчика
+	menu.gameplay_ui_options["debug_hud"]			= {default=false, 	debug_only=true, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		if (level.present() and xrs_debug_tools) then
+			if (ctrl:GetCheck()) then
+				xrs_debug_tools.activate_feature()
+			else 
+				xrs_debug_tools.deactivate_feature()
+			end
+		end
+	end}
+	
+--' #################################################################################################################
+--' Опции, которые в Mixed отключены
+--' ...
+--' ...
+--' #################################################################################################################
+	if not (BOOL_MODE_MIXED) then 
+	
+		-- Язык в игре
+		local localization_list = {}
+		local flist = getFS():file_list_open("$game_text$",bit_or(FS.FS_ListFolders,FS.FS_RootOnly))
+		local f_cnt = flist:Size()
+		for	it=0, f_cnt-1 do
+			localization_list[#localization_list+1] = flist:GetAt(it):sub(1,-2)
+		end
+		menu.gameplay_ui_options["localization"] = {default="rus", debug_only=false, typ="list", list=localization_list, on_accept=function(handler,optMgr,ctrl)
+			local language = ctrl:GetText()
+			if (language and language ~= "") then
+				local loc_ini = ini_file_ex("system\\other_single\\localization.ltx",true)
+				if (loc_ini:r_value("string_table","language") ~= language) then
+					loc_ini:w_value("string_table","language",language)
+					loc_ini:save()
+					menu.b__require_restart = true
+					game.reload_language()
+				end
+			end
+		end}
+		
+		-- Переключение убора рук, опция открытия рюкзака
+		menu.gameplay_options["type_ruck"]={default="type_ruck_1",debug_only=false,typ="list",list={"type_ruck_1","type_ruck_2","type_ruck_3"},
+			on_accept=function(handler,optMgr,ctrl)
+			local choice = axr_main.config:r_value("mm_options","type_ruck",0,"type_ruck_1")
+			if choice == "type_ruck_1" then 
+				operator:execute("game_inv_block_wpn_value 0")
+				operator:execute("hand_hide_inventory 0")
+			elseif choice == "type_ruck_2" then 
+				operator:execute("game_inv_block_wpn_value 0")
+				operator:execute("hand_hide_inventory 1")
+			elseif choice == "type_ruck_3" then 
+				operator:execute("game_inv_block_wpn_value 1")
+				operator:execute("hand_hide_inventory 1")
+			end
+		end}
+
+		-- Автоперезарядка оружия из ЗП
+		menu.gameplay_ui_options["autoreload_wpn"]		= {default=true, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+			local con = get_console()
+			if (ctrl:GetCheck()) then
+				con:execute("game_auto_reload 1")
+			else
+				con:execute("game_auto_reload 0")
+			end
+		end}	
+
+		-- Dof при перезарядки оружия
+		menu.gameplay_ui_options["dof_reload"]		= {default=true, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+			local con = get_console()
+			if (ctrl:GetCheck()) then
+				con:execute("game_reload_dof_weapon 1")
+			else
+				con:execute("game_reload_dof_weapon 0")
+			end
+		end}	
+
+		-- Переключение прицела
+		menu.gameplay_ui_options["opt_collision_hudcr"]={default="collision_type_3",debug_only=false,typ="list",list={"collision_type_1","collision_type_2","collision_type_3"},
+			on_accept=function(handler,optMgr,ctrl)
+				local choice = axr_main.config:r_value("mm_options","opt_collision_hudcr",0,"collision_type_3")
+				if choice == "collision_type_1" then 
+					bind_crosshair.type_collide()
+				elseif choice == "collision_type_2" then 
+					bind_crosshair.type_inertion()
+				elseif choice == "collision_type_3" then 
+					bind_crosshair.type_standart()
+			end
+		end}
+
+		-- Телепорт в режиме demo record 1
+		menu.gameplay_ui_options["teleport_demo_record_on"]	= {default=true, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+			local con = get_console()
+			if (ctrl:GetCheck()) then
+				con:execute("teleport_demo_record 1")
+			else
+				con:execute("teleport_demo_record 0")
+			end
+		end}
+
+		-- Запрет перезарядки в беге
+		menu.gameplay_ui_options["g_sprint_reload_wpn"]	= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+			local con = get_console()
+			if (ctrl:GetCheck()) then
+				con:execute("sprint_reload_wpn 1")
+			else
+				con:execute("sprint_reload_wpn 0")
+			end
+		end}	
+		
+		-- Потребность в курении
+		menu.gameplay_options["kurr"]					= {default=false, 	debug_only=false, 	typ="check"}	
+		
+		-- Сны главного героя
+		menu.gameplay_ui_options["gg_slleps"]				= {default=true, 	debug_only=false, 	typ="check"}	
+		
+		-- Движковая жажда
+		menu.gameplay_ui_options["update_thirst"]		= {default=true, 	debug_only=true, 	typ="check"}
+	
+		-- Движковый сон
+		menu.gameplay_ui_options["update_sleep"]		= {default=true, 	debug_only=true, 	typ="check"}
+		 
+		-- Зависимость надетой маски или костюма в котором встроенно стекло маски, экранные капли
+		menu.gameplay_options["rain_drops_render_helm"]	= {default=true, 	debug_only=false, 	typ="check"}
+	
+	end
+	
+	if not (BOOL_MODE_MIXED) then 
+	
+		-- Коэф. спавна мутантов
+		menu.gameplay_alife_options["alife_mutant_pop"]		= {default=0.50,		debug_only=false,	typ="list", list = 
+		{
+			0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0, 1.2, 1.5, 2.0 
+		}}
+	
+		-- Коэф. спавна сталкеров
+		menu.gameplay_alife_options["alife_stalker_pop"]		= {default=0.50,		debug_only=false,	typ="list", list =
+		{
+			0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.0, 1.2, 1.5, 2.0 
+		}}
+		
+	else
+		
+		--' Для режима Mixed, выше 0.1 садит фпс
+	
+		-- Коэф. спавна мутантов
+		menu.gameplay_alife_options["alife_mutant_pop"]		= {default=0.10,		debug_only=false,	typ="list", list = 
+		{
+			0, 0.10 
+		}}
+	
+		-- Коэф. спавна сталкеров
+		menu.gameplay_alife_options["alife_stalker_pop"]		= {default=0.10,		debug_only=false,	typ="list", list =
+		{
+			0, 0.10
+		}}
+		
+	end
+--' #################################################################################################################
+--' #################################################################################################################
+--' #################################################################################################################
+
+	-- Худ разработчика для карты в ПДА
+--	menu.gameplay_ui_options["debug_map_hud"]		= {default=false, 	debug_only=true, 	typ="check",on_accept=function(handler,optMgr,ctrl)
+--			if (level.present() and ui_map_debug_ex) then
+--				if (ctrl:GetCheck()) then
+--					ui_map_debug_ex.activate_feature()
+--				else 
+--					ui_map_debug_ex.deactivate_feature()
+--				end
+--			end
+--		end}	
+
+	-- Расширенный худ
+	if (ui_artefact_panel) then
+		menu.gameplay_options["ui_artefact_panel"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+			if (level.present() and ui_artefact_panel) then
+				if (ctrl:GetCheck()) then
+					ui_artefact_panel.activate_hud()
+				else
+					ui_artefact_panel.deactivate_hud()
+				end
+			end
+		end}
+	end
+	
+	-- Точные НПС
+	menu.gameplay_options["hardcore_ai_aim"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("ai_aim_max_angle 20.0")
+			con:execute("ai_aim_min_angle 17.0")
+			con:execute("ai_aim_min_speed 2.00")
+			con:execute("ai_aim_predict_time 0.28")
+		else
+			con:execute("ai_aim_max_angle 0.7854")
+			con:execute("ai_aim_min_angle 0.19635")
+			con:execute("ai_aim_min_speed 0.24")
+			con:execute("ai_aim_predict_time 0.40")
+		end
+	end}	
+	
+	-- Режим Бога 
+	menu.gameplay_ui_options["g_god_opt"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("g_god 1")
+		else
+			con:execute("g_god 0")
+		end
+	end}
+	
+	-- Показать ли нам миникарту в игре 
+	menu.gameplay_ui_options["map_render"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("bool_disable_minimap on")
+		else
+			con:execute("bool_disable_minimap off")
+		end
+		--' Вылетает
+--		if bool_minimap_active then
+--			local maingameui = ActorMenu.get_maingame()
+--			if (maingameui and maingameui.UIZoneMap) then
+--				maingameui.UIZoneMap.disabled = not maingameui.UIZoneMap.disabled
+--				maingameui.UIMotionIcon:Show(maingameui.UIZoneMap.disabled == false)
+--			end
+--		end
+	end}
+	
+	-- Инерция оружия 
+	menu.gameplay_options["g_use_aim_iner"]		= {default=true, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("g_use_aim_inertion 1")
+		else
+			con:execute("g_use_aim_inertion 0")
+		end
+	end}
+	
+	-- Режим Бесконечные патроны
+	menu.gameplay_ui_options["g_unl_ammo"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("g_unlimitedammo 1")
+		else
+			con:execute("g_unlimitedammo 0")
+		end
+	end}	
+	
+	-- Режим всегда в прицеле
+	menu.gameplay_ui_options["wpn_aim_toggle_opt"]		= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		local con = get_console()
+		if (ctrl:GetCheck()) then
+			con:execute("wpn_aim_toggle 1")
+		else
+			con:execute("wpn_aim_toggle 0")
+		end
+	end}
+	
+	-- Показать всех на карте
+	--//' Стиль ЧН
+	menu.gameplay_alife_options["map_location2"]	= {default=true, 	debug_only=false, 	typ="check"}	
+	
+	--//' Стиль война группировок
+	menu.gameplay_alife_options["map_location3"]	= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Оптимизированный уборщик трупов
+	menu.gameplay_alife_options["corpse_rel"]	= {default = true, 	debug_only=false, 	typ="check"}	
+	-- Статистика уборщика из Народной солянки
+	menu.gameplay_alife_options["ns_stats"]		= {default = true, 	debug_only=false, 	typ="check"}	
+	
+	-- Фразы при сохранении, отсылка к золотому шару
+	menu.gameplay_options["quick_save_manager"]	= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	-- Система спавна мутантов ТЧ
+	menu.gameplay_alife_options["dynamic_spawn"]	= {default=false, 	debug_only=false, 	typ="check"}	
+
+	-- Способности мутантов
+	menu.gameplay_options["unik_mutants"]	= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Состояние оружия по рангу
+	menu.gameplay_options["rank_cond_loot"]	= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Патроны в трупах
+    menu.gameplay_options["corpse_ammo_loot"]	= {default=true, 	debug_only=false, 	typ="check"}	
+
+	-- Больше реализма 
+	menu.gameplay_options["more_realistic"]			= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	--' Ooops.. 
+	--' Like Narodnaya solyanka. Not disabled, only hardcore :)
+	if not bool_single_anomalyes then
+		-- Динамические аномалии
+		menu.gameplay_alife_options["dynamic_anomalies"]	= {default=false, 	debug_only=false, 	typ="check"}
+	end
+	
+	-- Опции ЧУ:
+	-- Включить Час ужаса
+	menu.gameplay_alife_options["horror_enable"]		    = {default = true, 	debug_only=false, 	typ="check"}	
+	-- Шанс старта ЧУ
+	menu.gameplay_alife_options["horror_start_chance"]	   	= {default = 50, 	debug_only=false, 	typ="list", list = {35, 50, 70, 75, 100}}	
+	-- Режим zombie shoter mod
+	menu.gameplay_alife_options["horror_zombie_mod"]		= {default = false, 	debug_only=false, 	typ="check"}
+
+	-- Новые звуки попадания по ГГ
+	menu.gameplay_options["new_hit_effects"]		= {default=false, 	debug_only=true, 	typ="check"}
+	
+	-- Дневная радиация
+	menu.gameplay_options["dark_mode"]				= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Взрыв сломанного оружия 
+	menu.gameplay_options["boom_weapon"]			= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	-- Динамические отношения нпс 
+	menu.gameplay_options["game_relation"]			= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Броня в трупах
+	menu.gameplay_options["loot_outfits"]			= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Динамические новости АМK
+	menu.gameplay_options["dynamics_new_amk"]		= {default=true, 	debug_only=false, 	typ="check"}
+	
+	-- Фантомы при выбросе
+	menu.gameplay_options["fantoms_blowout"]		= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	-- Урон при взятии артефакта
+--	menu.gameplay_options["art_hit"]				= {default=false, 	debug_only=false, 	typ="check"}	
+
+	-- Гон мутантов
+	menu.gameplay_alife_options["system_gon"]		= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	-- Кол-во трупов в игре
+	menu.gameplay_alife_options["max_corpse"]	   	= {default=20, 	debug_only=false, 	typ="list", list={10,15,20,30,40,50,60,70,80,90,100,110,120,130,140,150,200}}
+	
+	-- Удалять брошенные вещи
+	menu.gameplay_options["release_dropped_items"]	= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Показать здоровье врага
+	menu.gameplay_ui_options["show_enemy_health"]	= {default=false, 	debug_only=true, 	typ="check"}
+	
+	-- Музыка по радио на базах
+	menu.gameplay_ui_options["radio_mod"]			= {default=true, 	debug_only=false, 	typ="check"}
+	
+	-- Долгий ремонт оружия у механников
+	menu.gameplay_options["mechanic_feature"]		= {default=false, 	debug_only=false, 	typ="check"}
+	
+	-- Звук двигателя верталета
+	menu.gameplay_ui_options["heli_engine_sound"]	= {default=true, 	debug_only=false, 	typ="check"}
+	
+	-- Спавн верталета
+	menu.gameplay_alife_options["heli_spawn"]		= {default=true, 	debug_only=false, 	typ="check"}
+	
+	-- Готовка на костре
+	menu.gameplay_options["gotovka_koster"]			= {default=false, 	debug_only=false, 	typ="check"}	
+	
+	-- Интерфейс сбора лута у мутантов
+--	menu.gameplay_options["ui_mutant_loot"]			= {default=false, 	debug_only=true, 	typ="check"}
+
+	-- Коэф. денег и выпадение тайников
+	menu.gameplay_options["money_k"]	   			= {default=1, 	debug_only=false, 	typ="list", list={0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2,2.2,2.4,2.6,2.8,3}}
+	menu.gameplay_options["treasure_k"]	   			= {default=35, 	debug_only=false, 	typ="list", list={5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100}}	
+	
+	-- Разряд при обыске зомби
+	menu.gameplay_options["dmx"]					= {default=false, 	debug_only=true, 	typ="check"}
+	
+	-- Динамические новости ЗЧ
+	menu.gameplay_options["dynamic_news"]			= {default=true, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		if (level.present() and dynamic_news_manager) then 
+			if (ctrl:GetCheck()) then 
+				dynamic_news_manager.get_dynamic_news()
+			else
+				dynamic_news_manager.destroy_dynamic_news()
+			end
+		end	
+	end}
+	
+	-- Артефакты портятся 
+	menu.gameplay_options["art_degrade"]			= {default=false, 	debug_only=false, 	typ="check", on_accept=function(handler,optMgr,ctrl)
+		if (level.present() and artefact_degradation) then
+			if (ctrl:GetCheck()) then
+				artefact_degradation.activate_feature()
+			else
+				artefact_degradation.deactivate_feature()
+			end
+		end
+	end}
+	
+	-- Время респавна на смартах
+	menu.gameplay_alife_options["koef_spawn"]	   	= {default = 1, 	debug_only=false, 	typ="list", list={0.35,0.5,0.75,1,1.15,1.3,1.55}}	
+	
+	-- Коэф. НПС в отрядах
+--	menu.gameplay_alife_options["koef_npc_in_squad"]= {default=1, 	debug_only=false, 	typ="list", list={1,2}}	
+	-- Убрать оружие при лечении
+--	menu.gameplay_options["weapon_hide"]			= {default=false,	debug_only=false,	typ="check", on_accept=function(handler,optMgr,ctrl)
+--		if (ctrl:GetCheck()) then
+--			hide_wpn.activate_feature()
+--		else
+--			hide_wpn.deactivate_feature()
+--		end
+--	end}
+
+	-- Эффект стрельбы
+	if (wpn_effects) then
+	menu.gameplay_options["shot_effects"]	= {default=false, 	debug_only=false, 	typ="check",
+		on_accept = function(handler,optMgr,ctrl)
+			if (level.present() and wpn_effects) then
+				if (ctrl:GetCheck()) then
+					wpn_effects.activate()
+				else
+					wpn_effects.deactivate()
+				end
+			end
+		end
+	}
+	end
+	
+	-- Худ шлема
+	if (mask_hud) then
+		menu.gameplay_options["mask_hud"]		= {default=false, 	debug_only=false, 	typ="check",
+			on_accept=function(handler,optMgr,ctrl)
+				if (level.present() and mask_hud) then
+					if (ctrl:GetCheck()) then
+						mask_hud.activate_hud()
+					else
+						mask_hud.deactivate_hud()
+					end
+				end
+			end
+		}
+	end
+	
+	-- Радиус запрета спавна
+	menu.gameplay_alife_options["excl_dist"]				= {default=20,		debug_only=false,	typ="list", list = {0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,125,150,175,200}} 
+ 
+	-- Число автосейвов
+	menu.gameplay_ui_options["quicksave_cnt"]				= {default=10,		debug_only=false,	typ="list", list = {0,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100}}
+	
+	--' Блок выбора спавна мутантов:
+	menu.gameplay_alife_options["oboroten"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_rad"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_red"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_electro"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_electro_amk"]		= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_fire"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_black"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_xray"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["chimera_xray_fire"]		= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["burer_electro"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["burer_fire"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["burer_green_build"]		= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["dog_green"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["zanoza"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["frog"]						= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["flesh_swamp"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["rotan"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["tushkan_black"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["tushkans_big"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["polters_dd"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["gigant_jumper_strong"]		= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["vypolzen_marsh"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["vypolzen_red"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["snork_stronger"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["snork_flying"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["snork_zombie"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["snork_mozg"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["snork_nosach"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["morlok"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["fracture_lab"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["fracture_karlik"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["controllers"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["controllers_run"]			= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["biblio"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["karliks"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["bloodsukers"]				= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["venom"]					= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["laborant"]					= {default=true, 	debug_only=false, 	typ="check"}	
+	menu.gameplay_alife_options["deathclaws"]				= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["tarakans"]					= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["giants"]					= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["bears"]					= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["boar_taran"]				= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["winger"]					= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["gnus"]						= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["chimera_wolf"]				= {default=true, 	debug_only=false, 	typ="check"}
+	menu.gameplay_alife_options["lican"]				    = {default=true, 	debug_only=false, 	typ="check"}
+	
+--[[
+	-- Выбрать портрет ГГ
+	if (db.actor) then -- Options will only show while in-game
+		local l = get_character_icon_list()
+		local selected = nil 
+		
+		menu.gameplay_ui_options["char_portrait"]	= {default=db.actor_binder.character_icon or "ui_inGame2_Strelok", debug_only=false, typ="list", list=l, on_accept=function(handler,optMgr,ctrl)
+			if (selected) then
+				db.actor_binder.character_icon = ctrl:GetText()
+				if (axr_main.config:r_value("mm_options","enable_outfit_portrait",1,false)) then
+					local outfit = db.actor:item_in_slot(7)
+					if (outfit == nil) then
+						db.actor:set_character_icon(db.actor_binder.character_icon)
+					end
+				else 
+					db.actor:set_character_icon(db.actor_binder.character_icon)
+				end
+			end
+		end, 
+		on_list_item_select=function(handler,ctrl)
+			selected = l[ctrl:GetCurrentIdx()+1]
+			if (handler.char_icon) then
+				handler.char_icon:InitTexture(selected)
+			end
+		end}
+		
+		-- Зависимость портрета от костюма
+		menu.gameplay_ui_options["outfit_portrait"]	= {default=false,	debug_only=false,	typ="check", on_accept=function(handler,optMgr,ctrl)
+				if (ctrl:GetCheck()) then
+					local outfit = db.actor:item_in_slot(7)
+					if (outfit) then 
+						local icon = system_ini():r_string_ex(outfit:section(),"character_portrait")
+						if (icon) then 
+							db.actor:set_character_icon(icon)
+						end
+					end
+				else 
+					db.actor:set_character_icon(db.actor_binder.character_icon or "ui_inGame2_Strelok")
+				end
+		end}
+		
+		-- Состояние оружия у нпс 
+--		menu.gameplay_ui_options["multi_wpn_conditions"]	= {default=1.0,	debug_only=false,	typ="list", list={0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2},	on_accept=function(handler,optMgr,ctrl)
+--			alife_storage_manager.get_state().economy_wpn = axr_main.config:r_value("mm_options","multi_wpn_conditions",2,1)
+--		end}
+		-- Фактор награды за задание
+--		menu.gameplay_ui_options["multi_rewards_money"]	= {default=1.0,	debug_only=false, 	typ="list", list={0.50,0.75,1.0,1.25,1.5,2.0,3.0},	on_accept=function(handler,optMgr,ctrl)
+--			alife_storage_manager.get_state().economy_money = axr_main.config:r_value("mm_options","multi_rewards_money",2,1)
+--		end}
+		-- Фактор взаимодействий
+--		menu.gameplay_ui_options["multi_rewards_goodwill"]	= {default=1.0,	debug_only=false, 	typ="list", list={0.50,0.75,1.0,1.25,1.5,2.0,3.0},	on_accept=function(handler,optMgr,ctrl)
+--			alife_storage_manager.get_state().economy_goodwill = axr_main.config:r_value("mm_options","multi_rewards_goodwill",2,1)
+--		end}
+		-- Фактор вещей в трупах
+--		menu.gameplay_ui_options["multi_loot"]				= {default=1.0,	debug_only=false, 	typ="list", list={0.5,0.8,1.0,1.2,1.5,2.0}, on_accept=function(handler,optMgr,ctrl)
+--			alife_storage_manager.get_state().economy_loot = axr_main.config:r_value("mm_options","multi_loot",2,1)
+--		end}
+	
+	end
+--]]
+
+	write_default_config(menu.gameplay_options)
+	write_default_config(menu.gameplay_ui_options)
+	write_default_config(menu.gameplay_alife_options)
+end
+
+function opt_menu_on_accept(menu,optMgr,console)
+	on_accept(menu.gameplay_options,menu,optMgr,console)
+	on_accept(menu.gameplay_ui_options,menu,optMgr,console)
+	on_accept(menu.gameplay_alife_options,menu,optMgr,console)
+end
+
+function opt_menu_on_set_values(menu,optMgr)
+	on_set_values(menu.gameplay_options,menu,optMgr)
+	on_set_values(menu.gameplay_ui_options,menu,optMgr)
+	on_set_values(menu.gameplay_alife_options,menu,optMgr)
+end
+
+function write_default_config(tab_table)
+	local need_save = false
+    for k,v in pairs(tab_table) do
+		if (v.default ~= nil) then
+			if (v.typ=="check") then
+				if not (axr_main.config:line_exist("mm_options","enable_"..k)) then
+					axr_main.config:w_value("mm_options","enable_"..k,v.default)
+					need_save = true
+				end
+			elseif not (axr_main.config:line_exist("mm_options",k)) then
+				axr_main.config:w_value("mm_options",k,v.default)
+				need_save = true
+			end
+		end
+    end
+	if (need_save) then 
+		axr_main.config:save()
+	end
+end
+
+function on_accept(tab_table,menu,optMgr,console)
+    for name,v in pairs(tab_table) do
+		if (v.default ~= nil) then
+			if (v.typ=="check") then
+				axr_main.config:w_value("mm_options","enable_"..name,v.ctrl:GetCheck())
+			elseif (v.typ=="list") then 
+				if (type(v.default) == "boolean") then
+					axr_main.config:w_value("mm_options",name,v.ctrl:GetText()=="true" or false)
+				elseif (type(v.default) == "number") then 
+					axr_main.config:w_value("mm_options",name,tonumber(v.ctrl:GetText()) or v.default)
+				else 
+					local value = v.list[v.ctrl:GetCurrentIdx()+1]
+					axr_main.config:w_value("mm_options",name,value)
+				end
+			end
+			
+			if (v.on_accept) then 
+				v.on_accept(menu,optMgr,v.ctrl)
+			end
+		end
+    end
+    axr_main.config:save()
+end
+
+function on_set_values(tab_table,menu,optMgr)
+    for name,v in pairs(tab_table) do
+		if (v.default ~= nil) then
+			if (v.typ=="check") then
+				v.ctrl:SetCheck(axr_main.config:r_value("mm_options","enable_"..name,1,v.default))
+			elseif (v.typ=="list") then
+				-- so proper type is cached when reading
+				if (type(v.default) == "boolean") then
+					v.ctrl:SetText(axr_main.config:r_value("mm_options",name,1,v.default))
+				elseif (type(v.default) == "number") then 
+					v.ctrl:SetText(axr_main.config:r_value("mm_options",name,2,v.default))
+				else 
+					v.ctrl:SetText(game.translate_string(axr_main.config:r_value("mm_options",name,0,v.default)))
+				end
+			end
+			if (v.on_set_values) then 
+				v.on_set_values(menu,optMgr,v.ctrl)
+			end
+		end
+    end
+end
+
+--[[
+function get_character_icon_list()
+	local t = {"ui_inGame2_Strelok"}
+	local faction = character_community(db.actor):sub(7)
+	local ini = ini_file("plugins\\player_portraits.ltx")
+	local section = faction.."_portraits"
+	local n = ini:section_exist(section) and ini:line_count(section) or 0
+	local result, id, value = nil,nil,nil
+	for i=0, n-1 do
+		result, id, value = ini:r_line(section,i,"","" )
+		t[#t+1] = id
+	end
+	return t
+end
+--]]

@@ -1,0 +1,74 @@
+--'-----------------------------------------------------------------------------
+--'           SLEEP FUNCTUIONS
+--'-----------------------------------------------------------------------------
+function reduce_need_sleep(time)
+  local tmp=ars.read_variable("slp",0)
+  tmp=tmp-time*120
+  if tmp<0 then tmp=0 end
+  ars.del_variable("nrg")
+  ars.del_variable("smn")
+  ars.write_variable("slp",tmp)
+  test_sleep_pp()
+end
+function test_for_need_sleep()
+  if not ui_sleep_dialog.is_sleep_active() then
+    if level.get_time_hours()>=1 and level.get_time_hours()<5 then
+      ars.write_variable("slp",ars.read_variable("slp",0)+2)
+    else
+      ars.write_variable("slp",ars.read_variable("slp",0)+1)
+    end
+    test_sleep_pp()
+  end
+  ars_cop.g_start_timer("slp",0,0,6)
+end
+function test_for_need_sleep_nrg()
+  local n=ars.read_variable("nrg",0)
+  if n<3 then
+    ars.write_variable("nrg",n+1)
+    ars.write_variable("slp",ars.read_variable("slp",0)-30+n*10)
+    test_sleep_pp()
+  end
+  ars_cop.g_start_timer("men",0,1,0)
+  ars.write_variable("smn",1)
+end
+function test_for_need_sleep_factors(value)
+  if not value then value=1 end
+  ars.write_variable("slp",ars.read_variable("slp",0)+value)
+  test_sleep_pp()
+end
+function test_sleep_pp()
+  local tmp=ars.read_variable("slp",0)
+  if tmp>300 then
+    if not (ars_cop.has_g_timer("snu") and has_alife_info("sleep_active")) then
+      ars_cop.g_start_timer("snu",0,0,3,5+ars.read_variable("nrg",0))
+    end
+  elseif tmp>300 then
+    level.add_pp_effector("blur.ppe",988,true)
+    level.set_pp_effector_factor(988,5.0)
+    level.remove_pp_effector(999)
+  elseif tmp>270 then
+    level.set_pp_effector_factor(999,7.0)
+    level.remove_pp_effector(988)
+  elseif tmp>240 then
+    level.add_pp_effector("sleepy.ppe",999, true)
+    level.set_pp_effector_factor(999,5.0)
+  elseif tmp<=240 then
+    level.remove_pp_effector(988)
+    level.remove_pp_effector(999)
+  end
+  if tmp>180 then
+    if math.random(100)<(math.ceil(tmp/5)) then
+      sound_object("actor\\zevok"):play(db.actor,0,sound_object.s2d)
+	  if math.random(100)<10 then
+        level.add_cam_effector("camera_effects\\surge_01.anm",1002,false)
+        level.remove_pp_effector(988)
+        level.remove_pp_effector(999)
+      end
+    end
+  end
+end
+function get_actor_sleepy()
+  local max_drinky=12*60
+  local tmp=ars.read_variable("slp",0)
+  return math.ceil(tmp/(max_drinky/100))
+end

@@ -1,0 +1,5 @@
+local function update_thirst() if (axr_main.config:r_value("mm_options","enable_update_thirst",1,true) ~= false) then return NULL else db.actor.thirst = 1.0 end end
+local function update_sleep() if (axr_main.config:r_value("mm_options","enable_update_sleep",1,true) ~= false) then return NULL else db.actor.sleep = 1.0 end end
+function on_game_start() RegisterScriptCallback("actor_on_update",update_thirst) RegisterScriptCallback("actor_on_update",update_sleep)	end
+
+

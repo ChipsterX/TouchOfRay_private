@@ -1,0 +1,1058 @@
+--' Отключение спавна мутантов на локациях
+--' OldSerpski Stalker, Back to the roots
+--' ...
+--' Заметки: ...
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' -----------------------------
+bool_debug = true --' Показать лог при вызове функций в скрипте
+
+local function destroy_object(sobj)
+	if sobj:name() == "gar_zone_mine_field_no_damage" then
+		local obj = level.object_by_id(sobj.id)
+		if obj then
+			obj:disable_anomaly()
+		else
+			alife():release(sobj, true)
+		end
+	else
+		alife():release(sobj, true)
+	end
+end
+
+local function AlifeDeletedOboroten()
+if (axr_main.config:r_value("mm_options","enable_oboroten",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"oboroten") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: oboroten")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraRad()
+if (axr_main.config:r_value("mm_options","enable_chimera_rad",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_weak_radio") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_weak_radio")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraRed()
+if (axr_main.config:r_value("mm_options","enable_chimera_red",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_normal_red") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_normal_red")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraElectro()
+if (axr_main.config:r_value("mm_options","enable_chimera_electro",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_electro") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_electro")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraElectro_AMK()
+if (axr_main.config:r_value("mm_options","enable_chimera_electro_amk",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_electro_amk") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_electro_amk")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraFire()
+if (axr_main.config:r_value("mm_options","enable_chimera_fire",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_fire") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_fire")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraBlack()
+if (axr_main.config:r_value("mm_options","enable_chimera_black",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_black") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_black")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraXray()
+if (axr_main.config:r_value("mm_options","enable_chimera_xray",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_xray") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_xray")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChimeraXray_fire()
+if (axr_main.config:r_value("mm_options","enable_chimera_xray_fire",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"chimera_cs_strong_xray_fire") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera_cs_strong_xray_fire")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBurerElectro()
+if (axr_main.config:r_value("mm_options","enable_burer_electro",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"burer_electro") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: burer_electro")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBurerFire()
+if (axr_main.config:r_value("mm_options","enable_burer_fire",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"burer_fire") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: burer_fire")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBurer_green_build()
+if (axr_main.config:r_value("mm_options","enable_burer_green_build",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"burer_green_build") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: burer_green_build")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedDod_green()
+if (axr_main.config:r_value("mm_options","enable_dog_green",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"dog_green") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: dog_green")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedZanoza()
+if (axr_main.config:r_value("mm_options","enable_zanoza",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"zanoza_normal") or string.find(sobj:section_name(),"zanoza_strong")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: zanoza")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedFrog()
+if (axr_main.config:r_value("mm_options","enable_frog",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"frog_normal") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: frog")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedFleshMarsh()
+if (axr_main.config:r_value("mm_options","enable_flesh_swamp",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"flesh_swamp") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: flesh_swamp")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedRotan()
+if (axr_main.config:r_value("mm_options","enable_rotan",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"rotan_normal") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: rotan_normal")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedTushkan_black()
+if (axr_main.config:r_value("mm_options","enable_tushkan_black",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"tushkano_black") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: tushkano_black")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedTushkan_big()
+if (axr_main.config:r_value("mm_options","enable_tushkans_big",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"tushkano_big_normal") or string.find(sobj:section_name(),"tushkano_big_strong_black")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: tushkano big")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedPolters()
+if (axr_main.config:r_value("mm_options","enable_polters_dd",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"polter_dd") or string.find(sobj:section_name(),"polter_electro")
+		or string.find(sobj:section_name(),"polter_xray") or string.find(sobj:section_name(),"polter_old") or string.find(sobj:section_name(),"poltergeist_build")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: polters dd")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedPseudoJump()
+if (axr_main.config:r_value("mm_options","enable_gigant_jumper_strong",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"gigant_jumper_strong") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: giant jumper")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedVypolzenMarsh()
+if (axr_main.config:r_value("mm_options","enable_vypolzen_marsh",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"vypolzen_marsh") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: vypolzen marsh")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedVypolzenRed()
+if (axr_main.config:r_value("mm_options","enable_vypolzen_red",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"vypolzen_red") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: vypolzen red")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedSnorkMarsh()
+if (axr_main.config:r_value("mm_options","enable_snork_stronger",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"snork_stronger") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: snork stronger")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedSnorkFly()
+if (axr_main.config:r_value("mm_options","enable_snork_flying",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"snork_flying") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: snork flying")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedSnorkZombie()
+if (axr_main.config:r_value("mm_options","enable_snork_zombie",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"snork_zombie") or string.find(sobj:section_name(),"snork_zombie2")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: snork zombie")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedSnorkMozg()
+if (axr_main.config:r_value("mm_options","enable_snork_mozg",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"snork_mozg") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: snork mozg")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedSnorkNosach()
+if (axr_main.config:r_value("mm_options","enable_snork_nosach",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"snork_nosach") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: snork nosach")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedMorlok()
+if (axr_main.config:r_value("mm_options","enable_morlok",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"morlok_strong") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: morlok")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedIzlomLab()
+if (axr_main.config:r_value("mm_options","enable_fracture_lab",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"fracture_lab") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: fracture lab")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedIzlomKar()
+if (axr_main.config:r_value("mm_options","enable_fracture_karlik",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"fracture_karlik") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: fracture karlik")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedControllers()
+if (axr_main.config:r_value("mm_options","enable_controllers",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"m_controller_mogilshik") 
+		or string.find(sobj:section_name(),"m_controller_babka") or string.find(sobj:section_name(),"m_controller_arhi")
+			or string.find(sobj:section_name(),"m_controller_marsh") ) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: controllers")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedRunControllers_run()
+if (axr_main.config:r_value("mm_options","enable_controllers_run",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"controller_act_build") 
+		or string.find(sobj:section_name(),"controller_act_flame") or string.find(sobj:section_name(),"controller_act_electro")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: controllers run")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBiblio()
+if (axr_main.config:r_value("mm_options","enable_biblio",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"bibliotekar") 
+		or string.find(sobj:section_name(),"bibliotekar_black")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: bibliotekars")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedKarliks()
+if (axr_main.config:r_value("mm_options","enable_karliks",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"karlik_1") 
+		or string.find(sobj:section_name(),"karlik_2") or string.find(sobj:section_name(),"karlik_3") or string.find(sobj:section_name(),"karlik_4")
+		or string.find(sobj:section_name(),"karlik_5") or string.find(sobj:section_name(),"karlik_6")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: karliks")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBloodsukers()
+if (axr_main.config:r_value("mm_options","enable_bloodsukers",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"bloodsucker_strong_anomaly") 
+		or string.find(sobj:section_name(),"bloodsucker_marsh_anomaly") 
+		or string.find(sobj:section_name(),"bloodsucker_hell") 
+		or string.find(sobj:section_name(),"bloodsucker_hell_2016")
+		or string.find(sobj:section_name(),"bloodsucker_hell_little") 
+		or string.find(sobj:section_name(),"bloodsucker_tuman_albinos")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: bloodsukers")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedVenom()
+if (axr_main.config:r_value("mm_options","enable_venom",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"venom_strong") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: venom")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedLaborant()
+if (axr_main.config:r_value("mm_options","enable_laborant",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"bloodsucker_zombie") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: laborant")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedDeathclaw()
+if (axr_main.config:r_value("mm_options","enable_deathclaws",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"deathclaw_weak") or string.find(sobj:section_name(),"deathclaw_normal")
+		or string.find(sobj:section_name(),"deathclaw_strong")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: deathclaws")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedTarakans()
+if (axr_main.config:r_value("mm_options","enable_tarakans",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"tarakan_normal") or string.find(sobj:section_name(),"tarakan_strong")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: tarakans")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedGiants()
+if (axr_main.config:r_value("mm_options","enable_giants",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"gigant_swamp") 
+		or string.find(sobj:section_name(),"gigant_big_normal")
+		or string.find(sobj:section_name(),"gigant_big_strong")
+		or string.find(sobj:section_name(),"gigant_swamp_lapa")
+		or string.find(sobj:section_name(),"gigant_big_lapa_1")
+		or string.find(sobj:section_name(),"gigant_big_lapa_2")
+		or string.find(sobj:section_name(),"gigant_big_lapa_3")
+		or string.find(sobj:section_name(),"gigant_big_lapa_4")
+		or string.find(sobj:section_name(),"gigant_red")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: giants")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedBears()
+if (axr_main.config:r_value("mm_options","enable_bears",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"medwed_normal_small") or string.find(sobj:section_name(),"medwed_normal_big")
+		or string.find(sobj:section_name(),"medwed_strong_big") or string.find(sobj:section_name(),"chimera_bear")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: bears")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedTaran()
+if (axr_main.config:r_value("mm_options","enable_boar_taran",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"boar_taran") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: taran")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedTaran()
+if (axr_main.config:r_value("mm_options","enable_boar_taran",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"boar_taran") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: taran")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedWinger()
+if (axr_main.config:r_value("mm_options","enable_winger",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and string.find(sobj:section_name(),"winger_normal") then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: winger")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedGnus()
+if (axr_main.config:r_value("mm_options","enable_gnus",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"fly_normal") 
+		or string.find(sobj:section_name(),"komar_weak") 
+		or string.find(sobj:section_name(),"stinger_normal")
+		or string.find(sobj:section_name(),"stinger_strong")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: gnus")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedChernobDog()
+if (axr_main.config:r_value("mm_options","enable_chimera_wolf",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"chimera_wolf_black") 
+		or string.find(sobj:section_name(),"chimera_wolf_white")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: chimera wolfs")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+local function AlifeDeletedLican()
+if (axr_main.config:r_value("mm_options","enable_lican",1,true) ~= false) then return end
+	local sim = alife()
+	for i = 1, 65534 do
+	local sobj = sim:object(i)
+		if sobj and sobj.parent_id == 65535 and (string.find(sobj:section_name(),"chimera_wolf_black")) then
+			if sobj.squad_id == nil then
+				destroy_object(sobj)
+				if bool_debug == true then
+					for j = 1, 2 do 
+						log("deleted: lican")
+					end
+				end
+			else
+				sim_board.get_sim_board().squads[sobj.squad_id]:remove_npc(sobj.id)
+			end	
+		end
+	end
+end
+
+function alife_delete_spawn()
+	AlifeDeletedChimeraRad()
+	AlifeDeletedChimeraRed()
+	AlifeDeletedChimeraElectro()
+	AlifeDeletedChimeraElectro_AMK()
+	AlifeDeletedChimeraFire()
+	AlifeDeletedChimeraBlack()
+	AlifeDeletedChimeraXray()
+	AlifeDeletedChimeraXray_fire()
+	AlifeDeletedBurerElectro()
+	AlifeDeletedBurerFire()
+	AlifeDeletedBurer_green_build()
+	AlifeDeletedDod_green()
+	AlifeDeletedZanoza()
+	AlifeDeletedFrog()
+	AlifeDeletedFleshMarsh()
+	AlifeDeletedRotan()
+	AlifeDeletedTushkan_black()
+	AlifeDeletedTushkan_big()
+	AlifeDeletedPolters()
+	AlifeDeletedPseudoJump()
+	AlifeDeletedVypolzenMarsh()
+	AlifeDeletedVypolzenRed()
+	AlifeDeletedSnorkMarsh()
+	AlifeDeletedSnorkFly()
+	AlifeDeletedSnorkZombie()
+	AlifeDeletedSnorkMozg()
+	AlifeDeletedSnorkNosach()
+	AlifeDeletedMorlok()
+	AlifeDeletedIzlomLab()
+	AlifeDeletedIzlomKar()
+	AlifeDeletedControllers()
+	AlifeDeletedRunControllers_run()
+	AlifeDeletedBiblio()
+	AlifeDeletedKarliks()
+	AlifeDeletedBloodsukers()
+	AlifeDeletedVenom()
+	AlifeDeletedLaborant()
+	AlifeDeletedOboroten()
+	AlifeDeletedDeathclaw()
+	AlifeDeletedTarakans()
+	AlifeDeletedGiants()
+	AlifeDeletedBears()
+	AlifeDeletedTaran()
+	AlifeDeletedWinger()
+	AlifeDeletedGnus()
+	AlifeDeletedChernobDog()
+	AlifeDeletedLican()
+end
+

@@ -1,0 +1,61 @@
+
+function module_artefact(object)
+   submodule_artefact_control(object)
+   submodule_section_cfg(object,"artefact")
+end
+
+
+function submodule_artefact_control(object)
+   local detector_in_slot=db.actor:item_in_slot(9)
+   local af_sect=object:section()
+   local af_pos=object:position()
+   local af_lv=object:level_vertex_id()
+   local af_gv=object:game_vertex_id()
+   local af_exception=find_out_string(object:section(),"af_prodigy")
+   if detector_in_slot~=nil and db.actor:active_detector()~=nil and af_exception then
+      if sgm_functions.ReadRadarArea(detector_in_slot:section())~=-1 and distance_between(db.actor,object)<sgm_functions.ReadRadarArea(detector_in_slot:section()) then
+         if distance_to_object(object,">",5,true)==true then
+            local af_spot_descr="st_generic_af"
+            if sgm_functions.ReadRadarAccuracy(detector_in_slot:section())==true then
+               af_spot_descr=game.translate_string(sgm_functions.ReadCaption(af_sect))
+            end
+            add_spot_on_map(object:id(),sgm_flags.spot_artefact_discovered,af_spot_descr)
+         elseif distance_to_object(object,">",5,true)==false then
+            remove_spot_on_map(object:id(),sgm_flags.spot_artefact_discovered)
+         else
+            remove_spot_on_map(object:id(),sgm_flags.spot_artefact_discovered)
+         end
+      else
+         remove_spot_on_map(object:id(),sgm_flags.spot_artefact_discovered)
+      end
+   else
+      remove_spot_on_map(object:id(),sgm_flags.spot_artefact_discovered)
+   end
+end
+
+function submodule_section_cfg(object,type)
+   if type=="npc" or type=="monster" then
+      local get_spot=sgm_functions.ReadSpot(object:section())
+      if object:alive() and exists(get_spot) then
+         local spot_cfg=sgm_functions.check_section_stick(system_ini(),object:section(),"spot",nil)
+         if exists(spot_cfg[3]) and has_alife_info(tostring(spot_cfg[3])) then
+            add_spot_on_map(object:id(),tostring(spot_cfg[1]),tostring(spot_cfg[2]))
+         elseif exists(spot_cfg[4]) then
+            if has_alife_info(tostring(spot_cfg[4])) then
+               remove_spot_on_map(object:id(),tostring(spot_cfg[1]))
+            else
+               add_spot_on_map(object:id(),tostring(spot_cfg[1]),tostring(spot_cfg[2]))
+            end
+         elseif (not exists(spot_cfg[3])) and (not exists(spot_cfg[4])) then
+            add_spot_on_map(object:id(),tostring(spot_cfg[1]),tostring(spot_cfg[2]))
+         end
+      end
+      local get_online_cond=sgm_functions.ReadOnlineCond(object:section())
+      if object:alive() and exists(get_online_cond) then
+         local online_cond=sgm_functions.check_string_condlist(get_online_cond)
+         if online_cond=="false" or not online_cond then
+            sgm_offline.queue_on_offline(object:id(),get_online_cond)
+         end
+      end
+   end
+end

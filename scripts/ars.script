@@ -1,0 +1,349 @@
+-- File:        ARS.SCRIPT
+-- Copyright:   2009-2010 ARS Team
+-- Authors:     Red75, sokol_jack & xStream
+-- Last edit:   Xmk, Skunk
+
+
+----------- Framework initialization -------------------------
+-- Вспомогательная функция инициализации модуля.
+local function init_module_if_exists(module)
+  if _G[module] and _G[module].init then
+    _G[module].init()
+  else
+    xr_s.warning("init_module_if_exists: cannot find module "..module)
+  end
+end
+
+-- Эта функция вызывается при старте игры. Необходимо дать возможность модулям зарегистрировать коллбэки.
+function init()
+  init_module_if_exists("ars_cop")
+  init_module_if_exists("xrs_armor")
+end
+
+
+-- колбеки
+local callbacks={
+-- actor binder
+	game_load={},
+	game_save={},
+	info={},
+	trade={},
+	item_take={},
+	item_drop={},
+	item_use={},
+	task={},
+	update={},
+-- physics binder
+	physics_update={},
+	physics_spawn={},
+	physics_use={},
+	physics_hit={},
+	physics_death={},
+-- npc binder
+	npc_spawn={},
+	npc_destroy={},
+	npc_hit={},
+	npc_death={},
+	npc_use={},
+	npc_update={},
+-- monster binder
+	monster_update={},
+	monster_death={},
+	monster_hit={},
+	monster_spawn={}
+}
+
+function register_callback(name,func)
+  if callbacks[name]==nil then
+    abort("register_callback: callback name '%s' is unknown.",name)
+  end
+  callbacks[name][func]=true
+end
+
+function unregister_callback(name,func)
+  if callbacks[name]==nil then
+    abort("register_callback: callback name '%s' is unknown.",name)
+  end
+  callbacks[name][func]=nil
+end
+
+
+----------- actor binder -------------------------
+-- колбек на старт игры
+function on_game_load()
+  math.randomseed(device():time_global())
+  if not callbacks.game_load then return end
+  for func,o in pairs(callbacks.game_load) do
+    func()
+  end
+end
+
+-- колбек на сейв игры
+function on_game_save()
+  if not callbacks.game_save then return end
+  for func,o in pairs(callbacks.game_save) do
+    func()
+  end
+end
+
+-- колбэк на получение инфопоршня
+function on_info(npc,info_id)
+  if not callbacks.info then return end
+  for func,o in pairs(callbacks.info) do
+    func(npc,info_id)
+  end
+end
+
+-- колбэк торговли
+function on_trade(item,sell_bye,money)
+  if not callbacks.trade then return end
+  for func,o in pairs(callbacks.trade) do
+    func(item,sell_bye,money)
+  end
+end
+
+-- колбэк на взятие предмета актором
+function on_item_take(obj)
+  if not callbacks.item_take then return end
+  for func,o in pairs(callbacks.item_take) do
+    func(obj)
+  end
+end
+
+-- колбек на дроп итема
+function on_item_drop(obj)
+  if not callbacks.item_drop then return end
+  for func,o in pairs(callbacks.item_drop) do
+    func(obj)
+  end
+end
+
+-- колбек на юзанье итема
+function on_item_use(obj)
+  if not callbacks.item_use then return end
+  for func,o in pairs(callbacks.item_use) do
+    func(obj)
+  end
+end
+
+-- колбэк на апдейт актора (работает постоянно)
+function on_actor_update(binder)
+  if not callbacks.update then return end
+  for func,o in pairs(callbacks.update) do
+    func(binder)
+  end
+end
+
+-- колбек на квест
+function on_task(task,state)
+  if not callbacks.task then return end
+  for func,o in pairs(callbacks.task) do
+    func(task,state)
+  end
+end
+
+
+----------- physics binder -------------------------
+-- колбэк на апдейт физического обьекта (работает постоянно)
+function on_physics_update(binder)
+  if not callbacks.physics_update then return end
+  for func,o in pairs(callbacks.physics_update) do
+    func(binder)
+  end
+end
+
+-- колбэк на спавн физического обьекта
+function on_physics_spawn(obj)
+  if not callbacks.physics_spawn then return end
+  for func,o in pairs(callbacks.physics_spawn) do
+    func(obj)
+  end
+end
+
+-- колбэк на юзанье физического обьекта
+function on_physics_use(obj,who)
+  if not callbacks.physics_use then return end
+  for func,o in pairs(callbacks.physics_use) do
+    func(obj,who)
+  end
+end
+
+-- колбэк на хит физического обьекта
+function on_physics_hit(obj,amount,local_direction,who,bone_index)
+  if not callbacks.physics_hit then return end
+  for func,o in pairs(callbacks.physics_hit) do
+    func(obj,amount,local_direction,who,bone_index)
+  end
+end
+
+-- колбэк на "смерть" физического обьекта
+function on_physics_death(victim,who)
+  if not callbacks.physics_death then return end
+  for func,o in pairs(callbacks.physics_death) do
+    func(victim,who)
+  end
+end
+
+
+----------- npc binder -------------------------
+-- колбэк на спавн нпц
+function on_npc_spawn(obj)
+  if not callbacks.npc_spawn then return end
+  for func,o in pairs(callbacks.npc_spawn) do
+    func(obj)
+  end
+end
+
+-- колбэк на переход нпц в оффлайн
+function on_npc_destroy(obj)
+  if not callbacks.npc_destroy then return end
+  for func,o in pairs(callbacks.npc_destroy) do
+    func(obj)
+  end
+end
+
+-- колбек на хит нпц
+function on_npc_hit(obj, amount, local_direction, who, bone_index)
+  if not callbacks.npc_hit then return end
+  for func,o in pairs(callbacks.npc_hit) do
+    func(obj,amount,local_direction,who,bone_index)
+  end
+end
+
+-- колбек на смерть нпц
+function on_npc_death(victim, who)
+  if not callbacks.npc_death then return end
+  for func,o in pairs(callbacks.npc_death) do
+    func(victim,who)
+  end
+end
+
+-- колбек на юзанье нпц
+function on_npc_use(victim, who)
+  if not callbacks.npc_use then return end
+  for func,o in pairs(callbacks.npc_use) do
+    func(victim,who)
+  end
+end
+
+-- колбэк на апдейт нпц (работает постоянно)
+function on_npc_update(binder)
+  if not callbacks.npc_update then return end
+  for func,o in pairs(callbacks.npc_update) do
+    func(binder)
+  end
+end
+
+
+----------- monster binder -------------------------
+-- колбэк на апдейт монстров (работает постоянно)
+function on_monster_update(binder)
+  if not callbacks.monster_update then return end
+  for func,o in pairs(callbacks.monster_update) do
+    func(binder)
+  end
+end
+
+-- колбек на смерть монстра
+function on_monster_death(victim, who)
+  if not callbacks.monster_death then return end
+  for func,o in pairs(callbacks.monster_death) do
+    func(victim,who)
+  end
+end
+
+-- колбек на хит монстра
+function on_monster_hit(obj, amount, local_direction, who, bone_index)
+  if not callbacks.monster_hit then return end
+  for func,o in pairs(callbacks.monster_hit) do
+    func(obj,amount,local_direction,who,bone_index)
+  end
+end
+
+-- колбэк на спавн монстра
+function on_monster_spawn(obj)
+  if not callbacks.monster_spawn then return end
+  for func,o in pairs(callbacks.monster_spawn) do
+    func(obj)
+  end
+end
+
+
+----------- methods -------------------------
+-- проверяем тип переменной
+function variable_is_registered_type(typeval)
+  if(typeval~="boolean" and typeval~="string" and typeval~="number") then
+    return false
+  end
+  return true
+end
+
+-- записываем переменную в персональном хранилище актора
+function write_variable(varname,val)
+  if val==nil then
+    del_variable(varname)
+  else
+    local actor_id=db.actor:id()
+    if db.storage[actor_id].pstor==nil then
+      db.storage[actor_id].pstor={}
+    end
+    local typeval=type(val)
+    if val~=nil and not variable_is_registered_type(typeval) then
+      abort("ars: write_variable: not registered type '%s' encountered", typeval)
+    end
+    db.storage[actor_id].pstor[varname]=val
+  end
+end
+
+-- читаем переменную из персонального хранилища актора
+function read_variable(varname,defval)
+  local actor_id=db.actor:id()
+  if db.storage[actor_id].pstor~=nil then
+    local val=db.storage[actor_id].pstor[varname]
+    if val~=nil then
+      return val
+    end
+  end
+  if defval~=nil then
+    return defval
+  end
+  return nil
+end
+
+-- удаляем переменную из персонального хранилища актора
+function del_variable(varname)
+  local actor_id=db.actor:id()
+  if db.storage[actor_id].pstor[varname] then
+    db.storage[actor_id].pstor[varname]=nil
+  end
+end
+
+
+----------- packet -------------------------
+function save(packet)
+  ars_achievements.save(packet)
+  ars_mod.save(packet)
+  ars_mutanter.save(packet)
+end
+
+function load(reader)
+  ars_achievements.load(reader)
+  ars_mod.load(reader)
+  ars_mutanter.load(reader)
+end
+
+
+------------------------------ ARS CoP MOD v0.5.x ------------------------------
+--[[
+
+If you're going to use the whole of this script or its parts in your own creative 
+developments for the S.T.A.L.K.E.R. game. Leave the copyrights, note the real
+author(s) and don't claim others' ideas and their realization to be your own ones.
+It's just simple Modmakers' Ethics. Thank you!
+
+Если вы собираетесь использовать данный скрипт целиком или частично в своих 
+разработках по игре S.T.A.L.K.E.R. Не удаляйте копирайты, указывайте настоящего 
+автора(ов) и не выдавайте чужие идеи и их реализацию за свои. Ведь это элементарная 
+этика модостроителей! Спасибо за понимание.
+
+]]--

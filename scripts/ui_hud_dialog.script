@@ -1,0 +1,225 @@
+--' Переключение худов
+--' OldSerpski stalker
+--' АМК - наше всё
+
+class "ui_hud_dialog" (CUIScriptWnd)
+
+function ui_hud_dialog:__init() super()
+	 self:InitControls()
+	 self:InitCallBacks()
+end
+
+function ui_hud_dialog:__finalize()
+end
+
+function ui_hud_dialog:FillList()
+	self.list_box:RemoveAll()
+end
+
+function ui_hud_dialog:InitControls()
+
+	local xml				= CScriptXmlInit()
+	local ctrl
+	
+	self:SetWndRect			(Frect():set(0,0,1024,768))
+	xml:ParseFile			("ui_mm_hud_dlg.xml")
+	xml:InitStatic			("background",self)
+
+	self.form				= xml:InitStatic("form",self)
+
+	xml:InitStatic			("form:caption",self.form)
+
+	self.file_caption 		= xml:InitTextWnd("form:file_caption",self.form)
+	self.file_data			= xml:InitTextWnd("form:file_data",self.form)
+
+	btn						= xml:Init3tButton("form:btn_type_hud_cop", self.form)
+	self:Register			(btn, "btn_type_hud_cop")
+
+	btn						= xml:Init3tButton("form:btn_type_hud_coc", self.form)
+	self:Register			(btn, "btn_type_hud_coc")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_vv", self.form)
+	self:Register			(btn, "btn_type_hud_vv")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_soc", self.form)
+	self:Register			(btn, "btn_type_hud_soc")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_la", self.form)
+	self:Register			(btn, "btn_type_hud_la")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_cs", self.form)
+	self:Register			(btn, "btn_type_hud_cs")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_scoc174", self.form)
+	self:Register			(btn, "btn_type_hud_scoc174")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_cmp", self.form)
+	self:Register			(btn, "btn_type_hud_cmp")
+	
+	btn						= xml:Init3tButton("form:btn_type_hud_mis", self.form)
+	self:Register			(btn, "btn_type_hud_mis")
+
+    self.wt_but = ctrl    
+
+ 	ctrl = xml:Init3tButton	("form:btn_cancel",	self.form)
+	self:Register			(ctrl, "button_back")
+
+	self.message_box		= CUIMessageBoxEx()
+	self:Register			(self.message_box,"message_box")
+
+end
+
+function ui_hud_dialog:InitCallBacks()
+
+	self:AddCallback("button_back",				ui_events.BUTTON_CLICKED,             self.OnButton_back_clicked,	            self)
+	self:AddCallback("btn_type_hud_cop", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_cop_clicked,	    self)
+	self:AddCallback("btn_type_hud_coc", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_coc_clicked,	    self)	
+	self:AddCallback("btn_type_hud_vv", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_vv_clicked,	    self)	
+	self:AddCallback("btn_type_hud_soc", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_soc_clicked,	    self)	
+	self:AddCallback("btn_type_hud_la", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_la_clicked,	    self)	
+	self:AddCallback("btn_type_hud_cs", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_cs_clicked,	    self)
+	self:AddCallback("btn_type_hud_scoc174", 	ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_scoc174_clicked,	self)
+	self:AddCallback("btn_type_hud_cmp", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_cmp_clicked,	    self)		
+	self:AddCallback("btn_type_hud_mis", 		ui_events.BUTTON_CLICKED,		  	  self.OnButton_type_hud_mis_clicked,	    self)	
+	
+end
+
+
+function ui_hud_dialog:OnButton_type_hud_cop_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_1()
+	
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)   
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Call of Pripyat")
+	end
+end
+
+function ui_hud_dialog:OnButton_type_hud_coc_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_0()
+	
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)   
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Call of Chernobyl")
+	end
+end
+
+function ui_hud_dialog:OnButton_type_hud_vv_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_6()
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)  
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Veter Vremeni")
+	end
+end
+
+function ui_hud_dialog:OnButton_type_hud_soc_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_5() 
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Shadow of Chernobyl")
+	end
+end
+
+function ui_hud_dialog:OnButton_type_hud_la_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_7() 
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Lost Alpha")
+	end
+end
+
+function ui_hud_dialog:OnButton_type_hud_cs_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_4() 
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Clear Sky")
+	end	
+end
+
+function ui_hud_dialog:OnButton_type_hud_scoc174_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_3()
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Call of Chernobyl Stason174")
+	end	
+end
+
+function ui_hud_dialog:OnButton_type_hud_cmp_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_2()
+	
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Call of Chernobyl Compact Hud 3")
+	end	
+end
+
+function ui_hud_dialog:OnButton_type_hud_mis_clicked()
+
+	extern_vid_restart()
+	extern_u32_typeHud_8()
+	
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true) 
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("HUD: Misery")
+	end	
+end
+
+function ui_hud_dialog:OnButton_back_clicked()
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)  
+	if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+		log("ui_hud_dialog:OnButton_back_clicked")
+	end
+end
+
+function ui_hud_dialog:OnKeyboard(dik, keyboard_action)
+	CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+	local bind = dik_to_bind(dik)
+	if bind == key_bindings.kQUIT then
+		self:OnButton_back_clicked()
+		if (axr_main.config:r_value("mm_options","enable_debug_hud",1,false) == true) then
+			log("ui_hud_dialog:OnButton_back_clicked")
+		end
+	end
+		return true
+end

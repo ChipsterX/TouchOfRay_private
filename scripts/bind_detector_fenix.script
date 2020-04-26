@@ -1,0 +1,81 @@
+--[[
+File       : detector_fenix
+Description: Detector Fenix functions
+Copyright  : Unnamed Black Wolf
+Author     : Unnamed Black Wolf
+Last edit  : 11.03.2010 (of Unnamed Black wolf)
+]]--
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_update",up_main)	
+end	
+
+
+array_objects = {}
+	chose_spot = function(npc_name, clsid_npc)
+		local ini = system_ini()
+		local sect_class = ini:r_string(npc_name, "class")
+			return 	
+				(sect_class == "SM_BLOOD") and "alife_megadetector_bloodsucker" or
+				(sect_class == "SM_BOARW") and "alife_megadetector_boar" or
+				(sect_class == "SM_BURER") and "alife_megadetector_burer" or
+				(sect_class == "SM_CHIMS") and "alife_megadetector_chimera" or
+				(sect_class == "SM_CONTR") and "alife_megadetector_controller" or
+				(sect_class == "SM_DOG_S" or sect_class == "SM_P_DOG") and "alife_megadetector_sobaka" or 
+				(sect_class == "SM_FLESH") and "alife_megadetector_flesh" or 
+				(sect_class == "SM_GIANT") and "alife_megadetector_gigant" or 
+				(sect_class == "AI_PHANT" or sect_class == "SM_POLTR") and "alife_megadetector_poltergeist" or 
+				(sect_class == "SM_SNORK") and "alife_megadetector_snork" or 
+				(clsid_npc == clsid.script_stalker or clsid_npc == clsid.stalker) and "alife_megadetector_stalker" or 
+				(clsid_npc == clsid.zombie or clsid_npc == clsid.zombie_s) and "alife_megadetector_zombie" or 
+				(sect_class == "SM_TUSHK") and "alife_megadetector_tushkano" or 
+				(sect_class == "SM_CAT_S") and "alife_megadetector_cat" or 
+				(sect_class == "SM_IZLOM") and "alife_megadetector_fracture" or "alife_presentation_squad_monster"
+	end
+		
+detector_func = function() 
+	if (db.actor:item_in_slot(9) ~= nil) then 
+		if (db.actor:item_in_slot(9):section()=="detector_fenix") then 
+			return true
+		else 
+			return false
+		end
+	else 
+		return false
+	end 
+end
+
+function up_main()
+	if detector_func() then
+		for k in pairs(db.storage) do	
+		local npc = level.object_by_id(k)
+			if npc ~= nil then			
+			local clsid_npc_a = get_clsid(npc)
+				if (IsMonster(npc) == true) or ((clsid_npc_a == clsid.script_stalker) or (clsid_npc_a == clsid.stalker)) or ((clsid_npc_a == clsid.zombie) or (clsid_npc_a == clsid.zombie_s)) then
+				  local npc_name_a = npc:section()				
+				  local metka_a = chose_spot(npc_name_a, clsid_npc_a)
+			          if npc:alive() and (level.map_has_object_spot(k, metka_a) < 1)then 
+					if (npc:position():distance_to(db.actor:position()) < 55) then
+					   level.map_add_object_spot(k, metka_a, npc:name())
+					   array_objects[tonumber(k)] = npc
+					end
+                                   end
+				end
+			end
+		end
+	end
+	if table.maxn(array_objects)~=0 then
+		for id_o, vrable in pairs(array_objects) do
+		        local sobj = level.object_by_id(id_o)
+			if sobj and ((sobj:position():distance_to(db.actor:position())>50) or (not detector_func()) or (sobj:alive()==false)) then
+				local npc_name_r = sobj:section()
+				local clsid_npc_r = get_clsid(sobj)
+				local metka_r = chose_spot(npc_name_r, clsid_npc_r)
+				while (level.map_has_object_spot(id_o, metka_r) > 0) do 
+					level.map_remove_object_spot(id_o, metka_r)
+				end
+				array_objects[id_o] = nil
+			end 
+		end
+	end
+end

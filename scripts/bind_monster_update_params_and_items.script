@@ -1,0 +1,152 @@
+-----------------------------------------------------------------------------------
+-- Monster binding
+-----------------------------------------------------------------------------------
+--/#+#\Заметки: --/#+#\
+--' АМК - Наше всё
+--' Обработчик мутантов из OGSR\OGSM
+--' Back to the roots
+--' Авторские реализации: AMK 1.4.1, Народная солянка ОП-2\2.1, OldSerpskiStalker
+--'
+--/ -----------------------------------------------------------------
+--/#+# [Локальные модули]: ...
+--/ -----------------------------------------------------------------
+local UniqueMutants	= true
+
+--' Аномальные сосычи:
+local timer1 						= 0
+local last_hit_anomaly			    = 2000
+local bloodsucker_anom_snd 			= sound_object([[anomaly\electra_blast1]])
+local bloodsucker_dead_anom_snd 	= sound_object([[anomaly\anomaly_body_tear_1]])
+local bloodsucker_dead_anom_1 		= particles_object("anomaly2\\electra2_blast")
+local bloodsucker_dead_anom_2 		= particles_object("static\\zharka_static")
+local bloodsucker_dead_anom_3 		= particles_object("anomaly2\\body_tear_02")
+
+--' Эффектор кота баюна:
+local last_eff_sleep				= 7500
+local timer2						= 0
+local function cat_sleep(eff_obj)
+
+	random_cat_sleep = math.random(1, 10)
+
+	if random_cat_sleep == 1 then 
+		level.add_pp_effector("art_hit\\blink.ppe", 0000004, false)		
+		db.actor:stop_talk()
+		db.actor.power = -0.2
+		SetSound([[monsters\cat_psy\cat_1]])	
+	elseif random_cat_sleep == 2 then 
+		level.add_pp_effector("art_hit\\surge_shock_old.ppe", 2003, false)			
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_2]])
+	elseif random_cat_sleep == 3 then 
+		level.add_pp_effector("art_hit\\1.ppe", 0000006, false)	
+		db.actor.sleep = -0.2
+		db.actor:stop_talk()	
+		SetSound([[monsters\cat_psy\cat_3]])			
+	elseif random_cat_sleep == 4 then 	
+		level.add_pp_effector("art_hit\\1.ppe", 0000006, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_4]])	
+	elseif random_cat_sleep == 5 then 
+		level.add_pp_effector("art_hit\\surge_shock_old.ppe", 2003, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_5]])
+	elseif random_cat_sleep == 6 then 
+		level.add_pp_effector("art_hit\\1.ppe", 0000006, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_6]])	
+	elseif random_cat_sleep == 7 then 
+		level.add_pp_effector("art_hit\\surge_shock_old.ppe", 0000010, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_7]])	
+	elseif random_cat_sleep == 8 then 
+		level.add_pp_effector("art_hit\\blink.ppe", 0000011, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_8]])
+	elseif random_cat_sleep == 9 then 
+		level.add_pp_effector("art_hit\\surge_shock_old.ppe", 2003, false)	
+		db.actor:stop_talk()		
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_9]])	
+	elseif random_cat_sleep == 10 then 
+		level.add_pp_effector("art_hit\\1.ppe", 0000006, false)	
+		db.actor:stop_talk()
+		db.actor.sleep = -0.2
+		SetSound([[monsters\cat_psy\cat_10]])	
+	end
+end
+
+class "MutantManager"
+function MutantManager:__init() end
+
+function MutantManager:update(upd_mutant)
+--\ #+# [Приравнивание значений]: bind_monster
+--\ #+# -------->
+	self.object = upd_mutant
+	obj  = self.object
+	id = get_clsid(obj)
+	classid = self.object:clsid()
+	actor = db.actor
+	self.time = time_global()
+	posit = self.object:position()
+--\ #-# <-------
+
+--/ #+# [Опция Уникальные мутанты]: ... START
+	if (axr_main.config:r_value("mm_options","enable_unik_mutants",1,false) ~= true) then 
+		UniqueMutants = false
+	else
+		UniqueMutants = true
+	end  
+--/ END
+	if (obj:section() == "bloodsucker_marsh_anomaly" or obj:section()=="bloodsucker_strong_anomaly") and (obj:alive() and UniqueMutants == true) then 
+		if timer1 < self.time then
+			timer1 = self.time + last_hit_anomaly
+			self.enemy = self.object:best_enemy()
+			if self.enemy then
+				self.enemy_pos = self.enemy:position()
+				if self.object:position():distance_to(self.enemy_pos) < 3 and self.object:see(self.enemy) then
+					self.be_p1 = particles_object("anomaly2\\electra2_blast")
+					self.be_p2 = particles_object("static\\zharka_static")
+					self.be_p1:play_at_pos(obj:position())
+					self.be_p2:play_at_pos(obj:position())
+					bloodsucker_anom_snd:play_at_pos(obj, obj:position(), 0)
+					local h = hit()
+					h.type = hit.shock
+					h:bone("bip01_spine")
+					h.power = 0.1
+					h.impulse = 0
+					h.draftsman = self.object
+					obj:hit(h)
+				end
+			end
+		end
+	end
+----------------------------------------------------------------------------------------------------------------------------------------------------	
+	if (obj:section() == "cat_normal3") and (obj:alive() and obj:see(db.actor) and UniqueMutants == true) then
+		if timer2 < self.time then
+			timer2 = self.time + last_eff_sleep
+			self.enemy = self.object:best_enemy()
+			if self.enemy then
+				self.enemy_pos = self.enemy:position()
+				if self.object:position():distance_to(self.enemy_pos) < 5 and self.object:see(self.enemy) then
+					cat_sleep(self.object)
+				end
+			end
+		end
+	end
+----------------------------------------------------------------------------------------------------------------------------------------------------	
+end
+
+function MutantManager:on_death(mutant_died)
+--\ #+# [Приравнивание значений]: bind_monster
+--\ #+# -------->
+	self.object = mutant_died
+--\ #-# <-------	
+end	
+	
+	

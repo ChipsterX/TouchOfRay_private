@@ -1,0 +1,353 @@
+----------------------------------------------------------
+--	Inventory_radiation.script
+--  Original scripting done by the NARODNAYA SOLYANKA team
+--  Modified for use in Misery 2.0+ by Yastiandrie
+----------------------------------------------------------
+
+
+----------------------------------------------------------
+--Yasti: Values used from daytime radiation
+----------------------------------------------------------
+local ini = ini_file("misc\\surge_manager.ltx")
+local SafeCover = alun_utils.collect_section(ini,"list",true)
+ini = nil
+
+local day_rad_modifiers = 	{
+							["6"] 	= {default = 0.75, cloudy = 0.50, rain = 0.40},
+							["7"] 	= {default = 0.80, cloudy = 0.55, rain = 0.45},
+							["8"] 	= {default = 0.85, cloudy = 0.60, rain = 0.50},
+							["9"] 	= {default = 0.90, cloudy = 0.65, rain = 0.55},
+							["10"] 	= {default = 1.00, cloudy = 0.70, rain = 0.60},
+							["11"] 	= {default = 1.10, cloudy = 0.75, rain = 0.65},
+							["12"] 	= {default = 1.20, cloudy = 0.80, rain = 0.70},
+							["13"] 	= {default = 1.20, cloudy = 0.80, rain = 0.70},
+							["14"] 	= {default = 1.20, cloudy = 0.80, rain = 0.70},
+							["15"] 	= {default = 1.10, cloudy = 0.75, rain = 0.65},
+							["16"] 	= {default = 1.00, cloudy = 0.70, rain = 0.60},
+							["17"] 	= {default = 0.90, cloudy = 0.65, rain = 0.55},
+							["18"] 	= {default = 0.85, cloudy = 0.60, rain = 0.50},
+							["19"] 	= {default = 0.80, cloudy = 0.55, rain = 0.45},
+							}
+
+use_day_radiation = false  --Yasti: Flag that determines if daytime radiation will be used
+local day_rad_amount = 0.05 --Yasti: real value = day_rad_amount x rad_factor
+local day_rad_flag = false
+local day_rad_count = 0
+local old_day_rad = 0
+local cur_hour
+local prev_outfit
+local prev_outfit_id
+local prev_weather
+local prev_npc_weather
+
+----------------------------------------------------------
+--End daytime radiation
+----------------------------------------------------------
+
+local cfg_arts = {}
+local inv_arts = {}
+local inv_check = {}
+
+local inv_arts_rad = 0
+local time_previous = 0
+local time_step = 287
+local rad_factor = 0.5  --Yasti: 1.0 = full radiation_restore_speed hit while in inventory,  change to 0.0 if you want no inventory radiation
+
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_update",actor_on_update)
+	RegisterScriptCallback("actor_on_item_drop",actor_on_item_drop)
+	RegisterScriptCallback("actor_on_item_take",actor_on_item_take)
+end
+
+
+function actor_on_update()
+	local tg = time_global()
+	if (axr_main.config:r_value("mm_options","enable_dark_mode",1,false) == true) then
+		day_radiation()
+	end
+	
+	apply_rad(tg)
+end
+
+
+function actor_on_item_take(obj)
+	local obj_id = obj:id()
+	local obj_sect = obj:section()
+	local obj_clsid = obj:clsid()
+ 
+	if (obj_clsid == clsid.artefect) or (obj_clsid == clsid.artefect_s) then 
+		register_artefact(obj_sect, 1)
+    end
+end
+
+
+function actor_on_item_drop(obj)
+	local obj_id = obj:id()
+	local obj_sect = obj:section()
+	local obj_clsid = obj:clsid()
+
+	if (obj_clsid == clsid.artefect) or (obj_clsid == clsid.artefect_s) then 
+		register_artefact(obj_sect, -1)
+	end	
+end
+
+
+----------------------------------------------------
+--Function control's irradiating actor if he is outside during daytime hours (0600 - 2100)
+----------------------------------------------------
+
+function day_radiation(time)
+
+	local ini = system_ini()
+	local rad_resist = 0
+	local actor_rad
+	local day_rad_modify = 0
+	local hour = level.get_time_hours()
+	local level_name = level.name()
+	local weather = level.get_weather()
+	local is_day = xr_conditions.is_day()
+	
+	local cur_outfit
+	local outfit_resist = 0
+	if db.actor:item_in_slot(7) then --Yasti: check if the suit has upgrades which effect radiation protection
+		cur_outfit = db.actor:item_in_slot(7):section()
+		cur_outfit_id = db.actor:item_in_slot(7):id()
+		local data = stpk_utils.get_item_data(alife():object(db.actor:item_in_slot(7):id()))
+		for k,v in pairs(data.upgrades) do
+			local upgrade_sect = alun_utils.read_from_ini(ini, tostring(v), "section", "string", nil)
+			if upgrade_sect then
+				local upgrade_rad = alun_utils.read_from_ini(ini, upgrade_sect, "radiation_protection", "float", 0)
+				outfit_resist = outfit_resist + upgrade_rad
+			end
+		end
+		outfit_resist = (outfit_resist + ini:r_float(cur_outfit, "radiation_protection")+0.025)*db.actor:item_in_slot(7):condition() --Yasti: suits rad protection affects amount of rads actor gets hit with
+		--printf("-OUTFIT RESIST: "..outfit_resist)
+		--printf("-OUTFIT CONDITION: "..db.actor:item_in_slot(7):condition())
+	else
+		cur_outfit_id = nil
+	end
+	
+	local cur_helm
+	local helm_resist = 0
+	if db.actor:item_in_slot(12) then
+		cur_helm = db.actor:item_in_slot(12):section()
+		cur_helm_id = db.actor:item_in_slot(12):id()
+
+		local data = stpk_utils.get_item_data(alife():object(db.actor:item_in_slot(12):id()))
+		for k,v in pairs(data.upgrades) do
+			local upgrade_sect = alun_utils.read_from_ini(ini, tostring(v), "section", "string", nil)
+			if upgrade_sect then
+				local upgrade_rad = alun_utils.read_from_ini(ini, upgrade_sect, "radiation_protection", "float", 0)
+				helm_resist = helm_resist + upgrade_rad
+			end
+		end
+		helm_resist = (helm_resist + system_ini():r_float(cur_helm,"radiation_protection")+0.010)*db.actor:item_in_slot(12):condition()
+		--printf("-HELM RESIST: "..helm_resist)
+		--printf("-HELM CONDITION: "..db.actor:item_in_slot(12):condition())
+	else
+		cur_helm_id = nil
+	end
+	
+	rad_resist = helm_resist+outfit_resist
+	--printf("-FINAL RESIST: "..rad_resist)
+	
+	for k,v in pairs(day_rad_modifiers) do --Yasti: Checking time of day and weather
+		if (hour == tonumber(k)) then
+			if string.find(weather, "rain") or string.find(weather, "storm") or string.find(weather, "thunder") or level.rain_factor() >= 0.3 then
+				day_rad_modify = v.rain
+			elseif string.find(weather, "foggy") or string.find(weather, "cloudy") then
+				day_rad_modify = v.cloudy
+			elseif string.find(weather, "partly") then
+				day_rad_modify = v.cloudy + 0.1
+			else
+				day_rad_modify = v.default
+			end
+		end
+	end
+	
+	
+	
+	
+	actor_rad = ((day_rad_amount - rad_resist) / 10) * day_rad_modify --Yasti: getting final radiation hit
+	
+	if (db.actor.radiation > 0.25*day_rad_modify) then 
+		is_day = false
+	end
+	
+	if actor_rad < 0 then  --Yasti: suits with higher rad protect will have negative values for actor_rad
+		actor_rad = 0
+	end
+	
+	
+	--printf("-DAY RAD: "..day_rad_amount)
+	--printf("-DAY MOD: "..day_rad_modify)
+	--printf("-ACTOR RAD: "..actor_rad)
+
+	for k,v in pairs(SafeCover) do --Yasti: checks to see if actor is in an emission safe cover zone or not
+		local zone = db.zone_by_name[k]
+		if (zone ~= nil and zone:inside(db.actor:position())) 
+		or (level_name=="labx8" 
+		or level_name=="l03u_agr_underground" 
+		or level_name=="k00_marsh"	
+		or level_name=="k01_darkscape"	
+		or level_name=="k02_trucks_cemetery"	
+		or level_name=="l01_escape"	
+		or level_name=="l02_garbage"	
+		or level_name=="l03_agroprom"	
+		or level_name=="l04_darkvalley"	
+		or level_name=="l05_bar"
+		or level_name=="l08u_brainlab" 
+		or level_name=="l04u_labx18" 
+		or level_name=="l10u_bunker" 
+		or level_name=="l12u_control_monolith" 
+		or level_name=="l13u_warlab" 
+		or level_name=="l12u_sarcofag") or not is_day then
+			day_rad_flag = true
+			break
+		else
+			day_rad_flag = false
+		end
+	end
+		
+	if day_rad_flag == true and (day_rad_count == 0 or day_rad_count == 2) then
+		--alun_utils.printf("in cover")
+		change_inv_arts_rad(-old_day_rad)
+		old_day_rad = actor_rad
+		level.remove_pp_effector(1983)
+		day_rad_count = 1
+		
+	elseif day_rad_flag == false then 
+		if (day_rad_count == 0 or day_rad_count == 1) or (prev_helm_id ~= cur_helm_id) or (prev_outfit_id ~= cur_outfit_id) or (cur_hour ~= hour) or (prev_weather ~= weather)  then
+		--	alun_utils.printf("day day_rad_count:%s prev_outfit:%s current_outfit:%s cur_hour:%s hour:%s prev_weather:%s weather:%s", day_rad_count, prev_outfit, cur_outfit, cur_hour, hour, prev_weather, weather)
+			change_inv_arts_rad(-old_day_rad)
+			old_day_rad = actor_rad
+			prev_outfit = cur_outfit
+			prev_outfit_id = cur_outfit_id
+			prev_helm = cur_helm
+			prev_helm_id = cur_helm_id
+			cur_hour = hour
+			prev_weather = weather
+			change_inv_arts_rad(actor_rad)
+			level.add_pp_effector("radiation.ppe", 1983, true)
+			level.set_pp_effector_factor(1983, actor_rad)
+			day_rad_count = 2
+		end
+	end
+
+end
+
+
+----------------------------------------------------
+--Function add's artifacts in inventory to table and adjusts inventory radiation value
+----------------------------------------------------
+
+
+    function register_artefact(obj_sec, number, in_container)
+	local f = get_art_index(obj_sec)
+
+	if f == 0 then
+		--local obj_section = level.object_by_id(obj_id):section()
+		local ini = system_ini()
+		if ini:section_exist(obj_sec) then
+			local class = ini:r_clsid(obj_sec, "class")
+
+			if class == clsid.artefect or class == clsid.artefect_s then
+				local tmp = {}
+
+				tmp.section = obj_sec
+				tmp.inv_rad = ini:r_float(obj_sec, "radiation_restore_speed")
+				tmp.tx = ini:r_u32(obj_sec, "inv_grid_x")
+				tmp.ty = ini:r_u32(obj_sec, "inv_grid_y")
+				tmp.weight = ini:r_float(obj_sec, "inv_weight")
+				
+				table.insert(cfg_arts, tmp)
+				f = table.getn(cfg_arts)
+			
+				if not in_container then			
+					table.insert(inv_arts, number)
+					change_inv_arts_rad(number*cfg_arts[f].inv_rad)
+				end
+			end
+		end
+	else -- If artefact is already in cfg_arts table
+		if not in_container then
+			inv_arts[f]=inv_arts[f] + number
+			change_inv_arts_rad(number*cfg_arts[f].inv_rad)
+		end
+	end
+	
+--	for k,v in pairs(cfg_arts) do
+--		alun_utils.printf("cfg_arts key|value=  "..tostring(k).."  |  "..tostring(v))
+--	end
+
+
+--	if number == -1 then
+--		alun_utils.printf("Artifact "..tostring(obj_sec).." has been de-registered")
+--	elseif number == 1 then
+--		alun_utils.printf("inventory_radiation.register_artefact: Artifact "..tostring(obj_sec).." has been registered")
+--	end
+	return f
+end
+
+
+function change_inv_arts_rad(delta)
+	inv_arts_rad = inv_arts_rad + delta
+	if inv_arts_rad < 0.00000001 then -- Yasti: Makes sure values low enough return zero. May need to be further adjusted
+		inv_arts_rad = 0
+	end
+	--alun_utils.printf("inventory_radiation.change_inv_arts_rad: inv_arts_rad= "..tostring(inv_arts_rad))
+end
+
+
+----------------------------------------------------
+--Function applies the radiation from registered artifacts to the actor
+----------------------------------------------------
+
+
+    function apply_rad(time)
+	local time_delta = time - time_previous
+	if time_delta >= time_step then
+		local stepped_delta = math.min(5, time_delta/time_step)
+		local delta_rad = inv_arts_rad*stepped_delta
+--		alun_utils.printf("inventory_radiation.apply_rad: inv_arts_rad x stepped_delta = delta_radiation: "..tostring(inv_arts_rad).."x"..tostring(stepped_delta).."="..tostring(delta_rad))
+		
+		if delta_rad~=0 then
+			delta_rad = delta_rad * rad_factor
+			
+			if delta_rad < 0 then 
+				delta_rad = 0
+			end
+			
+			db.actor.radiation = delta_rad
+	--		alun_utils.printf("inventory_radiation.apply_rad: actor rad= "..tostring(db.actor.radiation).." delta_rad= "..tostring(delta_rad))
+		end
+		time_previous = time
+	end
+--	alun_utils.printf("inventory_radiation.apply_rad: actor rad= "..tostring(db.actor.radiation).." delta_rad= "..tostring(delta_rad))
+end
+
+
+function get_art_index(obj)
+	for i = 1, get_cfg_arts_number() do
+		if cfg_arts[i].section == obj then
+			return i
+		end
+	end
+	return 0
+end
+
+
+function get_cfg_arts_number()
+	return table.getn(cfg_arts)
+end
+
+
+function get_art_section(art_index)
+  return cfg_arts[art_index].section
+end
+
+
+function get_inv_arts_number(art_index)
+  return inv_arts[art_index]
+end

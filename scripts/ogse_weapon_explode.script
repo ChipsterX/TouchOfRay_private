@@ -1,0 +1,177 @@
+--/ wpn_explode_fx.script /--
+--/ Weapon explode module /--
+--/ OGS Evolution Team 2010 /--
+--/ version 1.1 /--
+
+--/ Модуль подрыва патрона в стволе при значительном износе оружия /--
+function on_game_start()
+    RegisterScriptCallback("actor_on_update",update)
+end
+
+-- Параметры
+local fx_is_enable = true									-- "true"-обработка подрыва патрона включена, "false"-выключена
+local critical_condition = 0.09--W--0.10								-- кондиция оружия, ниже которой может случиться разрыв патрона в стволе
+
+-- Малый калибр (пистолеты, пистолеты-пулемёты)
+local fx_snd_1 = "ambient\\fire2"							-- звук, воспроизводимый как разрыв патрона в стволе
+local fx_particle_1 = "anomaly2\\heat_01"					-- партикл, воспроизводимый как разрыв патрона в стволе
+local explode_impulse_1 = 0.05--W--0.1								-- импульс хита, наносимого при разрыве
+local explode_power_1 = 0.2--W--0.4									-- сила хита, наносимого при разрыве
+
+-- Средний калибр (автоматы, пулемёты, винтовки)
+local fx_snd_2 = "ambient\\fire2"
+local fx_particle_2 = "anomaly2\\heat_01"
+local explode_impulse_2 = 0.1--W--0.2
+local explode_power_2 = 0.3--W--0.6
+
+-- Большой калибр (дробовики, крупнокалиберные винтовки)
+local fx_snd_3 = "ambient\\fire2"
+local fx_particle_3 = "anomaly2\\heat_01"
+local explode_impulse_3 = 0.15--W--0.3
+local explode_power_3 = 0.4--W--0.8
+
+-- Спецбоеприпас (огнемёт)
+local fx_snd_4 = "ambient\\fire2"
+local fx_particle_4 = "anomaly2\\heat_01"
+local explode_impulse_4 = 0.35--W--0.7
+local explode_power_4 = 0.55--W--1.1
+
+-- Аномальный боеприпас (гауссовка)
+local fx_snd_5 = "ambient\\fire2"
+local fx_particle_5 = "anomaly2\\heat_01"
+local explode_impulse_5 = 0.25--W--0.5
+local explode_power_5 = 0.6--W--1.2
+-- Параметры
+
+local stored_ammo_num = nil
+local stored_it_id = nil
+
+function update()
+
+	if (axr_main.config:r_value("mm_options","enable_boom_weapon",1,false) ~= true) then 
+		return
+	end
+	if fx_is_enable and db.actor:alive() then
+		local act_it = db.actor:active_item()
+		if act_it == nil then
+			stored_it_id = nil
+		return end
+		local act_it_sect = act_it:section()
+		if act_it and string.find(act_it_sect, "wpn_") and act_it_sect ~= "wpn_binoc" and act_it_sect ~= "wpn_crossbow" then
+			local it_id = act_it:id()
+			local ammo_num = act_it:get_ammo_in_magazine()
+			if stored_it_id ~= nil and stored_ammo_num ~= nil then
+				if stored_it_id == it_id and ammo_num < stored_ammo_num then
+					proceed(act_it)
+				end
+			end
+			stored_ammo_num = ammo_num
+			stored_it_id = it_id
+		end
+	end
+end
+
+function proceed(act_item)
+-- amk.logf("Выстрел!")
+	math.randomseed(os.time()) --W
+	if act_item:condition() < critical_condition then
+-- amk.logf("Авария!")
+		--if math.random()*0.5 > act_item:condition() then--commented by Wafel
+		if (math.random(1,100) > (act_item:condition()*1000)) then --pasted instead W
+-- amk.logf("БУМ!")
+
+			local fx_snd			-- объявляем переменные. можно не присваивать значения, так как они присвоятся обязательно
+			local fx_particle
+			local explode_impulse
+			local explode_power
+
+-- определяем тип визуализации
+			local act_item_sect = act_item:section()
+			local type_of_visual = identy_type_of_visual(act_item_sect)
+			if type_of_visual == 1 then
+				fx_snd = fx_snd_1
+				fx_particle = fx_particle_1
+				explode_impulse = explode_impulse_1
+				explode_power = explode_power_1
+-- amk.logf("Тип визуализации 1")
+			elseif type_of_visual == 2 then
+				fx_snd = fx_snd_2
+				fx_particle = fx_particle_2
+				explode_impulse = explode_impulse_2
+				explode_power = explode_power_2
+-- amk.logf("Тип визуализации 2")
+			elseif type_of_visual == 3 then
+				fx_snd = fx_snd_3
+				fx_particle = fx_particle_3
+				explode_impulse = explode_impulse_3
+				explode_power = explode_power_3
+-- amk.logf("Тип визуализации 3")
+			elseif type_of_visual == 4 then
+				fx_snd = fx_snd_4
+				fx_particle = fx_particle_4
+				explode_impulse = explode_impulse_4
+				explode_power = explode_power_4
+-- amk.logf("Тип визуализации 4")
+			elseif type_of_visual == 5 then
+				fx_snd = fx_snd_5
+				fx_particle = fx_particle_5
+				explode_impulse = explode_impulse_5
+				explode_power = explode_power_5
+-- amk.logf("Тип визуализации 5")
+			end
+
+-- визуализация
+			fx_snd = xr_sound.get_safe_sound_object(fx_snd)
+			fx_snd:play_no_feedback(act_item, sound_object.s3d, 0, act_item:position(), 1)
+			fx_particle = particles_object(fx_particle)
+			fx_particle:play_at_pos(act_item:position())
+
+-- нанесение хита
+			local explode_vec = vector():set(db.actor:position()):sub(act_item:position())
+			local explode = hit()
+			explode.direction = explode_vec
+			explode.draftsman = db.actor
+			explode.impulse = explode_impulse
+			explode.power = explode_power
+			explode.type = hit.explosion
+			db.actor:hit(explode)
+
+-- удаление предмета
+			alife():release(alife():object(act_item:id()), true)
+
+		end
+	end
+end
+
+function identy_type_of_visual(act_item_section)
+	local type_of_visualise = 2			-- определяем тип визуализации по умолчанию на тот случай, когда тип боеприпаса не определится 
+	if system_ini():line_exist(act_item_section, "ammo_class") then
+		local ammo_list = system_ini():r_string(act_item_section, "ammo_class")
+		if string.find(ammo_list, "ammo_9x18") or 
+		string.find(ammo_list, "ammo_11.43x23") or
+				string.find(ammo_list, "ammo_9x19") then
+			type_of_visualise = 1
+		elseif string.find(ammo_list, "ammo_5.45x39") or 
+				string.find(ammo_list, "ammo_5.56x45") or  
+				string.find(ammo_list, "ammo_7.62x39") or 
+				string.find(ammo_list, "ammo_7.62x51") or 
+				string.find(ammo_list, "ammo_7.92x33") or 
+				string.find(ammo_list, "ammo_7.62x54") or  
+				string.find(ammo_list, "ammo_pkm_100") or 
+				string.find(ammo_list, "ammo_9x39") then
+			type_of_visualise = 2
+		elseif string.find(ammo_list, "ammo_11.43x23") or 
+				string.find(ammo_list, "ammo_12x70") or 
+				string.find(ammo_list, "ammo_12x76") or 
+				string.find(ammo_list, "ammo_magnum_300") or 	
+				string.find(ammo_list, "ammo_357_hp_mag") then
+			type_of_visualise = 3
+		elseif string.find(ammo_list, "ammo_flame") or 
+				string.find(ammo_list, "ammo_og-7b") then
+			type_of_visualise = 4
+		elseif string.find(ammo_list, "ammo_gauss") then
+			type_of_visualise = 5
+		end
+	end
+	return type_of_visualise
+end

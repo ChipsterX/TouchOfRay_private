@@ -1,0 +1,1200 @@
+-- #######################################################################################################################
+-- 									МОДУЛЬ ВАРКИ АРТЕФАКТОВ ИЗ АМК 1.4.1
+-- #######################################################################################################################
+--' Модуль варки артефактов из Народной солянки для Зов Чернобыля
+--' Автор: OldSerpski Stalker (Батька Ковцур)
+--' АМК - наше всё
+--' Back to the roots 2020
+--' ----------------------------------------------------------------------------------------------------------------------
+-- #######################################################################################################################
+--' Формула расчета:
+--[[
+	rnd = math.random(0,100)
+	
+	if rnd>"Шанс удачи" then
+	
+		if rnd>"Шанс удачи" + "Шанс не удачи" then
+	
+--' Шанс, что капслуы не сработали	
+			spawn_item("Вернуть то что кидали",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		else
+--' Булыжник 
+			spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id())
+
+		end
+
+	else
+--' Удача варки
+		spawn_item("Что сварили",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	end
+
+amk_art_busi_1       -' Бабкины бусы 			 1
+amk_art_busi_2       -' Бусы прабабки 			 2
+amk_art_busi_3       -' Бусы бабки бюрера 		 3
+amk_art_simbion      -' Симбион 				 4
+
+amk_art_pudding_1    -' Огненная пустышка 		 5
+amk_art_pudding_2    -' Яркая пустышка 			 6
+amk_art_pudding_3    -' Лунная пустышка	 		 7 
+amk_art_pudding_4    -' Пуддинг 				 8
+
+amk_art_dik_1        -' Дикобраз 				 9
+amk_art_dik_2        -' Электрический дикобраз   10
+amk_art_dik_3        -' Сопливый дикобраз 		 11
+amk_art_dik_4        -' Каменный дикобраз 		 12
+
+amk_art_skura_1      -' Шкура 					 13
+amk_art_skura_2      -' Чешуя 					 14
+amk_art_skura_3      -' Панцирь 				 15
+amk_art_skura_4      -' Скальп контролёра		 16
+
+amk_art_kolob_1      -' Стальной колобок 		 17
+amk_art_kolob_2      -' Титановый колобок 		 18
+amk_art_kolob_3      -' Алмазный колобок 		 19
+amk_art_kolob_4      -' Младший брат гиганта 	 20
+
+amk_art_buliz_1      -' Булыжник 				 21
+amk_art_cry_1        -' Слезы электры 			 22
+amk_art_cry_2        -' Слеза огня 				 23
+amk_art_cry_3        -' Слезы химеры			 24
+
+amk_art_soul_1       -' Капли души 				 25
+amk_art_soul_2       -' Огненная душа 			 26
+amk_art_soul_3       -' Кристальная душа 		 27
+amk_art_soul_4       -' Кристальная душа Бенгала 28
+
+amk_graviK		1
+amk_fireK		2
+amk_chimK		3
+amk_snowK		4
+amk_electroK	5
+amk_radioK		6
+
+--]]
+--' ----------------------------------------------------------------------------------------------------------------------
+--' Снятие блокировки для того что бы варить не только арты, к примеру безоар контрика:
+boolean_its_not_arts = true
+
+local m = nil  		--' Медуза     
+local b = nil  		--' Кровь камня 
+local d = nil  		--' Капли       
+local t = nil  		--' Колючка     
+local ____timer		--' Таймер 1
+local x = 0
+local y = 1
+
+local imdex_random = math.random(x,y) < x or y
+
+local _texture = "ui_iconsTotal_amk_kapsula"
+local __texture = "ui_iconsTotal_amk_recept"
+
+local k1 = "Капсула будет израсходована через минуту реального времени"
+local k2 = "Капсула будет израсходована через минуту реального времени"
+local k3 = "Капсула будет израсходована через минуту реального времени"
+local k4 = "Капсула будет израсходована через минуту реального времени"
+local k5 = "Капсула будет израсходована через минуту реального времени"
+local k6 = "Капсула будет израсходована через минуту реального времени"
+
+local t1 = "%c[255,1,255,255]Бабкины бусы"
+local t2 = "%c[255,1,255,255]Бусы прабабки"
+local t3 = "%c[255,1,255,255]Бусы бабки бюрера"
+local t4 = "%c[255,1,255,255]Симбион"
+local t5 = "%c[255,1,255,255]Огненная пустышка"
+local t6 = "%c[255,1,255,255]Яркая пустышка"
+local t7 = "%c[255,1,255,255]Лунная пустышка"
+local t8 = "%c[255,1,255,255]Пуддинг"
+local t9 = "%c[255,1,255,255]Дикобраз"
+local t10 = "%c[255,1,255,255]Электрический дикобраз"
+local t11 = "%c[255,1,255,255]Сопливый дикобраз"
+local t12 = "%c[255,1,255,255]Каменный дикобраз"
+local t13 = "%c[255,1,255,255]Шкура"
+local t14 = "%c[255,1,255,255]Чешуя"
+local t15 = "%c[255,1,255,255]Панцирь"
+local t16 = "%c[255,1,255,255]Скальп контролёра"
+local t17 = "%c[255,1,255,255]Стальной колобок"
+local t18 = "%c[255,1,255,255]Титановый колобок"
+local t19 = "%c[255,1,255,255]Алмазный колобок"
+local t20 = "%c[255,1,255,255]Младший брат гиганта"
+local t21 = "%c[255,1,255,255]Булыжник"
+local t22 = "%c[255,1,255,255]Слезы электры"
+local t23 = "%c[255,1,255,255]Слезы огня"
+local t24 = "%c[255,1,255,255]Слезы химеры"
+local t25 = "%c[255,1,255,255]Капли души"
+local t26 = "%c[255,1,255,255]Огненная душа"
+local t27 = "%c[255,1,255,255]Кристальная душа"
+local t28 = "%c[255,1,255,255]Кристальная душа Бенгала"
+local t29 = "%c[255,1,255,255]Плазменная гусеница"
+
+--' Очистить private local
+local function clear_local()              
+ 	m = false
+	b = false
+	d = false
+	t = false
+	
+	log("amk_artefacts: m =	nil, b = nil, d = nil, t = nil")
+end
+
+local function ___Gu_timer()
+    ____timer = time_global() + 500 
+end
+ 
+local function _update___timer()
+    if ____timer and ____timer < time_global() then 
+        ____timer = nil 
+		log("amk_artefacts: timer = nil then ...")
+		clear_local()
+    end
+end
+
+local function item_drop(item)
+	if bool_amk_arts == false then 
+	    return 
+	end
+	
+	local nearest_anom = nil
+	local nearest_dist = 1000
+
+	if not boolean_its_not_arts then
+		if not IsArtefact(item) then 
+			return 
+		end 
+	end
+	
+	for id, an_zone_obj in pairs(db.zone_by_name) do 
+		local dist = an_zone_obj:position():distance_to(db.actor:position())
+		if dist < nearest_dist then 
+			nearest_anom = an_zone_obj
+			nearest_dist = dist
+		end 
+	end 
+	
+	if nearest_dist < 7 then 
+	--' Не private
+		check_af_transform(item)
+		log("amk_artefacts: check af transform")
+	end
+end 
+
+local function af_flash()
+	level.add_pp_effector("teleport.ppe", 65000, false)
+end
+
+function check_af_transform(item)
+
+	local section = item:section()
+	local rnd = math.random(0,100)
+	
+----------------------------------------------------------------------------------------
+--Артефакт Мамины бусы START 
+---------------------------------------------------------------------------------------- 
+	if section=="af_dummy_glassbeads_soc" and has_alife_info("amk_art_busi_1") and has_alife_info("amk_graviK") then
+        af_dummy_glassbeads_soc = item:id()
+		af_flash()
+		alife():release(alife():object(af_dummy_glassbeads_soc), true)
+
+	    if rnd>85 then
+		    if rnd>85+10 then
+		    spawn_item("af_dummy_glassbeads_soc",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_babka_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_graviK")
+    end
+	if section=="af_babka_1" and has_alife_info("amk_art_busi_2") and has_alife_info("amk_graviK") and has_alife_info("amk_fireK") then
+        af_babka_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_babka_1), true)
+
+	    if rnd>72 then
+		    if rnd>72+12 then
+		    spawn_item("af_babka_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_babka_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+			
+		db.actor:disable_info_portion("amk_graviK")
+		db.actor:disable_info_portion("amk_fireK")		
+    end   
+	if section=="af_babka_2" and has_alife_info("amk_art_busi_3") and has_alife_info("amk_chimK") and has_alife_info("amk_fireK") and has_alife_info("amk_graviK") then
+        af_babka_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_babka_2), true)
+
+	    if rnd>85 then
+		    if rnd>85+10 then
+		    spawn_item("af_babka_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_babka_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+	
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_graviK")
+    end 	
+----------------------------------------------------------------------------------------
+--Артефакт Мамины бусы END
+---------------------------------------------------------------------------------------- 	
+----------------------------------------------------------------------------------------
+--Артефакт Симбион START
+---------------------------------------------------------------------------------------- 	
+	if section=="af_medusa_soc" and has_alife_info("amk_art_simbion") and has_alife_info("amk_electroK") and has_alife_info("amk_chimK") and has_alife_info("amk_graviK") then
+        af_medusa_soc = item:id()
+		m = true
+		log("amk_art_mod: medusa")
+	elseif section=="af_blood_soc" then
+        af_blood_soc = item:id()
+		b = true
+		log("amk_art_mod: blood")
+	elseif section=="af_drops" then
+        af_drops = item:id()
+		d = true
+		log("amk_art_mod: drops")
+	elseif section=="af_rusty_thorn" then
+        af_rusty_thorn = item:id()	
+        t = true	
+		log("amk_art_mod: rusty")
+    if m == true and b == true and d == true and t == true then
+	___Gu_timer()
+		af_flash()
+		log("amk_art_mod: simbion _valid, timer nil")
+		alife():release(alife():object(af_medusa_soc), true)
+		alife():release(alife():object(af_blood_soc), true)
+		alife():release(alife():object(af_drops), true)
+		alife():release(alife():object(af_rusty_thorn), true)	
+
+	    if rnd>75 then
+		    if rnd>75+25 then
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_simbion",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+			
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_graviK")
+	end
+end
+----------------------------------------------------------------------------------------
+--Артефакт Симбион END
+---------------------------------------------------------------------------------------- 	
+----------------------------------------------------------------------------------------
+--Артефакт Пустышка START
+----------------------------------------------------------------------------------------
+ 	if section=="af_dummy_dummy_soc" and has_alife_info("amk_art_pudding_1") and has_alife_info("amk_fireK") then
+        af_dummy_dummy_soc = item:id()
+		af_flash()
+		alife():release(alife():object(af_dummy_dummy_soc), true)
+
+	    if rnd>70 then
+		    if rnd>70+25 then
+		    spawn_item("af_dummy_dummy_soc",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_pudd_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+					
+		db.actor:disable_info_portion("amk_fireK")
+    end
+ 	if section=="af_pudd_1" and has_alife_info("amk_art_pudding_2") and has_alife_info("amk_chimK") and has_alife_info("amk_electroK") then
+        af_pudd_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_pudd_1), true)
+
+	    if rnd>59 then
+		    if rnd>59+20 then
+		    spawn_item("af_pudd_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_pudd_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+	
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_electroK")
+    end	
+ 	if section=="af_pudd_2" and has_alife_info("amk_art_pudding_3") and has_alife_info("amk_fireK") and has_alife_info("amk_electroK") then
+        af_pudd_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_pudd_2), true)
+
+	    if rnd>50 then
+		    if rnd>50+35 then
+		    spawn_item("af_pudd_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_pudd_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+	
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_electroK")
+    end	
+ 	if section=="af_pudd_3" and has_alife_info("amk_art_pudding_4") and has_alife_info("amk_electroK") and has_alife_info("amk_chimK") and has_alife_info("amk_snowK") then
+        af_pudd_3 = item:id()
+		af_flash()
+		alife():release(alife():object(af_pudd_3), true)
+
+	    if rnd>80 then
+		    if rnd>80+10 then
+		    spawn_item("af_pudd_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_pudd_4",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_snowK")
+    end		
+----------------------------------------------------------------------------------------
+--Артефакт Пустышка END
+---------------------------------------------------------------------------------------- 	
+----------------------------------------------------------------------------------------
+--Артефакт Морской еж START
+---------------------------------------------------------------------------------------- 	
+ 	if section=="af_rusty_sea" and has_alife_info("amk_art_dik_1") and has_alife_info("amk_graviK") and has_alife_info("amk_radioK") then
+        af_rusty_sea = item:id()
+		af_flash()
+		alife():release(alife():object(af_rusty_sea), true)
+
+	    if rnd>65 then
+		    if rnd>65+20 then
+		    spawn_item("af_rusty_sea",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_dik_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+			
+		db.actor:disable_info_portion("amk_graviK")
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_dik_1" and has_alife_info("amk_art_dik_2") and has_alife_info("amk_electroK") and has_alife_info("amk_radioK") then
+        af_dik_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_dik_1), true)
+
+	    if rnd>72 then
+		    if rnd>72+25 then
+		    spawn_item("af_dik_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_dik_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_dik_2" and has_alife_info("amk_art_dik_3") and has_alife_info("amk_chimK") and has_alife_info("amk_graviK") then
+        af_dik_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_dik_2), true)
+
+	    if rnd>74 then
+		    if rnd>74+10 then
+		    spawn_item("af_dik_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_dik_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_graviK")
+    end		
+ 	if section=="af_dik_3" and has_alife_info("amk_art_dik_4") and has_alife_info("amk_graviK") and has_alife_info("amk_radioK") then
+        af_dik_3 = item:id()
+		af_flash()
+		alife():release(alife():object(af_dik_3), true)
+
+	    if rnd>50 then
+		    if rnd>50+28 then
+		    spawn_item("af_dik_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_dik_4",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_graviK")
+		db.actor:disable_info_portion("amk_radioK")
+    end		
+----------------------------------------------------------------------------------------
+--Артефакт Морской еж END
+---------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------
+--Артефакт Пленка START
+---------------------------------------------------------------------------------------- 
+ 	if section=="af_dummy_pellicle" and has_alife_info("amk_art_skura_1") and has_alife_info("amk_chimK") and has_alife_info("amk_radioK") then
+        af_dummy_pellicle = item:id()
+		af_flash()
+		alife():release(alife():object(af_dummy_pellicle), true)
+
+	    if rnd>70 then
+		    if rnd>70+25 then
+		    spawn_item("af_dummy_pellicle",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_armor_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_armor_1" and has_alife_info("amk_art_skura_2") and has_alife_info("amk_chimK") and has_alife_info("amk_graviK") then
+        af_armor_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_armor_1), true)
+
+	    if rnd>80 then
+		    if rnd>80+10 then
+		    spawn_item("af_armor_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_armor_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_graviK")
+    end	
+ 	if section=="af_armor_2" and has_alife_info("amk_art_skura_3") and has_alife_info("amk_chimK") and has_alife_info("amk_fireK") then
+        af_armor_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_armor_2), true)
+
+	    if rnd>65 then
+		    if rnd>65+25 then
+		    spawn_item("af_armor_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_armor_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_fireK")
+    end		
+ 	if section=="af_armor_3" and has_alife_info("amk_art_skura_4") and has_alife_info("amk_fireK") and has_alife_info("amk_electroK") and has_alife_info("amk_radioK") and has_alife_info("amk_chimK") then
+        af_armor_3 = item:id()
+		af_flash()
+		alife():release(alife():object(af_armor_3), true)
+
+	    if rnd>40 then
+		    if rnd>40+25 then
+		    spawn_item("af_armor_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_armor_4",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_radioK")
+		db.actor:disable_info_portion("amk_chimK")
+    end		
+----------------------------------------------------------------------------------------
+--Артефакт Пленка END
+---------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------
+--Артефакт Колобок START
+---------------------------------------------------------------------------------------- 
+ 	if section=="af_fuzz_kolobok_soc" and has_alife_info("amk_art_kolob_1") and has_alife_info("amk_radioK") then
+        af_fuzz_kolobok_soc = item:id()
+		af_flash()
+		alife():release(alife():object(af_fuzz_kolobok_soc), true)
+
+	    if rnd>70 then
+		    if rnd>70+25 then
+		    spawn_item("af_fuzz_kolobok_soc",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_kol_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end	
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_kol_1" and has_alife_info("amk_art_kolob_2") and has_alife_info("amk_graviK") and has_alife_info("amk_electroK") then
+        af_kol_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_kol_1), true)
+
+	    if rnd>55 then
+		    if rnd>55+35 then
+		    spawn_item("af_kol_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_kol_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_graviK")
+		db.actor:disable_info_portion("amk_electroK")
+    end	
+ 	if section=="af_kol_2" and has_alife_info("amk_art_kolob_3") and has_alife_info("amk_radioK") then
+        af_kol_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_kol_2), true)
+	
+	    if rnd>78 then
+		    if rnd>78+17 then
+		    spawn_item("af_kol_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_kol_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_kol_3" and has_alife_info("amk_art_kolob_4") and has_alife_info("amk_fireK") and has_alife_info("amk_graviK") then
+        af_kol_3 = item:id()
+		af_flash()
+		alife():release(alife():object(af_kol_3), true)
+
+	    if rnd>49 then
+		    if rnd>49+30 then
+		    spawn_item("af_kol_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_kol_4",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_graviK")
+    end		
+----------------------------------------------------------------------------------------
+--Артефакт Колобок END
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+--Артефакт Черная энергия START
+---------------------------------------------------------------------------------------- 
+ 	if section=="af_black_energi" and has_alife_info("amk_art_buliz_1") and has_alife_info("amk_graviK") then
+        af_black_energi = item:id()
+		af_flash()
+		alife():release(alife():object(af_black_energi), true)
+		spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		db.actor:disable_info_portion("amk_graviK")
+    end		
+----------------------------------------------------------------------------------------
+--Артефакт Черная энергия END
+---------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------
+--Артефакт Капли START
+---------------------------------------------------------------------------------------- 
+ 	if section=="af_drops" and has_alife_info("amk_art_cry_1") and has_alife_info("amk_fireK") and has_alife_info("amk_electroK") and has_alife_info("amk_snowK") then
+        af_drops = item:id()
+		af_flash()
+		alife():release(alife():object(af_drops), true)
+
+	    if rnd>75 then
+		    if rnd>75+10 then
+		    spawn_item("af_drops",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_cry_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+	
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_snowK")
+    end		
+ 	if section=="af_cry_1" and has_alife_info("amk_art_cry_2") and has_alife_info("amk_fireK") and has_alife_info("amk_electroK") and has_alife_info("amk_chimK") then
+        af_cry_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_cry_1), true)
+
+	    if rnd>65 then
+		    if rnd>65+20 then
+		    spawn_item("af_cry_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_cry_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_chimK")
+    end		
+ 	if section=="af_cry_2" and has_alife_info("amk_art_cry_3") and has_alife_info("amk_electroK") and has_alife_info("amk_snowK") and has_alife_info("amk_fireK") then
+        af_cry_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_cry_2), true)
+
+	    if rnd>55 then
+		    if rnd>55+25 then
+		    spawn_item("af_cry_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_cry_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_electroK")
+		db.actor:disable_info_portion("amk_snowK")
+		db.actor:disable_info_portion("amk_fireK")
+    end			
+----------------------------------------------------------------------------------------
+--Артефакт Капли END 
+---------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------
+--Артефакт Душа START 
+---------------------------------------------------------------------------------------- 
+ 	if section=="af_soul_soc" and has_alife_info("amk_art_soul_1") and has_alife_info("amk_radioK") then
+        af_soul_soc = item:id()
+		af_flash()
+		alife():release(alife():object(af_soul_soc), true)
+
+	    if rnd>70 then
+		    if rnd>70+25 then
+		    spawn_item("af_soul_soc",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_spirit_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end		
+		db.actor:disable_info_portion("amk_radioK")
+    end	
+ 	if section=="af_spirit_1" and has_alife_info("amk_art_soul_2") and has_alife_info("amk_fireK") then
+        af_spirit_1 = item:id()
+		af_flash()
+		alife():release(alife():object(af_spirit_1), true)
+
+	    if rnd>60 then
+		    if rnd>60+20 then
+		    spawn_item("af_spirit_1",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_spirit_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_fireK")
+    end	
+ 	if section=="af_spirit_2" and has_alife_info("amk_art_soul_3") and has_alife_info("amk_chimK") and has_alife_info("amk_graviK") then
+        af_spirit_2 = item:id()
+		af_flash()
+		alife():release(alife():object(af_spirit_2), true)
+
+	    if rnd>50 then
+		    if rnd>50+35 then
+		    spawn_item("af_spirit_2",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_spirit_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+	
+		db.actor:disable_info_portion("amk_chimK")
+		db.actor:disable_info_portion("amk_graviK")
+    end	
+ 	if section=="af_spirit_3" and has_alife_info("amk_art_soul_4") and has_alife_info("amk_snowK") and has_alife_info("amk_fireK") and has_alife_info("amk_radioK") and has_alife_info("amk_chimK") then
+        af_spirit_3 = item:id()
+		af_flash()
+		alife():release(alife():object(af_spirit_3), true)
+
+	    if rnd>50 then
+		    if rnd>50+30 then
+		    spawn_item("af_spirit_3",item:position(),item:game_vertex_id(),item:level_vertex_id())
+		        else
+		    spawn_item("af_buliz",item:position(),item:game_vertex_id(),item:level_vertex_id()) 
+		    end
+	    else
+		    spawn_item("af_spirit_4",item:position(),item:game_vertex_id(),item:level_vertex_id())
+	    end
+
+		db.actor:disable_info_portion("amk_snowK")
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_radioK")
+		db.actor:disable_info_portion("amk_chimK")
+    end		
+----------------------------------------------------------------------------------------
+-- Артефакт Душа END 
+---------------------------------------------------------------------------------------- 
+	if section=="not_af_bezoar" and has_alife_info("art_mod_caterpillar") and has_alife_info("amk_fireK") and has_alife_info("amk_chimK") then
+        not_af_bezoar = item:id()
+		af_flash()
+		alife():release(alife():object(not_af_bezoar), true)
+
+		spawn_item("af_caterpillar",item:position(),item:game_vertex_id(),item:level_vertex_id())
+
+		db.actor:disable_info_portion("amk_fireK")
+		db.actor:disable_info_portion("amk_chimK")
+    end		
+----------------------------------------------------------------------------------------
+-- Артефакт Плазменная гусеница END 
+---------------------------------------------------------------------------------------- 
+end 	
+
+function spawn_item(spawn_item, pos, gv, lv)
+
+	if gv == nil then 
+		gv = db.actor:game_vertex_id() 
+	end
+	
+	if lv==nil then 
+		lv=db.actor:level_vertex_id() 
+	end
+	
+    return alife():create(spawn_item, pos, lv, gv)
+end
+
+local function kapsuls_give_info(item)
+
+    local sec = item:section()
+	
+    if (sec == "gravi_kapsula") then
+ 		db.actor:give_info_portion ("amk_graviK") 
+        start_real_timer(60, "amk_artefacts.gravi_kapsula_end")	
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k1, _texture, 0, 10000)
+		end
+    end		
+	
+    if (sec == "fire_kapsula") then
+        db.actor:give_info_portion ("amk_fireK") 
+		start_real_timer(60, "amk_artefacts.fire_kapsula_end")	
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k2, _texture, 0, 10000)
+		end
+    end		
+	
+    if (sec == "chim_kapsula") then
+        db.actor:give_info_portion ("amk_chimK") 
+		start_real_timer(60, "amk_artefacts.chim_kapsula_end")	
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k3, _texture, 0, 10000)
+		end 
+    end		
+	
+    if (sec == "snow_kapsula") then
+        db.actor:give_info_portion ("amk_snowK") 
+		start_real_timer(60, "amk_artefacts.snow_kapsula_end")
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k4, _texture, 0, 10000)
+		end
+    end		
+	
+	if (sec == "electro_kapsula") then
+        db.actor:give_info_portion ("amk_electroK")
+		start_real_timer(60, "amk_artefacts.electro_kapsula_end")
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k5, _texture, 0, 10000)
+		end
+    end		
+	
+	if (sec == "radio_kapsula") then
+        db.actor:give_info_portion ("amk_radioK") 
+		start_real_timer(60, "amk_artefacts.radio_kapsula_end")	
+		if imdex_random then
+			db.actor:give_game_news("Внимание!", k6, _texture, 0, 10000)
+		end
+    end						
+end
+
+function gravi_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_graviK") 
+end
+
+function fire_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_fireK") 
+end
+
+function chim_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_chimK")
+end
+
+function snow_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_snowK")
+end
+
+function electro_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_electroK")
+end
+
+function radio_kapsula_end()
+	if imdex_random then
+		db.actor:give_game_news("Внимание!", "Капсула израсходованна", _texture, 0, 10000)
+	end
+	db.actor:disable_info_portion("amk_radioK") 
+end
+
+local function recept_give(item)
+
+    local sec
+	sec = item:section()
+	
+--' Бабкины бусы		
+    if (sec == "recept_1") then 
+		db.actor:give_info_portion ("amk_art_busi_1")
+		if imdex_random then
+			db.actor:give_game_news("Получен рецепт:", t1, __texture, 0, 10000)
+		end
+	end
+--' Бусы прабабки
+    if (sec == "recept_2") then 
+		db.actor:give_info_portion ("amk_art_busi_2")
+		r2()			
+	end		
+--' Бусы бабки бюрера
+    if (sec == "recept_3") then 
+		db.actor:give_info_portion ("amk_art_busi_3")
+		r3()
+	end	
+--' Симбион
+    if (sec == "recept_4") then 
+		db.actor:give_info_portion ("amk_art_simbion")
+		r4()
+	end	
+--' Огненная пустышка
+    if (sec == "recept_5") then 
+		db.actor:give_info_portion ("amk_art_pudding_1")
+		r5()
+	end	
+--' Яркая пустышка
+    if (sec == "recept_6") then 
+		db.actor:give_info_portion ("amk_art_pudding_2")
+		r6()
+	end	
+--' Лунная пустышка
+    if (sec == "recept_7") then 
+		db.actor:give_info_portion ("amk_art_pudding_3")
+		r7()
+	end	
+--' Пуддинг
+    if (sec == "recept_8") then 
+		db.actor:give_info_portion ("amk_art_pudding_4")
+		r8()
+	end	
+--' Дикобраз
+    if (sec == "recept_9") then 
+		db.actor:give_info_portion ("amk_art_dik_1")
+		r9()
+	end	
+--' Электрический дикобраз
+    if (sec == "recept_10") then 
+		db.actor:give_info_portion ("amk_art_dik_2")
+		r10()
+	end	
+--' Сопливый дикобраз
+    if (sec == "recept_11") then 
+		db.actor:give_info_portion ("amk_art_dik_3")
+		r11()
+	end	
+--' Каменный дикобраз
+	if (sec == "recept_12") then 
+		db.actor:give_info_portion ("amk_art_dik_4")
+		r12()
+	end		
+--' Шкура 
+    if (sec == "recept_13") then 
+		db.actor:give_info_portion ("amk_art_skura_1")
+		r13()
+	end	
+--' Чешуя
+    if (sec == "recept_14") then 
+		db.actor:give_info_portion ("amk_art_skura_2")
+		r14()
+	end	
+--' Панцирь
+    if (sec == "recept_15") then 
+		db.actor:give_info_portion ("amk_art_skura_3")
+		r15()
+	end	
+--' Скальп контролера
+    if (sec == "recept_16") then 
+		db.actor:give_info_portion ("amk_art_skura_4")
+		r16()
+	end		
+--' Стальной колобок
+    if (sec == "recept_17") then 
+		db.actor:give_info_portion ("amk_art_kolob_1")
+		r17()
+	end		
+--' Титановый колобок
+    if (sec == "recept_18") then 
+		db.actor:give_info_portion ("amk_art_kolob_2")
+		r18()
+	end	
+--' Алмазный колобок
+    if (sec == "recept_19") then 
+		db.actor:give_info_portion ("amk_art_kolob_3")
+		r19()
+	end	
+--' Младший брат гиганта
+    if (sec == "recept_20") then 
+		db.actor:give_info_portion ("amk_art_kolob_4")
+		r20()
+	end	
+--' Слезы электры
+    if (sec == "recept_22") then 
+		db.actor:give_info_portion ("amk_art_cry_1")
+		r22()
+	end	
+--' Слезы огня
+    if (sec == "recept_23") then 
+		db.actor:give_info_portion ("amk_art_cry_2")
+		r23()
+	end	
+--' Слезы химеры
+    if (sec == "recept_24") then 
+		db.actor:give_info_portion ("amk_art_cry_3")
+		r24()
+	end	
+--' Капли души
+	if (sec == "recept_25") then 
+		db.actor:give_info_portion ("amk_art_soul_1")
+		r25()
+	end		
+--' Огненная душа
+    if (sec == "recept_26") then 
+		db.actor:give_info_portion ("amk_art_soul_2")
+		r26()
+	end	
+--' Кристальная душа
+    if (sec == "recept_27") then 
+		db.actor:give_info_portion ("amk_art_soul_3")
+		r27()
+	end	
+--' Кристальная душа Бенгала
+    if (sec == "recept_28") then 
+		db.actor:give_info_portion ("amk_art_soul_4")
+		r28()
+	end		
+--' Плазменная гусеница
+    if (sec == "recept_29") then 
+		db.actor:give_info_portion ("art_mod_caterpillar")
+		r29()
+	end					
+end
+
+function r2()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t2, __texture, 0, 10000)
+	end
+end
+
+function r3()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t3, __texture, 0, 10000)
+	end
+end
+
+function r4()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t4, __texture, 0, 10000)
+	end
+end
+
+function r5()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t5, __texture, 0, 10000)
+	end
+end
+
+function r6()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t6, __texture, 0, 10000)
+	end
+end
+
+function r7()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t7, __texture, 0, 10000)
+	end
+end
+
+function r8()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t8, __texture, 0, 10000)
+	end
+end
+
+function r9()
+	if math.random(0,1)<0 or 1 then
+		db.actor:give_game_news("Получен рецепт:", t9, __texture, 0, 10000)
+	end
+end
+
+function r10()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t10, __texture, 0, 10000)
+	end
+end
+
+function r11()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t11, __texture, 0, 10000)
+	end
+end
+
+function r12()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t12, __texture, 0, 10000)
+	end
+end
+
+function r13()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t13, __texture, 0, 10000)
+	end
+end
+
+function r14()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t14, __texture, 0, 10000)
+	end
+end
+
+function r15()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t15, __texture, 0, 10000)
+	end
+end
+
+function r16()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t16, __texture, 0, 10000)
+	end
+end
+
+function r17()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t17, __texture, 0, 10000)
+	end
+end
+
+function r18()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t18, __texture, 0, 10000)
+	end
+end
+
+function r19()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t19, __texture, 0, 10000)
+	end
+end
+
+function r20()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t20, __texture, 0, 10000)
+	end
+end
+
+function r21()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t21, __texture, 0, 10000)
+	end
+end
+
+function r22()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t22, __texture, 0, 10000)
+	end
+end
+
+function r23()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t23, __texture, 0, 10000)
+	end
+end
+
+function r24()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t24, __texture, 0, 10000)
+	end
+end
+
+function r25()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t25, __texture, 0, 10000)
+	end
+end
+
+function r26()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t26, __texture, 0, 10000)
+	end
+end
+
+function r27()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t27, __texture, 0, 10000)
+	end
+end
+
+function r28()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t28, __texture, 0, 10000)
+	end
+end		
+
+function r29()
+	if imdex_random then
+		db.actor:give_game_news("Получен рецепт:", t29, __texture, 0, 10000)
+	end
+end									
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_item_drop", item_drop)  
+	RegisterScriptCallback("actor_on_item_use", recept_give)
+	RegisterScriptCallback("actor_on_item_use",	kapsuls_give_info)	
+	RegisterScriptCallback("actor_on_update", _update___timer)
+end					

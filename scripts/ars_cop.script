@@ -1,0 +1,167 @@
+--[[---------------------------------------------------------------------------------------
+file: ars_cop.script
+copyrings: xStream, Red75, Dexxx, Skunk
+last edited: Xmk
+description: библиотека служебных функций
+---------------------------------------------------------------------------------------]]--
+--//-------------------------------------------------------------------------
+--// TIMERS
+--//-------------------------------------------------------------------------
+
+-- cтарт таймера в реальном времени
+function start_timer(name,delay,action)
+  if not delay then return false end
+  if not action then action="" end
+  local time=game.time() --time in seconds since 1970
+  local a=1
+  while db.storage[db.actor:id()].pstor["rt"..a] do
+   a=a+1
+   if a>100 then return false end
+  end
+  ars.write_variable("rt"..a,name)
+  ars.write_variable("rt"..a.."d",time+delay*10000)
+  ars.write_variable("rt"..a.."p",action)
+  return true
+end
+
+-- cтарт таймера в игровом времени
+function g_start_timer(name,delay_d,delay_h,delay_m,action)
+  local time=level.get_time_days()*60*24+level.get_time_hours()*60+level.get_time_minutes()  --time in game minutes
+  if delay_d==nil or delay_h==nil or delay_m==nil then return false end
+  if action==nil then action="" end
+  local a=1
+  while db.storage[db.actor:id()].pstor["gt"..a] do
+   a=a+1
+   if a>100 then return false end
+  end
+  ars.write_variable("gt"..a,name)
+  ars.write_variable("gt"..a.."d",time+delay_d*60*24+delay_h*60+delay_m)
+  ars.write_variable("gt"..a.."p",action)
+  return true
+end
+
+-- проверка - запущен ли таймер реального времени
+function has_timer(name)
+  for a=1,100,1 do
+    tmp=ars.read_variable("rt"..a,nil)
+    if tmp and tmp==name then
+      rtn=a
+      return true
+    end
+  end
+  return false
+end
+
+-- проверка - запущен ли таймер игрового времени
+function has_g_timer(name)
+  for a=1,100,1 do
+    tmp=ars.read_variable("gt"..a,nil)
+    if tmp and tmp==name then
+      gtn=a
+      return true
+    end
+  end
+  return false
+end
+
+-- остановка таймера
+function stop_timer(name)
+  if has_timer(name)==true then
+    ars.del_variable("rt"..rtn)
+    ars.del_variable("rt"..rtn.."d")
+    ars.del_variable("rt"..rtn.."p")
+  end
+end
+
+-- остановка таймера игрового времени
+function stop_g_timer(name)
+  if has_g_timer(name)==true then
+    ars.del_variable("gt"..gtn)
+    ars.del_variable("gt"..gtn.."d")
+    ars.del_variable("gt"..gtn.."p")
+  end
+end
+
+-- проверка таймеров, использует 3 следующие за ним функции для выбора действия
+function check_timers()
+  local tmp
+  for a=1,100,1 do
+    tmp=ars.read_variable("rt"..a,nil)
+    if tmp~=nil then __timer_found(a) end
+  end
+  for a=1,100,1 do
+    tmp=ars.read_variable("gt"..a,nil)
+    if tmp~=nil then __g_timer_found(a) end
+  end
+end
+function __timer_found(idx)
+  local time=game.time() --time in seconds since 1970
+  local name,params
+  if ars.read_variable("rt"..idx.."d", nil)<=time then
+    name=ars.read_variable("rt"..idx, nil)
+    params=ars.read_variable("rt"..idx.."p", nil)
+    ars.del_variable("rt"..idx)
+    ars.del_variable("rt"..idx.."d")
+    ars.del_variable("rt"..idx.."p")
+    __do_timer_action(name,params)
+    return true
+  end
+  return false
+end
+function __g_timer_found(idx)
+  local gtime=level.get_time_days()*60*24+level.get_time_hours()*60+level.get_time_minutes()  --time in game minutes
+  local name,params
+  if ars.read_variable("gt"..idx.."d",nil)<=gtime then
+    name=ars.read_variable("gt"..idx,nil)
+    params=ars.read_variable("gt"..idx.."p",nil)
+    ars.del_variable("gt"..idx)
+    ars.del_variable("gt"..idx.."d")
+    ars.del_variable("gt"..idx.."p")
+    __do_timer_action(name,params)
+    return true
+  end
+  return false
+end
+function __do_timer_action(select_string,params_string)
+  if select_string=="slp" then
+    fCall("ars_mod","test_for_need_sleep")
+  elseif select_string=="men" then
+    ars.del_variable("smn")
+  elseif select_string=="snu" then
+    fCall("ars_mod","unconsciousness",0,params_string)
+  elseif select_string=="drk" then
+    fCall("ars_mod","test_for_need_drink")
+  elseif select_string=="del_effect" then
+    level.remove_pp_effector(params_string)
+  elseif select_string=="kill_actor" then
+    KillObj()
+  elseif select_string=="spw" then
+    spawn_item_in_inv(params_string)
+  elseif select_string=="body_ripper"..params_string then
+    fCall("ars_mod","dead_body_ripper_particles",params_string)
+  elseif select_string=="body_remove"..params_string then
+    fCall("ars_mod","dead_body_ripper_body_remove",params_string)
+  elseif select_string=="init_remove"..params_string then
+    fCall("ars_mod","dead_body_ripper_init_remove",params_string)
+  elseif select_string=="give_info" then
+	db.actor:give_info_portion(params_string)
+  elseif select_string=="disable_info" then
+    if has_alife_info(params_string) then
+      db.actor:disable_info_portion(params_string)
+    end
+  end
+end
+------------------------------ ARS CoP MOD v0.5.x ------------------------------
+--[[
+
+If you're going to use the whole of this script or its parts in your own creative 
+developments for the S.T.A.L.K.E.R. game. Leave the copyrights, note the real
+author(s) and don't claim others' ideas and their realization to be your own ones.
+It's just simple Modmakers' Ethics. Thank you!
+
+Если вы собираетесь использовать данный скрипт целиком или частично в своих 
+разработках по игре S.T.A.L.K.E.R. Не удаляйте копирайты, указывайте настоящего 
+автора(ов) и не выдавайте чужие идеи и их реализацию за свои. Ведь это элементарная 
+этика модостроителей! Спасибо за понимание.
+
+]]--

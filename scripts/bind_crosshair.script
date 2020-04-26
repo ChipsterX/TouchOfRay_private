@@ -1,0 +1,21 @@
+--' АМК - наше все
+--' OldSerpski stalker
+--' Переключение прицела
+
+function type_collide()
+	get_console():execute("hud_crosshair_collide on")
+	get_console():execute("hud_crosshair_inert off")
+	get_console():execute("hud_crosshair_standart off")
+end
+
+function type_inertion()
+	get_console():execute("hud_crosshair_collide off")
+	get_console():execute("hud_crosshair_inert on")
+	get_console():execute("hud_crosshair_standart off")
+end
+
+function type_standart()
+	get_console():execute("hud_crosshair_collide off")
+	get_console():execute("hud_crosshair_inert off")
+	get_console():execute("hud_crosshair_standart on")
+end

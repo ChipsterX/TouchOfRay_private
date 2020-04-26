@@ -1,0 +1,177 @@
+class "options_dialog_hud" (CUIScriptWnd)
+
+function options_dialog_hud:__init() super()
+	self.m_preconditions = {}
+	
+    self:InitControls()
+    self:InitCallBacks()
+	SendScriptCallback("opt_menu_on_init_hud",self)
+
+end
+
+function options_dialog_hud:__finalize()
+
+end
+
+function options_dialog_hud:InitControls()
+	self:SetWndRect				(Frect():set(0,0,1024,768))
+	self:Enable					(true)
+
+	self.xml = CScriptXmlInit()
+	local xml = self.xml
+	xml:ParseFile				("ui_mm_opt_hud.xml")
+
+	xml:InitStatic				("background", self)
+	self.dialog					= xml:InitStatic("main_dialog:dialog", self)
+
+	
+	local btn
+	btn = xml:Init3tButton		("main_dialog:btn_accept", self.dialog)
+	self:Register				(btn, "btn_accept")
+	btn = xml:Init3tButton		("main_dialog:btn_cancel", self.dialog)
+	self:Register				(btn, "btn_cancel")
+
+	self.tab					= xml:InitTab("main_dialog:tab", self.dialog)
+	self:Register				(self.tab, "tab")
+
+	self.message_box			= CUIMessageBoxEx()
+	self:Register				(self.message_box, "mb")
+
+	self.b_restart_system_shown	= false
+	self.timer					= nil
+	
+end
+
+function options_dialog_hud:SetCurrentValues()
+	local opt = COptionsManager()
+
+	opt:SetCurrentValues("mm_opt_hud")
+	opt:SaveBackupValues("mm_opt_hud")
+
+	SendScriptCallback("opt_menu_on_set_values_hud",self,opt)
+
+end
+
+
+function options_dialog_hud:InitCallBacks()
+	
+	self:AddCallback("btn_accept",			ui_events.BUTTON_CLICKED,	self.OnBtnAccept,			self)
+	self:AddCallback("btn_cancel",			ui_events.BUTTON_CLICKED,	self.OnBtnCancel,			self)
+
+	self:AddCallback("mb",					ui_events.MESSAGE_BOX_YES_CLICKED, self.OnApplyChanges, self)
+	self:AddCallback("mb",					ui_events.MESSAGE_BOX_NO_CLICKED, self.OnDiscardChanges,self)
+end
+
+function options_dialog_hud:OnBtnDefGraph()
+	local opt = COptionsManager()
+end
+
+function options_dialog_hud:OnBtnAccept()
+
+	local opt		= COptionsManager()
+	
+	if not BOOL_MODE_MIXED then
+		if not bind_settings_save then
+			operator:execute("cfg_save game_settings_save")
+		end
+	end
+
+	opt:SaveValues("mm_opt_hud")
+
+	SendScriptCallback("opt_menu_on_accept_hud",self,opt,operator)
+
+	if opt:NeedVidRestart() then
+		self.b_discard_settings_shown = true
+		self.message_box:InitMessageBox("message_box_yes_no")
+		self.message_box:SetText(string.format("%s %d% s", game.translate_string("ui_mm_confirm_changes"), 15, game.translate_string("mp_si_sec")))
+		self.message_box:ShowDialog(true)
+	else
+		self:OnApplyChanges()
+	end
+
+	opt:OptionsPostAccept()
+	
+	console:execute("cfg_save")
+end
+
+function options_dialog_hud:OnBtnCancel()
+	local opt				= COptionsManager()
+	opt:OptionsPostAccept	()
+
+	self.owner:ShowDialog(true)
+	self:HideDialog()
+	self.owner:Show(true)
+end
+
+function options_dialog_hud:OnTabChange()
+	local ids = self.tab:GetActiveId()
+	
+end
+
+
+function options_dialog_hud:Update()
+	CUIScriptWnd.Update(self)
+
+	local mm = main_menu.get_main_menu()
+
+	if(self.b_discard_settings_shown) then
+		local tg = math.floor(time_global_async()/1000)
+		if(self.timer==nil) then
+			self.timer = tg
+		end
+		self.message_box:SetText(string.format("%s %d %s", game.translate_string("ui_mm_confirm_changes"), 15-(tg-self.timer), game.translate_string("mp_si_sec")))
+		if(tg-self.timer>=15) then
+			if (self.message_box:IsShown()) then
+				self.message_box:HideDialog()
+			end
+			self:OnDiscardChanges()
+		end
+	end
+	
+end
+
+function options_dialog_hud:OnApplyChanges()
+    self.timer = nil
+    self.b_discard_settings_shown = false
+
+	self.owner:ShowDialog(true)
+	if (self:IsShown()) then
+		self:HideDialog()
+	end
+	self.owner:Show(true)
+	get_console():execute("vid_restart")
+
+	if not (self.b_restart_system_shown and self.message_box:IsShown()) then
+		local opt = COptionsManager()
+		if (opt:NeedSystemRestart() or self.b__require_restart == true) then
+			self.b__require_restart = false
+			self.b_restart_system_shown = true
+			self.message_box:InitMessageBox("message_box_restart_game")
+			self.message_box:ShowDialog(true)
+		end
+	end
+end
+
+function options_dialog_hud:OnDiscardChanges()
+    self.timer = nil
+    self.b_discard_settings_shown = false
+
+	if not BOOL_MODE_MIXED then
+		if not bind_settings_save then
+			operator:execute("cfg_save game_settings_save")
+		end
+	end
+	
+	self:SetCurrentValues()
+
+	operator:execute("vid_restart")
+   	operator:execute("cfg_save")
+end
+
+function options_dialog_hud:OnMenuReloaded()
+	if(self.b_discard_settings_shown) then
+	    self.message_box:InitMessageBox("message_box_yes_no")
+	    self.message_box:SetText(string.format("%s %d% s", game.translate_string("ui_mm_confirm_changes"), 15, game.translate_string("mp_si_sec")))
+	    self.message_box:ShowDialog(true)
+	end
+end

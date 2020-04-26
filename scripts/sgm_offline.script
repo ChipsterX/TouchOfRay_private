@@ -1,0 +1,7 @@
+function queue_on_offline(obj_id,cond)
+   if sgm_flags.table_mod_offline[obj_id]==nil then
+      sgm_flags.table_mod_offline[obj_id]={}
+   end
+   sgm_flags.table_mod_offline[obj_id].switch=true
+   sgm_flags.table_mod_offline[obj_id].cond=cond
+end

@@ -1,0 +1,291 @@
+--[[
+
+- Created by Tronex
+- Dynamic Anomalies
+- 2019/6/14
+
+1. Script (txr_anomalies.script) will read the list of anomalies and their position/types from the config (you can recorded custom pos for your anomalies)
+2. Then spawn all anomalies on new game, then disable a random number of them.
+3. When an enmission happen, anomalies will shuffle between off/on state (the dynamic factor)
+
+enable_debug = true, for debugging and map markers
+
+--]]
+
+local ini_ano
+local enable_debug = false
+local inited = false
+local current_level
+
+local _chance = 100 	-- [0 - 100] chance of activating a dynamic anomaly
+local anomaly_type = {}	 		 -- [type] = {}
+local anomaly_info = {}	 		 -- [level][name] = info
+
+local dyn_anomalies_dbg = {}	 -- [id] = name
+dyn_anomalies = {} 		 -- [level][id] = name
+
+
+-------------------------------
+-- PREPARE
+-------------------------------
+function ini_settings()
+
+	if (inited) then return end
+	inited = true
+	
+	ini_ano = ini_file("IGameObjectsLUA\\dynamic_anomalies.ltx")
+	
+	local n,m = 0,0
+	local result, id, value = "","",""
+	local name, info = "","",""
+	
+	-- Gather anomaly types
+	n = ini_ano:line_count("categories") or 0
+	for i=0,n-1 do
+		result, id, value	= ini_ano:r_line_ex("categories",i,"","")
+		anomaly_type[id] = {}
+		
+		m = ini_ano:line_count(id) or 0
+		for ii=0,m-1 do
+			result, name, info	= ini_ano:r_line_ex(id,ii,"","")
+			if name and info then
+				for j=1,tonumber(info) do
+					local size = #anomaly_type[id] + 1
+					anomaly_type[id][size] = name
+					print_debug("- Dynamic Anomalies | anomaly_type[%s][%s] = %s", id, size, name)
+				end
+			end
+		end
+	end
+	
+	-- Gather anomaly coordinates in all levels
+	n = ini_ano:line_count("levels") or 0
+	for i=0,n-1 do
+		result, id, value	= ini_ano:r_line_ex("levels",i,"","")
+		m = ini_ano:line_count(id) or 0
+		
+		anomaly_info[id] = {}
+		
+		for ii=0,m-1 do
+			result, name, info	= ini_ano:r_line_ex(id,ii,"","")
+			if name and info then
+				local t = alun_utils.str_explode(info,",")
+				if (#t == 6) and (t[1] ~= "NA") then
+					anomaly_info[id][name] = {
+						typ = t[1],
+						x = tonumber(t[2]),
+						y = tonumber(t[3]),
+						z = tonumber(t[4]),
+						lvl_id = tonumber(t[5]),
+						gm_id = tonumber(t[6]),
+					}
+				end
+			end
+		end
+	end
+end
+
+function print_debug(...)
+	if enable_debug then
+		printf(...)
+	end
+end
+
+local marker_by_type = {
+	["electric"]      = "anomaly_electric",
+	["chemical"]      = "anomaly_chemical",
+	["thermal"]       = "anomaly_thermal",
+	["gravitational"] = "anomaly_gravitational",
+	["radioactive"]   = "anomaly_radioactive",
+	["disabled"]      = "anomaly_disabled",
+}
+function add_marker(lvl, section, id, state)
+
+	if enable_debug then
+		ini_settings()
+		
+		if lvl and anomaly_info[lvl] then
+			local name = dyn_anomalies_dbg[id]
+			if name then
+				
+				local info = anomaly_info[lvl][name]
+				if info then
+					for k,v in pairs(marker_by_type) do
+						if (level.map_has_object_spot(id, v) ~= 0) then
+							level.map_remove_object_spot(id, v)
+						end
+					end
+			
+					local typ = info.typ
+					local spot = marker_by_type[typ] or marker_by_type["gravitational"]
+					if (state == false) then
+						spot = marker_by_type["disabled"]
+					end
+					level.map_add_object_spot_ser(id, spot, "Name: " .. name .. " \\nType: " .. typ .. " \\nSection: " .. section)
+				else
+					print_debug("! Dynamic Anomalies | Marker - no info is found for name {%s}", name)
+				end
+			else
+				print_debug("! Dynamic Anomalies | Marker - no name is found for id (%s)", id)
+			end
+		else
+			print_debug("! Dynamic Anomalies | Marker - level %s is not stored in anomaly_info table", lvl)
+		end
+	end
+end
+
+
+-------------------------------
+-- OPERATION
+-------------------------------
+function spawn_anomalies()
+	
+	-- Iterate through all anomalies info for all levels
+	local sim = alife()
+	
+	for lvl,v in pairs(anomaly_info) do
+		dyn_anomalies[lvl] = {}
+		
+		for name,info in pairs(v) do
+		
+			-- Get random anomaly section
+			local anom_type = anomaly_type[info.typ]
+			local section = anom_type and anom_type[math.random(#anom_type)]
+			if (not section) then
+				print_debug("! Dynamic Anomalies | Anomaly section not found for type: %s", info.typ)
+				return
+			end
+			
+			-- Info check
+			if not (info.x and info.y and info.z and info.lvl_id and info.gm_id and true) then
+				print_debug("! Dynamic Anomalies | Anomaly {%s} has wrong or incomplete info", name)
+				return
+			end
+			
+			-- Spawn
+			local se_obj = sim:create( section, vector():set(info.x , info.y , info.z), info.lvl_id, info.gm_id )
+			if ( not se_obj ) then
+				print_debug("! Dynamic Anomalies | Unable to spawn dynamic anomaly")
+				return
+			end
+		
+			-- Set anomaly properties:
+			local data = stpk_utils.get_anom_zone_data( se_obj )
+			if ( not data ) then
+				print_debug("! Dynamic Anomalies | Unable to set dynamic anomaly properties" )
+				return
+			end
+			data.shapes[1] = {}
+			data.shapes[1].shtype = 0
+			data.shapes[1].offset = vector():set( 0, 0, 0 )  -- Leave for compatibility with CoC 1.4.22, delete later
+			data.shapes[1].center = vector():set( 0, 0, 0 )
+			data.shapes[1].radius = 3
+			stpk_utils.set_anom_zone_data( data, se_obj )
+		
+			-- Save data
+			dyn_anomalies[lvl][se_obj.id] = true
+			
+			if enable_debug then
+				dyn_anomalies_dbg[se_obj.id] = name
+			end
+		
+			print_debug("- Dynamic Anomalies | %s | Spawned anomaly [%s](%s){%s}", lvl, section, se_obj.id, name)
+		end
+	end
+end
+
+function suffle_anomalies()
+	for lvl,v in pairs(dyn_anomalies) do
+		for id, state in pairs(v) do
+			if (math.random(100) < _chance) then
+				dyn_anomalies[lvl][id] = true
+				print_debug("/ Dynamic Anomalies | Shuffle - dyn_anomalies[%s][%s] = %s", lvl, id, true)
+			else
+				dyn_anomalies[lvl][id] = false
+				print_debug("/ Dynamic Anomalies | Shuffle - dyn_anomalies[%s][%s] = %s", lvl, id, false)
+			end
+		end
+	end
+end
+
+function update_anomalies()
+	if (not dyn_anomalies[current_level]) then
+		print_debug("! Dynamic Anomalies | Can't update anomalies because current level (%s) has no anomalies recorded", current_level)
+		return
+	end
+	
+	for id,state in pairs(dyn_anomalies[current_level]) do
+		local obj = level.object_by_id(id)
+		if obj then
+			obj:enable_anomaly()
+			if (state == false) then
+				obj:disable_anomaly()
+			end
+			
+			add_marker(current_level, obj:section(), id, state)
+			print_debug("- Dynamic Anomalies | %s | Anomaly with id (%s) is set to state: %s", current_level, id, state)
+		else
+			print_debug("! Dynamic Anomalies | %s | Couldn't get online object for id (%s)", current_level, id)
+		end
+	end
+	
+	return true
+end
+
+function refresh_anomalies(force)
+
+	-- Prepare anomalies for the first time
+	if (not has_alife_info("dynamic_anomalies_spawned")) and (size_table(dyn_anomalies) == 0) then
+		give_info("dynamic_anomalies_spawned")
+
+		ini_settings()
+		
+		spawn_anomalies()
+		suffle_anomalies()
+		
+	-- shuffle state of all anomalies after emission
+	elseif force then
+		suffle_anomalies()
+	end
+	
+	-- enable/disable online anomalies
+	-- NOTE: it's important to use timer because online objects don't register instantly after creating the server objects, so we need to wait for a bit.
+	-- Guess there's a delay in engine to set things up completely
+	local n = has_alife_info("dynamic_anomalies_spawned") and 1 or 10
+	CreateTimeEvent(0, "update_dynamic_anomalies", n, update_anomalies)
+end
+
+-------------------------------
+-- CALLBACKS
+-------------------------------
+local function actor_on_first_update()
+	current_level = level.name()
+	if not bool_single_anomalyes then 
+		local enabled = axr_main.config:r_bool_ex("mm_options","enable_dynamic_anomalies",false)
+		if enabled and (current_level ~= "fake_start") then
+			refresh_anomalies()
+		end
+	else
+		refresh_anomalies()
+	end
+end
+
+local function save_state(m_data)
+	m_data.dyn_anomalies = dyn_anomalies
+	if enable_debug then
+		m_data.dyn_anomalies_dbg = dyn_anomalies_dbg
+	end
+end
+
+local function load_state(m_data)
+	dyn_anomalies = m_data.dyn_anomalies or {}
+	if enable_debug then
+		dyn_anomalies_dbg = m_data.dyn_anomalies_dbg or {}
+	end
+end
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_first_update",actor_on_first_update)
+	RegisterScriptCallback("save_state",save_state)
+	RegisterScriptCallback("load_state",load_state)
+end

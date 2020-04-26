@@ -1,0 +1,831 @@
+--' Блок переменных:
+local iSID = 9901 --/#+# начальный story_id для stor-элементов хранения данных
+local opt = bind_back_to_the_roots.options
+local health_play = 0
+local run_play = 0
+local snd_tg = 0
+local actor_speed_time = 0
+function init(obj) xr_motivator.AddToMotivator(obj) end
+local _valid = { l01_escape = true, l05_bar = true, l08_yantar = true }	
+
+--/ -----------------------------------------------------------------
+--/#+# [se_stor] организуем внешний доступ к биндеру актора:
+--/ -----------------------------------------------------------------
+function actor_init(npc)
+	_G.g_bind_actor = this.actor_binder(npc)
+	npc:bind_object(g_bind_actor)
+end
+function save(...)
+	_G.g_bind_actor:ext_save(...)
+end
+function load(...)
+	_G.g_bind_actor:ext_load(...)
+end
+----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
+class "actor_binder" (object_binder)
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:__init (obj) super(obj)
+
+	--/#+# [m_timers] for update timers -------------------------------
+	if (m_timers) then m_timers.start() end
+	--/<---------------------------------------------------------------
+
+	self.ActorManager = bind_actor.ActorManager() 
+
+	db.actor_binder = self
+	self.bCheckStart = false
+	self.deimos_intensity = nil
+	sound_theme.load_sound()
+	bind_stalker_ext.actor_on_init(self)
+end
+
+--' private:
+local function on_game_load_private()
+	--' ГГ и НПС мы не трогаем, гуляем по локациям. (Крысы)
+	level.set_monster_relation("rat_small", "actor", 0)
+	level.set_monster_relation("rat_small", "human", 0)
+	--' ГГ и НПС мы не трогаем, гуляем по локациям. (Стрекоза)
+	level.set_monster_relation("stringer", "actor", 0)
+	level.set_monster_relation("stringer", "human", 0)
+	--' Настройка фильтров для рендеров. (Direct X)
+	operator:execute("lod_filtr_dx9 -0.5")
+	operator:execute("lod_filtr_dx11 -2.5")
+end
+
+local function stringer_spawn()
+
+	--' Это можно без local
+	ap = db.actor:position()
+	lv = db.actor:level_vertex_id()
+	gv = db.actor:game_vertex_id()
+	
+	rats = { stringer_spawn = 1 }
+	
+	e = 1
+	
+	--' Цикл спавна
+	for i = e, 
+				-- Вариации спавна
+				getIntMinMax(
+							rats["stringer_spawn"] - getIntMinMax(0, 1), 
+								getIntMinMax(rats["stringer_spawn"] + getIntMinMax(0, 0))
+							) 
+			do
+		 alife():create(
+							"stinger_weak", 
+							vector():set(
+										ap.x 
+										+ getIntMinMax(-250,250), 
+										ap.y, 
+										ap.z 
+										+ getIntMinMax(-250,250)
+									), 
+								lv, 
+							gv
+						)
+		printf("func::stringer_spawn(), PosX = %s PosY = %s PosZ = %s", ap.x, ap.y, ap.z)	
+	end
+end
+
+local function tarakan_spawn()
+
+	--' Это можно без local
+	ap = db.actor:position()
+	lv = db.actor:level_vertex_id()
+	gv = db.actor:game_vertex_id()
+	
+	rats = { tarakan_spawn = 1 }
+	
+	q = 1
+	
+	--' Цикл спавна
+	for i = q, 
+				-- Вариации спавна
+				getIntMinMax(
+							rats["tarakan_spawn"] - getIntMinMax(1, 2), 
+								getIntMinMax(rats["tarakan_spawn"] + getIntMinMax(1, 2))
+							) 
+			do
+		 alife():create(
+							"tarakan_normal", 
+							vector():set(
+										ap.x 
+										+ getIntMinMax(-250,250), 
+										ap.y, 
+										ap.z 
+										+ getIntMinMax(-250,250)
+									), 
+								lv, 
+							gv
+						)
+		printf("func::tarakan_spawn(), PosX = %s PosY = %s PosZ = %s", ap.x, ap.y, ap.z)	
+	end
+end
+
+local function rat_spawn()
+
+	--' Это можно без local
+	ap = db.actor:position()
+	lv = db.actor:level_vertex_id()
+	gv = db.actor:game_vertex_id()
+	
+	rats = { rat_spawn = 1 }
+	
+	j = 1
+	
+	--' Цикл спавна
+	for i = j, 
+				-- Вариации спавна
+				getIntMinMax(
+							rats["rat_spawn"] - getIntMinMax(1, 2), 
+								getIntMinMax(rats["rat_spawn"] + getIntMinMax(1, 2))
+							) 
+			do
+		 alife():create(
+							"rat_"..tostring(getIntMinMax(1, 4)), 
+							vector():set(
+										ap.x 
+										+ getIntMinMax(-250,250), 
+										ap.y, 
+										ap.z 
+										+ getIntMinMax(-250,250)
+									), 
+								lv, 
+							gv
+						)
+		printf("func::rat_spawn(), PosX = %s PosY = %s PosZ = %s", ap.x, ap.y, ap.z)	
+	end
+end
+
+local function default_zombie()
+
+	--' Это можно без local
+	ap = db.actor:position()
+	lv = db.actor:level_vertex_id()
+	gv = db.actor:game_vertex_id()
+	
+--	polters = { polter_spawn = 1 }
+	zombie = { zombie_spawn = 1 }
+	
+--	s = 1
+	l = 1
+	
+	--' Цикл спавна
+--	for i = s, 
+				-- Вариации спавна
+--				getIntMinMax(
+--							polters["polter_spawn"] - getIntMinMax(0, 1), 
+--								getIntMinMax(polters["polter_spawn"] + getIntMinMax(0, 1))
+--							) 
+--			do
+--		alife():create(
+--							"m_poltergeist_normal_tele", 
+--							vector():set(
+--										ap.x 
+--										+ getIntMinMax(-250,250), 
+--										ap.y, 
+--										ap.z 
+--										+ getIntMinMax(-250,250)
+--									), 
+--								lv, 
+--							gv
+--						)
+--		printf("func::default_spawn(), [polters]: PosX = %s PosY = %s PosZ = %s", ap.x, ap.y, ap.z)					
+--	end
+	
+	for i = l, 
+				-- Вариации спавна
+				getIntMinMax(
+							zombie["zombie_spawn"] - getIntMinMax(0, 1), 
+								getIntMinMax(zombie["zombie_spawn"] + getIntMinMax(0, 1))
+							) 
+			do
+		alife():create(
+							"zombie_horror"..tostring(math.random(35)), 
+							vector():set(
+										ap.x 
+										+ getIntMinMax(-250,250), 
+										ap.y, 
+										ap.z 
+										+ getIntMinMax(-250,250)
+									), 
+								lv, 
+							gv
+						)
+		printf("func::default_spawn(), [zombie]: PosX = %s PosY = %s PosZ = %s", ap.x, ap.y, ap.z)	
+	end
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:net_spawn(se_abstract)
+	--alun_utils.debug_write("actor net spawn start")
+	
+	if object_binder.net_spawn(self,se_abstract) == false then
+		return false
+	end
+	
+	level.show_indicators()
+	self.bCheckStart = true
+	self.weapon_hide = false
+	self.weapon_hide_in_dialog = false
+	
+	db.add_actor(self.object)
+	db.add_enemy(self.object)
+
+	level_weathers.get_weather_manager():reset()
+	
+	db.actor.deimos_intensity = self.deimos_intensity
+	self.deimos_intensity = nil
+	if self.st.disable_input_time == nil then
+		level.enable_input()
+	end
+
+	death_manager.init_drop_settings()
+	self.spawn_frame = device().frame
+	self.already_jumped = false
+	self.loaded = false
+	
+	if not BOOL_MODE_MIXED then
+		bind_deleted_corpses.off_corpses()
+	end
+	
+	bind_stalker_ext.actor_on_net_spawn(self)
+	
+	if bool_artefacts_hit == true then
+		bind_artefacts_hit.spawn_art()
+	end
+	
+	if bind_spawn_stringer == true then
+		stringer_spawn() 
+	end
+	
+	if bind_spawn_rats == true then
+		rat_spawn() 
+	end
+	
+	if bind_spawn_tarakans == true then
+		tarakan_spawn() 
+	end
+	
+	if bind_spawn_zombie == true then
+		if _valid[level.name()] == true then 
+			return 
+		else
+			default_zombie()
+		end
+	end
+	
+	if bind_default_spawn_artef == true then
+		
+	end
+	
+	--alun_utils.debug_write("actor net spawn end")
+	
+	return true
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:net_destroy()
+
+	local sm = surge_manager.get_surge_manager()
+	if (sm) then 
+		sm:finalize() 
+	end
+
+	local sm = psi_storm_manager.get_psi_storm_manager()
+	if (sm) then 
+		sm:finalize() 
+	end 
+	
+	local sm = level_weathers.get_weather_manager()
+	if (sm) then 
+		sm:finalize() 
+	end
+	
+	xr_sound.stop_sounds_by_id(self.object:id())
+
+	if (USE_MARSHAL) then 
+		UnregisterScriptCallback("save_state",self)
+	end
+
+	bind_stalker_ext.actor_on_net_destroy(self)
+	
+	level.show_weapon(true)
+	db.del_actor(self.object)
+	db.delete_enemy(self.object)
+
+	-- remove callbacks
+	local t = {
+				-- vanilla
+				callback.inventory_info,
+				callback.on_item_take,
+				callback.on_item_drop,
+				callback.task_state,
+				callback.trade_sell_buy_item,
+				callback.take_item_from_box,
+				callback.use_object,
+				
+				-- coc
+				callback.hud_animation_end,
+				callback.hit,
+				callback.key_press,
+				callback.key_release,
+				callback.key_hold,
+				callback.actor_before_death,
+				callback.on_attach_vehicle,
+				callback.on_detach_vehicle,
+				callback.on_use_vehicle,
+				callback.weapon_fired,
+				callback.weapon_jammed,
+				callback.weapon_zoom_in,
+				callback.weapon_zoom_out,
+				callback.weapon_magazine_empty,
+				callback.weapon_no_ammo, 
+				callback.item_to_slot,
+				callback.item_to_belt,
+				callback.item_to_ruck,
+				callback.on_foot_step
+	}
+	for i=1,#t do 
+		if (t[i]) then 
+			self.object:set_callback(t[i])
+		end
+	end
+
+	if(_G.amb_vol~=0) then
+		get_console():execute("snd_volume_eff "..tostring(_G.amb_vol))
+		_G.amb_vol = 0
+	end
+	if(_G.mus_vol~=0) then
+	    get_console():execute("snd_volume_music "..tostring(_G.mus_vol))
+		_G.mus_vol = 0
+	end
+	if sr_psy_antenna.psy_antenna then
+		sr_psy_antenna.psy_antenna:destroy()
+		sr_psy_antenna.psy_antenna = false
+	end
+	
+	object_binder.net_destroy(self)	
+	--alun_utils.debug_write("actor net destroy end")
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:reinit()
+	object_binder.reinit(self)
+	
+	--alun_utils.debug_write("actor reinit start")
+	
+	local npc_id = self.object:id()
+	db.storage[npc_id] = empty_table(db.storage[npc_id])
+	self.st = db.storage[npc_id]
+
+	
+	local t = {
+				-- vanilla
+				["inventory_info"] 			= bind_stalker_ext.actor_on_info_callback,
+				["on_item_take"] 			= bind_stalker_ext.actor_on_item_take,
+				["on_item_drop"] 			= bind_stalker_ext.actor_on_item_drop,
+				["task_state"] 				= bind_stalker_ext.actor_on_task_callback,
+				["trade_sell_buy_item"]		= bind_stalker_ext.actor_on_trade,
+				["take_item_from_box"]		= bind_stalker_ext.actor_on_item_take_from_box,
+				["use_object"]				= bind_stalker_ext.actor_on_item_use,
+				
+				-- coc
+				["hud_animation_end"]		= bind_stalker_ext.actor_on_hud_animation_end,
+				["hit"]						= bind_stalker_ext.actor_on_hit_callback,
+				["key_press"]				= bind_stalker_ext.on_key_press,
+				["key_release"]				= bind_stalker_ext.on_key_release,
+				["key_hold"]				= bind_stalker_ext.on_key_hold,
+				["actor_before_death"]		= bind_stalker_ext.actor_on_before_death,
+				["on_attach_vehicle"]		= bind_stalker_ext.actor_on_attach_vehicle,
+				["on_detach_vehicle"]		= bind_stalker_ext.actor_on_detach_vehicle,
+				["on_use_vehicle"]			= bind_stalker_ext.actor_on_use_vehicle,
+				["weapon_fired"]			= bind_stalker_ext.actor_on_weapon_fired,
+				["weapon_jammed"]			= bind_stalker_ext.actor_on_weapon_jammed,
+				["weapon_zoom_in"]			= bind_stalker_ext.actor_on_weapon_zoom_in,
+				["weapon_zoom_out"]			= bind_stalker_ext.actor_on_weapon_zoom_out,
+				["weapon_magazine_empty"]	= bind_stalker_ext.actor_on_weapon_magazine_empty,
+				["weapon_no_ammo"]			= bind_stalker_ext.actor_on_weapon_reload, -- note: in engine this actually called on try_reload.
+				
+				["item_to_belt"]			= bind_stalker_ext.actor_item_to_belt,
+				["item_to_slot"]			= bind_stalker_ext.actor_item_to_slot,
+				["item_to_ruck"]			= bind_stalker_ext.actor_item_to_ruck,
+				["on_foot_step"]			= bind_stalker_ext.actor_on_foot_step
+	}
+	
+	for cb,func in pairs(t) do 
+		if (callback[cb] and func) then 
+			self.object:set_callback(callback[cb],func,self)
+		end
+	end
+	
+	if (USE_MARSHAL) then 
+		RegisterScriptCallback("save_state",self)
+	end
+	
+	bind_stalker_ext.actor_on_reinit(self)
+	
+	alife():set_objects_per_update(65534) -- To force all of alife to spawn and update at least once
+
+	--/#+# [lua_helper] ------------------------------------------------
+	if event then event("actor_stor"):once(true):trigger() --/#!#> событие: инициализаци¤ 'storage' актора
+	elseif lua_helper.Init_ActorPStor then lua_helper.Init_ActorPStor()
+	end
+	--/< ---------------------------------------------------------------
+
+end
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------
+local marsh_intence = 0
+
+function actor_binder:update(delta)
+
+	self.ActorManager:update(delta)
+
+	-- Обновление отключения ввода с клавиатуры.
+	if self.st.disable_input_time and game.get_game_time():diffSec(self.st.disable_input_time) >= (self.st.disable_input_idle or 0) then
+		level.enable_input()
+		self.st.disable_input_time = nil
+		self.st.disable_input_idle = nil
+	end
+
+	--/#+# [Радиактивная вод на болотах] ------------------------------------------------
+--	bind_marsh_radiation.update()
+	--/< --------------------------------------------------------------------------------
+	
+--	if IS_HUD_ST174 then
+--		log("valid OK")
+--	end
+
+--	if mode_god then
+--		db.actor.satiety = 1
+--		db.actor.thirst = 1
+--		db.actor.psy_health = 1
+--		db.actor.sleep = 1
+--	end
+
+	arc_main.actor_update()
+	
+	object_binder.update(self, delta)
+	--alun_utils.debug_write("actor update START")
+	
+	if bind_artefacts and bool_dynamics_arts_soc == true then
+		bind_artefacts.update()
+	end
+	
+	bind_stalker_ext.actor_on_update(self,delta)
+	
+	if not (db.actor:alive()) then return end
+	
+	if self.bCheckStart then -- first update after netspawn
+		self.bCheckStart = nil
+		--alun_utils.debug_write("actor first_update START")
+		bind_stalker_ext.actor_on_first_update(self,delta)
+
+		if not has_alife_info("global_dialogs") then
+			self.object:give_info_portion("global_dialogs")
+		end
+		if not has_alife_info("level_changer_icons") then
+			self.object:give_info_portion("level_changer_icons")
+		end
+		
+		pda.fill_primary_objects()
+		self.object:activate_slot(self.loaded_active_slot or 0)
+		
+		db.actor.afterFirstUpdate = true
+		
+		if (self.character_icon) then 
+			db.actor:set_character_icon(self.character_icon)
+		end
+		
+		local function set_obj_per_upd()
+			alife():set_objects_per_update(20)
+			return true
+		end
+		CreateTimeEvent(0,"obj_per_upd",1,set_obj_per_upd)
+		
+	end
+	
+	task_manager.get_task_manager():update()
+	level_weathers.get_weather_manager():update()
+	xr_sound.update(self.object:id())
+
+	-- Апдейт прятание оружия игрока во время диалога
+	if self.object:is_talking() then
+		if self.weapon_hide_in_dialog == false then
+			self.object:hide_weapon()
+			--printf("hiding weapon!!!")
+			self.weapon_hide_in_dialog = true
+		end
+	else              
+		if self.weapon_hide_in_dialog == true then
+			--printf("restoring weapon!!!")
+			self.object:restore_weapon()
+			self.weapon_hide_in_dialog = false
+		end
+	end
+
+	-- обновление пси-антенны
+	if sr_psy_antenna.psy_antenna then
+		sr_psy_antenna.psy_antenna:update(delta)
+	end
+	
+	--' mp3 pleer
+	if mod_update() then
+       sgm_loader.sigerous_mod_main()
+    end
+
+  --' Вывод сообщения о большой радиации
+	if db.actor.radiation >= 0.7 then
+	
+		local hud = get_hud()
+		local custom_static = hud:GetCustomStatic("cs_radiation_danger")
+		if custom_static == nil then
+			hud:AddCustomStatic("cs_radiation_danger", true)
+			hud:GetCustomStatic("cs_radiation_danger"):wnd():TextControl():SetTextST("st_radiation_danger")
+		end
+		
+	else
+	
+		local hud = get_hud()
+		local custom_static = hud:GetCustomStatic("cs_radiation_danger")
+		if custom_static ~= nil then
+			hud:RemoveCustomStatic("cs_radiation_danger")
+		end
+  end	
+
+	--/< --------------------------------------------------------------------------------
+	--/#+# [Дыхание ГГ при усталости] ---------------------------------------------------
+	local tg = time_global()
+	local health = db.actor.health
+	local power = db.actor.power
+
+	if tg < snd_tg or health < 0 then return end
+	
+	if health > opt.health.level2 then
+		if actor_speed_time > opt.speed.time_mini or power < opt.speed.stamina or (run_play == 1) then
+			run_play = run_play+1
+			if run_play > 2 then run_play = 1 end
+			local snd = sound_object("gg_ustal\\run_"..math.ceil(3*actor_speed_time/44).."_"..run_play)
+			snd:play(db.actor,0,sound_object.s2d)
+			snd_tg = tg+snd:length()*1.15
+		else
+			run_play = 2
+		end
+		return
+	end
+
+	if health <= opt.health.level1 then
+		health = 1
+		if math.random()<0.1 then
+			health_play = 0
+		else
+			health_play = health_play+1
+			if health_play > 4 then health_play = 1 end
+		end
+	else
+		health = 2
+		health_play = health_play+1
+		if health_play > 4 then health_play = 1 end
+	end
+	snd_tg = tg+opt.health.injury_snd["_"..health.."_"..health_play]
+	local snd = sound_object("gg_ustal\\health_"..health.."_"..health_play)
+	snd:play(db.actor,0,sound_object.s2d)
+	--/< --------------------------------------------------------------------------------
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:save(packet)
+	set_save_marker(packet, "save", false, "actor_binder")
+	object_binder.save(self, packet)
+	set_save_marker(packet, "save", true, "actor_binder")
+	
+	if (USE_MARSHAL) then
+		if (utils.level_changing()) then
+			utils.save_var(db.actor,"heli_enemy_flag",nil)
+			SendScriptCallback("on_level_changing")
+		end
+		return
+	end
+	
+	set_save_marker(packet, "save", false, "actor_binder")
+
+	if (utils.level_changing()) then
+		utils.save_var(db.actor,"heli_enemy_flag",nil)
+	end
+	
+	--alundaio
+	alun_utils.w_stpk(packet,"u8",level.get_game_difficulty(), "game difficulty")
+	alun_utils.w_stpk(packet,"CTime",self.st.disable_input_time, "disable input time")
+
+	xr_logic.pstor_save_all(self.object, packet)
+	level_weathers.get_weather_manager():save(packet)
+	
+	sr_psy_antenna.save( packet )
+
+	alun_utils.w_stpk(packet,"bool",SIMBOARD.simulation_started, "sim started")
+
+	xr_sound.actor_save(packet)
+	--alun_utils.w_stpk(packet,"stringZ",self.last_level_name,"last level name")
+	dxr_statistics.save(packet)
+	task_manager.get_task_manager():save(packet)
+	packet:w_u8(self.object:active_slot())
+
+	bind_stalker_ext.actor_on_save(self,packet)
+
+	--/#+# for debug --------------------------------------------------
+	local size = packet:w_tell()
+	--/<---------------------------------------------------------------
+	
+	--/#+# [m_timers] вызов сохранений во внешних модулях -------------
+	if se_stor then
+		if to_log then to_log(script_name()..":save:size=["..(packet:w_tell() - size).."]") end --/#~#
+		if event then --/ вызов через 'систему сигналов'
+			event("actor_saved"):trigger() --/#!#> событие: 'окончание сохранения данных актора'
+		elseif type(se_stor.save) == 'function' then --/ 'прямой' вызов
+			if (m_timers) then m_timers.save() end --/ for timers
+			se_stor.save()
+		end
+	elseif (m_timers) then m_timers.save() --/ for timers
+	end
+	--/<---------------------------------------------------------------
+	
+	if bind_artefacts and bool_dynamics_arts_soc == true then
+		bind_artefacts.save(packet)
+	end
+	
+end
+
+--/#+# [se_stor] сохранение в чанках данных из внешних модулей без публичного save(): --
+function actor_binder:ext_save(pk) end
+--/<------------------------------------------------------------------------------------
+
+--/#+# [se_stor] загрузка данных из чанков во внешние модули без публичного save(): ----
+function actor_binder:ext_load(pk) end
+--/<------------------------------------------------------------------------------------
+
+function actor_binder:load(reader)
+	set_save_marker(reader, "load", false, "actor_binder")
+	object_binder.load(self, reader)
+	set_save_marker(reader, "load", true, "actor_binder")
+	if (USE_MARSHAL) then
+		self:load_state(alife_storage_manager.get_state()) -- fake because binder not ready when load_state callback is really made
+		bind_stalker_ext.actor_on_load(self,reader)
+		return
+	end
+	--alun_utils.debug_write("actor_binder:load start")
+
+	local game_difficulty_by_num = {
+				[0] = "gd_novice",
+				[1] = "gd_stalker",
+				[2] = "gd_veteran",
+				[3] = "gd_master"
+				}
+	local dif = game_difficulty_by_num[reader:r_u8()]
+	if not (dif) then
+		abort("actor_binder:load save corrupted!")
+		return 
+	end
+	get_console():execute("g_game_difficulty "..dif)
+	self.st.disable_input_time = utils.r_CTime(reader,"bind_stalker")
+
+	xr_logic.pstor_load_all(self.object, reader)
+	level_weathers.get_weather_manager():load(reader)
+
+	sr_psy_antenna.load(reader)
+	SIMBOARD.simulation_started = reader:r_bool()
+
+	xr_sound.actor_load(reader)
+
+	dxr_statistics.load(reader)
+	task_manager.get_task_manager():load(reader)
+
+	self.loaded_active_slot = reader:r_u8()
+	
+	--/#+# for debug --------------------------------------------------
+	local size = reader:r_tell() --/#+# for debug
+	--/<---------------------------------------------------------------
+
+	--/#+# [m_timers] вызов загрузки во внешних модулях ----------------
+	if se_stor then
+		if to_log then to_log(script_name()..":load:size=["..(reader:r_tell() - size).."]") end --/#~#
+		if event then --/ вызов через 'систему сигналов'
+			event("actor_load"):trigger() --/#!#> событие: 'загружены данные актора' (для инициализации стораджа актора)
+		elseif type(se_stor.load) == 'function' then --/ 'прямой' вызов
+			se_stor.load()
+			if (m_timers) then m_timers.load() end --/ for timers
+		end
+	elseif (m_timers) then m_timers.load() --/ for timers
+	end
+	--/<---------------------------------------------------------------
+
+	if bind_artefacts and bool_dynamics_arts_soc == true then
+		bind_artefacts.load(reader)
+	end
+
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:save_state(m_data)
+	--alun_utils.debug_write(strformat("actor_binder:save_state BEFORE"))
+	
+	local state = alife_storage_manager.get_game_object_state(self.object,true)
+	
+	if not (state.actor_binder) then 
+		state.actor_binder = {} 
+	end 
+	
+	state.actor_binder.game_difficulty = level.get_game_difficulty()
+	state.actor_binder.disable_input_time = self.st.disable_input_time
+	state.actor_binder.simulation_started = SIMBOARD.simulation_started
+	--state.actor_binder.last_level_name = self.last_level_name
+	state.actor_binder.active_slot = self.object:active_slot()
+	state.actor_binder.character_icon = self.character_icon
+	
+	if (sr_psy_antenna.psy_antenna and sr_psy_antenna.psy_antenna.global_state ~= 0 and not utils.level_changing()) then 
+		sr_psy_antenna.psy_antenna:save_state(m_data)
+	end
+	
+	dxr_statistics.save_state(m_data)
+	inventory_upgrades.save_state(m_data)
+	xr_sound.actor_save_state(state)
+	task_manager.save_state(m_data)
+	level_weathers.get_weather_manager():save_state(m_data)
+	surge_manager.save_state(m_data)
+	horror_manager.save_state(m_data)
+	psi_storm_manager.save_state(m_data)
+	
+	db.storage[0].pstor = db.storage[0].pstor or {}
+	--alun_utils.debug_write(strformat("actor_binder:save_state AFTER"))
+end
+
+function actor_binder:load_state(m_data)
+	local state = alife_storage_manager.get_game_object_state(self.object)
+	if not (state and state.actor_binder) then 
+		return 
+	end
+	--alun_utils.debug_write("actor_binder:load_state before")
+	local game_difficulty_by_num = {
+				[0] = "gd_novice",
+				[1] = "gd_stalker",
+				[2] = "gd_veteran",
+				[3] = "gd_master"
+				}
+	get_console():execute("g_game_difficulty "..game_difficulty_by_num[state.actor_binder.game_difficulty or 3])
+	self.st.disable_input_time = state.actor_binder.disable_input_time
+	SIMBOARD.simulation_started = state.actor_binder.simulation_started
+	--self.last_level_name = state.actor_binder.last_level_name
+	self.loaded_active_slot = state.actor_binder.active_slot or 0
+	self.character_icon = state.actor_binder.character_icon
+	
+	if (sr_psy_antenna.psy_antenna) then 
+		sr_psy_antenna.psy_antenna:load_state(m_data)
+	end
+	
+	dxr_statistics.load_state(m_data)
+	inventory_upgrades.load_state(m_data)
+	xr_sound.actor_load_state(state)
+	task_manager.load_state(m_data)
+	level_weathers.get_weather_manager():load_state(m_data)
+	surge_manager.load_state(m_data)
+	horror_manager.load_state(m_data)
+	psi_storm_manager.load_state(m_data)
+	
+	if (state.pstor_all) then 
+		db.storage[0].pstor = state.pstor_all
+		state.pstor_all = nil
+	end 
+
+	if (state.pstor_ctime) then
+		db.storage[0].pstor_ctime = state.pstor_ctime
+		state.pstor_ctime = nil
+	end
+	
+	state.actor_binder = nil
+	--alun_utils.debug_write("actor_binder:load_state after")
+end 
+
+------------------------------------------
+--' Функции убрать/показать руки, снять/одеть шлем
+--' Вызов: use_weapon(1), use_helmet(1)
+------------------------------------------
+local helmet_hidden = 0
+local weapon_hidden = 0
+function use_helmet(f)
+	helmet_hidden = helmet_hidden + f * 2 - 1
+	if mask_hud and mask_hud.feature_is_active == true then
+		mask_hud.helmet_active = (helmet_hidden == 0)
+	end
+end
+
+function use_weapon(f)
+	local hidden = weapon_hidden
+	weapon_hidden = weapon_hidden + f * 2 - 1
+	if weapon_hidden == 0 then
+		db.actor:restore_weapon()
+	elseif hidden == 0 then
+		db.actor:hide_weapon()
+	end
+end
+
+function on_game_start() RegisterScriptCallback("on_game_load",on_game_load_private) end

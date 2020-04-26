@@ -1,0 +1,264 @@
+--[[
+==================================== Created by Tronex =======================================
+Last edit: 2018/5/22
+The GUI part (what appears on PDA/Radio tab) + callbacks of buttons
+==============================================================================================
+Codes/comments with ( --< can be expanded for more channels >-- ) tag can be edited to add more radio channels
+==============================================================================================
+--]]
+--printf(">>>> TRX Zone FM: ui_pda_radio_tab Loaded <<<<")
+
+
+
+-- ==============================================================================================
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+--											GUI Part
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+-- ==============================================================================================
+
+local SINGLETON = nil
+
+function get_ui() -- get called from pressing the tab
+	SINGLETON = SINGLETON or pda_radio_tab()
+	return SINGLETON
+end
+
+class "pda_radio_tab" (CUIScriptWnd)
+
+function pda_radio_tab:__init() super()
+	self:InitControls()
+	self.radio_display_ch1 = false		-- If true, it will display channel 1 red marker 
+	self.radio_display_ch2 = false		-- If true, it will display channel 2 red marker. one of them will be true.
+end
+
+function pda_radio_tab:__finalize() 
+	SINGLETON = nil
+end
+
+function pda_radio_tab:InitControls() -- Rule: Prepare the UI	
+	local xml = CScriptXmlInit()
+	xml:ParseFile("pda_radio.xml")
+	
+	
+	-- Main frame
+	self:SetWndRect(Frect():set(0, 0, 1024, 768))
+	xml:InitFrame("frame1", self)
+	xml:InitFrame("frame2", self)
+	xml:InitFrame("frame3", self)
+	
+	xml:InitStatic("frame2:caption", self)
+	xml:InitStatic("frame3:caption", self)
+	
+	self.radio_off = xml:InitStatic("interface_radio_off", self)
+	self.radio_ch1 = xml:InitStatic("interface_radio_ch1", self)
+	self.radio_ch1:Show(false)
+	self.radio_ch2 = xml:InitStatic("interface_radio_ch2", self)
+	self.radio_ch2:Show(false)
+	--< can be expanded for more channels >--
+	
+	xml:InitStatic("interface_plyr", self)
+	
+	self.playing_text = xml:InitStatic("playing", self):TextControl()
+	self.playlist_text = xml:InitStatic("playlist_state", self):TextControl()
+	self.time_text = xml:InitStatic("time_left", self):TextControl()
+	self.suffle_text = xml:InitStatic("suffle_state", self):TextControl()
+	self.loop_text = xml:InitStatic("loop_state", self):TextControl()
+	
+	-- Radio channels 	--< can be expanded for more channels >--
+	self.btn_radio_ch_1 = xml:Init3tButton("btn_radio_ch_1", self)
+	self:Register(self.btn_radio_ch_1, "btn_radio_ch_1")
+	self:AddCallback("btn_radio_ch_1", ui_events.BUTTON_CLICKED, self.btn_radio_ch_1_click, self)
+		
+	self.btn_radio_ch_2 = xml:Init3tButton("btn_radio_ch_2", self)
+	self:Register(self.btn_radio_ch_2, "btn_radio_ch_2")
+	self:AddCallback("btn_radio_ch_2", ui_events.BUTTON_CLICKED, self.btn_radio_ch_2_click, self)
+	
+	
+	-- Radio buttons
+	self.btn_radio_v_down = xml:Init3tButton("btn_radio_v_down", self)
+	self:Register(self.btn_radio_v_down, "btn_radio_v_down")
+	self:AddCallback("btn_radio_v_down", ui_events.BUTTON_CLICKED, self.btn_radio_v_down_click, self)
+		
+	self.btn_radio_v_up = xml:Init3tButton("btn_radio_v_up", self)
+	self:Register(self.btn_radio_v_up, "btn_radio_v_up")
+	self:AddCallback("btn_radio_v_up", ui_events.BUTTON_CLICKED, self.btn_radio_v_up_click, self)
+		
+	self.btn_radio_stop = xml:Init3tButton("btn_radio_stop", self)
+	self:Register(self.btn_radio_stop, "btn_radio_stop")
+	self:AddCallback("btn_radio_stop", ui_events.BUTTON_CLICKED, self.btn_radio_stop_click, self)
+	
+	self.btn_radio_start = xml:Init3tButton("btn_radio_start", self)
+	self:Register(self.btn_radio_start, "btn_radio_start")
+	self:AddCallback("btn_radio_start", ui_events.BUTTON_CLICKED, self.btn_radio_start_click, self)
+	
+	
+	-- Music Player buttons
+	self.btn_plyr_playlist = xml:Init3tButton("btn_plyr_playlist", self)
+	self:Register(self.btn_plyr_playlist, "btn_plyr_playlist")
+	self:AddCallback("btn_plyr_playlist", ui_events.BUTTON_CLICKED, self.btn_plyr_playlist_click, self)
+	
+	self.btn_plyr_loop = xml:Init3tButton("btn_plyr_loop", self)
+	self:Register(self.btn_plyr_loop, "btn_plyr_loop")
+	self:AddCallback("btn_plyr_loop", ui_events.BUTTON_CLICKED, self.btn_plyr_loop_click, self)
+		
+	self.btn_plyr_shuffle = xml:Init3tButton("btn_plyr_shuffle", self)
+	self:Register(self.btn_plyr_shuffle, "btn_plyr_shuffle")
+	self:AddCallback("btn_plyr_shuffle", ui_events.BUTTON_CLICKED, self.btn_plyr_shuffle_click, self)
+		
+	self.btn_plyr_v_down = xml:Init3tButton("btn_plyr_v_down", self)
+	self:Register(self.btn_plyr_v_down, "btn_plyr_v_down")
+	self:AddCallback("btn_plyr_v_down", ui_events.BUTTON_CLICKED, self.btn_plyr_v_down_click, self)
+		
+	self.btn_plyr_v_up = xml:Init3tButton("btn_plyr_v_up", self)
+	self:Register(self.btn_plyr_v_up, "btn_plyr_v_up")
+	self:AddCallback("btn_plyr_v_up", ui_events.BUTTON_CLICKED, self.btn_plyr_v_up_click, self)
+		
+	self.btn_plyr_prev = xml:Init3tButton("btn_plyr_prev", self)
+	self:Register(self.btn_plyr_prev, "btn_plyr_prev")
+	self:AddCallback("btn_plyr_prev", ui_events.BUTTON_CLICKED, self.btn_plyr_prev_click, self)
+		
+	self.btn_plyr_stop = xml:Init3tButton("btn_plyr_stop", self)
+	self:Register(self.btn_plyr_stop, "btn_plyr_stop")
+	self:AddCallback("btn_plyr_stop", ui_events.BUTTON_CLICKED, self.btn_plyr_stop_click, self)
+	
+	self.btn_plyr_start = xml:Init3tButton("btn_plyr_start", self)
+	self:Register(self.btn_plyr_start, "btn_plyr_start")
+	self:AddCallback("btn_plyr_start", ui_events.BUTTON_CLICKED, self.btn_plyr_start_click, self)
+	
+	self.btn_plyr_next = xml:Init3tButton("btn_plyr_next", self)
+	self:Register(self.btn_plyr_next, "btn_plyr_next")
+	self:AddCallback("btn_plyr_next", ui_events.BUTTON_CLICKED, self.btn_plyr_next_click, self)
+end
+
+function pda_radio_tab:Update()	-- Rule: called automatically to update the PDA UI
+	CUIScriptWnd.Update(self)
+	local empty_text = "" 
+	local plyr_info = trx_radio.trx_get_plyr_param()
+	self.radio_ch1:Show(self.radio_display_ch1)
+	self.radio_ch2:Show(self.radio_display_ch2)
+	--< can be expanded for more channels >--
+		
+	if plyr_info.state then	-- if Music Player is on
+		
+		-- Display track name
+		self.playing_text:SetText(game.translate_string("ui_st_radio_playing") .. ": " .. plyr_info.display)
+		
+		-- Display playlist
+		self.playlist_text:SetText(game.translate_string("ui_st_radio_playlist") .. ": " .. plyr_info.playlist)
+		
+		-- Display loop state
+		if (plyr_info.loop == 0) then
+			self.loop_text:SetText(game.translate_string("ui_st_radio_loop_off"))
+		elseif (plyr_info.loop == 1) then
+			self.loop_text:SetText(game.translate_string("ui_st_radio_loop_all"))
+		elseif (plyr_info.loop == 2) then
+			self.loop_text:SetText(game.translate_string("ui_st_radio_loop_one"))
+		end
+		
+		-- Display shuffle state
+		if (plyr_info.shuffle) then
+			self.suffle_text:SetText(game.translate_string("ui_st_radio_shuffle_on"))
+		else
+			self.suffle_text:SetText(game.translate_string("ui_st_radio_shuffle_off"))
+		end
+		
+		-- Display track remaining time
+		if plyr_info.now:playing() then
+			local time_length = math.floor(plyr_info.now:length() / 1000)
+			local time_elapsed = math.floor((time_global() - plyr_info.start_time) / 1000)
+			local time_remaining = time_length - time_elapsed
+			local time_mins_left = string.format("%02d", math.floor(time_remaining / 60))
+			local time_secs_left = string.format("%02d", time_remaining % 60)
+			self.time_text:SetText(time_mins_left .. ":" .. time_secs_left)
+		else
+			plyr_info.start_time = time_global()
+			self.time_text:SetText(empty_text)
+		end
+	else 	-- if Music Player is off
+		self.playing_text:SetText(empty_text)
+		self.playlist_text:SetText(empty_text)
+		self.time_text:SetText(empty_text)
+		self.suffle_text:SetText(empty_text)
+		self.loop_text:SetText(empty_text)
+	end
+end
+
+function pda_radio_tab:SwitchChannel(n)	-- Rule:
+	if (n == 1) then
+		self.radio_display_ch1 = true
+		self.radio_display_ch2 = false
+	elseif (n == 2) then
+		self.radio_display_ch1 = false
+		self.radio_display_ch2 = true
+	end
+	--< can be expanded for more channels >--
+end
+
+
+
+-- ==============================================================================================
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+--										Buttons and Action Triggers
+-- //////////////////////////////////////////////////////////////////////////////////////////////
+-- ==============================================================================================
+
+function pda_radio_tab:btn_radio_ch_1_click() -- Rule: Button click -> Switch to Channel 1
+	trx_radio.action_radio_ch(1)
+end
+
+function pda_radio_tab:btn_radio_ch_2_click() -- Rule: Button click -> Switch to Channel 2
+	trx_radio.action_radio_ch(2)
+end
+--< can be expanded for more channels >-- you need to make new function for each new channel
+
+function pda_radio_tab:btn_radio_v_down_click()	-- Rule: Button click -> Reduce the radio volume
+	trx_radio.action_radio_v_down()
+end	
+
+function pda_radio_tab:btn_radio_v_up_click() -- Rule: Button click -> Increase the radio volume
+	trx_radio.action_radio_v_up()
+end
+
+function pda_radio_tab:btn_radio_stop_click() -- Rule: Button click -> Stop the radio
+	trx_radio.action_radio_stop()
+end
+
+function pda_radio_tab:btn_radio_start_click() -- Rule: Button click -> Start the radio
+	trx_radio.action_radio_start()
+end
+
+function pda_radio_tab:btn_plyr_playlist_click() -- Rule: Button click -> Loop the tracks from music player	
+	trx_radio.action_plyr_playlist()
+end
+
+function pda_radio_tab:btn_plyr_loop_click() -- Rule: Button click -> Loop the tracks from music player	
+	trx_radio.action_plyr_loop()
+end
+
+function pda_radio_tab:btn_plyr_shuffle_click()	-- Rule: Button click -> Shuffle the tracks from music player
+	trx_radio.action_plyr_shuffle()
+end
+
+function pda_radio_tab:btn_plyr_v_down_click() -- Rule: Button click -> Reduce music player's volume
+	trx_radio.action_plyr_v_down()
+end
+
+function pda_radio_tab:btn_plyr_v_up_click() -- Rule: Button click -> Increase music player's volume
+	trx_radio.action_plyr_v_up()
+end
+
+function pda_radio_tab:btn_plyr_prev_click() -- Rule: Button click -> Previous track from music player	
+	trx_radio.action_plyr_previous()
+end
+
+function pda_radio_tab:btn_plyr_stop_click() -- Rule: Button click -> Stop the music player
+	trx_radio.action_plyr_stop()
+end
+
+function pda_radio_tab:btn_plyr_start_click() -- Rule: Button click -> Start the music player
+	trx_radio.action_plyr_start()
+end
+
+function pda_radio_tab:btn_plyr_next_click() -- Rule: Button click -> Next track from music player
+	trx_radio.action_plyr_next()
+end

@@ -1,0 +1,295 @@
+if true then 
+	log("Initialization class_registrator.script")
+--	for i = 1, 60 do --' Количество классов мутантов
+--		log("Classes for mutants: initialization sum "..i)
+--	end
+end
+	
+function cs_register(factory,client_object_class,server_object_class,clsid,script_clsid)
+	factory:register	(client_object_class,server_object_class,clsid,script_clsid)
+end
+
+function c_register(factory,client_object_class,clsid,script_clsid)
+	if (editor() == false) then
+		factory:register(client_object_class,clsid,script_clsid)
+	end
+end
+
+function s_register(factory,server_object_class,clsid,script_clsid)
+	factory:register(server_object_class,clsid,script_clsid)
+end
+
+function register(object_factory)
+
+	--/#+# [se_stor]: Дополнение для объектов универсального хранилища:
+	if se_stor then
+		cs_register(object_factory, "CGameObject", 				"se_stor.se_custom_storage", 			"CUST_ST", 		"custom_storage")
+	end
+	
+	s_register	(object_factory, 							    "sim_squad_scripted.sim_squad_scripted","ON_OFF_S",		"online_offline_group_s")
+	--/< -------------------------------------------------------------
+	
+--' #########################################################################################################################################
+	--' Основа:
+	c_register	(object_factory, 								"ui_main_menu.main_menu",				"MAIN_MNU", 		"main_menu")
+	cs_register	(object_factory, "ce_smart_zone", 				"smart_terrain.se_smart_terrain",		"SMRTTRRN",			"smart_terrain")
+	cs_register	(object_factory, "CLevelChanger",				"se_level_changer.se_level_changer",	"LVL_CHNG", 		"level_changer_s")
+	cs_register	(object_factory, "CActor", 						"se_actor.se_actor",					"S_ACTOR",			"script_actor")
+	cs_register	(object_factory, "CAI_Stalker", 				"se_stalker.se_stalker",				"AI_STL_S", 		"script_stalker")
+	cs_register	(object_factory, "CHelicopter", 				"se_heli.se_heli",						"C_HLCP_S", 		"script_heli")
+	--' Changed from ce_smart_zone to ce_script_zone for enter_zone and exit_zone callbacks
+	cs_register	(object_factory, "ce_script_zone", 				"se_zones.se_restrictor",				"SPC_RS_S", 		"script_restr") 
+	--/< ----------------------------------------------------------------------------------
+	cs_register	(object_factory, "CPhysicObject", 				"se_item.se_physic", 					"O_PHYS_S", 		"script_phys")
+	cs_register	(object_factory, "smart_cover_object",			"se_smart_cover.se_smart_cover",		"SMRT_C_S", 		"smartcover_s")
+	cs_register	(object_factory, "CDestroyablePhysicsObject", 	"se_item.se_physic", 					"O_DSTR_S", 		"destrphys_s")
+	cs_register	(object_factory, "hanging_lamp", 				"se_item.se_lamp", 						"SO_HLAMP", 		"hlamp_s")
+	cs_register	(object_factory, "CCar",           	 			"se_car.se_car",            			"SCRPTCAR",			"car_s")
+    cs_register	(object_factory, "CAI_Trader", 					"se_stalker.se_trader",					"AI_TRD_S", 		"script_trader")
+	
+--' #########################################################################################################################################
+	--' Артефакты
+	cs_register (object_factory, "CElectricBall",   			"se_artefact.se_artefact",  			"SCRPTART", 		"artefact_s")
+
+--' #########################################################################################################################################
+	--' Мутанты:
+	
+	local CAI_Boar_local
+	local CAI_Dog_local
+	
+	--' Переключение классов кабана и слепой собачки
+	if not BOOL_MODE_MIXED then
+		CAI_Boar_local = cs_register (object_factory, "CAI_CBocs",        		"se_monster.se_monster",			"SM_BOAR",		"boar_s")
+		CAI_Dog_local  = cs_register (object_factory, "CAI_Dogsoc",         	"se_monster.se_monster",    		"SM_DOG",		"dog_s")
+	else
+		CAI_Boar_local = cs_register (object_factory, "CAI_Boar",        		"se_monster.se_monster",			"SM_BOAR",		"boar_s")
+		CAI_Dog_local  = cs_register (object_factory, "CAI_Dog",         		"se_monster.se_monster",    		"SM_DOG",		"dog_s")
+	end
+	
+	cs_register	(object_factory, "CAI_Flesh",       			"se_monster.se_monster",				"SM_FLESH",				"flesh_s")
+	cs_register	(object_factory, "CAI_PseudoDog",   			"se_monster.se_monster",    			"SM_PSDOG",				"pseudodog_s")
+	cs_register	(object_factory, "CCat",            			"se_monster.se_monster",				"SM_CATS",				"cat_s")
+	cs_register	(object_factory, "CFracture",       			"se_monster.se_monster",				"SM_IZLOM",				"fracture_s")
+	cs_register	(object_factory, "CPoltergeist",    			"se_monster.se_monster",				"SM_POLTE",				"poltergeist_s")
+	cs_register	(object_factory, "CZombie",       	            "se_monster.se_monster",				"SM_ZOMBI",				"zombie_s")
+	cs_register	(object_factory, "CTushkano",       			"se_monster.se_monster",				"SM_TUSHK",				"tushkano_s")
+	cs_register	(object_factory, "CTushkano",       			"se_monster.se_monster",				"SM_RATS",				"rat_s")
+	cs_register	(object_factory, "CPsyDog",         			"se_monster.se_monster",				"SM_PSYDG",				"psy_dog_s")
+	cs_register	(object_factory, "CPsyDogPhantom",  			"se_monster.se_monster",				"SM_PSYDP",				"psy_dog_phantom_s")
+
+	--' Не для MIXED
+	if not BOOL_MODE_MIXED then
+	
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_BLOOD",				"bloodsucker_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_VENOM",				"venom_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROAN",				"krovosos_anomaly_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROAM",				"krovosos_anomaly_marsh_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROHE",				"krovosos_hell_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROHL",				"krovosos_hell_little_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROAB",				"krovosos_albinos_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROMA",				"krovosos_marsh_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROZO",				"krovosos_zombie_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_KROOB",				"krovosos_obt_s")
+		cs_register	(object_factory, "CAI_Bloodsucksoc",		"se_monster.se_monster",    			"SM_BLOUN",				"krovosos_und_s")
+	
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIME",				"chimecs_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIFI",				"chimefi_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHELE",				"chimeel1_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHELP",				"chimeel2_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIMB",				"chimebl_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIRD",				"chimerd_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIRA",				"chimrad_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIMY",				"chimray_s")
+		cs_register	(object_factory, "CChimecs",        		"se_monster.se_monster",				"SM_CHIMF",				"chimraf_s")
+		
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_BURER",				"burcs_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_BUREL",				"burel_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_BUREI",				"burfi_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_BUREB",				"burbi_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_POLTB",				"poltergeist_bb_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_POLBE",				"poltergeist_be_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_POLTX",				"poltergeist_bx_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_POLTO",				"poltergeist_bo_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_KONAC",				"controller_act_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_KONEL",				"controller_act_elector_s")
+		cs_register	(object_factory, "CBurcs",          		"se_monster.se_monster",				"SM_KONFI",				"controller_act_fire_s")
+		
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_POLPP",				"poltergeist_pp_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_MORLO",				"morlok_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_IZLOK",				"fracture_karlik_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_KARLK",				"karlik_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_IZLOL",				"fracture_lab_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_BIBLO",				"bibliotekar_s")
+		cs_register	(object_factory, "CFracture",       		"se_monster.se_monster",				"SM_BIBLB",				"bibliotekar_black_s")
+		
+		cs_register	(object_factory, "CPoltergeist_cs",    		"se_monster.se_monster",				"SM_POLCS",				"poltergeist_cs_s")
+		
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORK",				"snork_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORB",				"snork_marsh_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORF",				"snork_fly_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORN",				"snork_nosach_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORM",				"snork_mozg_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_SNORP",				"snork_pseudo_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_VYPLZ",				"vypolzen_s")
+		cs_register	(object_factory, "CSnork",          		"se_monster.se_monster",				"SM_VYPLM",				"vipolzen_s")
+		
+		cs_register	(object_factory, "CController",     		"se_monster.se_monster",				"SM_KONTR",				"controller_s")
+		cs_register	(object_factory, "CController",     		"se_monster.se_monster",				"SM_BABKA",				"controller_babka_s")
+		cs_register	(object_factory, "CController",     		"se_monster.se_monster",				"SM_KMUTA",				"controller_arhi_s")
+		cs_register	(object_factory, "CController",     		"se_monster.se_monster",				"SM_KONMA",				"controller_marsh_s")
+		cs_register	(object_factory, "CController",     		"se_monster.se_monster",				"SM_KONMG",				"mogilshik_s")
+		
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANT",				"gigant_s")
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANJ",				"gigant_j_s")
+		
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANM",				"gigant_marsh_s")
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANB",				"gigant_big_s")
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIAML",				"gigant_marsh_lapa_s")
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANL",				"gigant_lapa_s")
+		cs_register	(object_factory, "CPseudoGigant_jumper",   	"se_monster.se_monster",				"SM_GIANR",				"gigant_red_s")
+		
+		local CAI_Dog_oso_local
+		CAI_Dog_oso_local = cs_register(object_factory, "CAI_Dogsoc", "se_monster.se_monster",    		"SM_DOG_O",				"dog_oso_s")
+		
+		local CAI_Zanoza_local 
+		CAI_Zanoza_local = cs_register(object_factory, "CAI_Flesh", "se_monster.se_monster",			"SM_ZANOZ",				"zanoza_s")
+		
+		local CAI_Pseudo_flesh_local 
+		CAI_Pseudo_flesh_local = cs_register(object_factory, "CAI_Flesh", "se_monster.se_monster",  	"SM_PFLES",				"pseudo_flesh_s")
+		
+		local CAI_Lyguh_local
+		CAI_Lyguh_local = cs_register(object_factory, "CTushkano",        "se_monster.se_monster",		"SM_LYGUH",				"lyguh_s")
+		
+		local CAI_Marsh_flesh_local 
+		CAI_Marsh_flesh_local = cs_register(object_factory, "CAI_Flesh", "se_monster.se_monster",  		"SM_MFLES",				"marsh_flesh_s")
+		
+		local CAI_Rotan_local
+		CAI_Rotan_local = cs_register(object_factory, "CTushkano",        "se_monster.se_monster",		"SM_ROTAN",				"rotan_s")
+		
+		local CAI_Tushkan_black_local
+		CAI_Tushkan_black_local = cs_register(object_factory, "CTushkano", "se_monster.se_monster",		"SM_TUSHB",				"tushkano_black_s")
+		
+		local CAI_Tushkan_big_local
+		CAI_Tushkan_big_local = cs_register(object_factory, "CTushkano", "se_monster.se_monster",		"SM_TUSBI",				"tushkano_big_s")
+		
+		local CAI_Tushkan_big_black_local
+		CAI_Tushkan_big_black_local = cs_register(object_factory, "CTushkano", "se_monster.se_monster",	"SM_TUBIB",				"tushkano_big_black_s")
+		
+		local CAI_Deathclaw_local
+		CAI_Deathclaw_local = cs_register(object_factory, "CAI_Bloodsucksoc","se_monster.se_monster",   "SM_DEATH",				"deathclaw_black_s")
+		
+		local CAI_Deathclaw_white_local
+		CAI_Deathclaw_white_local = cs_register(object_factory, "CAI_Bloodsucksoc","se_monster.se_monster", "SM_DEATW",			"deathclaw_white_s")
+		
+		local CAI_Tarakan_local
+		CAI_Tarakan_local = cs_register(object_factory, "CTushkano",        "se_monster.se_monster",	  "SM_TARAK",			"tarakan_s")
+		
+		local CAI_Tarakan_black_local
+		CAI_Tarakan_black_local = cs_register(object_factory, "CTushkano",  "se_monster.se_monster",	  "SM_TARAB",			"tarakan_black_s")
+		
+		local CAI_Bear_local
+		CAI_Bear_local = cs_register (object_factory, "CAI_Boar",        	"se_monster.se_monster",  	  "SM_BEAR",		    "bear_s")
+		
+		local CAI_Boar_vepr_local
+		CAI_Boar_vepr_local = cs_register (object_factory, "CAI_CBocs",      "se_monster.se_monster",  	  "SM_BOARV",		    "boar_vepr_s")
+		
+		local CAI_Boar_mini_local
+		CAI_Boar_mini_local = cs_register (object_factory, "CAI_CBocs",      "se_monster.se_monster",  	  "SM_BOAMI",		    "boar_mini_s")
+		
+		local CAI_Boar_taran_local
+		CAI_Boar_taran_local = cs_register (object_factory, "CAI_CBocs",      "se_monster.se_monster",    "SM_BOART",		    "boar_taran_s")
+		
+		local CAI_Winger_local
+		CAI_Winger_local = cs_register(object_factory, "CTushkano",  		"se_monster.se_monster",	  "SM_WINGE",			"winger_s")
+		
+		local CAI_Fly_local
+		CAI_Fly_local = cs_register(object_factory, "CTushkano",  			"se_monster.se_monster",	  "SM_FLY",				"fly_s")
+		
+		local CAI_Komar_local
+		CAI_Komar_local = cs_register(object_factory, "CTushkano",  		"se_monster.se_monster",	  "SM_KOMAR",			"komar_s")
+		
+		local CAI_Stinger_local
+		CAI_Stinger_local = cs_register(object_factory, "CTushkano",  		"se_monster.se_monster",	  "SM_STRIN",			"stinger_s")
+		
+		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_LICAN",			"lican_s")
+		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_BEARC",			"bear_chimere_s")
+		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_WOLF",			"wolf_s")
+		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_WOLFW",			"wolfw_s")
+		
+	end
+	--/< -----------------------------------------------------------------------------------------------------------------------------------
+	
+--' #########################################################################################################################################	
+	--' Устройства
+	cs_register	(object_factory, "CTorch",          			"se_item.se_item_torch",				"TORCH_S",			"device_torch_s")
+	cs_register	(object_factory, "CScientificDetector",         "se_item.se_detector",					"DET_SCIE",			"detector_scientific_s")
+	cs_register	(object_factory, "CEliteDetector",          	"se_item.se_detector",			   		"DET_ELIT",			"detector_elite_s")
+	cs_register	(object_factory, "CAdvancedDetector",          	"se_item.se_detector",			   		"DET_ADVA",			"detector_advanced_s")
+	cs_register	(object_factory, "CSimpleDetector",          	"se_item.se_detector",					"DET_SIMP",			"detector_simple_s")
+	cs_register	(object_factory, "CScope",						"se_item.se_item",						"WP_SCOPE",			"wpn_scope_s")
+	cs_register	(object_factory, "CSilencer",	  				"se_item.se_item",						"WP_SILEN",			"wpn_silencer_s")
+	cs_register	(object_factory, "CGrenadeLauncher",			"se_item.se_item",						"WP_GLAUN",			"wpn_grenade_launcher_s")
+	cs_register (object_factory, "CPda",						"se_item.se_pda",						"S_PDA",			"obj_pda_s")
+	
+--' #########################################################################################################################################	
+	--' Броня 
+	cs_register	(object_factory, "CCustomOutfit",  				"se_item.se_outfit",					"E_STLK",			"equ_stalker_s")
+	cs_register	(object_factory, "CHelmet",  					"se_item.se_helmet",					"E_HLMET",			"equ_helmet_s")
+	
+--' #########################################################################################################################################	
+	--' Оружие
+	cs_register	(object_factory, "CWeaponBinoculars",			"se_item.se_weapon_magazined",			"WP_BINOC",			"wpn_binocular_s")
+	cs_register	(object_factory, "CWeaponKnife",				"se_item.se_weapon",					"WP_KNIFE",			"wpn_knife_s")
+	cs_register	(object_factory, "CWeaponBM16",					"se_item.se_weapon_shotgun",			"WP_BM16",			"wpn_bm16_s")
+	cs_register	(object_factory, "CWeaponGroza",				"se_item.se_weapon_magazined_w_gl",		"WP_GROZA",			"wpn_groza_s")
+	cs_register	(object_factory, "CWeaponSVD",					"se_item.se_weapon_magazined",			"WP_SVD",			"wpn_svd_s")
+	cs_register	(object_factory, "CWeaponAK74",					"se_item.se_weapon_magazined_w_gl",		"WP_AK74",			"wpn_ak74_s")
+	cs_register	(object_factory, "CWeaponLR300",				"se_item.se_weapon_magazined",			"WP_LR300",			"wpn_lr300_s")
+	cs_register	(object_factory, "CWeaponHPSA",					"se_item.se_weapon_magazined",			"WP_HPSA",			"wpn_hpsa_s")
+	cs_register	(object_factory, "CWeaponPM",					"se_item.se_weapon_magazined",			"WP_PM",			"wpn_pm_s")
+	cs_register	(object_factory, "CWeaponRG6",					"se_item.se_weapon_shotgun",			"WP_RG6",			"wpn_rg6_s")
+	cs_register	(object_factory, "CWeaponRPG7",					"se_item.se_weapon_magazined",			"WP_RPG7",			"wpn_rpg7_s")
+	cs_register	(object_factory, "CWeaponShotgun",				"se_item.se_weapon_shotgun",			"WP_SHOTG",			"wpn_shotgun_s")
+	cs_register	(object_factory, "CWeaponAutomaticShotgun",		"se_item.se_weapon_automatic_shotgun",	"WP_ASHTG",			"wpn_auto_shotgun_s")
+	cs_register	(object_factory, "CWeaponSVU",					"se_item.se_weapon_magazined",			"WP_SVU",			"wpn_svu_s")
+	cs_register	(object_factory, "CWeaponUSP45",				"se_item.se_weapon_magazined",			"WP_USP45",			"wpn_usp45_s")
+	cs_register	(object_factory, "CWeaponVal",					"se_item.se_weapon_magazined",			"WP_VAL",			"wpn_val_s")
+	cs_register	(object_factory, "CWeaponVintorez",				"se_item.se_weapon_magazined",			"WP_VINT",			"wpn_vintorez_s")
+	cs_register	(object_factory, "CWeaponWalther",				"se_item.se_weapon_magazined",			"WP_WALTH",			"wpn_walther_s")
+
+--' #########################################################################################################################################	
+	--' Аномалии
+	cs_register	(object_factory, "CHairsZone",					"se_zones.se_zone_visual",				"ZS_BFUZZ",			"zone_bfuzz_s")
+	cs_register	(object_factory, "CMosquitoBald",				"se_zones.se_zone_anom",				"ZS_MBALD",			"zone_mbald_s")
+	cs_register	(object_factory, "CMincer",						"se_zones.se_zone_anom",				"ZS_GALAN",			"zone_galant_s")
+	cs_register	(object_factory, "CMincer",						"se_zones.se_zone_anom",				"ZS_MINCE",			"zone_mincer_s")
+	cs_register	(object_factory, "CRadioactiveZone",			"se_zones.se_zone_anom",				"ZS_RADIO",			"zone_radio_s")
+	cs_register	(object_factory, "CTorridZone",					"se_zones.se_zone_torrid",				"ZS_TORRD",			"zone_torrid_s")
+	cs_register (object_factory, "CNoGravityZone",				"se_zones.se_zone_anom",				"ZS_NGRAV",			"zone_nograv_s")
+	cs_register (object_factory, "CAmebaZone",					"se_zones.se_zone_visual",				"ZS_AMEBA",			"zone_ameba_s")
+
+--' #########################################################################################################################################	
+	--' Патроны
+	cs_register (object_factory, "CWeaponAmmo",					"se_item.se_ammo",						"AMMO_S",			"wpn_ammo_s")
+	cs_register (object_factory, "CWeaponAmmo",					"se_item.se_ammo",						"S_VOG25",			"wpn_ammo_vog25_s")
+	cs_register (object_factory, "CWeaponAmmo",					"se_item.se_ammo",						"S_OG7B",			"wpn_ammo_og7b_s")
+	cs_register (object_factory, "CWeaponAmmo",					"se_item.se_ammo",						"S_M209",			"wpn_ammo_m209_s")
+
+--' #########################################################################################################################################	
+	--' Гранаты
+	cs_register (object_factory, "CF1",							"se_item.se_grenade",					"G_F1_S",			"wpn_grenade_f1_s")
+	cs_register (object_factory, "CRGD5",						"se_item.se_grenade",					"G_RGD5_S",			"wpn_grenade_rgd5_s")
+	
+--' #########################################################################################################################################	
+	--' Еда
+	cs_register (object_factory, "CFoodItem",					"se_item.se_eatable",					"S_FOOD",			"obj_food_s")
+
+--' #########################################################################################################################################	
+	--' Коробка (*?)
+	cs_register (object_factory, "CInventoryBox",				"se_item.se_invbox",					"S_INVBOX",			"inventory_box_s")
+	
+--' #########################################################################################################################################	
+	--' Взрывоопасные объекты
+	cs_register (object_factory, "CExplosiveItem",				"se_item.se_explosive",					"S_EXPLO",			"obj_explosive_s")
+	
+end
