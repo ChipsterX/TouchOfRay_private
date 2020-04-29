@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+
+<kmb>
+
+<form_cooking_azm x="200" y="115" width="594" height="501" stretch="1">
+	<texture>ui_cooking_azm</texture>
+		<caption_cooking x="234" y="11" width="179" height="21">        
+			<text font="letterica18" align="l">st_cooking</text>        
+		</caption_cooking>
+		<btn_krovosos_meat x="15" y="202" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_krovosos_meat>
+		<btn_boar_meat x="130" y="202" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_boar_meat>
+		<btn_himera_meat x="245" y="202" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_himera_meat>
+		<btn_dog_meat x="360" y="202" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_dog_meat>
+		<btn_flash_meat x="475" y="202" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_flash_meat>
+		<btn_psedodog_meat x="15" y="418" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_psedodog_meat>
+		<btn_tushkan_meat x="130" y="418" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_tushkan_meat>
+		<btn_cat_meat x="245" y="418" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_cat_meat>
+		<btn_gigant_meat x="360" y="418" width="110" height="29">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>         
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_gigant_meat>
+		<btn_close x="240" y="473" width="121" height="25">        
+            <texture_e>ui_mod_button3_e</texture_e>
+		    <texture_t>ui_mod_button3_t</texture_t>
+		    <texture_h>ui_mod_button3_h</texture_h>      
+            <text font="letterica18">st_menu_rukzak_close</text>        
+        </btn_close>     
+</form_cooking_azm>
+
+<form_cooking_menu_azm x="315" y="200" width="375" height="337" stretch="1">
+	<texture>ui_cooking_menu_azm</texture>
+		<btn_action_meat x="225" y="46" width="134" height="26">             
+            <text font="letterica18">st_actor_cooking</text>        
+        </btn_action_meat>
+		<btn_close x="235" y="267" width="129" height="28">          
+            <text font="letterica18">st_menu_rukzak_close</text>        
+        </btn_close>     
+</form_cooking_menu_azm>
+
+<form_cooking_action_azm x="315" y="215" width="375" height="300" stretch="1">
+	<texture>ui_cooking_action_azm</texture>
+		<btn_krovosos_meat x="10" y="78" width="135" height="27">                
+            <text font="letterica18">Кровосос</text>        
+        </btn_krovosos_meat>
+		<btn_boar_meat x="135" y="78" width="107" height="26">              
+            <text font="letterica18">Кабан</text>        
+        </btn_boar_meat>
+		<btn_himera_meat x="247" y="78" width="107" height="26">                
+            <text font="letterica18">Химера</text>        
+        </btn_himera_meat>
+		
+		<btn_dog_meat x="25" y="141" width="107" height="26">               
+            <text font="letterica18">Собака</text>        
+        </btn_dog_meat>
+		<btn_flash_meat x="135" y="141" width="107" height="26">             
+            <text font="letterica18">Плоть</text>        
+        </btn_flash_meat>
+		<btn_psedodog_meat x="250" y="141" width="107" height="26">                 
+            <text font="letterica18">Псевдопёс</text>        
+        </btn_psedodog_meat>
+		
+		<btn_tushkan_meat x="25" y="198" width="107" height="26">                 
+            <text font="letterica18">Тушкан</text>        
+        </btn_tushkan_meat>
+		<btn_cat_meat x="135" y="198" width="107" height="26">        
+            <text font="letterica18">Кот</text>        
+        </btn_cat_meat>
+		<btn_gigant_meat x="250" y="198" width="107" height="26">           
+            <text font="letterica18">Гигант</text>        
+        </btn_gigant_meat>
+		
+		<btn_close x="236" y="238" width="128" height="25">          
+            <text font="letterica18">st_gui_selection_revords_info</text>        
+        </btn_close>     
+</form_cooking_action_azm>
+
+</kmb>

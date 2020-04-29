@@ -1,0 +1,59 @@
+<w>
+
+
+<file name="ui\ui_news_amk1">
+<texture id="ui_news_opt_background" x="0" y="0" width="1024" height="768" />
+</file>
+
+<file name="ui\ui_news_amk2">
+	<texture id="ui_news_opt_left_widepanel" x="0" y="0" width="175" height="768" />
+	<texture id="ui_news_opt_right_widepanel" x="177" y="0" width="177" height="768" />
+
+	<texture id="ui_news_opt_screen_4" x="390" y="3" width="624" height="411" />
+
+
+	    <texture id="ui_news_opt_button_t" x="659" y="612" width="108" height="24" />
+	    <texture id="ui_news_opt_button_e" x="769" y="612" width="108" height="24" />
+	    <texture id="ui_news_opt_button_h" x="879" y="612" width="108" height="24" />
+	    <texture id="ui_news_opt_button_d" x="659" y="612" width="108" height="24" />
+
+	    <texture id="ui_news_opt_checkbox_e" x="832" y="460" width="44" height="29" />
+	    <texture id="ui_news_opt_checkbox_h" x="904" y="550" width="44" height="29" />
+	    <texture id="ui_news_opt_checkbox_t" x="832" y="488" width="44" height="29" />
+	    <texture id="ui_news_opt_checkbox_d" x="832" y="520" width="44" height="29" />
+
+<texture id="ui_icon_news_news_naim_vs" x="800" y="750" width="150" height="50" />
+<texture id="ui_icon_news_news_dolg_vs" x="650" y="750" width="150" height="50" />
+<texture id="ui_icon_news_news_svoboda_vs" x="650" y="800" width="150" height="50" />
+<texture id="ui_icon_news_news_csky_vs" x="400" y="950" width="150" height="50" />
+<texture id="ui_icon_news_news_monolith_vs" x="500" y="700" width="150" height="50" />
+<texture id="ui_icon_news_news_ecolog_vs" x="650" y="700" width="150" height="50" />
+<texture id="ui_icon_news_news_voen_stalk_vs" x="500" y="750" width="150" height="50" />
+<texture id="ui_icon_news_all_vs" x="500" y="800" width="150" height="50" />
+<texture id="ui_icon_news_news_bandos_vs" x="500" y="850" width="150" height="50" />
+<texture id="ui_icon_news_deth_vs" x="500" y="900" width="150" height="50" />
+
+<texture id="ui_inGame2_Vibros_vs" x="650" y="897" width="83" height="47" />
+<texture id="ui_inGame2_Istoriya_dolga_vs" x="733" y="897" width="83" height="47" />
+
+<texture id="ui_ecolog_grouping_vs" x="800" y="800" width="83" height="47" />
+<texture id="ui_iconsTotal_kanal_vs" x="900" y="800" width="83" height="47" />
+<texture id="ui_iconsTotal_news_death_vs" x="900" y="850" width="100" height="50" />
+
+<texture id="ui_iconsTotal_grouping_vs" x="815" y="850" width="85" height="47" />
+<texture id="ui_gunslinger_vs" x="733" y="850" width="83" height="47" />
+<texture id="ui_trade_vs" x="650" y="850" width="83" height="47" />
+
+<texture id="ui_icon_vs_news_deth" x="926" y="967" width="83" height="45" />
+<texture id="ui_icon_vs_news_all" x="839" y="963" width="82" height="46" />
+<texture id="ui_icon_vs_news_news_dolg" x="650" y="969" width="80" height="43" />
+<texture id="ui_icon_vs_news_news_svoboda" x="558" y="968" width="82" height="43" />
+<texture id="ui_icon_vs_news_news_naim" x="740" y="969" width="90" height="42" />
+<texture id="ui_icon_vs_news_news_bandos" x="931" y="920" width="76" height="40" />
+<texture id="ui_icon_vs_news_news_voen_stalk" x="839" y="920" width="82" height="42" />
+
+<texture id="ui_warfare_news_lider" x="900" y="695" width="82" height="45" />
+<texture id="ui_psi_news_face" x="900" y="650" width="82" height="45" />
+</file>
+
+</w>

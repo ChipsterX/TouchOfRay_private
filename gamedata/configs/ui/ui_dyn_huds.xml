@@ -1,0 +1,349 @@
+<w>
+	<helm_respirator1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator1</texture>
+	</helm_respirator1>
+	<helm_respirator2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator2</texture>
+	</helm_respirator2>
+	<helm_respirator3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator3</texture>
+	</helm_respirator3>
+	<helm_respirator4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator4</texture>
+	</helm_respirator4>
+	<helm_respirator5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator5</texture>
+	</helm_respirator5>
+	<helm_respirator6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator6</texture>
+	</helm_respirator6>
+	<helm_respirator7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator7</texture>
+	</helm_respirator7>
+	<helm_respirator8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator8</texture>
+	</helm_respirator8>
+	<helm_respirator9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator9</texture>
+	</helm_respirator9>
+	<helm_respirator10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator10</texture>
+	</helm_respirator10>
+	<helm_respirator11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator11</texture>
+	</helm_respirator11>
+	<helm_respirator12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_respirator12</texture>
+	</helm_respirator12>
+
+	<helm_hardhat1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat1</texture>
+	</helm_hardhat1>
+	<helm_hardhat2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat2</texture>
+	</helm_hardhat2>
+	<helm_hardhat3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat3</texture>
+	</helm_hardhat3>
+	<helm_hardhat4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat4</texture>
+	</helm_hardhat4>
+	<helm_hardhat5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat5</texture>
+	</helm_hardhat5>
+	<helm_hardhat6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat6</texture>
+	</helm_hardhat6>
+	<helm_hardhat7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat7</texture>
+	</helm_hardhat7>
+	<helm_hardhat8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat8</texture>
+	</helm_hardhat8>
+	<helm_hardhat9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat9</texture>
+	</helm_hardhat9>
+	<helm_hardhat10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat10</texture>
+	</helm_hardhat10>
+	<helm_hardhat11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat11</texture>
+	</helm_hardhat11>
+	<helm_hardhat12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_hardhat12</texture>
+	</helm_hardhat12>
+
+	<helm_protective1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective1</texture>
+	</helm_protective1>
+	<helm_protective2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective2</texture>
+	</helm_protective2>
+	<helm_protective3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective3</texture>
+	</helm_protective3>
+	<helm_protective4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective4</texture>
+	</helm_protective4>
+	<helm_protective5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective5</texture>
+	</helm_protective5>
+	<helm_protective6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective6</texture>
+	</helm_protective6>
+	<helm_protective7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective7</texture>
+	</helm_protective7>
+	<helm_protective8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective8</texture>
+	</helm_protective8>
+	<helm_protective9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective9</texture>
+	</helm_protective9>
+	<helm_protective10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective10</texture>
+	</helm_protective10>
+	<helm_protective11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective11</texture>
+	</helm_protective11>
+	<helm_protective12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_protective12</texture>
+	</helm_protective12>
+
+	<helm_battle1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle1</texture>
+	</helm_battle1>
+	<helm_battle2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle2</texture>
+	</helm_battle2>
+	<helm_battle3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle3</texture>
+	</helm_battle3>
+	<helm_battle4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle4</texture>
+	</helm_battle4>
+	<helm_battle5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle5</texture>
+	</helm_battle5>
+	<helm_battle6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle6</texture>
+	</helm_battle6>
+	<helm_battle7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle7</texture>
+	</helm_battle7>
+	<helm_battle8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle8</texture>
+	</helm_battle8>
+	<helm_battle9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle9</texture>
+	</helm_battle9>
+	<helm_battle10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle10</texture>
+	</helm_battle10>
+	<helm_battle11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle11</texture>
+	</helm_battle11>
+	<helm_battle12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_battle12</texture>
+	</helm_battle12>
+
+	<helm_tactic1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic1</texture>
+	</helm_tactic1>
+	<helm_tactic2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic2</texture>
+	</helm_tactic2>
+	<helm_tactic3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic3</texture>
+	</helm_tactic3>
+	<helm_tactic4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic4</texture>
+	</helm_tactic4>
+	<helm_tactic5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic5</texture>
+	</helm_tactic5>
+	<helm_tactic6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic6</texture>
+	</helm_tactic6>
+	<helm_tactic7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic7</texture>
+	</helm_tactic7>
+	<helm_tactic8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic8</texture>
+	</helm_tactic8>
+	<helm_tactic9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic9</texture>
+	</helm_tactic9>
+	<helm_tactic10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic10</texture>
+	</helm_tactic10>
+	<helm_tactic11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic11</texture>
+	</helm_tactic11>
+	<helm_tactic12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_tactic12</texture>
+	</helm_tactic12>
+
+	<helm_scientific1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific1</texture>
+	</helm_scientific1>
+	<helm_scientific2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific2</texture>
+	</helm_scientific2>
+	<helm_scientific3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific3</texture>
+	</helm_scientific3>
+	<helm_scientific4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific4</texture>
+	</helm_scientific4>
+	<helm_scientific5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific5</texture>
+	</helm_scientific5>
+	<helm_scientific6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific6</texture>
+	</helm_scientific6>
+	<helm_scientific7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific7</texture>
+	</helm_scientific7>
+	<helm_scientific8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific8</texture>
+	</helm_scientific8>
+	<helm_scientific9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific9</texture>
+	</helm_scientific9>
+	<helm_scientific10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific10</texture>
+	</helm_scientific10>
+	<helm_scientific11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific11</texture>
+	</helm_scientific11>
+	<helm_scientific12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_scientific12</texture>
+	</helm_scientific12>
+
+	<helm_exo1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo1</texture>
+	</helm_exo1>
+	<helm_exo2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo2</texture>
+	</helm_exo2>
+	<helm_exo3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo3</texture>
+	</helm_exo3>
+	<helm_exo4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo4</texture>
+	</helm_exo4>
+	<helm_exo5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo5</texture>
+	</helm_exo5>
+	<helm_exo6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo6</texture>
+	</helm_exo6>
+	<helm_exo7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo7</texture>
+	</helm_exo7>
+	<helm_exo8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo8</texture>
+	</helm_exo8>
+	<helm_exo9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo9</texture>
+	</helm_exo9>
+	<helm_exo10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo10</texture>
+	</helm_exo10>
+	<helm_exo11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo11</texture>
+	</helm_exo11>
+	<helm_exo12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_exo12</texture>
+	</helm_exo12>
+	<hud_glass1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass1</texture>
+	</hud_glass1>
+	<hud_glass2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass2</texture>
+	</hud_glass2>
+	<hud_glass3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass3</texture>
+	</hud_glass3>
+	<hud_glass4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass4</texture>
+	</hud_glass4>
+	<hud_glass5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass5</texture>
+	</hud_glass5>
+	<hud_glass6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass6</texture>
+	</hud_glass6>
+	<hud_glass7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass7</texture>
+	</hud_glass7>
+	<hud_glass8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass8</texture>
+	</hud_glass8>
+	<hud_glass9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass9</texture>
+	</hud_glass9>
+	<hud_glass10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass10</texture>
+	</hud_glass10>
+	<hud_glass11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass11</texture>
+	</hud_glass11>
+	<hud_glass12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\hud_glass12</texture>
+	</hud_glass12>
+	
+    <helm_invisible1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible1</texture>
+	</helm_invisible1>
+	<helm_invisible2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible2</texture>
+	</helm_invisible2>
+	<helm_invisible3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible3</texture>
+	</helm_invisible3>
+	<helm_invisible4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible4</texture>
+	</helm_invisible4>
+	<helm_invisible5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible5</texture>
+	</helm_invisible5>
+	<helm_invisible6 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible6</texture>
+	</helm_invisible6>
+	<helm_invisible7 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible7</texture>
+	</helm_invisible7>
+	<helm_invisible8 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible8</texture>
+	</helm_invisible8>
+	<helm_invisible9 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible9</texture>
+	</helm_invisible9>
+	<helm_invisible10 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible10</texture>
+	</helm_invisible10>
+	<helm_invisible11 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible11</texture>
+	</helm_invisible11>
+	<helm_invisible12 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\helm_invisible12</texture>
+	</helm_invisible12>
+	
+	<hud_blur1 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\breath1</texture>
+	</hud_blur1>
+	<hud_blur2 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\breath2</texture>
+	</hud_blur2>
+	<hud_blur3 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\breath5</texture>
+	</hud_blur3>
+	<hud_blur4 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\breath4</texture>
+	</hud_blur4>
+	<hud_blur5 x="0" y="0" width="1024" height="768" stretch="1">
+		<texture>dinamic_hud\breath3</texture>
+	</hud_blur5>
+</w>

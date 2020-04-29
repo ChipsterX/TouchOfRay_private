@@ -1,0 +1,254 @@
+
+	<bloodshock_dream>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+
+	<item>
+		<sound>dreams\bloodshock_dream</sound>
+			<length_sec>34</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="34" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="640" height="480">dreams\bloodshock_dream</texture>
+				</auto_static>
+			</main_wnd>
+	</item>
+		
+    </bloodshock_dream>
+
+	<gshock_dream>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+
+	<item>
+		<sound>dreams\gshock_dream</sound>
+			<length_sec>49</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="49" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="640" height="480">dreams\gshock_dream</texture>
+				</auto_static>
+			</main_wnd>
+	</item>	
+		
+    </gshock_dream>
+	
+	<intro_dream2>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+
+	<item>
+		<sound>dreams\intro_dream2</sound>
+			<length_sec>33</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="33" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="640" height="480">dreams\intro_dream2</texture>
+				</auto_static>
+			</main_wnd>
+	</item>		
+	
+    </intro_dream2>
+	
+	<death_machine_dream>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\death_machine_dream</sound>
+			<length_sec>53</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="53" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="640" height="360">dreams\death_machine_dream</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </death_machine_dream>
+	
+	<ARS_Dream1>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\0_pause</sound>
+			<length_sec>8</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="8" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\0_pause</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream1>
+	
+	<ARS_Dream2>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\9_oasis</sound>
+			<length_sec>24.8</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="24.8" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\9_oasis</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream2>
+	
+	<ARS_Dream3>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\14b_brodyaga_bad</sound>
+			<length_sec>24.8</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="24.8" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\14b_brodyaga_bad</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream3>
+	
+	<ARS_Dream4>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\15b_sokolov_bad</sound>
+			<length_sec>24.8</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="24.8" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\15b_sokolov_bad</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream4>
+	
+	<ARS_Dream5>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\17_noahs_ark</sound>
+			<length_sec>24.8</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="24.8" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\17_noahs_ark</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream5>
+	
+	<ARS_Dream6>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\19b_strelok_die</sound>
+			<length_sec>17</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="17" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\19b_strelok_die</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream6>
+	
+	<ARS_Dream7>
+        <play_each_item>1</play_each_item>
+        <global_wnd x="0" y="0" width="1024" height="768">
+            <auto_static x="0" y="0" width="1024" height="768" stretch="1">
+                <window_name>back</window_name>
+                <texture>intro\intro_back</texture>
+            </auto_static>
+        </global_wnd>
+		
+	<item>
+		<sound>dreams\21_final_picture</sound>
+			<length_sec>25</length_sec>
+			<function_on_stop>ui_sleep_dialog.dream_callback1</function_on_stop>
+			<main_wnd>
+				<auto_static start_time="0" length_sec="25" x="0" y="0" width="1024" height="768" stretch="1">
+					<widescreen_rect width="1024" height="768"/>
+					<texture x="0" y="0" width="638" height="358">dreams\21_final_picture</texture>
+				</auto_static>
+			</main_wnd>
+	</item>			
+		
+    </ARS_Dream7>
+	

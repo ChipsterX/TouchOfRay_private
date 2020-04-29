@@ -1,0 +1,151 @@
+<w>
+
+	<file name="ui\encyclopedia">
+		<texture id="encyclopedia_mutants_blind_dog_image" x="0" y="0" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_blind_dog_oso_image" x="600" y="1890" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_bloodsucker_image" x="200" y="0" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_boar_image" x="400" y="0" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_bear_image" x="200" y="2295" width="200" height="135"/>		
+		<texture id="encyclopedia_mutants_boar_vepr_image" x="600" y="135" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_boar_mini_image" x="400" y="2430" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_boar_taran_image" x="200" y="2430" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_winger_image" x="800" y="2295" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_fly_image" x="600" y="2430" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_komar_image" x="800" y="2430" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_stinger_image" x="0" y="2430" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_burer_image" x="600" y="0" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_cat_image" x="800" y="0" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_image" x="0" y="135" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_image" x="200" y="135" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_flesh_image" x="800" y="135" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_poltergeists_image" x="0" y="540" width="400" height="270"/>
+		<texture id="encyclopedia_mutants_psydog_image" x="400" y="270" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_rat_image" x="800" y="270" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_snork_image" x="0" y="405" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_zombie_image" x="200" y="405" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_fracture_image" x="400" y="405" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_fracture_karlik_image" x="600" y="1215" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_karlik_image" x="200" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_fracture_lab_image" x="400" y="1215" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_bibliotekar_image" x="800" y="1215" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_bibliotekar_black_image" x="0" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_pseudodog_image" x="200" y="270" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_pseudogiant_image" x="600" y="405" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_tushkano_image" x="800" y="405" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_zanoza_image" x="400" y="540" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_marsh_flesh_image" x="600" y="540" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_mogilshik_image" x="400" y="135" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_lyguh_image" x="400" y="675" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_vypolzen_image" x="0" y="270" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_vipolzen_image" x="200" y="1215" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_burer_marsh_image" x="800" y="540" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_morlok_image" x="600" y="270" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_rotan_image" x="600" y="675" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_tushkano_black_image" x="800" y="675" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_tushkano_big_image" x="400" y="2025" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_tushkano_big_black_image" x="600" y="2025" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_deathclaw_black_image" x="800" y="1890" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_deathclaw_white_image" x="0" y="2025" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimefi_image" x="0" y="810" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimeel1_image" x="200" y="810" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_black_image" x="400" y="810" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_red_image" x="600" y="810" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_rad_image" x="800" y="810" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_ray_image" x="0" y="945" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimera_xray_image" x="200" y="945" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_chimeel2_image" x="400" y="945" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_burer_el_image" x="600" y="945" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_burer_fi_image" x="800" y="945" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_burer_bi_image" x="800" y="540" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_polter_bb_image" x="0" y="1080" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_polter_be_image" x="200" y="1080" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_polter_bx_image" x="400" y="1080" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_polter_bo_image" x="600" y="1080" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_polter_pp_image" x="800" y="1080" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_pseudogiant_j_image" x="0" y="1215" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_venom_image" x="400" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_act_image" x="600" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_act_electro_image" x="400" y="1485" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_act_fire_image" x="600" y="1485" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_act_image" x="600" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_babka_image" x="800" y="1350" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_arhi_image" x="0" y="1485" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_controller_marsh_image" x="200" y="1485" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_gigant_marsh_image" x="0" y="2295" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_gigant_big_image" x="400" y="2160" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_gigant_marsh_lapa_image" x="800" y="2160" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_gigant_lapa_image" x="600" y="2160" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_gigant_red_image" x="200" y="2160" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_krovosos_anomaly_image" x="0" y="1620" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_anomaly_marsh_image" x="200" y="1755" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_hell_image" x="200" y="1620" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_hell_little_image" x="400" y="1755" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_albinos_image" x="400" y="1620" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_marsh_image" x="600" y="1620" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_zombie_image" x="800" y="1620" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_obt_image" x="0" y="1755" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krovosos_und_image" x="800" y="1485" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_snork_nosach_image" x="600" y="1755" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_snork_fly_image" x="800" y="1755" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_snork_mozg_image" x="0" y="1890" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_snork_marsh_image" x="200" y="1890" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_snork_pseudo_image" x="400" y="1890" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_pseudo_flesh_image" x="200" y="2025" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_tarakan_image" x="0" y="2160" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_tarakan_black_image" x="800" y="2025" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_lican_image" x="0" y="2565" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_bear_chimere_image" x="200" y="2565" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_wolf_image" x="400" y="2565" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_wolfw_image" x="600" y="2565" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_spider_image" x="800" y="2565" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_arhnida_image" x="0" y="2700" width="400" height="135"/>
+		
+		<texture id="encyclopedia_mutants_krotokris_image" x="400" y="2295" width="200" height="135"/>
+		<texture id="encyclopedia_mutants_krisovolk_image" x="600" y="2295" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_upir_image" x="400" y="2700" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_vidra_image" x="600" y="2700" width="200" height="135"/>
+		
+		<texture id="encyclopedia_mutants_tark_image" x="800" y="2700" width="200" height="135"/>
+		
+		<texture id="encyclopedia_recept_1_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_2_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_3_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_4_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_5_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_6_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_7_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_8_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_9_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_10_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_11_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_12_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_13_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_14_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_15_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_16_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_17_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_18_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_19_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_20_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_22_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_23_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_24_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_25_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_26_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_27_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_28_image" x="0" y="3796" width="385" height="300"/>
+		<texture id="encyclopedia_recept_29_image" x="0" y="3796" width="385" height="300"/>
+	</file>
+</w>

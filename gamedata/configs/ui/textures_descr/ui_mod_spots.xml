@@ -1,0 +1,40 @@
+<w>
+   <file name="ui\ui_mod_spots">
+        <texture id="ui_mod_letter_T" x="9" y="10" width="29" height="27"/>
+        <texture id="ui_mod_letter_R" x="111" y="10" width="29" height="29"/>
+        <texture id="ui_mod_letter_E" x="160" y="10" width="27" height="28"/>
+        <texture id="ui_mod_letter_A" x="213" y="10" width="27" height="28"/>
+        <texture id="ui_mod_letter_X" x="262" y="12" width="29" height="27"/>
+        <texture id="ui_mod_letter_M" x="263" y="61" width="25" height="25"/>
+        <texture id="ui_mod_dollar" x="6" y="105" width="38" height="40"/>
+        <texture id="ui_mod_dollar_small" x="10" y="164" width="25" height="24"/>
+        <texture id="ui_mod_red_target" x="57" y="210" width="30" height="31"/>
+        <texture id="ui_mod_red_target_small" x="68" y="269" width="13" height="14"/>
+        <texture id="ui_mod_deserve" x="9" y="212" width="28" height="27" />
+        <texture id="ui_mod_deserve_small" x="14" y="268" width="13" height="14" />
+        <texture id="ui_mod_af" x="10" y="60" width="27" height="27"/>
+        <texture id="ui_mod_af_small" x="67" y="166" width="15" height="15"/>
+        <texture id="ui_mod_strela" x="59" y="59" width="29" height="29"/>
+        <texture id="ui_mod_personal" x="169" y="120" width="11" height="13"/>
+        <texture id="ui_mod_boss" x="111" y="61" width="27" height="27"/>
+        <texture id="ui_mod_informer" x="260" y="162" width="27" height="27"/>
+        <texture id="ui_mod_main_npc" x="115" y="165" width="19" height="19"/>
+        <texture id="ui_mod_taynik" x="111" y="214" width="25" height="25" />
+        <texture id="ui_mod_taynik2" x="111" y="314" width="25" height="25" />
+        <texture id="ui_mod_taynik_small" x="115" y="270" width="11" height="11" />
+        <texture id="ui_mod_trap" x="165" y="215" width="19" height="19"/>
+        <texture id="ui_mod_lc_up" x="365" y="14" width="19" height="21"/>
+        <texture id="ui_mod_lc_down" x="364" y="65" width="21" height="21"/>
+        <texture id="ui_mod_lc_left" x="312" y="15" width="21" height="19"/>
+        <texture id="ui_mod_lc_right" x="412" y="15" width="21" height="19"/>
+        <texture id="ui_mod_personal_marker" x="167" y="268" width="15" height="14"/>
+        <texture id="ui_mod_toolkit_area" x="212" y="210" width="27" height="27"/>
+        <texture id="ui_mod_remote_charge" x="312" y="64" width="25" height="25"/>
+        <texture id="ui_mod_employer" x="161" y="161" width="27" height="27"/>
+        <texture id="ui_mod_quest_squad_1" x="363" y="111" width="27" height="27"/>
+        <texture id="ui_mod_quest_squad_2" x="168" y="120" width="13" height="13"/>
+    </file>
+    <file name="ui\ui_actor_sleep_screen">
+	<texture id="ui_inGame2_Detector_icon_gps_guide" x="141" y="532" width="34" height="34" />
+   </file>
+</w>

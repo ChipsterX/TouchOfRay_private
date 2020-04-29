@@ -1,0 +1,11 @@
+<w>
+<file name="ui\ui_mod_gui_00">
+	<texture id="ui_cooking_menu_azm" x="0" y="0" width="500" height="450" />
+	<texture id="ui_cooking_action_azm" x="500" y="0" width="500" height="400" />
+</file>
+
+<file name="ui\ui_mod_gui_01">
+	<texture id="quest_gui_fond_weatScan" x="0" y="0" width="376" height="215" />
+</file>
+
+</w>
