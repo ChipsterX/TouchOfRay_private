@@ -9,36 +9,12 @@
 
 extern LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-void CRenderDevice::initialize_weather_editor()
-{
-    m_editor_module = XRay::LoadModule("xrWeatherEditor");
-    if (!m_editor_module->IsLoaded())
-        return;
-
-    m_editor_initialize = (initialize_function_ptr)m_editor_module->GetProcAddress("initialize");
-    VERIFY(m_editor_initialize);
-
-    m_editor_finalize = (finalize_function_ptr)m_editor_module->GetProcAddress("finalize");
-    VERIFY(m_editor_finalize);
-
-    m_engine = new engine_impl();
-    m_editor_initialize(m_editor, m_engine);
-    VERIFY(m_editor);
-
-    m_hWnd = m_editor->view_handle();
-    VERIFY(m_hWnd != INVALID_HANDLE_VALUE);
-
-    GEnv.isEditor = true;
-}
 
 void CRenderDevice::Initialize()
 {
     Log("Initializing Engine...");
     TimerGlobal.Start();
     TimerMM.Start();
-
-    if (strstr(Core.Params, "-weather"))
-        initialize_weather_editor();
 
     // Unless a substitute hWnd has been specified, create a window to render into
     if (!m_hWnd)
@@ -53,10 +29,16 @@ void CRenderDevice::Initialize()
         m_dwWindowStyle = WS_BORDER | WS_DLGFRAME;
         // Set the window's initial width
         RECT rc;
-        SetRect(&rc, 0, 0, 640, 480);
+        SetRect(&rc, 0, 0, psCurrentVidMode[0], psCurrentVidMode[1]);
         AdjustWindowRect(&rc, m_dwWindowStyle, FALSE);
         // Create the render window
-        m_hWnd = CreateWindowEx(WS_EX_TOPMOST, wndclass, "S.T.A.L.K.E.R.: Back to the roots", m_dwWindowStyle,
+        DWORD ExtendedStyle = WS_EX_TOPMOST;
+        if (IsDebuggerPresent())
+        {
+            ExtendedStyle = 0;
+        }
+
+        m_hWnd = CreateWindowEx(ExtendedStyle, wndclass, "S.T.A.L.K.E.R.: Back to the roots", m_dwWindowStyle,
             CW_USEDEFAULT, CW_USEDEFAULT, (rc.right - rc.left), (rc.bottom - rc.top), 0L, 0, hInstance, 0L);
     }
     // Save window properties

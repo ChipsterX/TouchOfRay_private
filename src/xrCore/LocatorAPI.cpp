@@ -1438,9 +1438,9 @@ void CLocatorAPI::file_delete(pcstr path, pcstr nm)
     }
 }
 
-void CLocatorAPI::file_copy(pcstr src, pcstr dest)
+void CLocatorAPI::file_copy(pcstr src, pcstr dest, FSType fsType /*= FSType::Virtual*/)
 {
-    if (exist(src))
+    if (exist(src, fsType))
     {
         IReader* S = r_open(src);
         if (S)

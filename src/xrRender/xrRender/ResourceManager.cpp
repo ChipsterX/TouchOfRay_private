@@ -19,6 +19,11 @@
 
 EI ps_mt_loading_textures;
 
+#ifdef USE_ENCRYPTED_SHADERS
+    xr_map< shared_str, xr_vector<char> > ShaderEncryptedMap;
+    bool bEncryptedMapInitialized = false;
+#endif
+
 //	Already defined in Texture.cpp
 void fix_texture_name(LPSTR fn);
 
@@ -34,6 +39,52 @@ bool reclaim(xr_vector<T*>& vec, const T* ptr)
             return true;
         }
     return false;
+}
+
+void getCrc32FromShaderBufferWithIncludes(char* Data, int DataSize, u32& outCrc)
+{
+#if 0
+	outCrc += crc32(Data, DataSize, outCrc);
+	string4096 str;
+
+    char* DataIter = Data;
+
+    auto GetLine = [](char*& DataIter, string4096& OutStr) -> bool
+    {
+        OutStr[0] = '\0';
+        int copyIter = 0;
+        char ch = *DataIter;
+        while (ch != '\n' && ch != '\0')
+        {
+            OutStr[copyIter++] = ch;
+        }
+
+        if (ch == '\0') return false;
+
+        return true;
+    };
+
+    while (GetLine(DataIter, str))
+    {
+        _Trim(str);
+        if (str[0] && _Trim(str)[0] == '#' && strstr(str, "#include")) // handle includes
+        {
+	        string_path inc_name;
+	        R_ASSERT(filePath && filePath[0]);
+	        if (_GetItem(str, 1, inc_name, '"'))
+	        {
+	            string_path fn;
+	            strconcat(sizeof fn, fn, filePath, inc_name);
+	            const xr_string inc_path = EFS_Utils::ExtractFilePath(fn);
+        
+	            IReader* I = FS.r_open(fn);
+	            R_ASSERT3(I, "Can't find include file:", inc_name);
+	            getFileCrc32(I, inc_path.c_str(), outCrc, true);
+	            FS.r_close(I);
+	        }
+        }
+    }
+#endif
 }
 
 IBlender* CResourceManager::_GetBlender(LPCSTR Name)

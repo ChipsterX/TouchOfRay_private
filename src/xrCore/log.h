@@ -41,6 +41,7 @@ void XRCORE_API CreateLog(BOOL no_log = FALSE, BOOL no_log_owerflow = FALSE);
 void InitLog();
 void CloseLog();
 void XRCORE_API FlushLog();
+void XRCORE_API EnableForwardToConsole(bool bEnable);
 
 extern XRCORE_API xr_vector<xr_string>* LogFile;
 extern XRCORE_API BOOL LogExecCB;

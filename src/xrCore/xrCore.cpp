@@ -137,6 +137,12 @@ constexpr pcstr xrCore::GetBuildConfiguration()
 #else
     return "Rx86";
 #endif
+#else
+#ifdef XR_X64
+	return "Dx64";
+#else
+	return "Dx86";
+#endif
 #endif
 }
 

@@ -237,12 +237,19 @@ public:
     virtual void level_Unload();
 
     virtual IDirect3DBaseTexture9* texture_load(LPCSTR fname, u32& msize);
-    virtual HRESULT shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName,
+    virtual HRESULT shader_compile(LPCSTR name, char* shader, size_t shaderSize, LPCSTR pFunctionName,
         LPCSTR pTarget, DWORD Flags, void*& result);
 
     // Information
     virtual void DumpStatistics(class IGameFont& font, class IPerformanceAlert* alert) override;
-    virtual LPCSTR getShaderPath() { return "DX9\\"; }
+	virtual LPCSTR getShaderPath()
+	{
+#ifdef USE_ENCRYPTED_SHADERS
+		return "dx9_";
+#else
+		return "DX9\\";
+#endif
+	}
     virtual ref_shader getShader(int id);
     virtual IRender_Sector* getSector(int id);
     virtual IRenderVisual* getVisual(int id);

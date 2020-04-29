@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "CSCompiler.h"
 #include "ComputeShader.h"
+#include "xrRender/xrRender/ShaderResourceTraits.h"
 
 CSCompiler::CSCompiler(ComputeShader& target) : m_Target(target), m_cs(0) {}
 CSCompiler& CSCompiler::begin(const char* name)
@@ -185,21 +186,58 @@ void CSCompiler::compile(const char* name)
         return;
     }
 
+	char* ShaderData = nullptr;
+	int ShaderSize = 0;
+
+#ifdef USE_ENCRYPTED_SHADERS
+    InitializeEncryptedShaderMap();
+	string_path cname;
+	strconcat(sizeof(cname), cname, GEnv.Render->getShaderPath(), "cs_", name);
+    xr_strlwr(cname);
+
+	shared_str shaderFinalName(cname);
+	xr_map< shared_str, xr_vector<char> >::iterator ShaderEntryIter = ShaderEncryptedMap.find(shaderFinalName);
+	if (ShaderEntryIter == ShaderEncryptedMap.end())
+	{
+		// we can't make assert with ShaderEncryptedMap variable name
+		// make a fake file error
+		IReader* file = nullptr;
+		R_ASSERT3(file, "Shader file doesnt exist:", cname);
+	}
+
+	xr_vector<char>& EncryptedShader = ShaderEntryIter->second;
+
+	ShaderSize = EncryptedShader.size();
+	ShaderData = (LPSTR)_alloca(ShaderSize + 1);
+
+	DecryptShader(EncryptedShader, ShaderData);
+	ShaderData[ShaderSize] = '\0';
+#else
     string_path cname;
     strconcat(sizeof(cname), cname, GEnv.Render->getShaderPath(), "cs_", name, ".hlsl");
     FS.update_path(cname, "$game_shaders$", cname);
 
     IReader* file = FS.r_open(cname);
-    R_ASSERT2(file, cname);
+    R_ASSERT3(file, "Shader file doesnt exist:", cname);
+
+	// Duplicate and zero-terminate
+	ShaderSize = file->length();
+	ShaderData = (LPSTR)_alloca(ShaderSize + 1);
+	CopyMemory(ShaderData, file->pointer(), ShaderSize);
+	ShaderData[ShaderSize] = 0;
+#endif
+
 
     // Select target
     LPCSTR c_target = "cs_5_0";
     LPCSTR c_entry = "main";
 
-    HRESULT const _hr = GEnv.Render->shader_compile(name, file, c_entry,
+    HRESULT const _hr = GEnv.Render->shader_compile(name, ShaderData, ShaderSize, c_entry,
         c_target, D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, (void*&)m_cs);
 
+#ifndef USE_ENCRYPTED_SHADERS
     FS.r_close(file);
+#endif
 
     VERIFY(SUCCEEDED(_hr));
 

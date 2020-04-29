@@ -44,6 +44,12 @@
   <PropertyGroup>
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(xrBinDir)game\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(xrBinDir)game\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -229,7 +235,7 @@
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_vampire_hide.h" />
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_vampire_hide_inline.h" />
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_vampire_inline.h" />
-	<ClInclude Include="ai\Monsters\Bloodsuckcs\bloodsuckcs.h" />
+    <ClInclude Include="ai\Monsters\Bloodsuckcs\bloodsuckcs.h" />
     <ClInclude Include="ai\Monsters\Bloodsuckcs\bloodsuckcs_alien.h" />
     <ClInclude Include="ai\Monsters\Bloodsuckcs\bloodsuckcs_attack_state.h" />
     <ClInclude Include="ai\Monsters\Bloodsuckcs\bloodsuckcs_attack_state_hide.h" />
@@ -929,7 +935,7 @@
     <ClInclude Include="material_manager.h" />
     <ClInclude Include="material_manager_inline.h" />
     <ClInclude Include="medkit.h" />
-	<ClInclude Include="battery.h" />
+    <ClInclude Include="battery.h" />
     <ClInclude Include="member_corpse.h" />
     <ClInclude Include="member_corpse_inline.h" />
     <ClInclude Include="member_enemy.h" />
@@ -1644,7 +1650,7 @@
     </ClCompile>
     <ClCompile Include="ai\Monsters\Bloodsucker\bloodsucker_state_manager.cpp" />
     <ClCompile Include="ai\Monsters\Bloodsucker\bloodsucker_vampire_effector.cpp" />
-	<ClCompile Include="ai\Monsters\Bloodsuckcs\bloodsuckcs.cpp" />
+    <ClCompile Include="ai\Monsters\Bloodsuckcs\bloodsuckcs.cpp" />
     <ClCompile Include="ai\Monsters\Bloodsuckcs\bloodsuckcs_alien.cpp" />
     <ClCompile Include="ai\Monsters\Bloodsuckcs\bloodsuckcs_script.cpp">
       <PrecompiledHeaderFile>pch_script.h</PrecompiledHeaderFile>
@@ -2400,7 +2406,7 @@
     <ClCompile Include="map_spot.cpp" />
     <ClCompile Include="material_manager.cpp" />
     <ClCompile Include="medkit.cpp" />
-	<ClCompile Include="battery.cpp" />
+    <ClCompile Include="battery.cpp" />
     <ClCompile Include="memory_manager.cpp">
       <PrecompiledHeaderFile>pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>

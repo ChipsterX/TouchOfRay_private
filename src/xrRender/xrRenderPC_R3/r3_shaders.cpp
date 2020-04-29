@@ -115,27 +115,72 @@ public:
     HRESULT __stdcall Open(
         D3D10_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
     {
-        string_path pname;
-        strconcat(sizeof(pname), pname, GEnv.Render->getShaderPath(), pFileName);
-        IReader* R = FS.r_open("$game_shaders$", pname);
-        if (nullptr == R)
-        {
-            // possibly in shared directory or somewhere else - open directly
-            R = FS.r_open("$game_shaders$", pFileName);
-            if (nullptr == R)
-                return E_FAIL;
-        }
+		string_path pname;
+		strconcat(sizeof(pname), pname, GEnv.Render->getShaderPath(), pFileName);
+#ifdef USE_ENCRYPTED_SHADERS
+		//ShaderEncryptedMap
+		xr_strlwr(pname);
 
-        // duplicate and zero-terminate
-        u32 size = R->length();
-        u8* data = xr_alloc<u8>(size + 1);
-        CopyMemory(data, R->pointer(), size);
-        data[size] = 0;
-        FS.r_close(R);
+		if (char* ext = strext(pname))
+		{
+			if (xr_strcmp(ext, ".hlsl") == 0)
+			{
+				*ext = '\0';
+			}
+		}
 
-        *ppData = data;
-        *pBytes = size;
-        return D3D_OK;
+		if (char* dotInStr = strchr(pname, '.'))
+		{
+			*dotInStr = '_';
+		}
+
+		if (char* dotInStr = strchr(pname, '\\'))
+		{
+			*dotInStr = '_';
+		}
+		shared_str targetName(pname);
+		xr_map< shared_str, xr_vector<char> >::iterator shaderEntryIter = ShaderEncryptedMap.find(targetName);
+		if (shaderEntryIter == ShaderEncryptedMap.end())
+		{
+			targetName = shared_str(pFileName);
+			shaderEntryIter = ShaderEncryptedMap.find(targetName);
+			if (shaderEntryIter == ShaderEncryptedMap.end())
+			{
+				return E_FAIL;
+			}
+		}
+		xr_vector<char>& EncryptedShader = shaderEntryIter->second;
+
+		u32 size = EncryptedShader.size();
+		char* data = xr_alloc<char>(size + 1);
+
+		DecryptShader(EncryptedShader, data);
+		data[size] = '\0';
+
+		*ppData = data;
+		*pBytes = size;
+#else
+		IReader* R = FS.r_open("$game_shaders$", pname);
+		if (nullptr == R)
+		{
+			// possibly in shared directory or somewhere else - open directly
+			R = FS.r_open("$game_shaders$", pFileName);
+			if (nullptr == R)
+				return E_FAIL;
+		}
+
+		// duplicate and zero-terminate
+		u32 size = R->length();
+		u8* data = xr_alloc<u8>(size + 1);
+		CopyMemory(data, R->pointer(), size);
+		data[size] = 0;
+		FS.r_close(R);
+
+		*ppData = data;
+		*pBytes = size;
+#endif
+
+		return D3D_OK;
     }
     HRESULT __stdcall Close(LPCVOID pData)
     {
@@ -147,7 +192,7 @@ public:
 static inline bool match_shader_id(
     LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result);
 
-HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, LPCSTR pTarget, DWORD Flags, void*& result)
+HRESULT CRender::shader_compile(LPCSTR name, char* shader, size_t shaderSize, LPCSTR pFunctionName, LPCSTR pTarget, DWORD Flags, void*& result)
 {
     D3D_SHADER_MACRO defines[128];
     int def_it = 0;
@@ -713,9 +758,7 @@ HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, 
     string_path shadersFolder;
     FS.update_path(shadersFolder, "$game_shaders$", GEnv.Render->getShaderPath());
 
-    u32 fileCrc = 0;
-    getFileCrc32(fs, shadersFolder, fileCrc);
-    fs->seek(0);
+    u32 fileCrc = crc32(shader, shaderSize);
 
     if (FS.exist(file_name))
     {
@@ -739,7 +782,7 @@ HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, 
         includer Includer;
         LPD3DBLOB pShaderBuf = NULL;
         LPD3DBLOB pErrorBuf = NULL;
-        _result = D3DCompile(fs->pointer(), fs->length(), "", defines, &Includer, pFunctionName, pTarget, Flags, 0, &pShaderBuf, &pErrorBuf);
+        _result = D3DCompile(shader, shaderSize, "", defines, &Includer, pFunctionName, pTarget, Flags, 0, &pShaderBuf, &pErrorBuf);
 
         if (SUCCEEDED(_result))
         {

@@ -220,7 +220,7 @@ public:
     bool dir_delete(pcstr full_path, bool remove_files) { return dir_delete(nullptr, full_path, remove_files); }
     void file_delete(pcstr path, pcstr nm);
     void file_delete(pcstr full_path) { file_delete(nullptr, full_path); }
-    void file_copy(pcstr src, pcstr dest);
+    void file_copy(pcstr src, pcstr dest, FSType fsType = FSType::Virtual);
     void file_rename(pcstr src, pcstr dest, bool overwrite = true);
     int file_length(pcstr src);
 

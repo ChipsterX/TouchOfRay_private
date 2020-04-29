@@ -300,7 +300,6 @@ public:
     XRay::Editor::ide_base* editor() const { return m_editor; }
 
 private:
-    void initialize_weather_editor();
     void message_loop_weather_editor();
 
     using initialize_function_ptr = XRay::Editor::initialize_function_ptr;

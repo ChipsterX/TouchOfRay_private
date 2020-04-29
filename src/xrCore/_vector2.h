@@ -10,6 +10,8 @@
 # undef max
 #endif
 
+#include <algorithm>
+
 
 template <class T>
 struct _vector2

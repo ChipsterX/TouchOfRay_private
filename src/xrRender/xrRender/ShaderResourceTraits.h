@@ -5,6 +5,58 @@
 template <typename T>
 struct ShaderTypeTraits;
 
+#ifdef USE_ENCRYPTED_SHADERS
+    #include "xrRender/generated/shadersourcemap.h"
+    #include "Include/xrRender/ShaderEncryptionKey.h"
+    #pragma comment(lib, "xrshadercode.lib")
+
+    extern xr_map< shared_str, xr_vector<char> > ShaderEncryptedMap;
+    extern bool bEncryptedMapInitialized;
+
+
+    ICF void InitializeEncryptedShaderMap()
+    {
+        if (bEncryptedMapInitialized) return;
+
+        xr_string EncryptionKey(SHADER_ENC_KEY);
+        const ShaderSourceEntry* pShaderEntry = &shaders[0];
+        int SourceEncIter = 0;
+
+        while (pShaderEntry->Source[0] != '\0')
+        {
+            xr_string DecryptedSource;
+            DecryptedSource.resize(pShaderEntry->SourceSize, 'X');
+            // decrypt source name
+            for (int i = 0; i < pShaderEntry->SourceSize; i++)
+            {
+                DecryptedSource[i] = pShaderEntry->Source[i] ^ EncryptionKey[SourceEncIter++];
+                SourceEncIter %= EncryptionKey.size();
+            }
+
+            xr_vector<char>& EncryptedCode = ShaderEncryptedMap[shared_str(DecryptedSource.c_str())];
+            EncryptedCode.resize(pShaderEntry->CodeSize);
+            memcpy(EncryptedCode.data(), pShaderEntry->Code, pShaderEntry->CodeSize);
+
+            pShaderEntry++;
+        }
+
+        bEncryptedMapInitialized = true;
+    }
+
+    ICF void DecryptShader(xr_vector<char> EncryptedShader, char* OutDecryptedShader)
+    {
+        xr_string EncryptionKey(SHADER_ENC_KEY);
+
+        int CodeEncIter = 0;
+        for (int i = 0; i < EncryptedShader.size(); i++)
+        {
+            OutDecryptedShader[i] = EncryptedShader[i] ^ EncryptionKey[CodeEncIter++];
+            CodeEncIter %= EncryptionKey.size();
+        }
+    }
+
+#endif
+
 template <>
 struct ShaderTypeTraits<SVS>
 {
@@ -297,9 +349,38 @@ inline T* CResourceManager::CreateShader(const char* name, const char* filename,
             shName[size] = 0;
         }
 
+        char* ShaderData = nullptr;
+        int ShaderSize = 0;
+
+#ifdef USE_ENCRYPTED_SHADERS
+        InitializeEncryptedShaderMap();
+
+        string_path cname;
+        const char* shaderExt = ShaderTypeTraits<T>::GetShaderExt();
+        strconcat(sizeof(cname), cname, GEnv.Render->getShaderPath(), shaderExt, shName);
+        xr_strlwr(cname);
+
+        shared_str shaderFinalName(cname);
+        xr_map< shared_str, xr_vector<char> >::iterator ShaderEntryIter = ShaderEncryptedMap.find(shaderFinalName);
+        if (ShaderEntryIter == ShaderEncryptedMap.end())
+        {
+            // we can't make assert with ShaderEncryptedMap variable name
+            // make a fake file error
+            IReader* file = nullptr;
+            R_ASSERT3(file, "Shader file doesnt exist:", cname);
+        }
+
+        xr_vector<char>& EncryptedShader = ShaderEntryIter->second;
+
+		ShaderSize = EncryptedShader.size();
+		ShaderData = (LPSTR)_alloca(ShaderSize + 1);
+
+        DecryptShader(EncryptedShader, ShaderData);
+        ShaderData[ShaderSize] = '\0';
+#else
         // Open file
         string_path cname;
-        pcstr shaderExt = ShaderTypeTraits<T>::GetShaderExt();
+        const char* shaderExt = ShaderTypeTraits<T>::GetShaderExt();
         strconcat(sizeof(cname), cname, GEnv.Render->getShaderPath(), shaderExt, shName, ".hlsl");
         FS.update_path(cname, "$game_shaders$", cname);
 
@@ -309,17 +390,18 @@ inline T* CResourceManager::CreateShader(const char* name, const char* filename,
         R_ASSERT3(file, "Shader file doesnt exist:", cname);
 
         // Duplicate and zero-terminate
-        const auto size = file->length();
-        char* const data = (LPSTR)_alloca(size + 1);
-        CopyMemory(data, file->pointer(), size);
-        data[size] = 0;
+        ShaderSize = file->length();
+        ShaderData = (LPSTR)_alloca(ShaderSize + 1);
+        CopyMemory(ShaderData, file->pointer(), ShaderSize);
+        ShaderData[ShaderSize] = 0;
+#endif
 
         // Select target
         LPCSTR c_target = ShaderTypeTraits<T>::GetCompilationTarget();
         LPCSTR c_entry = "main";
         
         if (searchForEntryAndTarget)
-            ShaderTypeTraits<T>::GetCompilationTarget(c_target, c_entry, data);
+            ShaderTypeTraits<T>::GetCompilationTarget(c_target, c_entry, ShaderData);
 
 #if defined(USE_DX10) || defined(USE_DX11)
         DWORD flags = D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
@@ -331,9 +413,11 @@ inline T* CResourceManager::CreateShader(const char* name, const char* filename,
             Msg("compiling shader %s", name);
 
         // Compile
-        HRESULT const _hr = GEnv.Render->shader_compile(name, file, c_entry, c_target, flags, (void*&)sh);
+        HRESULT const _hr = GEnv.Render->shader_compile(name, ShaderData, ShaderSize, c_entry, c_target, flags, (void*&)sh);
 
+#ifndef USE_ENCRYPTED_SHADERS
         FS.r_close(file);
+#endif
 
         VERIFY(SUCCEEDED(_hr));
 

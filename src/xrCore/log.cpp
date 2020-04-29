@@ -22,6 +22,8 @@ Lock logCS;
 xr_vector<xr_string>* LogFile = nullptr;
 LogCallback LogCB = 0;
 
+bool bForwardOutputToConsole = false;
+
 // alpet: выставить в true если лог все же записывается плохо при вылете.
 // Слишком частая запись лога вредит SSD и снижает производительность.
 bool force_flush_log = false;
@@ -41,6 +43,11 @@ void FlushLog()
     }
 }
 
+void XRCORE_API EnableForwardToConsole(bool bEnable)
+{
+    bForwardOutputToConsole = bEnable;
+}
+
 void AddOne(const char* split)
 {
     if (!LogFile)
@@ -48,9 +55,21 @@ void AddOne(const char* split)
 
     logCS.Enter();
 
-#ifdef DEBUG
-    OutputDebugString(split);
-    OutputDebugString("\n");
+    if (IsDebuggerPresent())
+    {
+        OutputDebugString(split);
+        OutputDebugString("\n");
+    }
+
+	size_t splitSize = xr_strlen(split);
+
+#ifdef WIN32
+	if (bForwardOutputToConsole)
+	{
+		DWORD charWritten = 0;
+		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), split, splitSize, &charWritten, NULL);
+		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), "\r\n", 2, &charWritten, NULL);
+	}
 #endif
 
     // exec CallBack
@@ -76,8 +95,9 @@ void AddOne(const char* split)
 
         sprintf_s(buf, 64, "[%02d:%02d:%02d.%03d] ", lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds);
         LogWriter->w_printf("%s%s\r\n", buf, split);
+
         cached_log += xr_strlen(buf);
-        cached_log += xr_strlen(split) + 2;
+        cached_log += splitSize + 2;
 
         if (force_flush_log || cached_log >= 32768)
             FlushLog();

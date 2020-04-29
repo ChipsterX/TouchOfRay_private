@@ -62,6 +62,50 @@ public:
     {
         string_path pname;
         strconcat(sizeof(pname), pname, GEnv.Render->getShaderPath(), pFileName);
+#ifdef USE_ENCRYPTED_SHADERS
+        //ShaderEncryptedMap
+        xr_strlwr(pname);
+        if (char* ext = strext(pname))
+        {
+            if (xr_strcmp(ext, ".hlsl") == 0)
+            {
+                *ext = '\0';
+            }
+        }
+
+        if (char* dotInStr = strchr(pname, '.'))
+        {
+            *dotInStr = '_';
+        }
+
+		if (char* dotInStr = strchr(pname, '\\'))
+		{
+			*dotInStr = '_';
+		}
+
+
+        shared_str targetName(pname);
+        xr_map< shared_str, xr_vector<char> >::iterator shaderEntryIter = ShaderEncryptedMap.find(targetName);
+        if (shaderEntryIter == ShaderEncryptedMap.end())
+        {
+            targetName = shared_str(pFileName);
+            shaderEntryIter = ShaderEncryptedMap.find(targetName);
+            if (shaderEntryIter == ShaderEncryptedMap.end())
+            {
+                return E_FAIL;
+            }
+        }
+        xr_vector<char>& EncryptedShader = shaderEntryIter->second;
+
+		u32 size = EncryptedShader.size();
+		char* data = xr_alloc<char>(size + 1);
+
+        DecryptShader(EncryptedShader, data);
+        data[size] = '\0';
+
+		*ppData = data;
+		*pBytes = size;
+#else
         IReader* R = FS.r_open("$game_shaders$", pname);
         if (nullptr == R)
         {
@@ -80,6 +124,8 @@ public:
 
         *ppData = data;
         *pBytes = size;
+#endif
+
         return D3D_OK;
     }
     HRESULT __stdcall Close(LPCVOID pData)
@@ -92,7 +138,7 @@ public:
 static inline bool match_shader_id(
     LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result);
 
-HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, LPCSTR pTarget, DWORD Flags,
+HRESULT CRender::shader_compile(LPCSTR name, char* shader, size_t shaderSize, LPCSTR pFunctionName, LPCSTR pTarget, DWORD Flags,
     void*& result)
 {
     D3D_SHADER_MACRO defines[128];
@@ -493,9 +539,7 @@ HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, 
     string_path shadersFolder;
     FS.update_path(shadersFolder, "$game_shaders$", GEnv.Render->getShaderPath());
 
-    u32 fileCrc = 0;
-    getFileCrc32(fs, shadersFolder, fileCrc);
-    fs->seek(0);
+    u32 fileCrc = crc32(shader, shaderSize);
 
     if (FS.exist(file_name))
     {
@@ -533,7 +577,7 @@ HRESULT CRender::shader_compile(LPCSTR name, IReader* fs, LPCSTR pFunctionName, 
         LPD3DXINCLUDE pInclude = (LPD3DXINCLUDE)&Includer;
         DWORD compileFlags = Flags | D3DCOMPILE_OPTIMIZATION_LEVEL3;
 
-        _result = D3DCompile(fs->pointer(), fs->length(), "", defines, &Includer, pFunctionName, pTarget, compileFlags, 0,
+        _result = D3DCompile(shader, shaderSize, "", defines, &Includer, pFunctionName, pTarget, compileFlags, 0,
             &pShaderBuf, &pErrorBuf);
 
         if (SUCCEEDED(_result))

@@ -104,6 +104,14 @@ xr_unordered_map<lua_State*, CScriptEngine*> CScriptEngine::stateMap;
 
 string4096 CScriptEngine::g_ca_stdout;
 
+void xrScriptCrashHandler()
+{
+    if (GEnv.ScriptEngine != nullptr)
+    {
+        GEnv.ScriptEngine->print_stack();
+    }
+}
+
 void CScriptEngine::reinit()
 {
     stateMapLock.Enter();
@@ -128,6 +136,8 @@ void CScriptEngine::reinit()
         file_header = file_header_old;
     scriptBufferSize = 1024 * 1024;
     scriptBuffer = xr_alloc<char>(scriptBufferSize);
+
+    xrDebug::SetCrashHandler(xrScriptCrashHandler);
 }
 
 int CScriptEngine::vscript_log(LuaMessageType luaMessageType, LPCSTR caFormat, va_list marker)
@@ -195,50 +205,40 @@ void CScriptEngine::print_stack(lua_State* L)
     if (L == nullptr)
         L = lua();
     
-    if (strstr(Core.Params, "-luadumpstate"))
+    Log("\nSCRIPT ERROR");
+    lua_Debug l_tDebugInfo;
+    for (int i = 0; lua_getstack(L, i, &l_tDebugInfo); i++)
     {
-        Log("\nSCRIPT ERROR");
-        lua_Debug l_tDebugInfo;
-        for (int i = 0; lua_getstack(L, i, &l_tDebugInfo); i++)
+        lua_getinfo(L, "nSlu", &l_tDebugInfo);
+        if (!l_tDebugInfo.name)
+            Msg("%2d : [%s] %s(%d)", i, l_tDebugInfo.what, l_tDebugInfo.short_src, l_tDebugInfo.currentline);
+        else if (!xr_strcmp(l_tDebugInfo.what, "C"))
+            Msg("%2d : [C  ] %s", i, l_tDebugInfo.name);
+        else
         {
-            lua_getinfo(L, "nSlu", &l_tDebugInfo);
-            if (!l_tDebugInfo.name)
-                Msg("%2d : [%s] %s(%d)", i, l_tDebugInfo.what, l_tDebugInfo.short_src, l_tDebugInfo.currentline);
-            else if (!xr_strcmp(l_tDebugInfo.what, "C"))
-                Msg("%2d : [C  ] %s", i, l_tDebugInfo.name);
-            else
-            {
-                Msg("%2d : [%s] %s(%d) : %s", i, l_tDebugInfo.what, l_tDebugInfo.short_src,
-                    l_tDebugInfo.currentline, l_tDebugInfo.name);
-            }
-
-            // Giperion: verbose log
-            Log("Lua state dump locals: ");
-            pcstr name = nullptr;
-            int VarID = 1;
-            try
-            {
-                while ((name = lua_getlocal(L, &l_tDebugInfo, VarID++)) != nullptr)
-                {
-                    LogVariable(L, name, 1);
-
-                    lua_pop(L, 1); /* remove variable value */
-                }
-            }
-            catch (...)
-            {
-                Log("Can't dump lua state - Engine corrupted");
-            }
-            Log("End of Lua state dump.\n");
-            // -Giperion
+            Msg("%2d : [%s] %s(%d) : %s", i, l_tDebugInfo.what, l_tDebugInfo.short_src,
+                l_tDebugInfo.currentline, l_tDebugInfo.name);
         }
-    }
-    else
-    {
-        luaL_traceback(L, L, nullptr, 1); // add lua traceback to it
-        pcstr sErrorText = lua_tostring(L, -1); // get combined error text from lua stack
-        Log(sErrorText);
-        lua_pop(L, 1); // restore lua stack
+
+        // Giperion: verbose log
+        Log("Lua state dump locals: ");
+        pcstr name = nullptr;
+        int VarID = 1;
+        try
+        {
+            while ((name = lua_getlocal(L, &l_tDebugInfo, VarID++)) != nullptr)
+            {
+                LogVariable(L, name, 1);
+
+                lua_pop(L, 1); /* remove variable value */
+            }
+        }
+        catch (...)
+        {
+            Log("Can't dump lua state - Engine corrupted");
+        }
+        Log("End of Lua state dump.\n");
+        // -Giperion
     }
 
     m_stack_is_ready = true;
@@ -831,6 +831,8 @@ CScriptEngine::~CScriptEngine()
 #endif
     if (scriptBuffer)
         xr_free(scriptBuffer);
+
+    xrDebug::SetCrashHandler(nullptr);
 }
 
 void CScriptEngine::unload()

@@ -261,4 +261,7 @@ private:
     bool DestroyShader(const T* sh);
 };
 
+void getCrc32FromShaderBufferWithIncludes(char* Data, int DataSize, u32& outCrc);
+
 #endif // ResourceManagerH
+
