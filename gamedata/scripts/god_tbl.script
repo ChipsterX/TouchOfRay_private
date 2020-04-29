@@ -852,7 +852,12 @@ god_mob_new_table = {
 						 {"boar_strong_vepr", 			   "Кабан-вепрь (Сильный)"},
 						 {"boar_taran", 				   "Кабан-Припять (Сильный)"},
 						 {"boar_mini", 					   "Молодой кабан (Слабый)"},
+						 {"krotokris_normal", 			   "Кротокрыс (Средний)"},
+						 {"lurker_normal", 				   "Крысоволк (Средний)"},
 						 
+						 {"spider_mini", 				   "Водянка-сварщик (Средняя)"		},
+						 {"arahnid", 				       "Арахнид (Средний)"		},
+						 {"arahnid_strong", 			   "Арахнид (Желтый)"		},
 						 
 						 {"medwed_normal_small", 		   "Медведь (Маленький)"},
 						 {"medwed_normal_big", 		       "Медведь (Большой)"},
@@ -878,8 +883,10 @@ god_mob_new_table = {
 						 {"tushkano_black", 			   "Черный тушкан (Средний)"		},
 						 {"tushkano_big_normal", 		   "Большой тушкан (Сильный)"		},
 						 {"tushkano_big_strong_black", 	   "Большой черный тушкан (Сильный)"},
+						 {"upir_weak", 					   "Молодь Носача (Слабый)"					}, 
 						 {"tarakan_normal", 			   "Таракан (Средний)"				},
 						 {"tarakan_strong",                "Матёрый таракан (Сильный)"		},
+						 
 						 
 						 {"polter_dd", 			  		   "Ползающий полтергейст (Огненный)"},
 						 {"polter_electro", 			   "Ползающий полтергейст (Электрический)"},
@@ -906,6 +913,9 @@ god_mob_new_table = {
 						 {"snork_zombie2", 				   "Псевдоснорк (Сильный, вид 2)"	},
 						 {"snork_mozg", 				   "Снорк (Мозгач)"					},
 						 {"snork_nosach", 				   "Носач (Сильный)"				},
+						 {"vidra_normal", 				   "Выдра (Средняя)"},
+						 
+						 {"tark_normal", 				   "Тарк (Средний)"},
 						 
 						 {"morlok_strong", 				   "Морлок (Сильный)"				},
 						 {"fracture_lab", 				   "Излом (Лабораторный)"		    },

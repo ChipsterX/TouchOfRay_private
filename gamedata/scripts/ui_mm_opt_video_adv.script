@@ -215,6 +215,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 		xml:InitStatic("video_adv:cap_r2_ssr", _st)
 		ctl = xml:InitCheck("video_adv:check_r2_ssr", _st)
 		table.insert(handler.m_preconditions, {func = its_r2a, control=_st})
+		
+		_st = xml:InitStatic("video_adv:templ_item", nil)
+		xml:InitStatic("video_adv:cap_render_new_sky", _st)
+		ctl = xml:InitCheck("video_adv:check_render_new_sky", _st)
+		table.insert(handler.m_preconditions, {func = render, control=_st})
 	
 	end
 	

@@ -828,6 +828,10 @@ function GetMonsterDescription(obj,index) -- Get monster description, return tra
 				
 				
 				[clsid.boar_s] 					= "boar",
+				[clsid.spider_s] 				= "spider",
+				[clsid.arhnida_s] 				= "arhnida",
+				[clsid.krotokris_s] 			= "krotokris",
+				[clsid.krisovolk_s] 			= "krisovolk",
 				[clsid.bear_s] 					= "bear",
 				
 				[clsid.boar_vepr_s] 			= "boar_vepr",
@@ -839,6 +843,7 @@ function GetMonsterDescription(obj,index) -- Get monster description, return tra
 				[clsid.winger_s] 			= "winger",
 				[clsid.fly_s] 				= "fly",
 				[clsid.komar_s] 			= "komar",
+				[clsid.upir_s] 				= "upir",
 				[clsid.stinger_s] 			= "stinger",
 				
 				[clsid.burcs_s] 				= "burcs",
@@ -932,6 +937,10 @@ function GetMonsterDescription(obj,index) -- Get monster description, return tra
 				[clsid.vypolzen_s] 				= "vypolzen",
 				
 				[clsid.vipolzen_s] 				= "vipolzen",
+				
+				[clsid.vidra_s] 				= "vidra",
+				
+				[clsid.tark_s] 					= "tark",
 				
 				[clsid.tushkano_s] 				= "tushkano",
 				

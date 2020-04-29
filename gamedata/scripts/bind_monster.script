@@ -447,14 +447,17 @@ end
 -- Spiders on ---------------------------------------------------------
 -- Пауки боятся света
 -- Автор: oldSerpski stalker
-if (self.object:clsid()==clsid.pseudodog_s) and sfobj:alive() and sfobj.health > 0.05 and self.object:see(a) then
+if (self.object:clsid()==clsid.spider_s or self.object:clsid()==clsid.arhnida_s) and sfobj:alive() and sfobj.health > 0.05 and self.object:see(a) then
 	local npc = sfobj:get_enemy()
+	local oTarget = self.object:get_enemy()
+	local v1 = self.object:direction()
+	local v2 = a:direction()
 	if npc and npc:id() == actor:id() then
 		if sfobj:see(npc) then 
-			if (fear == true) and npc:see(sfobj) and npc:position():distance_to(sfobj:position()) < 6 then
-				sfobj:set_custom_panic_threshold(1)
+			if (fear == true) and ((v1.x*v2.x) + (v1.z*v2.z )) < -0.45 and npc:position():distance_to(sfobj:position()) < 5 then
+				sfobj:set_custom_panic_threshold(TRUE)
 			else
-				sfobj:set_custom_panic_threshold(0)
+				sfobj:set_custom_panic_threshold(FALSE)
 			end
 		end
 	end

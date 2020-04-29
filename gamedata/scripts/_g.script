@@ -1167,6 +1167,10 @@ function IsMonster(o,c)
 			[clsid.krovosos_obt_s] 			= true,			
 			[clsid.krovosos_und_s] 			= true,	
 			[clsid.boar_s] 					= true,
+			[clsid.spider_s] 				= true,
+			[clsid.arhnida_s] 				= true,
+			[clsid.krotokris_s] 			= true,
+			[clsid.krisovolk_s] 			= true,
 			[clsid.bear_s] 					= true,
 			
 			[clsid.boar_vepr_s] 			= true,
@@ -1178,6 +1182,7 @@ function IsMonster(o,c)
 			[clsid.winger_s] 				= true,
 			[clsid.fly_s] 					= true,
 			[clsid.komar_s] 				= true,
+			[clsid.upir_s] 					= true,
 			[clsid.stinger_s] 				= true,
 			
 			[clsid.burcs_s] 				= true,
@@ -1246,6 +1251,8 @@ function IsMonster(o,c)
 			[clsid.snork_mozg_s] 			= true,
 			[clsid.vypolzen_s] 				= true,
 			[clsid.vipolzen_s] 				= true,
+			[clsid.vidra_s] 				= true,
+			[clsid.tark_s] 					= true,
 			[clsid.tushkano_s] 				= true,
 			[clsid.tushkano_black_s] 		= true,
 			[clsid.tushkano_big_s] 			= true,

@@ -11,6 +11,10 @@ if not BOOL_MODE_MIXED then
 	local tabl_monsters_stat_dead_removed = {} --статистика по монстрам мёртвым убранным
 	local tabl_monsters_live_restrict = { --ограничения на количество живых монстров (-1 - без ограничений)
 		[clsid.boar_s] = -1,
+		[clsid.spider_s] = -1,
+		[clsid.arhnida_s] = -1,
+		[clsid.krotokris_s] = -1,
+		[clsid.krisovolk_s] = -1,
 		[clsid.bear_s] = -1,
 		
 		[clsid.boar_vepr_s] = -1,
@@ -24,6 +28,8 @@ if not BOOL_MODE_MIXED then
 		[clsid.fly_s] = -1,
 		
 		[clsid.komar_s] = -1,
+		
+		[clsid.upir_s] = -1,
 		
 		[clsid.stinger_s] = -1,
 		
@@ -135,6 +141,8 @@ if not BOOL_MODE_MIXED then
 		
 		[clsid.vypolzen_s] = -1,
 		[clsid.vipolzen_s] = -1,
+		[clsid.vidra_s] = -1,
+		[clsid.tark_s] = -1,
 		[clsid.chimecs_s] = -1,
 		[clsid.lican_s] = -1,
 		[clsid.bear_chimere_s] = -1,
@@ -171,6 +179,11 @@ if not BOOL_MODE_MIXED then
 		{
 			[clsid.boar_s] 		= "Кабанов",
 			
+			[clsid.spider_s] 	= "Водянка-сварщик",
+			[clsid.arhnida_s] 	= "Арахнид",
+			[clsid.krotokris_s] = "Кротокрысов",
+			[clsid.krisovolk_s] = "Крысоволков",
+			
 			[clsid.bear_s] 		= "Чернобыльских медведей",
 			
 			[clsid.boar_vepr_s] = "Кабанов-вепрей",
@@ -182,6 +195,8 @@ if not BOOL_MODE_MIXED then
 			[clsid.fly_s] = "Мух",
 		
 			[clsid.komar_s] = "Гнусов",
+			
+			[clsid.upir_s] = "Упырей",
 		
 			[clsid.stinger_s] = "Стрекоз",
 			
@@ -270,6 +285,8 @@ if not BOOL_MODE_MIXED then
 			[clsid.snork_mozg_s] = "Мозгачей",
 			[clsid.vypolzen_s]	= "Болотных выползней",
 			[clsid.vipolzen_s]	= "Подземных выползней",
+			[clsid.vidra_s]	= "Выдр",
+			[clsid.tark_s]	= "Тарков",
 			[clsid.cat_s]		= "Котов",
 			[clsid.fracture_s]	= "Изломов",
 			[clsid.morlok_s]	= "Морлоков",

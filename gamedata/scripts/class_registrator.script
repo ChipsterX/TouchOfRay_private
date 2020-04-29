@@ -57,15 +57,9 @@ function register(object_factory)
 	local CAI_Boar_local
 	local CAI_Dog_local
 	
-	--' Переключение классов кабана и слепой собачки
-	if not BOOL_MODE_MIXED then
-		CAI_Boar_local = cs_register (object_factory, "CAI_CBocs",        		"se_monster.se_monster",			"SM_BOAR",		"boar_s")
-		CAI_Dog_local  = cs_register (object_factory, "CAI_Dogsoc",         	"se_monster.se_monster",    		"SM_DOG",		"dog_s")
-	else
-		CAI_Boar_local = cs_register (object_factory, "CAI_Boar",        		"se_monster.se_monster",			"SM_BOAR",		"boar_s")
-		CAI_Dog_local  = cs_register (object_factory, "CAI_Dog",         		"se_monster.se_monster",    		"SM_DOG",		"dog_s")
-	end
-	
+	CAI_Boar_local = cs_register (object_factory, "CAI_CBocs",        		"se_monster.se_monster",			"SM_BOAR",		"boar_s")
+	CAI_Dog_local  = cs_register (object_factory, "CAI_Dogsoc",         	"se_monster.se_monster",    		"SM_DOG",		"dog_s")
+
 	cs_register	(object_factory, "CAI_Flesh",       			"se_monster.se_monster",				"SM_FLESH",				"flesh_s")
 	cs_register	(object_factory, "CAI_PseudoDog",   			"se_monster.se_monster",    			"SM_PSDOG",				"pseudodog_s")
 	cs_register	(object_factory, "CCat",            			"se_monster.se_monster",				"SM_CATS",				"cat_s")
@@ -216,6 +210,25 @@ function register(object_factory)
 		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_WOLF",			"wolf_s")
 		cs_register(object_factory, "CChimecs",        					    "se_monster.se_monster",	  "SM_WOLFW",			"wolfw_s")
 		
+		local CAI_Spider_local
+		CAI_Spider_local = cs_register (object_factory, "CAI_CBocs",        "se_monster.se_monster",	   "SM_VODYA",		    "spider_s")
+		
+		local CAI_Arhnida_local
+		CAI_Arhnida_local = cs_register (object_factory, "CAI_CBocs",        "se_monster.se_monster",	   "SM_ARHNI",		    "arhnida_s")
+		
+		local CAI_Krotokris_local
+		CAI_Krotokris_local = cs_register (object_factory, "CAI_CBocs",      "se_monster.se_monster",	   "SM_KROTO",		    "krotokris_s")
+		
+		local CAI_Krisovolk_local
+		CAI_Krisovolk_local = cs_register (object_factory, "CAI_CBocs",      "se_monster.se_monster",	   "SM_KRIS",		    "krisovolk_s")
+		
+		local CAI_Upir_local
+		CAI_Upir_local = cs_register(object_factory, "CTushkano",  		     "se_monster.se_monster",	   "SM_UPIR",			"upir_s")
+		
+		local CAI_Vidra_local
+		CAI_Vidra_local = cs_register	(object_factory, "CSnork",           "se_monster.se_monster",	   "SM_VIDRA",			"vidra_s")
+		
+		cs_register	(object_factory, "CCat",            					 "se_monster.se_monster",	   "SM_TARK",			"tark_s")
 	end
 	--/< -----------------------------------------------------------------------------------------------------------------------------------
 	

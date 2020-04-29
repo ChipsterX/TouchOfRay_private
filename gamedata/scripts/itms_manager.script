@@ -428,7 +428,11 @@ function loot_mutant(obj,cls,t,npc)
 			[clsid.krovosos_obt_s] 			= "krovosos_obt",
 			[clsid.krovosos_und_s] 			= "krovosos_und",
 			
-			[clsid.boar_s] 			 = "boar",
+			[clsid.boar_s] 			 		= "boar",
+			[clsid.spider_s] 				= "spider",
+			[clsid.arhnida_s] 				= "arhnida",
+			[clsid.krotokris_s] 			= "krotokris",
+			[clsid.krisovolk_s] 			= "krisovolk",
 			
 			[clsid.bear_s] 			 = "bear",
 			
@@ -441,6 +445,7 @@ function loot_mutant(obj,cls,t,npc)
 			[clsid.winger_s] 			= "winger",
 			[clsid.fly_s] 				= "fly",
 			[clsid.komar_s] 			= "komar",
+			[clsid.upir_s] 				= "upir",
 			[clsid.stinger_s] 			= "stinger",
 			
 			[clsid.burcs_s] 		 = "burcs",
@@ -574,6 +579,10 @@ function loot_mutant(obj,cls,t,npc)
 			[clsid.vypolzen_s]	     = "vypolzen",
 			
 			[clsid.vipolzen_s]	     = "vipolzen",
+			
+			[clsid.vidra_s] 		= "vidra",
+			
+			[clsid.tark_s] 			= "tark",
 			
 			[clsid.tushkano_s]		 = "tushkano",
 			

@@ -48,10 +48,12 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	float3 hdiffuse, hspecular;
 	hmodel	(hdiffuse, hspecular, mtl, N.w, D.w, P.xyz, N.xyz);
 
-	float occ = 1.f;
+	float occ;
 	
 #if USE_AO_MODE == 1
-	occ 	   = calc_ssdo(P, N, I.tc0);
+	occ 	   	     = calc_ssdo(P, N, I.tc0);
+	hdiffuse  		*= occ;
+	hspecular 		*= occ;
 #elif USE_AO_MODE == 2 // HBAO
 
 #elif USE_AO_MODE == 3  // HDAO
@@ -59,9 +61,6 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 
 #endif
 #endif
-
-	hdiffuse  		*= occ;
-	hspecular 		*= occ;
 
 #ifdef CGIM
 	float ao = clamp(N.w, 0.05, 1.0);
