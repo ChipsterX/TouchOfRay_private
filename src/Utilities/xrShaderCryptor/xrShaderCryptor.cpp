@@ -362,17 +362,19 @@ int main(int argc, char** argv, char** envp)
 			xr_string MsBuildPath = EnvValue;
 
 			xr_string MsBuildCommandLine = "\"";
-			MsBuildCommandLine.append(MsBuildPath);
-			MsBuildCommandLine.append("\"");
 
 			switch (arch)
 			{
 			case Architecture::x32:
 				MsBuildPath += "\\MSBuild\\Current\\Bin\\MSBuild.exe";
+				MsBuildCommandLine.append(MsBuildPath);
+				MsBuildCommandLine.append("\"");
 				MsBuildCommandLine += " xrshadercode.vcxproj -property:Configuration=Release -property:Platform=Win32";
 				break;
 			case Architecture::x64:
 				MsBuildPath += "\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe";
+				MsBuildCommandLine.append(MsBuildPath);
+				MsBuildCommandLine.append("\"");
 				MsBuildCommandLine += " xrshadercode.vcxproj -property:Configuration=Release -property:Platform=x64";
 				break;
 			default:
