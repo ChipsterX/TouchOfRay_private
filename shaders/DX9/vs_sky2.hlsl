@@ -6,6 +6,7 @@ struct vi
         float4        c        : COLOR0        		;
         float3        tc0      : TEXCOORD0        	;
         float3        tc1      : TEXCOORD1        	;
+		float3		  pos_vertex  : TEXCOORD2			;		
 };
 
 struct vf
@@ -14,6 +15,7 @@ struct vf
         float4        c        : COLOR0        		;
         float3        tc0      : TEXCOORD0        	;
         float3        tc1      : TEXCOORD1        	;
+		float3		  pos_vertex  : TEXCOORD2			;		
 };
 
 vf main (vi v)
@@ -24,7 +26,13 @@ vf main (vi v)
 		o.hpos 				= mul (m_WVP, tpos);								// xform, input in world coords, 1000 - magic number
         o.hpos.z	    	= o.hpos.w;
 		o.tc0               = v.tc0;                        					// copy tc
-        o.tc1               = v.tc1;                        					// copy tc
+        o.tc1               = v.tc1;  
+
+		//Spherical coords for Procedural Sky
+		o.pos_vertex = 6471e3 * normalize(v.p.xyz);
+
+
+		// copy tc
 #ifdef USE_VTF
         float	scale		= tex2Dlod	(s_tonemap,float4(.5,.5,.5,.5)).x ;
         o.c                	= float4	( v.c.rgb*scale*1.7, v.c.a );      		// copy color, pre-scale by tonemap //float4 ( v.c.rgb*scale*2, v.c.a );

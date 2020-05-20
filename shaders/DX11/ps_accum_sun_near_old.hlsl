@@ -73,11 +73,12 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1 ) : SV_Target
 #endif
 	float4 _P = float4( gbd.P, gbd.mtl );
 	float4  _N = float4( gbd.N, gbd.hemi );
-
+	float4  _C = float4( gbd.C, gbd.gloss );
+	
 	// ----- light-model
 	float	m	= _P.w;
 
-	float4	light	= plight_infinity ( m, _P, _N, Ldynamic_dir );
+	float4	light	= plight_infinity ( m, _P, _N, _C Ldynamic_dir );
 
 	// ----- shadow
   	float4 	P4 	= float4( _P.x, _P.y, _P.z, 1.f);

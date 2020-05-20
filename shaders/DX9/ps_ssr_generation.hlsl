@@ -1,5 +1,7 @@
 #include "common.h"
 #include "ssr.h"
+#include "atmospheric.h"
+
 uniform float4x4 m_inv_v:register(ps,c3); //view-to-world matrix
 uniform samplerCUBE	s_sky0;
 uniform samplerCUBE	s_sky1;
@@ -24,7 +26,12 @@ float4 main( p_screen I) : COLOR
 	float3 env0	= texCUBE(s_sky0, vreflect);
 	float3 env1	= texCUBE(s_sky1, vreflect);
 	
+#ifdef USE_PROC_SKY
+	float3 env_refl = compute_scattering(vreflect);
+#else	
 	float3 env_refl = lerp(env0,env1,L_ambient.w);
+#endif
+	
 	float4 img_refl = ssr(P_world, N_world);
 	
 	float3 final = lerp(env_refl.xyz,img_refl.xyz,img_refl.w);	

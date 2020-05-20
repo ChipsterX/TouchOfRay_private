@@ -69,6 +69,12 @@ float4 screen_to_proj(float2 screen, float z)
 	proj.y = -screen.y*2 + proj.w;
 	return proj;
 }
+
+float random (float2 tc) 
+{
+	return frac(sin(dot(tc.xy,float2(12.,78.)))*43758.);
+}
+
 float4 combine_bloom( float3  low, float4 high)	
 {
         return float4( low + high.rgb*high.a, 1.h );

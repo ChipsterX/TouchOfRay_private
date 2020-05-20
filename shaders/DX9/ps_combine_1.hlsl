@@ -44,7 +44,7 @@ _out         main                ( _input I )
 #ifdef        USE_R2_STATIC_SUN
 	float	sun_occ        	=       P.w*2	;
 			mtl 			= 		xmaterial;
-            L              +=       Ldynamic_color * sun_occ * plight_infinity	(mtl, P.xyz, N.xyz, Ldynamic_dir);
+            L              +=       Ldynamic_color * sun_occ * plight_infinity	(mtl, P.xyz, N.xyz, D.xyzw, Ldynamic_dir);
 #endif
 
         // hemisphere

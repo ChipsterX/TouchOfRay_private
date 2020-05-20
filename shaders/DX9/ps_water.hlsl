@@ -1,5 +1,6 @@
 #include "common.h"
 #include "ssr.h"
+#include "atmospheric.h"
 
 struct vf
 {
@@ -37,12 +38,16 @@ float4   main( vf I )          : COLOR
 	
 	float3 v2point	= normalize (I.v2point);
 	float3 vreflect= reflect(v2point, Nw);
-	vreflect.y= vreflect.y*2-1;     // fake remapping
 
 	float3 env0	= texCUBE(s_env0, vreflect);
 	float3 env1	= texCUBE(s_env1, vreflect);
 
+#ifdef USE_PROC_SKY
+	float3 env_refl = compute_scattering(vreflect);
+#else	
 	float3 env_refl = lerp(env0,env1,L_ambient.w);
+#endif
+
 	float4 img_refl = ssr(I.P_world, Nw.xyz);
 
 	float fresnel = saturate (dot(vreflect,v2point));

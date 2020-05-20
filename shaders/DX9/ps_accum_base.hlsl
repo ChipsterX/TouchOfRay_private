@@ -15,6 +15,7 @@ float4         main         ( float4 tc : TEXCOORD0, float4 tcJ : TEXCOORD1 ) : 
 {
 	float4 _P               = tex2Dproj         (s_position,         tc);
 	float4  _N               = tex2Dproj         (s_normal,           tc);
+	float4  _C               = tex2Dproj         (s_diffuse,           tc);
 
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
@@ -22,7 +23,7 @@ float4         main         ( float4 tc : TEXCOORD0, float4 tcJ : TEXCOORD1 ) : 
 # endif
         // ----- light-model
       	float        		rsqr;
-        float4        		light   = plight_local         	(m, _P, _N, Ldynamic_pos, Ldynamic_pos.w, rsqr);
+        float4        		light   = plight_local         	(m, _P, _N, _C, Ldynamic_pos, Ldynamic_pos.w, rsqr);
 
         // ----- shadow
 		float4          		P4      = float4                	(_P.x,_P.y,_P.z,1);

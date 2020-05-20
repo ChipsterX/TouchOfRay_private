@@ -63,7 +63,7 @@ Texture3D	s_material;	//	smp_material
 Texture2D s_extension;
 Texture2D s_ssr;
 Texture2D s_puddles;
-
+Texture2D s_stars;
 //////////////////////////////////////////////////////////////////////////////////////////
 // Combine phase                                //
 #ifdef USE_MSAA

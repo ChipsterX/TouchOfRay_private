@@ -2,28 +2,36 @@
 #define LMODEL_H
 
 #include "common.h"
+#include "brdf.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// Lighting formulas			// 
-float SSS(float3 N, float3 V, float3 L)
-{
-	float distortion = 0.5f; 
-	float dotproduct = dot(V, -L + N * distortion);
-	dotproduct = saturate(dotproduct);
-	
-	return dotproduct;
-}
-
-float4 plight_infinity( float m, float3 pnt, float3 normal, float3 light_direction )
+float4 plight_infinity( float m, float3 pnt, float3 normal, float4 color, float3 light_direction )
 {
   	float3 N			= normal;							// normal 
   	float3 V 		= -normalize	(pnt);					// vector2eye
   	float3 L 		= -light_direction;						// vector2light
   	float3 H			= normalize	(L+V);						// float-angle-vector 
-	return s_material.Sample( smp_material, float3( dot(L,N), dot(H,N), m ) ).xxxy;		// sample material
+	
+	//Prepare textures
+	float3 albedo_tex = color.rgb;
+	float specular_tex = color.a;
+	float roughness_tex = compute_roughness(albedo_tex.xyz);
+	
+	//Compute F0
+	float3 F0 = lerp(PBR_F0, albedo_tex, specular_tex);
+	
+	//Lambert diffuse
+	float diffuse = Lambert(N,L);
+	//GGX speculars
+	float specular = GGX(N,V,L,roughness_tex,F0);
+	//Simple subsurface scattering
+	float subsurface = SSS(N,V,L);
+	
+	//Combined light
+	float4 light = float4(diffuse.xxx, specular);
+	return light;
 }
 
-float4 plight_local( float m, float3 pnt, float3 normal, float3 light_position, float light_range_rsq, out float rsqr )
+float4 plight_local( float m, float3 pnt, float3 normal, float4 color, float3 light_position, float light_range_rsq, out float rsqr )
 {
   	float3 N		= normal;							// normal 
   	float3 L2P 	= pnt-light_position;                         		// light2point 
@@ -32,7 +40,25 @@ float4 plight_local( float m, float3 pnt, float3 normal, float3 light_position, 
   	float3 H		= normalize	(L+V);						// float-angle-vector
 		rsqr	= dot		(L2P,L2P);					// distance 2 light (squared)
   	float  att 	= saturate	(1 - rsqr*light_range_rsq);			// q-linear attenuate
-	float4 light	= s_material.Sample( smp_material, float3( dot(L,N), dot(H,N), m ) ).xxxy;		// sample material
+
+	//Prepare textures
+	float3 albedo_tex = color.rgb;
+	float specular_tex = color.a;
+	float roughness_tex = compute_roughness(albedo_tex.xyz);
+	
+	//Compute F0
+	float3 F0 = lerp(PBR_F0, albedo_tex, specular_tex);
+	
+	//Lambert diffuse
+	float diffuse = Lambert(N,L);
+	//GGX speculars
+	float specular = GGX(N,V,L,roughness_tex,F0);
+	//Simple subsurface scattering
+	float subsurface = SSS(N,V,L);
+	
+	//Combined light
+	float4 light = float4(diffuse.xxx, specular);
+
   	return att*light;
 }
 

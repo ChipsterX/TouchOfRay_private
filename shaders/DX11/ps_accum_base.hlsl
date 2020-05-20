@@ -28,13 +28,14 @@ float4 main( p_volume I, float4 pos2d : SV_Position ) : SV_Target
 
 	float4 _P				= float4( gbd.P, gbd.mtl );
 	float4 _N				= float4( gbd.N, gbd.hemi );
-
+	float4 _C 				= float4( gbd.C, gbd.gloss );
+	
 	float 	m	= _P.w;
 
 
         // ----- light-model
       	float        		rsqr;
-        float4        		light   = plight_local( m, _P, _N, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+        float4        		light   = plight_local( m, _P, _N, _C, Ldynamic_pos, Ldynamic_pos.w, rsqr );
 
         // ----- shadow
 		float4          		P4      = float4( _P.x, _P.y, _P.z, 1);

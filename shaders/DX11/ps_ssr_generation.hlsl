@@ -1,5 +1,6 @@
 #include "common.h"
 #include "ssr.h"
+
 uniform float4x4 m_inv_v:register(ps,c3); //view-to-world matrix
 TextureCube	s_sky0;
 TextureCube	s_sky1;

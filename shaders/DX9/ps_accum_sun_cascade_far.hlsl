@@ -8,13 +8,14 @@ float4 	main		( float4 tc : TEXCOORD0, float4 tcJ : TEXCOORD1 ) : COLOR
 {
   float4 _P		= tex2Dproj 	(s_position, 	tc);
   float4  _N		= tex2Dproj 	(s_normal,   	tc);
+  float4  _C		= tex2Dproj 	(s_diffuse,   	tc);
 
 	// ----- light-model
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
 			m 	= _P.w		;
 # endif
-	float4	light 	= plight_infinity (m,_P,_N,Ldynamic_dir);
+	float4	light 	= plight_infinity (m,_P,_N,_C,Ldynamic_dir);
 
 	// ----- shadow
   	float4 	P4 	= float4	(_P.x,_P.y,_P.z,1.f);

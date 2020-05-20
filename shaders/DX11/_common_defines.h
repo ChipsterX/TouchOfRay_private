@@ -6,20 +6,6 @@ float4 various_consts_2; //engine import
 float4 test_dev_floats; //engine import
 static const float4 dev_floats 		= test_dev_floats;
 
-//////////////////////////////////////////////////////////////
-// Water Refl
-float4 water_refl_params_1; //engine import
-float4 water_refl_params_2; //engine import
-
-static const bool w_refl_enabled 		= water_refl_params_1.x == 0;
-static const bool w_refl_objects 		= water_refl_params_1.y == 1;
-static const bool w_refl_moon_sun 		= water_refl_params_1.z == 1;
-
-static const float w_refl_env_power 	= water_refl_params_2.x;
-static const float w_refl_intencity 	= water_refl_params_2.y;
-static const float w_refl_range 		= water_refl_params_2.z;
-static const float w_refl_obj_itter 	= water_refl_params_2.w;
-
 #define SW_FOAM_THICKNESS float (0.035)			// толщина пены, плавающей на поверхности воды
 
 #define JITTER_ROADS_MR 						// края дорожки проходят через шум

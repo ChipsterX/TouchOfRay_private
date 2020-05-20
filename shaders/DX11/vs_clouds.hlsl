@@ -11,8 +11,8 @@ struct vi
 struct vf
 {
 	float4 color : COLOR0; // rgb. intensity, for SM3 - tonemap-prescaled, HI-res
-	float3 tc0 : TEXCOORD0;
-	float2 tc1 : TEXCOORD1;
+  	float2	tc0 : TEXCOORD0;
+  	float2	tc1 : TEXCOORD1;
 	float4 hpos : SV_Position;
 };
 
@@ -28,12 +28,14 @@ vf main(vi v)
 	float2 _0 = v.p.xz * CLOUD_TILE0 + d0 * timers.z * CLOUD_SPEED0;
 	float2 _1 = v.p.xz * CLOUD_TILE1 + d1 * timers.z * CLOUD_SPEED1;
 
-	float scale = s_tonemap.Load(int3(0, 0, 0)).x;
-	o.tc0 = float3(_0, scale); // copy tc
-	o.tc1 = _1;				   // copy tc
+	o.tc0		= _0;					// copy tc
+	o.tc1		= _1;					// copy tc
 
-	o.color = v.color; // copy color, low precision, cannot prescale even by 2
-	o.color.w *= pow(v.p.y, 25);
+	o.color		=	v.color	;			// copy color, low precision, cannot prescale even by 2
+	o.color.w	*= 	pow		(v.p.y,25);
+
+	float	scale	= s_tonemap.Load( int3(0,0,0) ).x;
+	o.color.rgb 	*= 	scale	;		// high precision
 
 	return o;
 }

@@ -47,11 +47,10 @@ float4 main( vf I, float4 pos2d : SV_Position ) : SV_Target
 			
 	float3	v2point	= normalize (I.v2point);
 	float3	vreflect= reflect(v2point, Nw);
-			vreflect.y= vreflect.y*2-1;     // fake remapping
 
 	float3	env0	= s_env0.Sample( smp_rtlinear, vreflect);
 	float3	env1	= s_env1.Sample( smp_rtlinear, vreflect);
-
+	
 	float3 env_refl = lerp(env0,env1,L_ambient.w);
 	float4 img_refl = ssr(I.P_world, Nw.xyz);
 

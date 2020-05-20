@@ -223,6 +223,7 @@ uniform sampler2D       s_tonemap;              // actually MidleGray / exp(Lw +
 uniform sampler2D s_extension;
 uniform sampler2D s_ssr;
 uniform sampler2D s_puddles;
+uniform sampler2D s_stars;
 //////////////////////////////////////////////////////////////////////////////////////////
 // Defines                                		//
 #define def_gloss       float(2.f /255.f)
@@ -315,6 +316,12 @@ float4 screen_to_proj(float2 screen, float z)
 	proj.y = -screen.y*2 + proj.w;
 	return proj;
 }
+
+float random (float2 tc) 
+{
+	return frac(sin(dot(tc.xy,float2(12.,78.)))*43758.);
+}
+
 #define FXPS technique _render{pass _code{PixelShader=compile ps_3_0 main();}}
 #define FXVS technique _render{pass _code{VertexShader=compile vs_3_0 main();}}
 

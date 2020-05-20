@@ -14,15 +14,16 @@ struct 	_input
 
 float4 	main	( _input I ) : COLOR
 {
-  float4 _P		= tex2D 	(s_position, 	I.tc); 
-  float4  _N		= tex2D 	(s_normal,   	I.tc); 
+	float4 _P	= tex2D(s_position, I.tc); 
+	float4  _N	= tex2D(s_normal, I.tc); 
+	float4  _C	= tex2D(s_diffuse, I.tc);
 
 	// ----- light-model
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
 			m 	= _P.w		;
 # endif
-	float4	light	= plight_infinity (m,_P,_N,Ldynamic_dir);
+	float4	light	= plight_infinity (m,_P,_N,_C,Ldynamic_dir);
 
 	// ----- shadow
 	float4 	s_sum;
