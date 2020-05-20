@@ -8,6 +8,7 @@
 //	adopt_compiler don't have = operator And it can't have = operator
 #include "xrScriptEngine/script_engine.hpp"
 #include "luabind/return_reference_to_policy.hpp"
+#include "xrRender/xrRender/ShaderResourceTraits.h"
 
 using namespace luabind;
 using namespace luabind::policy;
@@ -314,24 +315,61 @@ void CResourceManager::LS_Load()
                     value("incr", int(D3DSTENCILOP_INCR)), value("decr", int(D3DSTENCILOP_DECR))]];
     };
     ScriptEngine.init(exporterFunc, false);
-    // load shaders
-    const char* shaderPath = RImplementation.getShaderPath();
-    xr_vector<char*>* folder = FS.file_list_open("$game_shaders$", shaderPath, FS_ListFiles | FS_RootOnly);
-    VERIFY(folder);
-    for (u32 it = 0; it < folder->size(); it++)
-    {
-        string_path namesp, fn;
-        xr_strcpy(namesp, (*folder)[it]);
-        if (0 == strext(namesp) || 0 != xr_strcmp(strext(namesp), ".lua"))
-            continue;
-        *strext(namesp) = 0;
-        if (0 == namesp[0])
-            xr_strcpy(namesp, ScriptEngine.GlobalNamespace);
-        strconcat(sizeof(fn), fn, shaderPath, (*folder)[it]);
-        FS.update_path(fn, "$game_shaders$", fn);
-        ScriptEngine.load_file_into_namespace(fn, namesp);
-    }
-    FS.file_list_close(folder);
+#ifdef USE_ENCRYPTED_SHADERS
+	InitializeEncryptedShaderMap();
+	for (auto mapIter = ShaderEncryptedMap.begin(); mapIter != ShaderEncryptedMap.end(); mapIter++)
+	{
+		shared_str shaderName = mapIter->first;
+		if (shaderName.size() > 3)
+		{
+			int SourceCodeSize = mapIter->second.size();
+			const char* ext = ((&shaderName.c_str()[shaderName.size() - 3]));
+			// Giperion: Shitty lua
+			if (xr_strcmp(ext, "lua") == 0)
+			{
+				char* ShaderDefinition = (char*)_alloca(SourceCodeSize + 1);
+				DecryptShader(mapIter->second, ShaderDefinition);
+				ShaderDefinition[SourceCodeSize] = 0;
+
+				string_path l_caLuaFileName;
+				strconcat(sizeof(l_caLuaFileName), l_caLuaFileName, "@", shaderName.c_str());
+
+				xr_string fileNamespace = shaderName.c_str();
+				fileNamespace.erase(fileNamespace.end() - 4, fileNamespace.end());
+				fileNamespace.erase(fileNamespace.begin(), fileNamespace.begin() + 5);
+				int start = lua_gettop(ScriptEngine.lua());
+
+				if (!ScriptEngine.load_buffer(ScriptEngine.lua(), ShaderDefinition, SourceCodeSize, l_caLuaFileName, fileNamespace.c_str()))
+				{
+					lua_settop(ScriptEngine.lua(), start);
+					continue;
+				}
+				lua_pcall(ScriptEngine.lua(), 0, 0, 0); // new_Andy
+
+				R_ASSERT(lua_gettop(ScriptEngine.lua()) == start);
+			}
+		}
+	}
+
+#else
+	const char* shaderPath = RImplementation.getShaderPath();
+	xr_vector<char*>* folder = FS.file_list_open("$game_shaders$", shaderPath, FS_ListFiles | FS_RootOnly);
+	VERIFY(folder);
+	for (u32 it = 0; it < folder->size(); it++)
+	{
+		string_path namesp, fn;
+		xr_strcpy(namesp, (*folder)[it]);
+		if (nullptr == strext(namesp) || 0 != xr_strcmp(strext(namesp), ".lua"))
+			continue;
+		*strext(namesp) = 0;
+		if (0 == namesp[0])
+			xr_strcpy(namesp, ScriptEngine.GlobalNamespace);
+		strconcat(sizeof(fn), fn, shaderPath, (*folder)[it]);
+		FS.update_path(fn, "$game_shaders$", fn);
+		ScriptEngine.load_file_into_namespace(fn, namesp);
+	}
+	FS.file_list_close(folder);
+#endif
 }
 
 void CResourceManager::LS_Unload() { ScriptEngine.unload(); }
