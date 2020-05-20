@@ -361,23 +361,25 @@ int main(int argc, char** argv, char** envp)
 			bFoundMsBuild = true;
 			xr_string MsBuildPath = EnvValue;
 
+			xr_string MsBuildCommandLine = "\"";
+			MsBuildCommandLine.append(MsBuildPath);
+			MsBuildCommandLine.append("\"");
+
 			switch (arch)
 			{
 			case Architecture::x32:
 				MsBuildPath += "\\MSBuild\\Current\\Bin\\MSBuild.exe";
+				MsBuildCommandLine += " xrshadercode.vcxproj -property:Configuration=Release -property:Platform=Win32";
 				break;
 			case Architecture::x64:
 				MsBuildPath += "\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe";
+				MsBuildCommandLine += " xrshadercode.vcxproj -property:Configuration=Release -property:Platform=x64";
 				break;
 			default:
 				R_ASSERT(false);
 				break;
 			}
 
-			xr_string MsBuildCommandLine = "\"";
-			MsBuildCommandLine.append(MsBuildPath);
-			MsBuildCommandLine.append("\"");
-			MsBuildCommandLine += " xrshadercode.vcxproj -property:Configuration=Release -property:Platform=x64";
 			MsBuildCommandLine.append(5, '\0');
 
 			xr_string MsBuildWorkingDirectory = Core.WorkingPath;
@@ -408,7 +410,18 @@ int main(int argc, char** argv, char** envp)
 	xr_string AppFolder = Core.WorkingPath;
 
 	FS.file_copy((AppFolder + "\\generated\\ShaderSourceMap.h").c_str(), (OutputDirectory + "\\ShaderSourceMap.h").c_str(), FSType::External);
-	FS.file_copy((AppFolder + "\\generated\\x64\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\xrshadercode.lib").c_str(), FSType::External);
+
+	switch (arch)
+	{
+	case Architecture::x32:
+		FS.file_copy((AppFolder + "\\generated\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\xrshadercode.lib").c_str(), FSType::External);
+		break;
+	case Architecture::x64:
+		FS.file_copy((AppFolder + "\\generated\\x64\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\xrshadercode.lib").c_str(), FSType::External);
+		break;
+	default:
+		break;
+	}
 
 	_rmdir("generated");
 
