@@ -419,7 +419,8 @@ int main(int argc, char** argv, char** envp)
 		FS.file_copy((AppFolder + "\\generated\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\xrshadercode.lib").c_str(), FSType::External);
 		break;
 	case Architecture::x64:
-		FS.file_copy((AppFolder + "\\generated\\x64\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\xrshadercode.lib").c_str(), FSType::External);
+		_mkdir((OutputDirectory + "\\x64").data());
+		FS.file_copy((AppFolder + "\\generated\\x64\\Release\\xrshadercode.lib").c_str(), (OutputDirectory + "\\x64\\xrshadercode.lib").c_str(), FSType::External);
 		break;
 	default:
 		break;

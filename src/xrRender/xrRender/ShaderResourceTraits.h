@@ -8,7 +8,12 @@ struct ShaderTypeTraits;
 #ifdef USE_ENCRYPTED_SHADERS
     #include "xrRender/generated/shadersourcemap.h"
     #include "Include/xrRender/ShaderEncryptionKey.h"
+
+#ifdef _M_X64
+    #pragma comment(lib, "x64\\xrshadercode.lib")
+#else
     #pragma comment(lib, "xrshadercode.lib")
+#endif
 
     extern xr_map< shared_str, xr_vector<char> > ShaderEncryptedMap;
     extern bool bEncryptedMapInitialized;
