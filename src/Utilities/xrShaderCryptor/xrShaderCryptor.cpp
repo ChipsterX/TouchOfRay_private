@@ -62,9 +62,9 @@ int main(int argc, char** argv, char** envp)
 	EnableForwardToConsole(true);
 	Msg("xrShaderCryptor version 1.0");
 
-	if (argc < 2)
+	if (argc < 3)
 	{
-		Msg("Usage: xrShaderCryptor -out=\"C:\\Output\"");
+		Msg("Usage: xrShaderCryptor -out=\"C:\\Output\" -arch=(x32|x64)");
 		Msg("Keep in mind - working directory must be a root game folder");
 		Msg("Program also require \"VS2019INSTALLDIR\" environment variable to be presented, as well as Visual Studio 2019");
 		return 1;
@@ -75,6 +75,13 @@ int main(int argc, char** argv, char** envp)
 	if (OutDir == nullptr)
 	{
 		Msg("Invalid output directory");
+		return 1;
+	}
+
+	char* ArchArg = argv[2];
+	if (ArchArg == nullptr)
+	{
+		Msg("Invalid architecture argument (must be x32 or x64)");
 		return 1;
 	}
 
@@ -94,6 +101,38 @@ int main(int argc, char** argv, char** envp)
 	else
 	{
 		Msg("Invalid output directory");
+		return 1;
+	}
+
+	enum class Architecture
+	{
+		x32,
+		x64
+	};
+
+	Architecture arch;
+
+	xr_string strArch = ArchArg;
+	if (memcmp(strArch.data(), "-arch=", 6) == 0)
+	{
+		std::string_view ArchView(&strArch[6], strArch.size() - 6);
+		if (ArchView == "x32")
+		{
+			arch = Architecture::x32;
+		}
+		else if (ArchView == "x64")
+		{
+			arch = Architecture::x64;
+		}
+		else
+		{
+			Msg("Invalid architecture argument (must be x32 or x64)");
+			return 1;
+		}
+	}
+	else
+	{
+		Msg("Invalid architecture argument (must be x32 or x64)");
 		return 1;
 	}
 
@@ -322,7 +361,18 @@ int main(int argc, char** argv, char** envp)
 			bFoundMsBuild = true;
 			xr_string MsBuildPath = EnvValue;
 
-			MsBuildPath += "\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe";
+			switch (arch)
+			{
+			case Architecture::x32:
+				MsBuildPath += "\\MSBuild\\Current\\Bin\\MSBuild.exe";
+				break;
+			case Architecture::x64:
+				MsBuildPath += "\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe";
+				break;
+			default:
+				R_ASSERT(false);
+				break;
+			}
 
 			xr_string MsBuildCommandLine = "\"";
 			MsBuildCommandLine.append(MsBuildPath);

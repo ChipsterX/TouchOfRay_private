@@ -6,7 +6,7 @@
     <LocalDebuggerCommandArguments>-out="J:\TouchOfRay\src\xrRender\generated"</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-out="J:\TouchOfRay\src\xrRender\generated"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-out="J:\TouchOfRay\src\xrRender\generated" -arch=x32</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>J:\TouchOfRay_Game\Call of Chernobyl Back to the roots</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
